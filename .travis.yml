@@ -1,6 +1,14 @@
+language: generic
 services:
-	- docker
+  - docker
 
 script:
-	- docker run -it --rm -v "$PWD":/root/app luksamuk/emacs-export sh app/ci-run.sh
-	
+  - docker run -it --rm -v "$PWD":/root/app luksamuk/emacs-export sh app/ci-run.sh
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $github_token
+  local_dir: build
+  on:
+    branch: master
