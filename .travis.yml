@@ -2,14 +2,16 @@ language: generic
 services:
   - docker
 
+before_install:
+  - docker pull luksamuk/emacs-export
+  - docker ps -a
+  
 script:
   - docker run -it --rm -v "$PWD":/root/app luksamuk/emacs-export sh app/ci-run.sh
 
 deploy:
   provider: pages
-  skip_cleanup: true
-  github_token: $github_token
-  local_dir: build
+  token: $github_token
   on:
     branch: master
  
