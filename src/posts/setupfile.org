@@ -1,0 +1,57 @@
+# This is a setupfile for posts. It incorporates the website stylesheet as well.
+
+#+LANGUAGE: en
+
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="../css/main.css" />
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+#+HTML_HEAD: <link id="theme-css" rel="stylesheet" type="text/css" href="../css/dark-theme.css" />
+#+HTML_HEAD: <link rel="icon" type="image/jpg" href="../img/cat-i-mage.jpg" />
+#+HTML_HEAD: <meta name="viewport" content="width=device-width, initial-scale=1.0">
+#+HTML_HEAD: <meta property="og:image" content="../img/cat-i-mage.jpg">
+#+HTML_HEAD: <meta name="theme-color" content="#14171e">
+#+DESCRIPTION: Programming, Tech, and occasional rant space by Lucas Vieira
+
+#+ATTR_ASCII: :width 80
+
+#+OPTIONS: toc:nil timestamp:nil num:nil email:t validate:nil html-postamble:t
+#+OPTIONS: html-preamble:t author:t date:t html-scripts:nil
+#+OPTIONS: title:nil
+
+#+BIND: theme-selector-thing "<script src=\"../js/theme-selector.js\"></script><div id=\"theme-selector\"><center><img onclick=\"javascript:switchTheme('light')\" src=\"../img/theme-white.png\"/><img onclick=\"javascript:switchTheme('dark')\" src=\"../img/theme-black.png\"/></center></div>"
+
+#+BIND: org-html-preamble-format (("en" "<h1 class=\"title\">%t</h1>" "<p><i>Written in %d by %a<br/>%e</i></p>") ("pt_BR" "<h1 class=\"title\">%t</h1><p><i>Escrito em %d por %a<br/>%e</i></p>" theme-selector-thing))
+
+#+BIND: org-html-postamble-format (("en" "<h3><a href=\"../\">Back to last page</a></h3>") ("pt_BR" "<h3><a href=\"../\">De volta à página anterior</a></h3>"))
+
+#+BEGIN_SRC elisp :eval no :exports none
+(setq theme-selector-thing
+      (concat "<script src=\"../js/theme-selector.js\"></script>"
+	      "<div id=\"theme-selector\">"
+	      "<center>"
+	      "<img onclick=\"javascript:switchTheme('light')\" src=\"../img/theme-white.png\"/>"
+	      "<img onclick=\"javascript:switchTheme('dark')\" src=\"../img/theme-black.png\"/>"
+	      "</center>"
+	      "</div>"))
+
+(setq org-html-preamble-format
+      (list (list "en"
+		  (concat "<h1 class=\"title\">%t</h1>"
+			  "<p><i>Written in %d by %a"
+			  "<br/>"
+			  "%e</i></p>"
+			  theme-selector-thing))
+	    (list "pt_BR"
+		  (concat "<h1 class=\"title\">%t</h1>"
+			  "<p><i>Escrito em %d por %a"
+			  "<br/>"
+			  "%e</i></p>"
+			  theme-selector-thing))))
+
+(setq org-html-postamble-format
+      (list (list "en"
+		  "<h3><a href=\"../\">Back to last page</a></h3>")
+	    (list "pt_BR"
+		  "<h3><a href=\"../\">De volta à página anterior</a></h3>")))
+#+END_SRC
+
+

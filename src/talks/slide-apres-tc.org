@@ -1,0 +1,605 @@
+#+TITLE:          Computação em Diferentes Formas
+#+AUTHOR:         Lucas S. Vieira
+#+EMAIL:          lucasvieira@protonmail.com
+#+DATE:           Novembro de 2019
+#+LANGUAGE:       pt_BR
+#+REVEAL_ROOT:    ./reveal.js
+#+REVEAL_THEME:   serif
+#+REVEAL_PLUGINS: (print-pdf zoom)
+#+REVEAL_MARGIN:  0.2
+#+REVEAL_TRANS:   linear
+#+OPTIONS: num:nil timestamp:nil toc:nil
+#+OPTIONS: reveal_single_file:t
+#+STARTUP: latexpreview showall inlineimages
+
+#+BIND: org-reveal-title-slide "<h3>%t<br/><br/>%a</h3><br/>Universidade Federal dos Vales do Jequitinhonha e Mucuri<br/>%d</p>"
+
+* Introdução
+
+#+REVEAL: split
+
+Programação é uma área muito ampla, subdividida em paradigmas.
+
+#+ATTR_REVEAL: :frag (appear)
+Paradigmas nos induzem a raciocinar de maneiras específicas.
+
+#+ATTR_REVEAL: :frag (appear)
+Mas paradigmas não são dissociáveis.
+
+#+REVEAL: split
+
+Precisamos de uma mente aberta ao racionalizar a computação.
+
+#+ATTR_REVEAL: :frag (appear)
+A computação realizada não muda, mas o vocabulário pode tornar o
+processo rápido.
+
+#+ATTR_REVEAL: :frag (appear)
+Linguagens específicas são a ferramenta certa para o propósito certo.
+
+#+REVEAL: split
+
+Matemática constitui uma /linguagem formal/ (ainda que não seja
+universal), onde parte-se de princípios auto-evidentes e,
+sob meios de racionalização, chega-se a novas conclusões.
+
+#+ATTR_REVEAL: :frag (appear)
+\begin{equation*}
+        \text{axiomas } \overset{\text{regras de inferência}}{\longmapsto} \text{ teoremas}
+\end{equation*}
+
+#+ATTR_REVEAL: :frag (appear)
+"Mathematical notation provides perhaps the best-known and
+best-developed example of language used consciously as a tool of
+thought." (Iverson, 1986)
+
+#+REVEAL: split
+
+A /notação formal/ usada em TC é uma linguagem matemática que especifica
+precisamente o funcionamento de máquinas abstratas.
+
+#+ATTR_REVEAL: :frag (appear)
+Segundo Iverson (1986), linguagens de programação são notações formais
+universalizadas.
+
+#+REVEAL: split
+
+Mostraremos como /linguagens específicas/ induzem formas diferentes de
+pensar ao resolvermos problemas específicos.
+
+#+ATTR_REVEAL: :frag (appear)
+Mas primeiro...
+
+* Autômatos celulares unidimensionais
+
+#+REVEAL: split
+
+Notação definida por Stephen Wolfram (2002)
+
+Dados gerais de um AC unidimensional:
+
+#+ATTR_REVEAL: :frag (appear)
+- Dois estados por célula: /viva/ (=⋄=) ou /morta/ (=.=);
+- Dois vizinhos: (esquerdo e direito);
+- Vizinhança: Três células (esquerdo, atual, direito).
+
+** Rule 90
+
+Considere a seguinte regra baseada na vizinhança:
+
+#+ATTR_HTML: :style font-size:0.7em;
+#+begin_example
+   ⋄⋄⋄   ⋄⋄.   ⋄.⋄   ⋄..   .⋄⋄   .⋄.   ..⋄   ...
+    .     ⋄     .     ⋄     ⋄     .     ⋄     . 
+#+end_example
+
+*** Transformando em binário
+
+#+ATTR_HTML: :style font-size:0.7em;
+#+begin_example
+          111 110 101 100 011 010 001 000
+           0   1   0   1   1   0   1   0
+#+end_example
+
+*** Por que "Rule 90"?
+
+\begin{align*}
+        01011010_{2} &= (2^{6} + 2^{4} + 2^{3} + 2^{1})\\
+                     &= (64_{10} + 16_{10} + 8_{10} + 2_{10})&\\
+                     &= 90_{10}
+\end{align*}
+
+*** Simplificação da regra
+
+Equivale a realizar uma operação de /ou-exclusivo/ entre os vizinhos e
+ignorar o estado da célula atual.
+
+#+ATTR_HTML: :style font-size:0.7em;
+#+begin_example
+                  1X1 1X0 0X1 0X0
+                   0   1   1   0 
+#+end_example
+
+* APL
+
+#+REVEAL: split
+
+Começaremos com a linguagem criada por Kenneth E. Iverson, chamada
+APL.
+
+#+ATTR_REVEAL: :frag (appear)
+APL é uma linguagem criada para facilitar a manipulação de vetores e
+matrizes.
+
+#+ATTR_REVEAL: :frag (appear)
+APL não possui, por padrão, nenhum /condicional/ ou /laço de repetição/
+explícitos.
+
+** COMMENT Aritmética básica
+
+#+begin_example
+      1+2
+3
+      3×4
+12
+      3÷4
+0.75
+#+end_example
+
+** COMMENT Aritmética com vetores
+
+#+begin_example
+      2 5 3-1
+1 4 2
+      ¯1+2 5 3
+1 4 2
+#+end_example
+
+#+REVEAL: split
+
+#+begin_example
+      1 2 3+4 5 6
+5 7 9
+      1 2+3 4 5
+LENGTH ERROR: Mismatched left and right argument shapes
+      1 2+3 4 5
+         ∧
+#+end_example
+
+#+REVEAL: split
+
+#+begin_example
+      4+3+2
+9
+      +/4 3 2
+9
+#+end_example
+
+** COMMENT Rotação horizontal
+
+#+begin_example
+      1⌽4 3 2
+3 2 4
+      ¯1⌽4 3 2
+2 4 3
+#+end_example
+
+** COMMENT Iota e Reshape
+
+#+begin_example
+      ⍳4
+1 2 3 4
+      2 2⍴⍳4
+1 2
+3 4
+      ⍳9
+1 2 3 4 5 6 7 8 9
+      3 3⍴⍳9
+1 2 3
+4 5 6
+7 8 9
+#+end_example
+
+** COMMENT Implementando a Rule 90
+
+*** Dados para testes
+
+#+begin_example
+      ⍳7
+1 2 3 4 5 6 7
+      (⍳7)∊3 4 5
+0 0 1 1 1 0 0
+      r←(⍳7)∊3 4 5
+#+end_example
+
+*** Calculando número de vizinhos
+
+#+begin_example
+      r r
+ 0 0 1 1 1 0 0  0 0 1 1 1 0 0 
+      ]display r r
+┌→────────────────────────────────┐
+│ ┌→────────────┐ ┌→────────────┐ │
+│ │0 0 1 1 1 0 0│ │0 0 1 1 1 0 0│ │
+│ └~────────────┘ └~────────────┘ │
+└∊────────────────────────────────┘
+      )copy dfns disp
+/opt/mdyalog/17.1/64/unicode/ws/dfns.dws saved...
+      disp r r
+┌─────────────┬─────────────┐
+│0 0 1 1 1 0 0│0 0 1 1 1 0 0│
+└─────────────┴─────────────┘
+#+end_example
+
+#+REVEAL: split
+
+#+begin_example
+      disp ¯1 1⌽¨r r
+┌─────────────┬─────────────┐
+│0 0 0 1 1 1 0│0 1 1 1 0 0 0│
+└─────────────┴─────────────┘
+      disp ¯1 1⌽¨⊂r
+┌─────────────┬─────────────┐
+│0 0 0 1 1 1 0│0 1 1 1 0 0 0│
+└─────────────┴─────────────┘
+#+end_example
+
+#+REVEAL: split
+
+#+begin_example
+      disp +/¯1 1⌽¨⊂r
+┌─────────────┐
+│0 1 1 2 1 1 0│
+└─────────────┘
+      disp ⊂r
+┌─────────────┐
+│0 0 1 1 1 0 0│
+└─────────────┘
+#+end_example
+
+*** Filtrando as células vivas
+
+#+begin_example
+      disp 1=+/¯1 1⌽¨⊂r
+┌─────────────┐
+│0 1 1 0 1 1 0│
+└─────────────┘
+      disp ⊃1=+/¯1 1⌽¨⊂r
+0 1 1 0 1 1 0
+#+end_example
+
+** Função para a Rule 90 em APL
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_src dyalog
+rule90←{⊃1=+/¯1 1⌽¨⊂⍵}
+#+end_src
+
+#+ATTR_REVEAL: :frag (appear)
+- Não há nenhuma referência ao tamanho do vetor;
+- Não há laços de repetição explícitos;
+- Não há estruturas de controle de fluxo explícitas.
+
+** Demonstração
+
+#+begin_example
+      disp 3 1⍴r (rule90 r) (rule90 rule90 r)
+┌─────────────┐
+│0 0 1 1 1 0 0│
+├─────────────┤
+│0 1 1 0 1 1 0│
+├─────────────┤
+│1 1 1 0 1 1 1│
+└─────────────┘
+#+end_example
+
+#+REVEAL: split
+
+#+begin_example
+      gen←{(rule90⍣⍺)⍵}
+      plotgen←{r←⍵⋄(⊃,/⍺ (⍴r))⍴⊃,/{⍵ gen r}¨¯1+⍳⍺}
+      5 plotgen r
+0 0 1 1 1 0 0
+0 1 1 0 1 1 0
+1 1 1 0 1 1 1
+0 0 1 0 1 0 0
+0 1 0 0 0 1 0
+#+end_example
+
+*** Visualização gráfica
+
+#+begin_example
+      drawfig←{' ⋄'[1+⍵]}
+      ]display drawfig 10 plotgen r
+┌→──────┐
+↓  ⋄⋄⋄  │
+│ ⋄⋄ ⋄⋄ │
+│⋄⋄⋄ ⋄⋄⋄│
+│  ⋄ ⋄  │
+│ ⋄   ⋄ │
+│⋄ ⋄ ⋄ ⋄│
+│⋄     ⋄│
+│⋄⋄   ⋄⋄│
+│ ⋄⋄ ⋄⋄ │
+│⋄⋄⋄ ⋄⋄⋄│
+└───────┘
+#+end_example
+
+#+REVEAL: split
+
+#+begin_src dyalog
+      ]display drawfig 32 plotgen 31=⍳61
+┌→────────────────────────────────────────────────────────────┐
+↓                              ⋄                              │
+│                             ⋄ ⋄                             │
+│                            ⋄   ⋄                            │
+│                           ⋄ ⋄ ⋄ ⋄                           │
+│                          ⋄       ⋄                          │
+│                         ⋄ ⋄     ⋄ ⋄                         │
+│                        ⋄   ⋄   ⋄   ⋄                        │
+│                       ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄                       │
+│                      ⋄               ⋄                      │
+│                     ⋄ ⋄             ⋄ ⋄                     │
+│                    ⋄   ⋄           ⋄   ⋄                    │
+│                   ⋄ ⋄ ⋄ ⋄         ⋄ ⋄ ⋄ ⋄                   │
+│                  ⋄       ⋄       ⋄       ⋄                  │
+│                 ⋄ ⋄     ⋄ ⋄     ⋄ ⋄     ⋄ ⋄                 │
+│                ⋄   ⋄   ⋄   ⋄   ⋄   ⋄   ⋄   ⋄                │
+│               ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄               │
+│              ⋄                               ⋄              │
+│             ⋄ ⋄                             ⋄ ⋄             │
+│            ⋄   ⋄                           ⋄   ⋄            │
+│           ⋄ ⋄ ⋄ ⋄                         ⋄ ⋄ ⋄ ⋄           │
+│          ⋄       ⋄                       ⋄       ⋄          │
+│         ⋄ ⋄     ⋄ ⋄                     ⋄ ⋄     ⋄ ⋄         │
+│        ⋄   ⋄   ⋄   ⋄                   ⋄   ⋄   ⋄   ⋄        │
+│       ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄                 ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄       │
+│      ⋄               ⋄               ⋄               ⋄      │
+│     ⋄ ⋄             ⋄ ⋄             ⋄ ⋄             ⋄ ⋄     │
+│    ⋄   ⋄           ⋄   ⋄           ⋄   ⋄           ⋄   ⋄    │
+│   ⋄ ⋄ ⋄ ⋄         ⋄ ⋄ ⋄ ⋄         ⋄ ⋄ ⋄ ⋄         ⋄ ⋄ ⋄ ⋄   │
+│  ⋄       ⋄       ⋄       ⋄       ⋄       ⋄       ⋄       ⋄  │
+│ ⋄ ⋄     ⋄ ⋄     ⋄ ⋄     ⋄ ⋄     ⋄ ⋄     ⋄ ⋄     ⋄ ⋄     ⋄ ⋄ │
+│⋄   ⋄   ⋄   ⋄   ⋄   ⋄   ⋄   ⋄   ⋄   ⋄   ⋄   ⋄   ⋄   ⋄   ⋄   ⋄│
+│⋄⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄ ⋄⋄│
+└─────────────────────────────────────────────────────────────┘
+#+end_src
+
+** Programa completo
+
+#+begin_src dyalog
+ rule90←{⊃1=+/¯1 1⌽¨⊂⍵}
+ gen←{(rule90⍣⍺)⍵}
+ plotgen←{r←⍵⋄(⊃,/⍺ (⍴r))⍴⊃,/{⍵ gen r}¨¯1+⍳⍺}
+ drawfig←{' ⋄'[1+⍵]}
+#+end_src
+
+* Outras linguagens?
+
+** Common Lisp
+
+#+begin_src lisp :results output
+(defun rot (n list)
+  (cond ((zerop n) list)
+        ((< n 0)
+         (rot (+ (length list) n) list))
+        (t (append (nthcdr n list)
+                   (butlast list
+                            (- (length list)
+                               n))))))
+
+(defun rule90 (list)
+  (let ((left-rot  (rot 1 (copy-list list)))
+        (right-rot (rot -1 (copy-list list))))
+    (loop for val1 in left-rot
+       for val2 in right-rot
+       for num = (+ val1 val2)
+       collect (if (= num 1) 1 0))))
+
+
+(defparameter *r*
+  (loop for i from 1 to 7
+     collect (if (member i '(3 4 5)) 1 0)))
+
+(format t "~a~%~a~%" *r* (rule90 *r*))
+#+end_src
+
+#+REVEAL: split
+#+RESULTS:
+: (0 0 1 1 1 0 0)
+: (0 1 1 0 1 1 0)
+
+** C++ moderno
+
+#+begin_src C++ :main no :exports both :flags --std=c++11 :results output :eval no
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+void
+rule90(std::vector<int>& r)
+{
+    std::vector<int> lrot(r);
+    std::vector<int> rrot(r);
+
+    std::rotate(lrot.begin(),  lrot.begin()  + 1, lrot.end());
+    std::rotate(rrot.rbegin(), rrot.rbegin() + 1, rrot.rend());
+
+    for(int i = 0; i < lrot.size(); i++) {
+        int neighbors = lrot[i] + rrot[i];
+        r[i] = (neighbors == 1) ? 1 : 0;
+    }
+}
+
+void
+print_vec(const std::vector<int>& r)
+{
+    for(int n : r)
+        std::cout << n << ' ';
+    std::cout << std::endl;
+}
+
+int
+main(void)
+{
+    std::vector<int> r;
+    for(int i = 1; i <= 7; i++) {
+        if(i == 3 || i == 4 || i == 5)
+            r.push_back(1);
+        else r.push_back(0);
+    }
+    
+    print_vec(r);
+    rule90(r);
+    print_vec(r);
+    return 0;
+}
+#+end_src
+
+#+REVEAL: split
+#+RESULTS:
+: 0 0 1 1 1 0 0 
+: 0 1 1 0 1 1 0
+
+
+* Nem tudo que reluz é ouro...
+
+#+REVEAL: split
+
+APL é boa para vetores e matrizes, mas não para propósito geral*.
+
+#+ATTR_REVEAL: :frag (appear)
+APL requer um esquema de teclado próprio.
+
+#+ATTR_REVEAL: :frag (appear)
+APL tem implementações muito fragmentadas.
+
+#+REVEAL: split
+
+As melhores partes de APL estão em Dyalog APL, uma implementação /paga/
+(se usada comercialmente).
+
+#+ATTR_REVEAL: :frag (appear)
+Convenhamos, ninguém usa APL.
+
+* ...mas nem tudo que é obscuro é carvão!
+
+#+REVEAL: split
+
+Aprender uma linguagem completamente diferente aguça sua forma de
+pensar.
+
+#+ATTR_REVEAL: :frag (appear)
+Usar um paradigma diferente obriga você a pensar de forma diferente.
+
+#+ATTR_REVEAL: :frag (appear)
+Muitas soluções para problemas envolvem /pensamento lateral/.
+
+* Problema: Dígrafos
+
+Encontre todos os caminhos do nó =a= ao nó =e=.
+
+#+begin_src dot :file img/graph.svg :cache yes :cmdline -Kneato -Tsvg
+digraph G {
+	bgcolor="#00000000";
+	node [shape=circle style=inviz width=0.01]
+
+	f[pos="0, 0!"];
+
+	a -> b;
+	a -> f;
+	a -> g;
+	b -> c;
+	b -> d;
+	c -> d;
+	c -> e;
+	d -> h;
+	g -> h;
+	h -> e;
+	h -> f;
+}
+#+end_src
+
+#+RESULTS[da872f3f9f0abaab6cb61eaa8cd06be26653c56f]:
+[[file:img/graph.svg]]
+
+** Solução não-trivial: Use Prolog!
+
+#+begin_src prolog :results output :cache yes :eval no
+:- initialization main.
+
+edge(a, b).
+edge(b, d).
+edge(d, h).
+edge(a, f).
+edge(c, d).
+edge(h, e).
+edge(a, g).
+edge(c, e).
+edge(h, f).
+edge(b, c).
+edge(g, h).
+
+path(A, B, [A, B]) :- edge(A, B).
+
+path(A, B, [A | CB]) :- edge(A, C),
+			path(C, B, CB).
+
+main :-
+    bagof(P, path(a, e, P), L),
+    write(L),
+    halt.
+#+end_src
+
+#+REVEAL: split
+#+RESULTS[66c9b9a6037ba3cb78fafda69ef48556255ffccf]:
+: [[a,b,d,h,e],[a,b,c,e],[a,b,c,d,h,e],[a,g,h,e]]
+
+[[file:img/graph.svg]]
+
+#+REVEAL: split
+
+Prolog pode ser de grande ajuda quando utilizado com outros paradigmas
+de programação.
+
+#+ATTR_REVEAL: :frag (appear)
+De fato, variações de Prolog podem ser utilizadas como linguagens para
+/bancos de dados relacionais/.
+
+#+ATTR_REVEAL: :frag (appear)
+Prolog também pode ser fácil e rapidamente implementado em linguagens
+como Scheme (Abelson /et al./, 1996; Pellegrini, 2018).
+
+* Conclusão
+
+Matemática é uma linguagem para racionalização, e portanto, um recurso
+para modelagem de raciocínio.
+
+#+ATTR_REVEAL: :frag (appear)
+Não prenda sua forma de raciocínio a uma única linguagem.
+
+#+ATTR_REVEAL: :frag (appear)
+Aprenda uma nova linguagem de programação (especialmente se for
+diferente do que você usa).
+
+#+ATTR_REVEAL: :frag (appear)
+Notações são suas amigas. Busque entender o que elas querem lhe
+dizer!
+
+* Bibliografia
+
+#+ATTR_HTML: :style font-size:0.7em;text-align:left;
+ABELSON, H.; SUSSMAN, G. J.; SUSSMAN, J. *Structure and interpretation
+of computer programs.* MIT Press: Cambridge, 1996. ISBN:
+978-0-262-51087-5.
+
+#+ATTR_HTML: :style font-size:0.7em;text-align:left;
+IVERSON, K. *Notation as a tool of thought.* IBM Thomas J. Watson
+Research Center, 1986.
+
+#+ATTR_HTML: :style font-size:0.7em;text-align:left;
+HOLM, N. S. *Prolog control in six slides.* Julho de 2019.
+
+#+ATTR_HTML: :style font-size:0.7em;text-align:left;
+PELLEGRINI, J. C. *Programação funcional e concorrente com Scheme.*
+Universidade Federal do ABC: Santo André, 2018.

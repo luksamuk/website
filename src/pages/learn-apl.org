@@ -1,0 +1,3862 @@
+#+TITLE:    "Learn APL" Notes
+#+AUTHOR:   Lucas Vieira
+#+EMAIL:    lucasvieira@protonmail.com
+#+PROPERTY: header-args :tangle learn-apl.apl
+#+OPTIONS:  title:t toc:nil
+#+LANGUAGE: en-us
+#+STARTUP:  content
+
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="../css/main.css" />
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+#+HTML_HEAD: <link id="theme-css" rel="stylesheet" type="text/css" href="../css/dark-theme.css" />
+#+HTML_HEAD: <link rel="icon" type="image/jpg" href="../img/cat-i-mage.jpg" />
+#+HTML_HEAD: <meta name="viewport" content="width=device-width, initial-scale=1.0">
+#+HTML_HEAD: <meta property="og:image" content="../img/cat-i-mage.jpg">
+#+HTML_HEAD: <meta name="theme-color" content="#14171e">
+#+DESCRIPTION: Programming, Tech, and occasional rant space by Lucas Vieira
+
+#+ATTR_ASCII: :width 80
+
+#+OPTIONS: num:nil email:t validate:nil html-postamble:t
+#+OPTIONS: html-preamble:nil author:t date:t html-scripts:nil
+#+OPTIONS: title:nil
+
+#+BIND: org-html-postamble-format (("en" "<h3><a href=\"../\">Back to last page</a></h3>") ("pt_BR" "<h3><a href=\"../\">De volta à página anterior</a></h3>"))
+
+#+HTML: <center><h1><i>Learn APL</i> Notes</h1></center>
+
+I use this page as reference card when I have any doubts about the APL
+language.
+
+This file follows APL Wiki's [[https://aplwiki.com/LearnApl/TutorialContents][APL Tutorial]] and [[https://www.aplwiki.com/LearnMoreApl/FurtherTopics][Further Topics in APL]]
+guides, plus occasional extra looks at [[https://tryapl.org/][TryAPL]] for missing stuff on
+certain symbols (I made sure it was compatible with GNU APL).
+
+I do not guarantee a comprehensive guide to APL here. This is mainly
+for future consulting.
+
+Plus, make sure you are using a monospace font which supports APL
+characters!
+
+Also see the [[https://www.gnu.org/software/apl/apl.html][GNU APL Manual]].
+
+#+HTML: <h3><a href=\"..">Back to last page</a></h3>
+
+#+TOC: headlines 4
+
+* Getting Started
+** Startup
+
+Let's make sure our file executes. Executing the tangled file will run
+everything done in the tutorial.
+
+Also, for live interaction, use =gnu-apl-interactive-send-*=.
+
+#+begin_src gnu-apl
+#!/usr/bin/apl --id 1010
+#+end_src
+
+Oh, and just so you know, use a unicode font which supports this stuff.
+
+** Simple arithmetic
+
+Use =⍝= at the beginning of any comment.
+
+#+begin_src gnu-apl
+⍝⍝⍝ Getting started
+
+⍝⍝ This is a comment.
+⍝⍝ Check the GNU APL keyboard for shortcut hints
+⍝⍝ at any time.
+
+⍝ Simple Arithmetic
+#+end_src
+
+*** Arithmetic functions
+
+#+begin_src gnu-apl
+5+12
+
+18÷3
+108÷11
+
+4×7
+3.893×7.6
+#+end_src
+
+Use =-= for subtraction, and =¯= for negative signal.
+
+#+begin_src gnu-apl
+100-95
+8-16
+#+end_src
+
+*** Arithmetic on lists of numbers
+
+#+begin_src gnu-apl
+3+2 4 11 7 5
+#+end_src
+
+Spot the difference on applying a sum to each element and applying a
+sum on two numbers:
+
+#+begin_src gnu-apl
+1+2 3 4
+1+234
+#+end_src
+
+Lists can be on either side of the sign.
+
+#+begin_src gnu-apl
+6 3 8 1+3
+2.5 33.7 12 8÷15
+9.8 11.2 17 1.2×1.175
+#+end_src
+
+It is possible to perform arithmetic between two lists in a
+per-element basis, but only if their length matches.
+
+#+begin_src gnu-apl
+12 3 29 4×1 3 5 2
+#+end_src
+
+*** Order of execution
+
+APL runs stuff from right to left, since there are so many functions
+on the language.
+
+#+begin_src gnu-apl
+3×3-1
+#+end_src
+
+That is because APL groups things from right to left as well.
+
+#+begin_src gnu-apl
+2 3 1+8÷2 2 2
+#+end_src
+
+If you need to make things unambiguous, use parentheses.
+
+#+begin_src gnu-apl
+(2 3 1+8)÷2 2 2
+#+end_src
+
+Remember again the difference between =-= and =¯=!
+
+#+begin_src gnu-apl
+1985 - 1066       ⍝ Difference of two numbers
+3 ¯1 ¯7 + ¯4 ¯1 2 ⍝ Sum between two lists with negative numbers
+
+2-3+5             ⍝ This does 3+5, then does 2-8
+2 ¯3+5            ⍝ This adds 5 to the number list 2 ¯3
+#+end_src
+
+*** Dual-purpose functions
+
+Some functions can be used for more than one purpose.
+
+When used in infix notation, ordinary operations have their intended
+effect:
+
+#+begin_src gnu-apl
+5+4
+1 3 4+3 1 6
+#+end_src
+
+You can, however, use the functions in prefix notation, which will
+change their effect.
+
+=+= appears to do nothing. Its true usage happens for assignment, which
+we'll see next.
+
+#+begin_src gnu-apl
++12
+#+end_src
+
+=-= inverts the signal of al numbers on the list.
+
+#+begin_src gnu-apl
+- 3 ¯6 ¯8 4 12 ¯9
+#+end_src
+
+=÷= takes the reciprocal of all numbers (divides 1 by them).
+
+#+begin_src gnu-apl
+÷1 2 4 10 100
+#+end_src
+
+=×= takes the sign of each number from the list. Yields =1= for positive
+numbers, =¯1= for negative, and =0= for zero.
+
+#+begin_src gnu-apl
+×8 0 ¯3 ¯7 0 4
+#+end_src
+
+There is no definition for postfix operators; that would be a syntax
+error.
+
+*** Ceiling and floor
+
+- =⌈= rounds a number up;
+- =⌊= rounds a number down.
+
+To perform accurate rounding, you may want to use one of the following
+patterns:
+
+#+begin_src gnu-apl
+⌈120.11 12.32 65.01 13.52 - 0.5
+⌊99.99 12.82 15.39 48.90 + 0.5
+#+end_src
+
+When using those operators under an infix form, =⌈= selects the greatest
+number, while =⌊= selects the smallest number.
+
+#+begin_src gnu-apl
+2 ⌈ 6
+2 ⌊ 6
+#+end_src
+
+One can also use these operations to perform comparisions between
+lists of numbers.
+
+#+begin_src gnu-apl
+6 8 1 ⌈ 3 5 9
+6 8 1 ⌊ 3 5 9
+#+end_src
+
+*** Ending a session
+
+If you want to end a session, use
+
+#+begin_src gnu-apl :tangle no
+)OFF
+#+end_src
+
+This will not be tangled.
+
+*** Exercises
+
+#+begin_src gnu-apl
+⍝ Exercises
+#+end_src
+
+**** Q1
+
+Enter statements to:
+
+- Multiply each of three numbers, =3 6 2= by =8= and then add =4= to the
+  results of the multiplication.
+
+#+begin_src gnu-apl
+4 + 8 × 3 6 2
+#+end_src
+
+- Add 15% to each number in the list =14 5 78 145=.
+
+#+begin_src gnu-apl
+1.15 × 14 5 78 145
+#+end_src
+
+- Add the difference between =13= and =8= to =4 6 12 7=.
+
+#+begin_src gnu-apl
+(13 - 8) + 4 6 12 7
+⍝ Or...
+4 6 12 7 + 13 - 8
+#+end_src
+
+- Multiply the result of =6= times =3= by the result of =4= times =8= and
+  subtract =5= from the total.
+
+#+begin_src gnu-apl
+((6 × 3) × (4 × 8)) - 5
+⍝ Or...
+¯5+(6×3)×4×8
+#+end_src
+
+- Reverse the signs in this list: =3 ¯4 ¯12 6=
+
+#+begin_src gnu-apl
+- 3 ¯4 ¯12 6
+#+end_src
+
+- Compare these lists, selecting the larger number in each
+  comparision:
+  - =2 7 0 55=
+  - =33 1 10 13=
+
+#+begin_src gnu-apl
+2 7 0 55 ⌈ 33 1 10 13
+#+end_src
+
+**** Q2
+
+Which of these statements cause error messages? Why?
+
+- Statement =a= is a valid multiplication between =12= and =9=.
+- Statement =b= is a valid sum between =3= and =¯2=.
+- Statement =c= produces a =LENGTH ERROR= because =19 0 3 4= and =7 2 87= are
+  lists of different lengths.
+- =5 ¯8= is a valid list of two numbers; it may be unintended, though.
+
+**** Q3 
+
+You're getting =£200= worth of dollars for yourself and =£180= and =£230=
+worth respectively for two friends. Enter a statement which calculates
+how many dollars each of you will get at =1.96= dollars to the pound.
+
+#+begin_src gnu-apl
+200 180 230×1.96
+#+end_src
+
+**** Q4
+
+Highest recorded temperatures for a week in August were:
+
+- =79 84 83 78 74 69 70= (Fahrenheit)
+
+Enter a statement to convert them into Centigrade. (One method is to
+subtract 32 degrees and multiply by 5/9.) Suppress decimal places in
+the result.
+
+#+begin_src gnu-apl
+⌊((79 84 83 78 74 69 70-32)×5÷9)+0.5
+⍝ Or...
+⌈¯0.5+(5÷9)×79 84 83 78 74 69 70-32
+#+end_src
+
+**** Q5
+
+Enter a statement to find the difference in metres between 1500 metres
+and a mile. (1 yard = 0.9144m and 1760 yards in a mile)
+
+#+begin_src gnu-apl
+¯1500+1760×0.9144
+#+end_src
+
+** Variables
+
+#+begin_src gnu-apl
+⍝ Variables
+#+end_src
+
+*** Assignments
+
+An assignment can be done with a variable name and a =←= symbol.
+
+#+begin_src gnu-apl
+A ← .175
+#+end_src
+
+This enables =A= to be used in expressions.
+
+#+begin_src gnu-apl
+200×A
+A×30.50 12.25 60.30 15.00
+⌈ A×30.50 12.25 60.30 15.00
+#+end_src
+
+=C= is the conversion factor for fonverting pounds to kilograms.
+
+#+begin_src gnu-apl
+C ← .45359237
+17 × C        ⍝ Convert 17 lbs into Kg
+⌈C×11×14      ⍝ How many Kgs are there in 11 stones,
+              ⍝ then round up
+#+end_src
+
+To keep a calculation, we then use variables.
+
+#+begin_src gnu-apl
+JOE ← ⌈C×11×14
+#+end_src
+
+*** Variable names
+
+Valid statements:
+
+#+begin_src gnu-apl
+AAA ← 4
+ab ← 1
+C9999 ← 0
+Jack_Smith ← 100
+#+end_src
+
+Which denotes that APL is case sensitive.
+
+Also, APL doesn't have bare words as variable names:
+
+#+begin_src gnu-apl :tangle no
+JOHN SMITH ← 100
+#+end_src
+
+However, using parentheses will create two identical variables with
+the same value. This happens in both GNU APL and Dyalog.
+
+#+begin_src gnu-apl :tangle no
+(JOHN SMITH) ← 100 ⍝ Creates JOHN with value 100
+                   ⍝ and SMITH with value 100
+#+end_src
+
+And if you start a variable name with a single number, the number will
+be printed right after the value, which is assigned to the variable
+name that follows:
+
+#+begin_src gnu-apl :tangle no
+5B ← 12
+#+end_src
+
+*** Assigning lists to variables
+
+#+begin_src gnu-apl
+PRICE ← 12.45 5.60 5.99 7.75
++VAT   ← PRICE × A ⍝ A was assigned earlier
+#+end_src
+
+The =+= operator, when put before an assignment, forces a declarative
+behaviour on the assigned variable -- in other words, forces the
+variable to be displayed.
+
+Using an unassigned variable causes a =VALUE ERROR=.
+
+*** System commands
+
+The =)OFF= command has already been presented earlier.
+
+=)VARS= lists all variables in the workspace.
+
+#+begin_src gnu-apl
+)VARS
+#+end_src
+
+=)WSID= shows the identity of the current workspace, which defaults to
+=CLEAR WS=.
+
+#+begin_src gnu-apl
+)WSID
+#+end_src
+
+This command can also be used to change the identity of the
+workspace; we change its name to =NEW=. The variables in it won't
+change.
+
+#+begin_src gnu-apl
+)WSID NEW
+#+end_src
+
+To remove the variables (and the name), we can use =)CLEAR=.
+
+#+begin_src gnu-apl
+)CLEAR
+#+end_src
+
+*** Character assignments
+
+APL doesn't only deals with numbers, it can also deal with text. Just
+apply quotes.
+
+#+begin_src gnu-apl
+A ← 'APL WILL PROCESS TEXT'
+C ← 'CHARACTERS'
+#+end_src
+
+To insert quotes inside the text, use =''=.
+
+#+begin_src gnu-apl
+NAME ← 'WHAT''S IN A NAME? '
+#+end_src
+
+Other way to do that is by using double quotes around the characters.
+
+#+begin_src gnu-apl :tangle no
+NAME ← "WHAT'S IN A NAME? "
+#+end_src
+
+Consider the following variables.
+
+#+begin_src gnu-apl
+N ← 'NET PRICE'
+QTY ← '230'
+#+end_src
+
+Attempting to perform arithmetic on text generates a =DOMAIN ERROR=:
+
+#+begin_src gnu-apl :tangle no
+N×10
+QTY+5
+#+end_src
+
+*** Multiple assignments
+
+One can assign one value to multiple variables at the same time:
+
+#+begin_src gnu-apl
+(ZAK YAK) ← 5
+#+end_src
+
+Or assign many values to many variables at the same time too:
+
+#+begin_src gnu-apl
+(YEN MARK BUCK) ← 10 20 30
+#+end_src
+
+*** Displaying variables together
+
+This part is straightforward.
+
+#+begin_src gnu-apl
+N 10
+NAME C
+
+X ← 18
+Y ← 3 1985
+X Y
+
+NAME X C
+
+'NET PRICE: ' 10
+#+end_src
+
+*** Joining lists
+
+When writing =X Y=, these values were joined in a list of two
+elements. The first element was the number in =X=, the second was the
+two-element list in =Y=.
+
+Let's store this result.
+
+#+begin_src gnu-apl
+Z ← X Y
+#+end_src
+
+Operations done in =Z= will not affect =X= and =Y= (also notice how =+10= maps
+elegantly into sublists!!!):
+
+#+begin_src gnu-apl
+Z ← Z+10
+#+end_src
+
+Example with characters.
+
+#+begin_src gnu-apl
+CNAME ← 'BASIL '
+SNAME ← 'BRUSH'
+NAME  ← CNAME SNAME
+#+end_src
+
+Notice, though, that =NAME= is a list of two elements, each being a list
+of characters; this is called a /nested variable/.
+
+**** Extra stuff
+
+This was learned from experimentation:
+
+The operator =⍴= (rho) gives us the number of elements in a nested
+variable, when used in prefix form.
+
+In its infix form, =⍴= takes a number (left) of elements from the nested
+variable (right).
+
+#+begin_src gnu-apl
+⍴NAME
+1⍴NAME
+#+end_src
+
+*** Joining and merging variables
+
+The comma (=,=) allows APL to catenate lists.
+
+#+begin_src gnu-apl
+NAME ← CNAME,SNAME
+#+end_src
+
+One can see that the variable indeed became a non-nested list of 11
+characters.
+
+#+begin_src gnu-apl
+⍴NAME
+#+end_src
+
+*** Simple and nested variables
+
+Single numbers (separated by spaces) and characters make up lists.
+
+#+begin_src gnu-apl
+PIERRE ← 1 2 3 4
+MIREILLE ← 'FILLE'
+#+end_src
+
+Numbers enclosed in parentheses are treated as single items, so now
+=PIERRE= will be a list, containing two lists.
+
+#+begin_src gnu-apl
+PIERRE ← (1 2 3) (4 5 6 7)
+#+end_src
+
+A list of character lists is easier, just enclose each sublist in
+quotes (if you were to put it in a single, simple list, you'd put
+everyone under the same quotes anyway):
+
+#+begin_src gnu-apl
+FRANCOISE ← 'UNE' 'JEUNE' 'FILLE'
+#+end_src
+
+*** Mixed variables
+
+This is not good for arithmetic, but it's useful to store characters
+and numbers together.
+
+#+begin_src gnu-apl
+PHONES ← 'BILL' 577332 'FRANK' 886331
+#+end_src
+
+*** Exercises
+
+Let's start with a clean workspace.
+
+#+begin_src gnu-apl
+)CLEAR
+#+end_src
+
+**** Q1
+
+Enter statements which:
+
+- Assign the numbers =22 2 2007= to three variables called respectively
+  =D=, =M= and =Y=.
+
+#+begin_src gnu-apl
+(D M Y) ← 22 2 2007
+#+end_src
+
+- Assign the characters =TODAY'S DATE:= to a variable called =DATE=.
+
+#+begin_src gnu-apl
+DATE ← 'TODAY''S DATE: '
+#+end_src
+
+- Produce the display: =TODAY'S DATE: 22 2 2007=
+
+#+begin_src gnu-apl
+DATE D M Y
+#+end_src
+
+**** Q2
+
+Set up a variable =CONV= which contains a constant for converting pounds
+to kilos. (1lb = 0.454Kg and 14lb = 1 stone). Use =CONV= to convert your
+weight (to the nearest stone) into kilograms. Reduce the result by
+10%, round it down, and display it.
+
+#+begin_src gnu-apl
+⍝ 1 stone = 14 lbs.
+⍝ 1 lb    = 0.454 Kg.
+⍝ Let's pretend I weight 11.5 stones.
+CONV     ← .454
+MYWEIGHT ← ⌊11.5×CONV×14×.9
+MYWEIGHT
+#+end_src
+
+**** Q3
+
+The cost prices of four items of stock are £8, 6, 12, 4
+respectively. The markup on these items is 100%. Three other items
+cost respectively £16, 13 and 7. Their markup is 75%. Calculate the
+fully inclusive price of each item (with VAT at 17%). Display the
+prices (rounded up) with the caption: ='PRICE+VAT: '=
+
+#+begin_src gnu-apl
+ITEMS_A ← 2×8 6 12 4
+ITEMS_B ← 1.75×16 13 7
+ITEMS   ← ⌈1.17×ITEMS_A,ITEMS_B
+'PRICE+VAT: ' ITEMS
+#+end_src
+
+**** Q4
+
+=TEST1= contains a student's exam marks for each of seven subjects (65
+72 54 80 67 60 59). =TEST2= contains his marks for the same subjects
+gained at a different test (75 70 60 74 58 61 50). Produce a list
+consisting of his higher mark for each subject.
+
+#+begin_src gnu-apl
+TEST1 ← 65 72 54 80 67 60 59
+TEST2 ← 75 70 60 74 58 61 50
+TEST1 ⌈ TEST2
+#+end_src
+
+**** Q5
+
+Which of the following will produce error messages? Why?
+
+- The expression =RATE ← '3.7×3'= is a valid assignment of a list of
+  characters, though it might be a logic error.
+- The expression =10+10 '←21'= produces a =DOMAIN ERROR=, because it tries
+  to sum =10= over a list containing the number =10= and the list of
+  characters ='←21'=, which cannot perform arithmetic operations.
+- The expression =100×RATE= produces a =DOMAIN ERROR=, because it tries to
+  multiply by =100= over a list containing characters (=RATE=), which
+  cannot perform arithmetic operations.
+- The expression =SYMBOLS ← '¯<≤=≥'= is perfectly valid and creates a
+  list of characters. But it might not be supported by some APL
+  implementations (GNU APL supports it).
+- The expression =3+'232'= produces a =DOMAIN ERROR=, because it tries to
+  sum =3= over a list of characters, which cannot perform arithmetic
+  operations.
+
+*** Cleanup
+
+From now on, we clear the variables and the workspace across chapters.
+
+#+begin_src gnu-apl
+)CLEAR
+#+end_src
+
+** Tables
+
+We won't be typing a lot of things here, that is insane! Let's see how
+to generate our tables.
+
+#+begin_src gnu-apl
+⍝ Tables
+#+end_src
+
+*** The Roll function
+
+=?= is the Roll function, also called Random or Deal.
+
+This generates numbers on range 1 to 100:
+
+#+begin_src gnu-apl
+? 100
+#+end_src
+
+The two-argument form generates a list of =n= (left) *unique* numbers from
+1 to =m= (right):
+
+#+begin_src gnu-apl
+50 ? 100
+#+end_src
+
+In fact, it should always be true that =n ≤ m=, since the generated
+numbers are unique. If not, we'll have a =DOMAIN ERROR=.
+
+Both =n= and =m= can be replaced by variables as well.
+
+*** The Iota function
+
+Iota, or Index, generates a sequence of numbers from 1 to =m= in its
+one-argument form.
+
+#+begin_src gnu-apl
+⍳100
+#+end_src
+
+*** Setting up tables
+
+When entering tables, we use dyadic for of the rho (=⍴=) function, also
+called Shape or Reshape. The list before =⍴= states the order of the
+table; the following elements are its rows, element by element.
+
+#+begin_src gnu-apl
+4 3 ⍴ 10 20 30 40 50 60 70 80 90 100 110 120
+#+end_src
+
+Let's generate twelve random numbers, then display them in a 4×3
+table.
+
+#+begin_src gnu-apl
+DATA ← 12 ? 100
+4 3 ⍴ DATA
+#+end_src
+
+If you feed =⍴= less numbers than expected, APL just keeps wrapping
+these numbers. If you feed more than expected, APL uses just enough
+numbers to build the table.
+
+#+begin_src gnu-apl
+4 3 ⍴ 1 2 3 4 5
+#+end_src
+
+And so follows that supplying one number fills the whole table:
+
+#+begin_src gnu-apl
+3 5 ⍴ 1
+#+end_src
+
+**** Extra bit
+
+I wonder about identity matrices! Let's take a 3×3 matrix. If we type
+a =1=, and then a number =n= of zeroes (corresponding to the matrix
+order), then I suppose we can build an identity matrix...
+
+#+begin_src gnu-apl
+3 3 ⍴ 1 0 0 0
+#+end_src
+
+Indeed! But wait: I don't know how to build functions in APL yet, but
+I suppose we can take this arbitrary number of zeroes and write them
+in ⍴-notation too.
+
+- Generate a list of =n= zeroes;
+- Catenate a number =1= in front of it;
+- Feed it as filling elements to the second ⍴.
+
+#+begin_src gnu-apl
+4 4 ⍴ 1,(4 ⍴ 0)
+#+end_src
+
+*** Arithmetic on tables
+
+Let's begin.
+
+#+begin_src gnu-apl
+SALES ← 3 3⍴20 13 8 30 43 48 3 50 21
+SALES
+#+end_src
+
+Performing arithmetic on a table affects every number, just like in a
+list.
+
+#+begin_src gnu-apl
+SALES×10
+#+end_src
+
+Let's set up another table.
+
+#+begin_src gnu-apl
+PRICES ← 2 3 ⍴ 21 2 12 47 33 1
+#+end_src
+
+This operation causes a =LENGTH ERROR=:
+
+#+begin_src gnu-apl :tangle no
+SALES×PRICES
+#+end_src
+
+This is because =SALES= is 3×3 while =PRICES= is 2×3. So let's reshape
+=SALES= into a 3×2 table. This way, both of them will have the same
+number of elements.
+
+#+begin_src gnu-apl
+SALES ← 3 2⍴SALES
+#+end_src
+
+But that still won't do... we're trying to multiply elements of same
+address here, not make matrix multiplication. Let's try again.
+
+#+begin_src gnu-apl
+SALES ← 2 3⍴SALES
+#+end_src
+
+Ok, now we're good and we can proceed.
+
+#+begin_src gnu-apl
+TOTAL ← SALES×PRICES
+SALES-PRICES
+#+end_src
+
+**** Extra bits
+
+Let's build a nice table.
+
+First table:
+- Build a sequence from =1= to =25=.
+- Create a =5×5= table with it.
+- Take the reciprocal of each number.
+- Multiply each element by =10=.
+
+Second table:
+- Take a sequence from =1= to =25=.
+- Add =25= to each element.
+- Create a =5×5= table with it.
+
+Final table:
+- Multiply each element of first table by each element of second
+  table.
+- Round every number by adding =¯.5= to each number and taking their
+  ceiling.
+
+#+begin_src gnu-apl
+TOTAL ← ⌈¯.5+(5 5⍴25+⍳25)×10×÷5 5⍴⍳25
+#+end_src
+
+*** Catenating tables
+
+Catenating tables produce a big table. Each row is catenated like a
+list. Therefore, catenated tables must have the same number of rows.
+
+#+begin_src gnu-apl
+SALES,PRICES
+#+end_src
+
+Let's test it a little more.
+
+#+begin_src gnu-apl
+LITTLE ← 2 2⍴1
+MEDIUM ← 2 6⍴5
+BIG    ← LITTLE,MEDIUM
+#+end_src
+
+To perform =LITTLE+MEDIUM=, we pad =LITTLE= with a table of zeroes.
+
+#+begin_src gnu-apl
+ZEROES ← 2 4⍴0
+LITTLE ← LITTLE,ZEROES
+LITTLE+MEDIUM
+#+end_src
+
+We could also have the zeroes on the other side; let's reset =LITTLE=
+and do it.
+
+#+begin_src gnu-apl
+LITTLE ← 2 2⍴1
+LITTLE ← ZEROES,LITTLE
+LITTLE+MEDIUM
+#+end_src
+
+Since there is this kind of ambiguity, that is the reason why APL
+doesn't do arithmetic on data of unequal size.
+
+*** Selecting elements
+
+Let's set up a =4×3= table for the next example.
+
+#+begin_src gnu-apl
++TABLE ← 4 3⍴2 12 15 4 11 7 1 16 8 20 19 9
+#+end_src
+
+Let's select the =9= in the bottom row, rightmost column.
+
+#+begin_src gnu-apl
+TABLE[4;3]
+#+end_src
+
+We sum the element at Row 1, Column 2 to the element at Row 2,
+Column 2. Then we put it on Row 3, Column 2:
+
+#+begin_src gnu-apl
+TABLE[3;2] ← TABLE[1;2] + TABLE[2;2]
+#+end_src
+
+We can select more than one element in a row, or even in a column.
+
+#+begin_src gnu-apl
+TABLE[1;1 2]
+TABLE[1 2;2]
+#+end_src
+
+To select entire rows or columns, omit the other parameter.
+
+#+begin_src gnu-apl
+TABLE[1;]
+TABLE[;1]
+#+end_src
+
+Let's replace the numbers in column 3 with the sum of numbers in
+columns 1 and 2.
+
+#+begin_src gnu-apl
+TABLE[;3] ← TABLE[;1] + TABLE[;2]
+#+end_src
+
+Also note that indexing can also be applied on lists.
+
+#+begin_src gnu-apl
+LIST ← 8 1 90 4
+LIST[2]
+#+end_src
+
+*** Dimensions
+
+In APL, data has dimensions.
+
+- Single numbers have dimension zero.
+- A list has one dimension.
+- The previous tables have two dimensions.
+- Three-dimensional tables/arrays are like cubes, having depth, height
+  and length.
+- It is possible to create arrays of many dimensions in APL.
+
+#+begin_src gnu-apl
+SALES ← 6 4⍴24?50
+#+end_src
+
+In =SALES=, the salesmen are rows, the products are columns.
+If we wanted to represent more than one region -- say, three regions
+--, we'd need another dimension.
+
+#+begin_src gnu-apl
++SALES ← 3 6 4⍴72?100
+SALES[2;5;4]           ⍝ Plane 2, Row 5, Column 4
+SALES[2;;]             ⍝ Plane 2
+#+end_src
+
+*** Enquiring about the size of data
+
+While the dyadic usage of =⍴= involves creating arrays, the monadic
+usage of =⍴= allows one to enquire about the size (or shape) of existing
+tables, variables, etc.
+
+#+begin_src gnu-apl
+⍴SALES
+#+end_src
+
+Let's create some data.
+
+#+begin_src gnu-apl
+TABLE ← 5 3⍴15?20
+LIST ← ⍳6
+NUM ← 234
+#+end_src
+
+Now let's ask about their shape.
+
+#+begin_src gnu-apl
+⍴TABLE
+⍴LIST
+⍴NUM
+#+end_src
+
+Notice that, since =NUM= has no shape (equivalent to a point), APL gives
+an empty response.
+
+We don't need variables to do this kind of thing, though. We can apply
+directly to literals.
+
+#+begin_src gnu-apl
+⍴12 61 502 1 26 0 11
+⍴'SHAMBOLIOSIS'
+#+end_src
+
+*** Tables of characters
+
+This is also straightforward; characters are stored as a list of
+characters. Let's do some experiments.
+
+#+begin_src gnu-apl
+⍝ Compare these two.
+ALF ← 3 5⍴'ABCDE'
+NUM ← 3 5⍴12345
+
+MYNAME ← 'GORSUCH'
+⍴MYNAME
+
+3 7⍴MYNAME
+3 14⍴MYNAME
+3 18⍴MYNAME
+
+MYNAME ← 'GORSUCH '
+⍴MYNAME
+
+3 40⍴MYNAME
+#+end_src
+
+Solution for the given example.
+
+#+begin_src gnu-apl
+4 11⍴'ADAMS      CHATER     PRENDERGASTLEE        '
+#+end_src
+
+*** Mixed tables
+
+We can build tables containing characters and numbers, just like the
+lists.
+
+#+begin_src gnu-apl
+MIXTURE ← 3 3⍴'A' 1 'B' 'C' 2 'D' 'E' 3 'F'
+#+end_src
+
+**** Extra bits
+
+You can't perform arithmetic in such a table, but you can of course
+reshape it to do so. I built an example for that by myself:
+
+#+begin_src gnu-apl
+MIXTURE[;2] ← 10×MIXTURE[;2]
+#+end_src
+
+*** Nested tables
+
+Tables can contain other tables or lists.
+
+#+begin_src gnu-apl
+NEST ← 2 3⍴(2 2⍴⍳4) (⍳5) 'A NAME' (2 4⍴⍳8) 23 (3 4⍴'NAME')
+⍴NEST
+#+end_src
+
+*** Depth
+
+The depth (=≡=) function shows the degree of nesting in a variable.
+
+#+begin_src gnu-apl
+≡45          ⍝ Values have depth 0
+≡1 2 3       ⍝ Lists have depth 1
+≡2 2⍴3 4 5 6 ⍝ Tables too
+#+end_src
+
+Now let's check the depth of =NEST=:
+
+#+begin_src gnu-apl
+≡NEST
+#+end_src
+
+When at least one element of a list or table is also a list or table,
+the depth becomes 2; and so on, as long as you have child list/tables
+inside child list/tables:
+
+#+begin_src gnu-apl
+BIG_NEST ← NEST NEST
+⍴BIG_NEST
+≡BIG_NEST
+#+end_src
+
+Since the components of =BIG_NEST= already have depth 2, =BIG_NEST= adds
+one more layer of depth.
+
+*** Practice
+
+Some interesting snippets showcasing the strength of APL: combining
+functions.
+
+#+begin_src gnu-apl
+⍝ Playing with sizes of character lists
+(⍴'ABC','DEF')+⍴'GHI'
+
+⍝ Selecting the first nine numbers in row 1 of a big table
+TABLE ← 10 10⍴100?100
+TABLE[1;⍳9]
+#+end_src
+
+*** Exercises
+
+#+begin_src gnu-apl
+)CLEAR
+#+end_src
+
+**** Q1
+
+Set up a four-row one-column table called =MILES= containing =300 42 25
+140=.
+
+#+begin_src gnu-apl
+MILES ← 4 1⍴300 42 25 140
+#+end_src
+
+And a similarly shaped table called =RATES= containing =27.5 15 27.5
+27.5=.
+
+#+begin_src gnu-apl
+RATES ← 4 1⍴27.5 15 27.5 27.5
+#+end_src
+
+Multiply =RATES= by =MILES=, then multiply the result by =0.01= to produce a
+table called =EXPENSES=.
+
+#+begin_src gnu-apl
++EXPENSES ← .01×RATES×MILES
+#+end_src
+
+**** Q2
+
+Change the number in column 1 row 3 of =MILES= from =25= to =250=. Again,
+multiply =RATES= by =MILES= and the result by =0.01= to give =EXPENSES=, then
+reformat =EXPENSES= to produce a one-row four-column table.
+
+#+begin_src gnu-apl
+MILES[3;1] ← 250
++EXPENSES   ← (.01×RATES×MILES)[;1]
+#+end_src
+
+Alternative way to change =EXPENSES=; interesting way to store and
+immediately use a variable.
+
+#+begin_src gnu-apl :tangle no
++EXPENSES ← 1 4⍴EXPENSES ← .01×RATES×MILES
+#+end_src
+
+**** Q3
+
+Define =X= as a three-row ten-column table containing random numbers,
+and =Y= as a three-row four-column table also containing random
+numbers. Add =X= to =Y=, first taking whatever steps you think necessary
+to enable the operation to take place.
+
+#+begin_src gnu-apl
+⍝ Defining the tables
+X ← 3 10⍴30?30
+Y ← 3 4⍴30+12?12
+
+⍝ To sum Y into X, we catenate zeroes to Y,
+⍝ extending it.
+X+Y,3 ((⍴X)[2]-(⍴Y)[2])⍴0
+#+end_src
+
+Since the problem did not specify where to add the columns, here is an
+alternative which catenates the zeroes to the left of =Y=:
+
+#+begin_src gnu-apl :tangle no
+X+(3 ((⍴X)[2]-(⍴Y)[2])⍴0),Y
+#+end_src
+
+**** Q4
+
+Using table =X=, add the first and second rows and replace the third row
+with the result of the addition.
+
+#+begin_src gnu-apl
+X[3;] ← X[1;]+X[2;]
+#+end_src
+
+**** Q5
+
+Create a table which [displays =APL ROCKS= in vertical orientation]:
+
+#+begin_src gnu-apl
+9 1⍴'APL ROCKS'
+#+end_src
+
+**** Q6
+
+What will be the result of each of these =⍴= statements? Predict each
+result before you press ENTER.
+
+- =⍴'ABC DEF'=\\
+  → =7=
+- =⍴480 0 1.2=\\
+  → =3=
+- =TABLE ← 10 10⍴100⍴1000=\\
+  =⍴TABLE=\\
+  → =10 10=
+- =⍴'R'=\\
+  → (empty)
+- =⍴'480 0 1.2'=\\
+  → =9=
+- =TABLE ← 2 10 3⍴100⍴100=\\
+  =⍴TABLE=\\
+  → =2 10 3=
+
+*NOTE:* Recall why =⍴'R'= gives an empty response: a single value is
+equivalent to a point, which has no size/dimension/shape.
+
+*** Cleanup
+
+#+begin_src gnu-apl
+)CLEAR
+#+end_src
+
+** Writing a function
+
+#+begin_src gnu-apl
+⍝ Writing a function
+#+end_src
+
+*** Precondition: the Slash operator
+
+The Slash (=/=) or Reduce operator is not a function; it modifies or
+extends the operation of the functions it is used with.
+
+It works as if by putting the operator between the numbers.
+
+#+begin_src gnu-apl
++/ 1 6 3 4
+×/ 1 2 3 4
+#+end_src
+
+This can be done on a table too, however it will sum in a row basis.
+
+#+begin_src gnu-apl
+TABLE ← 3 3⍴⍳9
+TABLE
++/ TABLE
+#+end_src
+
+We can, however, apply Reduce twice to obtain the entire sum.
+
+#+begin_src gnu-apl
++/+/ TABLE
+#+end_src
+
+Useful combination: To select the largest number in a list, use =⌈=:
+
+#+begin_src gnu-apl
+⌈/ 75 72 78 90 69 77 81 88
+#+end_src
+
+The opposite equivalent (=⌊=) selects the smallest number:
+
+#+begin_src gnu-apl
+⌊/ 75 72 78 90 69 77 81 88
+#+end_src
+
+A final example: We take the sum of =X= (which is =15=) and divide it by
+=X='s shape (=5=). This yields =3=, as expected of /calculating the average/
+of a number.
+
+#+begin_src gnu-apl
+X ← ⍳5
+(+/ X)÷⍴X
+#+end_src
+
+**** Axis arguments
+
+You can apply the Reduce operator on a per-column basis using axis
+arguments. For example, these two are equivalent, since they take the
+dimension zero (rows):
+
+#+begin_src gnu-apl
++/TABLE
++/[]TABLE
+#+end_src
+
+If you wish to use the *columns* instead of the *rows*, just ask for axis
+one:
+
+#+begin_src gnu-apl
++/[1]TABLE
+#+end_src
+
+*** User functions
+
+Now we'll preserve statements.
+
+It seems some APL editors have a built-in editor. For example, one can
+use the following commands:
+
+#+begin_src gnu-apl :tangle no
+)EDIT MYFUNC ⍝ On modern editors
+)ED MYFUNC   ⍝ On Dyalog
+∇            ⍝ On older editors, and on GNU APL as well
+#+end_src
+
+GNU APL also calls a new buffer when defining a function, under
+Emacs. We can also send the following region to the interpreter no
+problem. We just need to type in the function (=∇=) operator, which
+starts the input mode.
+
+Typing =∇= again goes back to calculator mode.
+
+#+begin_src gnu-apl
+∇TRY1
+  'Type some numbers: '
+  NUM ← ⎕   ⍝ Asks for user input
+  'Total is: ' (+/ NUM)
+∇
+#+end_src
+
+In case this function doesn't work when typing, just use =∇TRY1= to
+change its definition on the editor.
+
+This defines a user function =TRY1=, which takes no arguments. The Quad
+(=⎕=) operator calls in for user input.
+
+You can edit a function such as =TRY1= anytime, by typing =∇TRY1= on the
+REPL; other APL implementations will allow you to use the command
+=)EDIT TRY1=, for example.
+
+Here is another example:
+
+#+begin_src gnu-apl
+∇TRY2
+  'Type some numbers: '
+  NUM ← ⎕
+  'You have entered' (⍴NUM) 'numbers'
+∇
+#+end_src
+
+And as requested, here is a way to calculate the average of some
+numbers:
+
+#+begin_src gnu-apl
+∇AVERAGE
+  'Type some numbers:'
+  NUM ← ⎕
+  'Integer average of these numbers is:' (⌊(+/ NUM)÷⍴NUM)
+∇
+#+end_src
+
+One more definition.
+
+#+begin_src gnu-apl
+∇TRY3
+  'Type some numbers:'
+  NUM ← ⎕
+  'You have entered' (⍴NUM) 'numbers'
+  'The biggest was' (⌈/ NUM)
+  'The smallest was' (⌊/ NUM)
+  'Sum of numbers is' (+/ NUM)
+  'Integer average of numbers is' (⌊(+/ NUM)÷⍴NUM)
+∇
+#+end_src
+
+*** Saving a workspace
+
+You can check out the user-defined functions in your workspace with
+this command:
+
+#+begin_src gnu-apl
+)FNS
+#+end_src
+
+There are some extra variables as well (check by using =)VARS=), so we
+need to erase them:
+
+#+begin_src gnu-apl
+)ERASE TABLE X
+#+end_src
+
+Now we'll save the current workspace. First let's set the workspace ID
+to the filename where it should be salved.
+
+Notice that we are using Unix notation and the XML extension. This is
+a requirement for GNU APL.
+
+#+begin_src gnu-apl
+)WSID ./MyFirstWS.xml
+#+end_src
+
+Windows users, using NARS2000, should do something like:
+
+#+begin_src gnu-apl :tangle no
+)WSID 'c:\foo\MyFirstWS'
+#+end_src
+
+Now we use the command to save.
+
+#+begin_src gnu-apl
+)SAVE
+#+end_src
+
+My result was:
+
+#+begin_example
+      2019-08-06  12:56:35 (GMT-3) ./MyFirstWS.xml
+#+end_example
+
+Now we can safely clear the workspace.
+
+#+begin_src gnu-apl
+)CLEAR
+#+end_src
+
+To load the workspace again, use the load command with the file name.
+
+#+begin_src gnu-apl
+)LOAD ./MyFirstWS.xml
+#+end_src
+
+*NOTE:* GNU APL instructs to use =)COPY= instead.
+
+*** User functions with arguments
+
+User functions can have no arguments, one argument or two arguments.
+
+**** Monadic
+
+We intent to build a function which averages the numbers in a list.
+So let's define it.
+
+#+begin_src gnu-apl
+∇AV X
+  (+/ X)÷⍴X
+∇
+#+end_src
+
+Now we can use it properly.
+
+#+begin_src gnu-apl
+AV 12 7 3 1
+AV 3 8 1 4
+AV 192 4534 12 0 2
+
+NUM ← ⍳5
+AV NUM
+#+end_src
+
+**** Dyadic
+
+A dyadic function should be declared with arguments to its left and
+its right:
+
+#+begin_src gnu-apl
+∇A SUM B
+  A+B
+∇
+#+end_src
+
+*** Using function results in other expressions
+
+To do so, we need to rewrite the function to enable that. See this
+rewriting of =AV=.
+
+#+begin_src gnu-apl
+∇R←AV X
+  R←(+/ X)÷⍴X
+∇
+#+end_src
+
+An example of usage:
+
+#+begin_src gnu-apl
+¯3 + AV 3 8 1 4
+#+end_src
+
+The same can be done to dyadic functions.
+
+#+begin_src gnu-apl
+∇R←A SUM B
+  R←A+B
+∇
+#+end_src
+
+*** Cleanup
+
+#+begin_src gnu-apl
+)ERASE NUM
+)SAVE
+)CLEAR
+#+end_src
+
+* APL Concepts
+** Overview of the APL System
+
+APL is an interpreted language.
+
+APL reserves an area in the RAM, which is called a workspace. This is
+were programs and data reside. Other workspaces can be loaded at will
+for calculation and processing.
+
+*** Data
+
+Data is acquired by typing or from files. All data is held in arrays
+or scalars.
+
+GNU APL supports complex numbers.
+
+Formal names will be used from now on.
+
+*** Modes
+
+APL uses a modal interpreter. /Calculator mode/ executes statements as
+entered. /Definition mode/ does not execute immediately, and stores
+statements as a user-defined function or operator. /Function execution
+mode/ happens when you run a user-defined function or operator.
+
+*** Built-in functions and operators
+
+APL has about 50 built-in /functions/ which can be invoked by a single
+symbol.
+
+Most functions can perform two different opperations depending on
+whether they're used with one or two arguments.
+
+APL also has five built-in /operators/. Combining an operator with its
+operands creates a /derived function/.
+
+*** System functions and variables
+
+Part of APL system, yet not part of APL language. Used to extend
+facilities provided by original APL, they vary from one vendor to
+another. Could also be tailored to the system which it is running.
+
+System functions such as =⎕NREAD= and =⎕NWRITE= (with names starting with
+a Quad =⎕=) read and write data from files, and are distinguishable from
+the rest by their starting character.
+
+*** System commands
+
+They are also not part of the APL language itself, but are crucial to
+managing the workspace. They always start with a =)=.
+
+*** User-defined functions and operators
+
+Functions or operators which can be written by the user. Consists of
+APL statements that have a name. Functions are edited through the
+function editor, which can also be used to tweak a function.
+
+*** Files
+
+Files are usually not necessary on APL, given the convenience of
+workspaces, being only really required when dealing with big
+projects. When that time comes, APL has facilities for that; and
+workspaces can be shared between users.
+
+*** Error handling
+
+APL provides facilities for error trapping and diagnostics.
+
+** The Workspace
+
+Workspaces are containers for functions and data, and can be saved on
+disk by using commands.
+
+APL also makes it easy to create test data for functions. Since
+prototyping can be done so quickly, APL is sometimes referred to as a
+"tool of thought".
+
+*** Functions, operators, classes
+
+/Functions/ can take 0, 1 or 2 arguments; arguments to functions are
+always arrays.
+
+/Operators/ look like functions, but takes either one or two operands,
+which can be functions (e.g. the Each operator =¨=). They can also be
+defined.
+
+/Classes/ are a collection of functions, operators and data (named
+properties). Acts as a template to create objects. Classes are
+supported in Dyalog, but not in GNU APL.
+
+*** Workspace size
+
+Some APLS allow changing the size of your workspace with =)CLEAR 50MB=,
+for example.
+
+To check the amount of free space on your workspace, use the system
+function Workspace Available:
+
+#+begin_src gnu-apl
+⎕WA
+#+end_src
+
+*** Managing the workspace
+
+**** Internal workspace commands
+
+These have already been discussed.
+
+- =)CLEAR=: Clear workspace. Erases all variables, functions, operators
+  and classes.
+- =)ERASE=: Erases individual classes.
+- =)VARS=: Lists all user-defined variables in the workspace.
+- =)FNS=: Lists all user-defined functions in the workspace.
+- =)OPS=: Lists all user-defined operators in the workspace.
+- =)CLASSES=: Lists all user-defined classes in the workspace. Can be
+  used in Dyalog.
+
+**** External workspace commands
+
+Some of these have already been discussed.
+
+- =)SAVE myWorkspace= saves a workspace to disk. Append =.xml= if you're
+  using GNU APL.
+- =)LOAD myWorkspace= loads an entire workspace back into memory; the
+  workspace in memory is overwritten.
+- =)COPY= can be used to copy a function from a workspace in disk, but
+  does not overwrite the current workspace.
+- =)DROP= deletes a workspace on disk.
+- =)LIB= shows the names of the workspaces stored on disk.
+
+Save locations vary due to APL implementations.
+
+*** System variables
+
+Here are some useful system variables which you may use.
+
+- =⎕WA=: Workspace Available. Number of available bytes for use in
+  workspace.
+- =⎕PP=: Print Precision. Number of digits displayed in numeric output.
+- =⎕PW=: Print Width. Max number of characters in each printed line.
+- =⎕LX=: Latent Expression. This variable contains an expression or
+  user-defined function which is executed when the workspace is
+  loaded; effectively, a setup function for the current
+  workspace. Empty by default.
+- =⎕IO=: Index Origin. Stores the value where indexes start. GNU APL
+  starts at 1, but can be changed to 0.
+
+*** System functions
+
+These vary from vendor to vendor, so there is no guarantee that these
+will work in your APL. For example:
+
+- =⎕NL=: Name List. Produces a list of variables, functions, operators
+  or classes.
+- =⎕EX=: Expunge. Expunges individual APL objects.
+
+System functions are designed to be used in user-defined commands,
+whereas system commands are designed for direct usage.
+
+** Data
+
+#+begin_src gnu-apl
+⍝⍝⍝ APL Concepts
+
+⍝ Data
+#+end_src
+
+*** Variables
+
+Data can be directly quoted...
+
+#+begin_src gnu-apl
+234.98×3409÷12.4
+#+end_src
+
+...or assigned to a name.
+
+#+begin_src gnu-apl
+VAR ← 183.6
+#+end_src
+
+*** Names
+
+APL allows uppercase and lowercase characters, some APLs also allows
+symbols too.
+
+*** Types of data
+
+Data can be numbers, characters or a mixture of those. GNU APL in
+particular also allows complex numbers; Dyalog allows classes.
+
+*** Size, shape and depth
+
+From now on, unless there is something new, only some examples will be
+typed.
+
+#+begin_src gnu-apl
+⍝ Scalars (no dimensions)
+294
+'A'
+
+⍝ Vectors (one dimension -- length)
+23 8 0 12 3
+'ABC'
+28 3 'A' 'BC'
+
+⍝ 2D Matrices (two dimensions -- height and length)
+⍝ There is no way to write a matrix literal.
+4 4⍴7 45 2 89 16 15 10 21 8 0 13 99 83 19 4 27
+4 2⍴'WILSO' 393 'ADAMS' 7183 'CAIRN' 87 'SAMSO' 8467
+
+⍝ 3D Matrices (three dimensions)
+3 3 4⍴36?100
+#+end_src
+
+Arrays are data structures of any dimension -- obviously, scalars do
+not apply.
+
+*** Setting up data structures
+
+#+begin_src gnu-apl
+X1 ← 23 9 144 12 5 0
+X2 ← 1 2 'A' 'B' 3 4
+2 3⍴23 9 144 12 5 0
+
+NUMS ← 36?100
+3 3 4⍴NUMS
+
+6⍴9
+
+⍝ Nested arrays
+VAR ← (2 3⍴9) (1 2 3) 'A' 'ABCD' 88 16.1
+#+end_src
+
+*** Data structure /versus/ data value
+
+#+begin_src gnu-apl
+X ← 1⍴22
+Y ← 22
+
+⍴X    ⍝ 1, because X is a vector
+⍴Y    ⍝ Empty response, because Y is a scalar
+
+Z ← 1 5⍴12 5 38 3 6   ⍝ When displayed, Z looks like a vector,
+⍴Z                    ⍝ but is in fact a 1×5 matrix
+
+)CLEAR
+#+end_src
+
+*** Empty data structures
+
+Useful for some things, for example flor predefined storage areas,
+where elements can be added.
+
+#+begin_src gnu-apl
+X ← ⍳0   ⍝ X is a vector of zero elements
+X        ⍝ Printing X gives an empty response
+⍴X       ⍝ Asking for the shape of X gives a zero
+#+end_src
+
+This is fundamentally different than a scalar, which does not have
+/zero elements/: a scalar has /zero dimensions/ instead.
+
+#+begin_src gnu-apl
+⍴45
+#+end_src
+
+We can also create empty matrices. For example, a matrix of two rows
+and no columns:
+
+#+begin_src gnu-apl
+TAB ← 3 0⍴⍳0
+TAB
+⍴TAB
+#+end_src
+
+*** Dimension ordering
+
+General rule when applying an operation to data (e.g. a reduce =/=):
+
+*Unless specified otherwise, the operation takes place on the last
+ dimension.*
+
+For example, consider a 3×4 matrix.
+
+#+begin_src gnu-apl
+X ← 3 4⍴⍳12
++/ X
+#+end_src
+
+Applying a reduction to it yields a list of three elements. Each
+element of the list is the sum of a *row*. This is because a column is
+the *last* dimension of a 2D matrix (3 rows, 4 columns).
+
+In other words, since we're performing the reduction on the last
+dimension (columns), then each result is the sum of all *columns*
+belonging to that row.
+
+You can change that by using the axis (=[]=) operator:
+
+#+begin_src gnu-apl
++/[1] X
+#+end_src
+
+This carries the reduction on the first axis (rows), therefore the
+resulting list of four numbers is the sum of each *column*.
+
+Now each result is the sum of all *rows* belonging to that column.
+
+#+begin_src gnu-apl
+)CLEAR
+#+end_src
+
+*** Indexing
+
+There is something that remains to be discussed. Last section talked
+about the rows in index 1. This seems to mean that in APL indexes
+start at 1, but that might not be always true. This is true for GNU
+APL, to say the least.
+
+If you wish to change indexing, just change the Index Origin system
+variable (this bit is not tangled):
+
+#+begin_src gnu-apl :tangle no
+⎕IO ← 0
+#+end_src
+
+From here on, we'll consider Index Origin to be =1=.
+
+Selecting elements is easy. Just use the brackets (=[]=), and separate
+variable indexes with =;=.
+
+#+begin_src gnu-apl
+⍝ Indexing in one dimension
+X ← 1 45 6 3 9 33 6 0 1 22
+X[4] + X[10]
+
+⍝ Indexing in two dimensions
+TABLE ← 3 3⍴9?100
+TABLE[3;2]         ⍝ Indexing for more than one dimension
+
+⍝ Indexing in three dimensions
+DATA ← 4 4 4⍴64?100
+DATA[2;1;4]
+
+⍝ Selecting an entire row in tree ways
+TABLE[1;1 2 3]
+TABLE[1;⍳3]
+TABLE[1;]
+
+⍝ Selecting an entire column
+TABLE[;2]
+
+⍝ Selecting from anonymous data
+(3 8 4)[1+2]
+
+⍝ Selecting from an anonymous string, based on a variable
+P ← 2
+'ABCDE'[P]
+#+end_src
+
+Some useful stuff that has not been discussed yet:
+
+Indexing can also be used to rearrange elements on a matrix!
+
+#+begin_src gnu-apl
+'ABCDE'[4 5 1 4]
+#+end_src
+
+We can also do indexing with variables of a higher dimension. This
+pretty much collects stuff and stores it in the created shape:
+
+#+begin_src gnu-apl
+'ABCDE'[2 2⍴4 5 1 4]
+#+end_src
+
+Indexing can also be done with the squad (=⌷=) symbol (notice that this
+is different from the quad =⎕=, since it is narrower):
+
+#+begin_src gnu-apl
+2⌷'ABCD'
+#+end_src
+
+#+begin_src gnu-apl
+)CLEAR
+#+end_src
+
+** Built-in functions
+
+APL has 50 useful built-in functions in general, and 5 operators to
+modify and extend how functions work.
+
+#+begin_src gnu-apl
+⍝ Built-in Functions
+#+end_src
+
+*** Arguments
+
+Most functions have two behaviours depending on how you place their
+arguments. For example:
+
+#+begin_src gnu-apl
+⌈12.625         ⍝ Ceiling
+2⌈8             ⍝ Select greatest number
+
+÷1 2 3 4 5      ⍝ Reciprocal
+100÷1 2 3 4 5   ⍝ Divide 100 by each
+#+end_src
+
+*** Execution order
+
+Expressions are evaluated from right to left. The results of one
+function become the argument of the next function.
+
+*** Numbers or text
+
+Some functions work on numbers only. Some work on either numbers or
+text data. Using a function which does not work on a data type yields
+a =DOMAIN ERROR=.
+
+Some functions also work only on a subset of the number domain, such
+as logical functions (=∨=, =∧= etc.) Thiis means that they only recognize
+the states of TRUTH (=1=) and FALSITY (=0=).
+
+*** Shape and size of data
+
+Some functions can be used only on data of a certain shape. The
+following example (not tangled) yields a =LENGTH ERROR=, because data on
+both sides do not have the same shape:
+
+#+begin_src gnu-apl :tangle no
+29 51 60 27÷3 11
+#+end_src
+
+*** Groups of functions
+
+Following there will be some examples of functions, which I'll store
+in tables as given in the tutorial, for further consulting.
+
+Unless there is a new function with non-obvious usage, there will be
+some examples.
+
+**** Arithmetic functions
+
+|----------+--------------+-------------|
+| Function | Monadic form | Dyadic form |
+|----------+--------------+-------------|
+| +        | Numeric      | Add         |
+| -        | Negation     | Subtract    |
+| ×        | Sign         | Multiply    |
+| ÷        | Reciprocal   | Divide      |
+| ⌈        | Ceiling      | Biggest     |
+| ⌊        | Floor        | Smallest    |
+| \vert        | Modulo       | Remainder   |
+|----------+--------------+-------------|
+
+**** Algebraic functions
+
+Functions for advanced arithmetic.
+
+|----------+------------------+---------------------|
+| Function | Monadic form     | Dyadic form         |
+|----------+------------------+---------------------|
+| ⍳        | Index generator  |                     |
+| ?        | Random number    | Random deal         |
+| ⋆ or *   | 'e' to the power | Number to the power |
+| ⍟        | Log to base 'e'  | Log to any base     |
+| ○        | \pi times          | Sine, cosine, etc   |
+| !        | Factorial        | Combinations        |
+| ⌹        | Matrix inversion | Matrix division     |
+|----------+------------------+---------------------|
+
+***** Circle operator
+
+The circle operator (=○=) does not have an obvious operation on its
+dyadic form. Here is a table of values of \alpha on the case \alpha ○
+\omega, taken from TryAPL:
+
+|--------+-------------------+--------+---------------------|
+| \alpha | \alpha ○ \omega   | \alpha | \alpha ○ \omega     |
+|--------+-------------------+--------+---------------------|
+| 0      | (1-\omega⋆2)⋆0.5  |        |                     |
+| ¯1     | Arcsin \omega     |      1 | Sin \omega          |
+| ¯2     | Arccos \omega     |      2 | Cos \omega          |
+| ¯3     | Arctan \omega     |      3 | Tan \omega          |
+| ¯4     | (¯1+\omega⋆2)⋆0.5 |      4 | (1+\omega⋆2)≠0.5    |
+| ¯5     | Arcsinh \omega    |      5 | Sinh \omega         |
+| ¯6     | Arccosh \omega    |      6 | Cosh \omega         |
+| ¯7     | Arctanh \omega    |      7 | Tanh \omega         |
+| ¯8     | -8○\omega         |      8 | (¯1+\omega⋆2)⋆0.5   |
+| ¯9     | \omega            |      9 | Real part of \omega |
+| ¯10    | +\omega           |     10 | \vert \omega        |
+| ¯11    | \omega × =0J1=      |     11 | Imag part of \omega |
+| ¯12    | ⋆\omega           |     12 | Phase of \omega     |
+|--------+-------------------+--------+---------------------|
+
+Also notice that =0J1= is a complex number of real part =0= and imaginary
+part =1=.
+
+***** Domino operator
+
+The Domino operator (=⌹=) generates the inverse of a matrix in its
+monadic form, and divides a matrix by another in its dyadic form:
+
+#+begin_src gnu-apl
+MAT ← 2 2⍴⍳4
+⌹MAT
+5 6⌹MAT
+#+end_src
+
+**** Comparative functions
+
+|----------+--------------+-----------------------|
+| Function | Monadic form | Dyadic form           |
+|----------+--------------+-----------------------|
+| <        |              | Less than             |
+| ≤        |              | Less than or equal    |
+| =        |              | Equal                 |
+| ≥        |              | Greater than or equal |
+| >        |              | Greater than          |
+| ≠        |              | Not equal             |
+| ≡        | Depth        | Match                 |
+| ≢        | Tally        | Not match             |
+| ∊        | Enlist       | Membership            |
+| ⍳        | Iota         | Index of              |
+| ⍷        |              | Find                  |
+|----------+--------------+-----------------------|
+
+Here's an interesting use for comparative functions: Suppose we have a
+table, where some numbers are negative. How can we test which numbers
+are less than zero in it?
+
+#+begin_src gnu-apl
+TABLE ← 3 3⍴25-9?50
+TABLE < 0
+#+end_src
+
+***** Equal underbar
+
+The Equal underbar (=≡=) serves two purposes. In its monadic form, it
+shows the depth of a specific structure.
+
+#+begin_src gnu-apl
+≡2 2⍴1 (2 3) (4 5 6 7) (8 (9 10) 11)
+#+end_src
+
+In its dyadic form, it attempts to match both parameters to see if
+they are equal in shape, order and values:
+
+#+begin_src gnu-apl
+'t' 'e' 's' 't'≡'test'
+#+end_src
+
+***** Equal underbar slash
+
+The Equal underbar slash (=≢=) does the exact opposite of =≡=. In its
+monadic form, it shows the tally (shallowest depth) of a specific
+structure:
+
+#+begin_src gnu-apl
+≢2 2⍴1 (2 3) (4 5 6 7) (8 (9 10) 11)
+#+end_src
+
+In its dyadic form, it checks if both parameters *do not match*:
+
+#+begin_src gnu-apl
+('t' 'e') ('s' 't')≢'test'
+#+end_src
+
+***** Epsilon
+
+The Epsilon (=∊=), in its dyadic form, checks whether the first
+parameter is enclosed in the second parameter, thus testing for
+membership:
+
+#+begin_src gnu-apl
+2∊1 2 3
+#+end_src
+
+The monadic form, however, /enlists/ a certain value. If it is a scalar,
+it is put into a list; if it is a list, nothing changes; if it is a
+matrix, rows will be put one after the other to form a single list.
+
+#+begin_src gnu-apl
+∊3 3 3⍴⍳27
+#+end_src
+
+***** Epsilon underbar
+
+The Epsilon underbar (=⍷=) is only dyadic, and attempts to find the
+first argument (which should be a pattern) inside the second
+argument. The result should be a structure which marks where the
+occurence starts for each occurence found.
+
+#+begin_src gnu-apl
+'ana' ⍷ 'banana'
+#+end_src
+
+***** Iota
+
+The Iota (=⍳=) in its monadic form generates a list from =0= to =n=.
+
+#+begin_src gnu-apl
+⍳9
+3 3⍴⍳9
+#+end_src
+
+In its dyadic form, it attempts to find the *second* argument inside the
+*first* argument. The first match found returns the element index inside
+the list, matrix, etc.
+
+#+begin_src gnu-apl
+X ← 0 0 5 3
+X[(0≠0 0 5 3)⍳1] ⍝ Get first non-null element of X
+#+end_src
+
+**** Logical functions
+
+These functions work only with yielding =0= or =1= by default, but they
+are also used for /branching/.
+
+All functions are dyadic, unless specified otherwise.
+
+|----------+---------------|
+| Function | Description   |
+|----------+---------------|
+| ~        | Not (Monadic) |
+| ∨        | Or            |
+| ∧        | And           |
+| ⍱        | Nor           |
+| ⍲        | Nand          |
+|----------+---------------|
+
+#+begin_src gnu-apl
+~1 0 1
+1 0 1∨0 0 1
+1 0 1∧0 0 1
+1 0 1⍱0 0 1
+1 0 1⍲0 0 1
+#+end_src
+
+We can also short-circuit expressions. Should even be useful for
+comparisions.
+
+#+begin_src gnu-apl
+(5 > 4) ∧ 1 < 3
+#+end_src
+
+**** Manipulative functions
+
+|----------+--------------+---------------------|
+| Function | Monadic form | Dyadic form         |
+|----------+--------------+---------------------|
+| ⍴        | Shape        | Reshape             |
+| ,        | Ravel        | Catenate            |
+| ~        | Not          | Without             |
+| ⌽        | Reverse      | Rotate              |
+| ⍉        | Transpose    | Dyadic transpose    |
+| ↑        | Take first   | Take =n=              |
+| ↓        |              | Drop =n=              |
+| ⊂        | Enclose      | Partitioned enclose |
+| ⊃        | Disclose     | Pick                |
+| ∩        |              | Intersection        |
+| ∪        | Unique       | Union               |
+| ⊢        | Identity     | Right               |
+| ⊣        | Identity     | Left                |
+|----------+--------------+---------------------|
+
+***** Comma
+
+The Ravel (=,=) operator, in its monadic form, turns a matrix into a
+list.
+
+#+begin_src gnu-apl
+X ← 3 3 3⍴⍳27 ⍝ A cube
+,X
+#+end_src
+
+However, we can use axis parameters to induce other behaviours.
+
+#+begin_src gnu-apl
+,[1 2]X
+#+end_src
+
+The dyadic form catenates two structures. The particular behaviour is
+determined by shape.
+
+#+begin_src gnu-apl
+(3 3⍴⍳9),(3 3⍴9+⍳9)
+#+end_src
+
+***** Circle Stile
+
+The Reverse (=⌽=), in its monadic form, reverses the elements along the
+last axis.
+
+#+begin_src gnu-apl
+⌽0 0 5 7
+#+end_src
+
+Its dyadic form performs a rotation on the elements of the second
+parameter, in the last axis, by the number of elements specified in
+the second parameter, as if the data were stored in a toroidal
+shape. Number of rotated elements' sign provides the direction.
+
+#+begin_src gnu-apl
+2⌽3 3⍴⍳9
+¯2⌽3 3⍴⍳9
+#+end_src
+
+***** Transpose
+
+The Transpose (=⍉=), in its monadic form, reverses the axes of the given
+matrix.
+
+#+begin_src gnu-apl
+⍉3 3⍴⍳9
+#+end_src
+
+In its dyadic form, we can directly instruct which axes are swapped
+and how:
+
+#+begin_src gnu-apl
+2 1 3⍉3 3 3⍴⍳27    ⍝ Swap axes 1 and 2
+#+end_src
+
+***** Up Arrow
+
+The Take function (=↑=), in its monadic form, gets the first element of
+an array.
+
+#+begin_src gnu-apl
+↑3 1 2
+#+end_src
+
+In its dyadic form, it takes exactly the number of elements specified
+at the first parameter, from the second parameter. If the absolute
+number exceeds the length, the resulting list is zero-filled. If the
+number is negative, it is taken from last element.
+
+#+begin_src gnu-apl
+2↑⌽⍳4
+¯7↑⌽⍳4
+#+end_src
+
+***** Down Arrow
+
+The Drop function (=↓=) has only a dyadic form, and drops the number of
+elements in the first parameter from the second parameter list. If the
+number is negative, the drop happens from the end. If the absolute
+number exceeds the length, an empty response is returned.
+
+***** Left Shoe
+
+The Enclose (=⊂=) function, in its monadic form, encloses the given
+object into a nested scalar.
+
+#+begin_src gnu-apl
+⊂2 2⍴⍳4
+⍴⊂2 2⍴⍳4
+#+end_src
+
+In its dyadic form, it does a selective enclosing, returning the
+enclosed objects:
+
+#+begin_src gnu-apl
+0 1 1 0⊂⍳4
+#+end_src
+
+***** Right Shoe
+
+The Disclose (=⊃=) function, in its monadic form, discloses the single
+elements of an object, zero-filling the missing elements so that all
+of them belong to a single shape, with the same number of dimensions.
+
+#+begin_src gnu-apl
+⊃(⍳4) 2 3
+#+end_src
+
+In its dyadic form, it recursively picks up a certain element from a
+nested structure.
+
+#+begin_src gnu-apl
+X ← 4⍴⊂(4 4⍴16?100)   ⍝ List of four enclosed 4x4 matrices
+2 (2 2)⊃X             ⍝ Pick 2nd matrix, then pick element [2;2]
+#+end_src
+
+***** Right Tack
+
+The Right (=⊢=) function does nothing in its monadic form, giving back
+the untouched data. Its dyadic form, however, selects the left
+element. It has a particularly useful property of selecting the
+rightmost element when mapped over a structure:
+
+#+begin_src gnu-apl
+2 3⊢4 5
+⊢/ 6 7 8 9
+#+end_src
+
+***** Left Tack
+
+The Left (=⊣=) function works much like Right, except that it selects
+the left element, or the leftmost element on a mapping:
+
+#+begin_src gnu-apl
+2 3⊣4 5
+⊣/ 6 7 8 9
+#+end_src
+
+**** Sorting and coding functions
+
+|----------+--------------+---------------------|
+| Function | Monadic form | Dyadic form         |
+|----------+--------------+---------------------|
+| ⍋        | Grade up     | Collated grade up   |
+| ⍒        | Grade down   | Collated grade down |
+| ⊥        |              | Decode              |
+| ⊤        |              | Encode              |
+|----------+--------------+---------------------|
+
+***** Grade Up
+
+The Grade Up (=⍋=) function, in its monadic form, returns the indexes of
+elements in ascending order.
+
+#+begin_src gnu-apl
+LIST ← 10?100
+LIST[⍋LIST]
+#+end_src
+
+In its dyadic form, the first parameter is a collating sequence, which
+enumerates top-priority elements for the ordering. Elements outside of
+the collation are put in the end of the sequence.
+
+#+begin_src gnu-apl
+TEXT ← 'Banana'
+TEXT['an'⍋TEXT]
+#+end_src
+
+***** Grade Down
+
+The Grade Down (=⍒=) function works just like Grade Up, except that it
+returns indexes of elements in descending order.
+
+On the dyadic form, the collating sequence enumerates elements which
+shall be ordered from rightmost to leftmost. Elements outside of the
+collation are put in the beginning of the sequence.
+
+#+begin_src gnu-apl
+LIST ← 10?100
+TEXT ← 'Banana'
+
+LIST[⍒LIST]
+TEXT['an'⍒TEXT]
+#+end_src
+
+***** Decode
+
+The Decode (=⊥=) function converts a number (expressed as a list) on the
+second argument to the base shown in the first argument.
+
+#+begin_src gnu-apl
+2⊥0 0 1 0 1
+16⊥2 1
+24 60 60⊥2 46 40  ⍝ Time conversion! 2h46m40s into total seconds
+#+end_src
+
+***** Encode
+
+The Encode (=⊤=) function does the opposite of Decode.
+
+#+begin_src gnu-apl
+2 2 2 2⊤5 7 12
+24 60 60⊤10000   ⍝ Mixed radix; convert 10000 seconds to h m s
+#+end_src
+
+**** Miscellaneous functions and other symbols
+
+|----------+-------------------------------------------|
+| Function | Meaning                                   |
+|----------+-------------------------------------------|
+| ⎕        | Numeric input from keyboard (niladic)     |
+| ⍞        | Character input from keyboard (niladic)   |
+| ◊        | Stament separator                         |
+| ⍝        | Comment                                   |
+| ⍎        | Evaluate text as APL expression (monadic) |
+| ⍕        | Format (monadic/dyadic)                   |
+| ⌷        | Index (dyadic)                            |
+| ⍬        | Zilde                                     |
+|----------+-------------------------------------------|
+
+***** Diamond
+
+The statement separator (=◊=) allows for inputting more than one
+statement in a single line.
+
+#+begin_src gnu-apl
+LIST ← 25-(5?50) ◊ (÷LIST)
+#+end_src
+
+***** Hydrant
+
+The Execute operator (=⍎=) evaluates a textual expression as an APL
+statement.
+
+#+begin_src gnu-apl
+⍎'X ← 10×3 3⍴⍳9 ◊ ÷X'
+#+end_src
+
+***** Thorn
+
+The Format operator (=⍕=) in its monadic form, transforms values into a
+character list, suited to display onscreen.
+
+#+begin_src gnu-apl
+⍕1 2 3
+#+end_src
+
+Its dyadic form requires a format list as first argument, containing
+the field width for each value and its number of decimal places. The
+second argument is the values. If the field is not wide enough, it
+gives a =DOMAIN ERROR=.
+
+#+begin_src gnu-apl
+6 2⍕3.25 3.002
+⍝ 8 2⍕1234   ⍝ Not wide enough
+#+end_src
+
+***** Squad
+
+The Index operator (=⌷=) has only a dyadic form, where one can pick
+elements at something. It also supports axis parameters.
+
+#+begin_src gnu-apl
+TABLE ← 3 4⍴⍳12
+
+2 3⌷TABLE
+2⌷[1] TABLE
+2⌷[2] TABLE
+#+end_src
+
+***** Zilde
+
+The Empty Numeric Vector (=⍬=) is a vector of zero elements.
+
+#+begin_src gnu-apl
+⍝ These are a match, since they are numeric vectors.
+⍬≡⍳0
+⍬≡0⍴0
+
+⍝ These do not match.
+⍬≡0 0⍴0  ⍝ Not a vector
+⍬≡''     ⍝ Not numeric
+#+end_src
+
+*** System functions
+
+System functions exist to extend the power of APL, improving the
+usable tasks.
+
+See the implementation documentation for that.
+
+** Built-in operators
+
+#+begin_src gnu-apl
+⍝ Built-in Operators
+#+end_src
+
+Operators are used to specify the way in which one or more functions
+are applied to data. For example: repeatedly, cumulatively, etc.
+
+|----------+-------------------|
+| Operator | Name              |
+|----------+-------------------|
+| \slash   | Slash             |
+| ⌿        | Slash bar         |
+| \        | Backslash         |
+| ⍀        | Backslash bar     |
+| .        | Inner product     |
+| ∘.       | Outer product     |
+| ¨        | Each              |
+| [ ]      | Axis              |
+| ⍨        | Duplicate/Commute |
+| ∘        | Compose           |
+|----------+-------------------|
+
+*** Reduce and scan
+
+When used with functions as their operands, Slash and Backslash become
+Reduce (=/=) and Scan (=\=), which apply a single function to all elements
+of an argument.
+
+#+begin_src gnu-apl
+⍝ These two operations are equivalent
+22 + 93 + 4.6 + 10 + 3.3
++/22 93 4.6 10 3.3        ⍝ Reduce using plus
+#+end_src
+
+In the last example, Reduce interposes the =+= between the values on the
+vector. Were it replaced by the Scan operator, the same would happen,
+but the result would be a vector containing intermediate results; the
+last element of such vector would be the last result.
+
+#+begin_src gnu-apl
++\22 93 4.6 10 3.3        ⍝ Scan using plus
+22 (22+93) (115+4.6) (119.6+10) (129.6+3.3) ⍝ Equivalent calculation
+#+end_src
+
+**** Reduce First and Scan First
+
+Using a Slash bar with a function means using the Reduce First (=⌿=)
+operator. This will apply a reduction on the first dimension of the
+data structure:
+
+#+begin_src gnu-apl
+TABLE ← 3 5⍴15?30
++⌿ TABLE
+#+end_src
+
+Using a Backslash bar with a function means using the Scan First (=⍀=)
+operator. This does something similar to Scan, but stores each result
+in a matrix row (first dimension).
+
+#+begin_src gnu-apl
++⍀ TABLE
+#+end_src
+
+*** Compress and expand
+
+When used with one or more *numbers*, Slash and Backslash become
+Compression (=/=) and Expansion (=\=).
+
+Compress selects a part of an object:
+
+#+begin_src gnu-apl
+1 0 1 1 0 1 / 'ABCDEF'
+#+end_src
+
+Expand inserts fill data into objects:
+
+#+begin_src gnu-apl
+TABLE ← 2 3⍴⍳6
+⍝ Insert new columns (axis 2).
+⍝ New columns indicated by zeroes.
+1 0 1 0 1\[2]TABLE
+#+end_src
+
+**** Compress First and Expand First
+
+The Compress First (=⌿=) operator, also known as Replicate First, is the
+dyadic form of the Slash Bar, and can be used in a matrix to remove
+and duplicate certain rows (first dimension):
+
+#+begin_src gnu-apl
+TABLE ← 3 4⍴⍳12
+1 0 2⌿TABLE      ⍝ Remove 2nd row, duplicate 3rd row
+#+end_src
+
+The Expand First (=⍀=) operator is the dyadic version of the Backslash
+bar, and also works by adding new rows (first dimension) to a matrix.
+
+#+begin_src gnu-apl
+TABLE ← 3 4⍴⍳12
+1 0 1 0 1 0 0⍀TABLE
+#+end_src
+
+*** Outer and inner products
+
+Product operators distribute the application of a function between
+each element of one argument and all elements in another; this removes
+the constraint on applying certain functions to arguments of same
+shape.
+
+**** Outer Product
+
+The outer product (=∘.=)gives the result of applying the function to all
+combinations of elements in both arguments:
+
+#+begin_src gnu-apl
+1 2 3∘.+4 5 6
+#+end_src
+
+The result is a 3×3 matrix, where the first column is the sum between
+=1= and each of the numbers in the second argument; the second column is
+the sum between =2= and each of the numbers in the second argument; and
+so on.
+
+Another example: a matrix of powers.
+
+#+begin_src gnu-apl
+(⍳4)∘.*⍳4
+#+end_src
+
+**** Inner Product
+
+The inner product (=.=) allows two functions to be applied to arguments;
+operations happen between the *last* dimension of the *left* argument, and
+the *first* dimension of the *right* argument; so the two inner dimensions
+are used.
+
+Using this on matrices results in two steps:
+1. Each *row* of the *left* argument is applied to each *column* of the
+   *right* argument. This uses the rightmost function;
+2. The leftmost function is applied to the result, through a Reduction
+   (=/=).
+
+#+begin_src gnu-apl
+X←3 3⍴9?100
+Y←3 3⍴9?100
+
+⍝ 1. Each row of X is multiplied by each column of Y;
+⍝ 2. The result is reduced through a sum.
+X+.×Y
+#+end_src
+
+There are up to 400 possible inner products. Some uses are:
+- Locating incidences of given character strings within textual data;
+- Evaluation of polynomials;
+- Matrix multiplication;
+- Product of powers;
+- Etc.
+
+*** Each
+
+The Each operator (=¨=) allows applying a certain function (on the left)
+to each elements of an array or vector (on the right).
+
+#+begin_src gnu-apl
+⍴¨(⍳3)(⍳2)(⍳5)   ⍝ Find the length of each vector
+#+end_src
+
+*** Axis
+
+Some functions operate in data which has more than one dimension. One
+can change the axis in which they operate by using the axis operator.
+
+By default, APL functions work on the *last* dimension of your data. The
+order of dimensions is the one show when you apply =⍴= to the data.
+
+#+begin_src gnu-apl
+TABLE ← 2 3⍴⍳6  ⍝ A matrix of 2×3 (two dimensions)
+
+⍝ Reduce with + on the second dimension. This gives a
+⍝ list of two numbers, each being the sum of numbers
+⍝ along the COLUMNS (dimension 2, last one) of each
+⍝ row of the matrix.
++/TABLE
+
+⍝ This reduction specifies that the sum should occur
+⍝ along the ROWS (dimension 1) of a column of the
+⍝ matrix, therefore it gives a list of three numbers.
++/[1]TABLE
+#+end_src
+
+**** Functions that accept axis specifications
+
+here are some built-in functions and operators that accept specifying
+axes:
+
+- Functions
+  - =↑= (First, Take)
+  - =↓= (Drop)
+  - =⊂= (Enclose, Partition)
+  - =⊃= (Disclose, Pick)
+  - =,= (Ravel, Catenate)
+  - =⌽=, =⊖= (Reversal, Rotation)
+
+- Operators
+  - =/= (Reduce, Compress)
+  - =\= (Scan, Expand)
+  - =⌿= (Reduce First, Compress First)
+  - =⍀= (Scan First, Compress First)
+
+** User-defined Functions
+
+#+begin_src gnu-apl
+⍝ User-defined functions
+#+end_src
+
+*** Arguments and results
+
+Functions can be thought of as external programs which are run. They
+can be:
+
+- *Niladic*: They have no specified arguments.
+- *Monadic*: Functions have one argument, passed at its right.
+- *Dyadic*:  Functions have two arguments, the first is passed at its
+  left and the second is passed at its right.
+
+Passing many values as an argument is enclosed into a single vector of
+arguments.
+
+Definining a function that is both *monadic* and *dyadic* require testing
+the first and second arguments to dispatch based on it.
+
+If you need to express a result, you will also need to give a name for
+the result field.
+
+*** User-defined operators
+
+Operators must have one or two *operands*, which are functions; not more
+nor less, since operators are used to modify the behaviour of
+functions.
+
+*** Editing functions
+
+Some APLs allow you to edit a function by using the =)EDIT= command or
+the =⎕EDIT= system function. This is the case for Dyalog, for example --
+however, Dyalog uses the =)ED= command instead.
+
+#+begin_src gnu-apl :tangle no
+)ED FUNK
+#+end_src
+
+Older APL systems, like GNU APL, allows editing one-line-at-time,
+using the Del (=∇=) editor. However, the =gnu-apl-mode= for Emacs replaces
+the use of Del by opening a new temporary buffer to edit the function.
+
+#+begin_src gnu-apl :tangle no
+∇FUNK
+#+end_src
+
+APL uses the concept of workspaces to store functions and values,
+however one can safely use the Del (=∇=) notation to define a certain
+function in an APL code file:
+
+#+begin_src gnu-apl :tangle no
+∇FUNK
+  ⍝ Add some code here...
+∇
+#+end_src
+
+The rest of this text will use the Del editor notation, in a way which
+it can be executed in a GNU APL script, therefore some things will be
+different e.g. line numbers will not be used here.
+
+*** The function header
+
+When typing the function, one must type a suitable function header,
+for example:
+
+#+begin_src gnu-apl
+∇SD X
+  SUM ← +/X
+  AVG ← SUM÷⍴X
+  DIFF ← AVG-X
+  SQDIFF ← DIFF⋆2
+  SQAVG ← (+/SQDIFF)÷⍴SQDIFF
+  RESULT ← SQAVG⋆0.5
+∇
+#+end_src
+
+This function takes a vector called =X= and performs some computation
+using it.
+
+#+begin_src gnu-apl
+SD 12 45 20 68 92 108
+#+end_src
+
+The result exists in the global variable =RESULT=, created inside the
+function.
+
+If we were defining a function with two operators, we would have a
+header such as:
+
+#+begin_src gnu-apl :tangle no
+∇X CALC Y
+#+end_src
+
+And if we wanted the result to be put in a specific variable, see how
+we could redefine =SD=:
+
+#+begin_src gnu-apl
+∇R ← SD X
+  SUM ← +/X
+  AVG ← SUM÷⍴X
+  DIFF ← AVG-X
+  SQDIFF ← DIFF⋆2
+  SQAVG ← (+/SQDIFF)÷⍴SQDIFF
+  R ← SQAVG⋆0.5
+∇
+#+end_src
+
+By doing this, the result of applying =SD= to something could be
+assigned to a variable; =R= itself is not a variable which is visible
+outside of =SD=, acting as a surrogate for the final result of
+execution.
+
+*** The operator header
+
+Operator bodies are defined just like functions'; what changes is the
+header, which must specify an operator.
+
+Here is the header of a monadic operator:
+
+#+begin_src gnu-apl :tangle no
+∇R ← X (LOP OPERATE) Y
+#+end_src
+
+And the header of a dyadic operator:
+
+#+begin_src gnu-apl :tangle no
+∇R ← X (LOP OPERATE ROP) Y
+#+end_src
+
+- =OPERATE= is the operator name;
+- =R= is the optional return variable;
+- =X= and =Y= are left and right parameters for the operator;
+- =LOP= is an obligatory left operand, which the operator will change
+  the behaviour of;
+- =ROP= is an optional right operand, which the operator will also
+  change the behaviour of.
+
+*** Local and global variables
+
+One can quote variables in the header to make sure they are *local* to
+the function; by not doing so, they will remain *global*. Also notice
+that local variables are not shared with variables called inside the
+function body.
+
+So let's fix =SD=.
+
+#+begin_src gnu-apl
+)CLEAR   ⍝ Clear the workspace
+
+∇R ← SD X;SUM;AVG;DIFF;SQDIFF;SQAVG
+  SUM ← +/X
+  AVG ← SUM÷⍴X
+  DIFF ← AVG-X
+  SQDIFF ← DIFF⋆2
+  SQAVG ← (+/SQDIFF)÷⍴SQDIFF
+  R ← SQAVG⋆0.5
+∇
+#+end_src
+
+But the header is so big, that's not good. Let's try making this a
+little more compact so we have fewer local variables.
+
+#+begin_src gnu-apl
+∇R ← SD X;SQDIFF
+  SQDIFF ← (X-(+/X)÷⍴X)⋆2
+  R ← ((+/SQDIFF)÷⍴SQDIFF)⋆0.5
+∇
+#+end_src
+
+*** Branching
+
+Inside the body of a function or operator, the symbol Goto (=→)= is used
+to determine a jump. The symbol should then be followed by some data;
+if the data is a scalar, the function jumps to the given line. If it
+is a vector, the function jumps to the first element of the vector and
+ignores the rest of it.
+
+Here is an example of that in action, with numbering on the body for
+better understanding.
+
+#+begin_example
+    ∇R←TEST X
+[1]  →(X≥0)/4
+[2]  R←0
+[3]  →5
+[4]  R←1
+    ∇
+#+end_example
+
+The function starts by testing whether =X= is greater or equal to
+zero. If so, the result is =1=, therefore the Compress (=/=) operator
+selects the sole number at the right, which is =4=. The =→= symbol then
+instructs the function to jump to the line -- that is, the fourth one.
+
+Line =[2]= puts a =0= on the result variable. Then line =[3]= instructs the
+program to make an unconditional jump to the line =5=, which does not
+exist -- thus ending the function.
+
+Line =[4]= attributes the number =1= to the result variable, and then
+exits gracefully, as there are no more jumps.
+
+**** Looping
+
+One can also perform loops very easily by using the Goto symbol
+(=→=). For example, consider the following function.
+
+#+begin_src gnu-apl
+⍝ Calculate factorial of a scalar N.
+⍝ Has a return variable and a local scalar I.
+∇R←FACTORIAL N;I
+  →(N≤0)/0       ⍝ 1: If N is lower or eq to 0, end function
+  I←1            ⍝ 2: Initialize iterator to 1
+  R←1            ⍝ 3: Initialize result to 1
+  R←R×I          ⍝ 4: Let result be the mult. of result and iter
+  →(I=N)/0       ⍝ 5: If iterator is equal to N, end function
+  I←I+1          ⍝ 6: Increment iterator
+  →4             ⍝ 7: Jump to multiplication
+∇
+#+end_src
+
+Jumping to =0= will be explained below; it ends the function.
+
+**** Labels
+
+It is not necessary to count lines on most modern APLs. We can just
+use labels. This is also useful when adding lines and whatnot.
+
+#+begin_src gnu-apl
+∇R ← TEST X
+  →(X≥0)/GREATEQ
+  R←0
+  →0
+GREATEQ: R←1
+∇
+#+end_src
+
+Here is the factorial function, rewritten using labels:
+
+#+begin_src gnu-apl
+∇R←FACTORIAL N;I
+  →(N≤0)/0
+  (I R)←1       ⍝ Multiple definition at once
+  LOOP: R←R×I
+  →(I=N)/0
+  I←I+1
+  →LOOP
+∇
+#+end_src
+
+**** Ending execution of a function
+
+A function stops naturally when the last line of its body is
+executed. However, one can go to a line number which doesn't exist to
+end the function immediately. For example:
+
+#+begin_example
+→(X<1)/0
+→0
+→7  ⍝ Suppose this line is in a function with six lines
+#+end_example
+
+**** Structured control keywords
+
+Some APLs support /structured-control keywords/ for flow control. This
+makes APL more readable. (GNU APL, however, does not support them)
+
+Here is a table of keywords. These keywords are not part of the APL
+ISO, but they are supported in many implementations.
+
+|-----------------------+----------------------------------------------|
+| Function              | Keyword                                      |
+|-----------------------+----------------------------------------------|
+| Conditional execution | =:If=, =:ElseIf=, =:Else=, =:EndIf=                  |
+| For loop              | =:For=, =:EndFor=                                |
+| While loop            | =:While=, =:EndWhile=                            |
+| Repeat loop           | =:Repeat=, =:EndRepeat=                          |
+| Case selection        | =:Select=, =:Case=, =:CaseList=, =:Else=, =:EndSelect= |
+| Branch                | =:GoTo=                                        |
+| Terminate function    | =:Return= (same as =→0=)                         |
+|-----------------------+----------------------------------------------|
+
+**** Comments in functions
+
+Just use the Lamp (=⍝=) symbol.
+
+**** Ambivalent Functions
+
+In APL2, dyadic functions may be used monodically. This happens when
+the left argument is undefined. This means that its Name
+Classification (=⎕NC=) is =0=. This can be compared:
+
+#+begin_src gnu-apl
+∇R←A AMBIVALENT B
+  →(0=⎕NC 'A')/MONADIC
+  →DYADIC
+MONADIC: A←5
+DYADIC: R←A+B
+∇
+
+1 AMBIVALENT 2  ⍝ Dyadic usage; yields 3
+AMBIVALENT 2    ⍝ Monadic usage; yields 7
+#+end_src
+
+Some APLs like NARS2000 and Dyalog use a particular syntax which
+distinguishes ambivalent and dyadic functions. See these function
+headers:
+
+#+begin_example
+∇R←A NOMADIC B    ⍝ Dyadic     ∇
+∇R←{A} NOMADIB B  ⍝ Ambivalent ∇
+#+end_example
+
+*** Extra: Lambdas
+
+GNU APL has limited support for lambda expressions. Those are
+functions which are defined inline, and can even be named.
+
+In lambdas, Alpha (=⍺=) is the symbol used for the left argument, and
+Omega (=⍵=) is the symbol used for the right argument. All lambdas are
+one-line functions, enclosed in Curly Brackets (={}=), which can be
+monadic or dyadic depending on argument usage, and their single line
+always return a value.
+
+#+begin_src gnu-apl
+AVERAGE ← {(+/⍵)÷⍴⍵}   ⍝ Named lambda
+2 {⍺+⍵} 3              ⍝ Unnamed lambda, applied immediately
+#+end_src
+
+Here is an example lambda function which finds all the prime numbers
+below the second argument (=⍵=) of the monadic function /(ACHARYA and
+PEREIRA)/:
+
+#+begin_src gnu-apl
+PRIMES ← {(~⍵∊⍵∘.×⍵)/⍵←1↓⍳⍵}
+PRIMES 100
+#+end_src
+
+** Error Handling
+
+#+begin_src gnu-apl
+⍝ Error handling
+#+end_src
+
+*** Errors in calculator mode
+
+APL prints errors when you type a statement containing an error in
+calculator mode. For example, this yields a =DOMAIN ERROR=:
+
+#+begin_src gnu-apl :tangle no
+1 1 0 'a'∨1 1 0 0
+#+end_src
+
+To correct an error in calculator mode, simply retype the statement
+correctly, or use the the implementation's line-editing facilities.
+
+*** Errors in user-defined functions or operators
+
+When executing a user-defined function or operator, if an error
+happens, the execution stops at that point. Modern APLs have a Debug
+window where you can examine and correct errors in the function or
+operator.
+
+*** The state indicator
+
+When the halted function was called by other function, one can inspect
+the call stack using the State Indicator. This can be done with the
+system function =)SI= or, in some APLs, by inspecting the variable =⎕SI=.
+
+Here is an example taken from implementation APLX (deprecated):
+
+#+begin_example
+      )SI
+C[2] *
+B[8]
+A[5]
+#+end_example
+
+In the example above, the problem happened at function =C=, at line
+=2=. This function was called by function =B= at line =8=, which was then
+called by function =A= on line =5=.
+
+The asterisk means that the execution of line =2= of function =C= is still
+pending. If another function were executed at this point and also
+yielded an error, this would happen:
+
+#+begin_example
+E[3] *
+D[6]
+C[2] *
+B[8]
+A[5]
+#+end_example
+
+So now function =E= at line =3= is pendent, and was called from function =D=
+at line =6=.
+
+This top level can be cleared by using the Goto symbol (=→=). Another
+=→=, in this case, would clear the State Indicator completely.
+
+#+begin_example
+      →
+      )SI
+C[2] *
+B[8]
+A[5]
+#+end_example
+
+There are also system functions to clear the State Indicator. In GNU
+APL, this can be done with =)RESET=.
+
+*** Action after suspended execution
+
+One can resume the suspended execution where it stopped. To do so,
+just type Goto (=→=) followed by the line number.
+
+#+begin_src gnu-apl :tangle no
+→3   ⍝ Suppose execution halted at line 3 of the function
+#+end_src
+
+It is not mandatory to continue execution where the function
+halted. For example, suppose you want to restart at the next line:
+
+#+begin_src gnu-apl :tangle no
+→4
+#+end_src
+
+Another way to do this is by using the niladic system function
+=⎕LC=. This yields a vector containing all current line numbers of
+functions in the State Indicator. All we need to do is to jump to the
+first number of such vector:
+
+#+begin_src gnu-apl :tangle no
+→⌷LC
+#+end_src
+
+Or, if we want to resume at the next line, we can also exploit the
+vector:
+
+#+begin_src gnu-apl :tangle no
+→1+⎕LC
+#+end_src
+
+*** Error trapping and tracing
+
+It is possible to specify in advance what to do if an error occurs on
+execution; APL allows error trapping at runtime.
+
+- Dyalog has the keywords =:Trap=, =:EndTrap=, =:Case= and =:Else=, and the
+  system variable =⎕TRAP= which allows precise control;
+- APL2 has the system variables =⎕EA= (Execute Alternate; executes the
+  right argument and, if it fails, executes the left one) and =⌷EC=
+  (Execute Controlled; Executes the argument and returns the result,
+  if any. Also returns additional information on errors).
+- APL+Win has the keywords =:Try=, =:Catch= and =:Finally=; and the =⎕ELX=
+  system variable executes the argument passed on its right, whenever
+  an error occurs.
+- NARS2000 has =⎕ELX= like APL+Win, and =⎕EA= and =⌷EC=, like APL2.
+
+It seems like GNU APL does not have error trapping facilities.
+
+** Formatting
+
+#+begin_src gnu-apl
+⍝ Formatting
+#+end_src
+
+*** The "Format" primitive
+
+Useful variable: =⎕PP= (Print Precision).
+
+When the left argument is not specified, the data is converted into
+plain text with no specific format, using only display defaults.
+
+#+begin_src gnu-apl
+⍕ 0.0000003 3.0123456789
+#+end_src
+
+With two arguments, the left argument is always a list of two
+elements: Field width and number of decimal places.
+
+#+begin_src gnu-apl
+6 2⍕341.82921
+#+end_src
+
+Note that, before the number was truncated, it was rounded.
+
+*** The system function =⎕FMT=
+
+Some APL implementations (except APL2 and GNU APL) have a =⎕FMT= system
+function:
+
+#+begin_example
+      'B K2 G< ZZ9 DOLLARS AND 99 CENTS>' ⎕FMT 8.23 12.86 0 2.52
+   8 DOLLARS AND 23 CENTS
+  12 DOLLARS AND 86 CENTS
+   2 DOLLARS AND 52 CENTS
+#+end_example
+
+** End of Tutorial
+
+#+begin_src gnu-apl
+)CLEAR
+#+end_src
+
+* Further Topics in APL
+
+These are very useful topics which I will only take some notes on new
+things I find interesting. [[https://aplwiki.com/LearnMoreApl/FurtherTopics][Here is the link]] to the relevant contents.
+
+It is also useful to check the [[https://www.gnu.org/software/apl/apl.html][GNU APL Manual]] 
+
+** Displaying the Shape of an Array
+
+#+begin_src gnu-apl
+⍝⍝⍝ Further Topics in APL
+
+⍝ Displaying the shape of an array
+#+end_src
+
+Most APLS have a =DISPLAY= or =⎕DISPLAY= system function to draw boxes
+around data. GNU APL uses =⎕CR= for that. For example:
+
+#+begin_src gnu-apl
+8⎕CR 3 4⍴12?50
+
+8⎕CR 1 (⍳2) 3 4 5
+
+8⎕CR 1 'A' (2 3) (2 5⍴'HELLOWORLD')
+#+end_src
+
+Results are better seen with GNU FreeFont:
+
+#+begin_example
+┌→──────────┐
+↓40 26 30 24│
+│50 35 31 47│
+│43 45 38 11│
+└───────────┘
+
+┌→────────────┐
+│1 ┌→──┐ 3 4 5│
+│  │1 2│      │
+│  └───┘      │
+└∊────────────┘
+
+┌→────────────────┐
+│1 A ┌→──┐ ┌→────┐│
+│    │2 3│ ↓HELLO││
+│    └───┘ │WORLD││
+│          └─────┘│
+└∊────────────────┘
+#+end_example
+
+Meaning of symbols used when drawing boxes:
+
+|-----+---------------------+-----------------------------------|
+| Sym | Placement           | Meaning                           |
+|-----+---------------------+-----------------------------------|
+| -   | Beneath character   | Scalar character                  |
+| →   | Left of top edge    | Vector or higher-rank array       |
+| ~   | Left of bottom edge | Numeric data                      |
+| +   | Left of bottom edge | Mixed data                        |
+| ⊖   | Left of top edge    | Empty vector or higher-rank array |
+| ↓   | Left side of box    | Matrix or higher-rank array       |
+| ⌽   | Left side of box    | Empty matrix or higher-rank array |
+| ∊   | Left of bottom edge | Nested array                      |
+|-----+---------------------+-----------------------------------|
+
+** Array Type and Prototype
+
+#+begin_src gnu-apl
+⍝ Array type and prototype
+#+end_src
+
+Arrays of one or more dimensions of zero length are known as *empty
+array*, which can be generated with Reshape (=⍴=) or a selection of sorts
+(like with Compress, =/=). Its *type* can be /numeric/, /simple character/ or
+/nested/, depending on how it was created.
+
+Empty arrays are useful for initializing arrays where data will be
+added in the future, for creating scalars from arrays or as argument
+to Goto (=→=).
+
+*** Array Type and Prototype
+
+Arrays have a type zero for numeric elements, and blank character for
+character elements.
+
+#+begin_src gnu-apl
+⍝ Empty numeric vector and empty character vector
+8⎕CR ⍳0 ◊ 8⎕CR ''
+
+⍝ Same thing, but using ⍴
+8⎕CR 0⍴676 ◊ 8⎕CR 0⍴'PETER'
+#+end_src
+
+#+begin_example
+┌⊖┐
+│0│
+└─┘
+┌⊖┐
+│ │
+└─┘
+#+end_example
+
+Empty numeric vectors can also be created using Zilde (=⍬=).
+
+#+begin_src gnu-apl
+X←⍬
+⍴X
+X≡0⍴0
+8⎕CR ⍬
+#+end_src
+
+#+begin_example
+0
+1
+┌⊖┐
+│0│
+└─┘
+#+end_example
+
+*** Prototypes of nested arrays
+
+Complex empty arrays can be created by using a nested array to
+generate the empty array:
+
+#+begin_src gnu-apl
+⍝ A nested array containing a list of characters
+⍝ and a list of numbers; the second statement
+⍝ is an empty nested array containing another
+⍝ empty array.
+8⎕CR 'ABC' (⍳3) ◊ 8⎕CR 0⍴'ABC' (⍳3)
+#+end_src
+
+#+begin_example
+┌→────────────┐
+│┌→──┐ ┌→────┐│
+││ABC│ │1 2 3││
+│└───┘ └─────┘│
+└∊────────────┘
+┌⊖────┐
+│┌→──┐│
+││   ││
+│└───┘│
+└∊────┘
+#+end_example
+
+When the first element is numeric, we end up with a nested array of
+null elements.
+
+#+begin_src gnu-apl
+8⎕CR (2 2⍴⍳4) 'ABC' ◊ 8⎕CR 0⍴(2 2⍴⍳4) 'ABC'
+#+end_src
+
+#+begin_example
+┌→──────────┐
+│┌→──┐ ┌→──┐│
+│↓1 2│ │ABC││
+││3 4│ └───┘│
+│└───┘      │
+└∊──────────┘
+┌⊖────┐
+│┌→──┐│
+│↓0 0││
+││0 0││
+│└───┘│
+└∊────┘
+#+end_example
+
+If the first element is mixed, then we'll have an array filled with
+zeroes and empty characters.
+
+#+begin_src gnu-apl
+8⎕CR (2 2⍴1 'K' 2 'J') (⍳4) ◊ 8⎕CR 0⍴(2 2⍴1 'K' 2 'J') (⍳4)
+#+end_src
+
+#+begin_example
+┌→──────────────┐
+│┌→──┐ ┌→──────┐│
+│↓1 K│ │1 2 3 4││
+││2 J│ └───────┘│
+│└───┘          │
+└∊──────────────┘
+┌⊖────┐
+│┌→──┐│
+│↓0  ││
+││0  ││
+│└───┘│
+└∊────┘
+#+end_example
+
+Therefore, the prototype concept can be used to display the *type* of an
+array.
+
+#+begin_src gnu-apl
+8⎕CR VAR ← (2 2⍴1 'A' 'B' 2) ((⍳2) 7) 'ABC'
+#+end_src
+
+#+begin_example
+┌→────────────────────┐
+│┌→──┐ ┌→──────┐ ┌→──┐│
+│↓1 A│ │┌→──┐ 7│ │ABC││
+││B 2│ ││1 2│  │ └───┘│
+│└───┘ │└───┘  │      │
+│      └∊──────┘      │
+└∊∊───────────────────┘
+#+end_example
+
+To display the array type, we first enclose (=⊂=) the array to make it a
+scalar, then we build the empty vector with it (=0⍴=). Since building
+the empty vector creates an additional level of nesting, we use the
+First (=↑=) function to remove it:
+
+#+begin_src gnu-apl
+8⎕CR ↑0⍴⊂VAR
+#+end_src
+
+#+begin_example
+┌→────────────────────┐
+│┌→──┐ ┌→──────┐ ┌→──┐│
+│↓0  │ │┌→──┐ 0│ │   ││
+││  0│ ││0 0│  │ └───┘│
+│└───┘ │└───┘  │      │
+│      └∊──────┘      │
+└∊∊───────────────────┘
+#+end_example
+
+*** The prototype as a fill element
+
+Functions such as Take (=↑=), Expand (=\=) and Replicate (=/=) add elements
+to an existing array. A prototype can be used to determine the type
+and shape of extra elements.
+
+|---------------+----------------------------------|
+| Type of array | Fill Element                     |
+|---------------+----------------------------------|
+| Numeric       | 0                                |
+| Character     | Space                            |
+| Nested/Mixed  | Prototype of first element, with |
+|               | Numbers/Characters replaced      |
+|               | accordingly                      |
+|---------------+----------------------------------|
+
+Here are some examples.
+
+#+begin_src gnu-apl
+8⎕CR 5↑1 2 3 ◊ 8⎕CR 5↑'ABC' ⍝ Numeric and textual vectors of 5 elts
+8⎕CR 2↑0⍴⊂VAR   ⍝ Vector containing two prototypes
+8⎕CR 2↑⊂VAR     ⍝ Put VAR's prototype after VAR, in a vector
+8⎕CR ¯2↑⊂VAR    ⍝ Put VAR's prototype before VAR, in a vector
+#+end_src
+
+#+begin_example
+┌→────────┐
+│1 2 3 0 0│
+└─────────┘
+┌→────┐
+│ABC  │
+└─────┘
+┌→──────────────────────────────────────────────┐
+│┌→────────────────────┐ ┌→────────────────────┐│
+││┌→──┐ ┌→──────┐ ┌→──┐│ │┌→──┐ ┌→──────┐ ┌→──┐││
+││↓0  │ │┌→──┐ 0│ │   ││ │↓0  │ │┌→──┐ 0│ │   │││
+│││  0│ ││0 0│  │ └───┘│ ││  0│ ││0 0│  │ └───┘││
+││└───┘ │└───┘  │      │ │└───┘ │└───┘  │      ││
+││      └∊──────┘      │ │      └∊──────┘      ││
+│└∊∊───────────────────┘ └∊∊───────────────────┘│
+└∊∊∊────────────────────────────────────────────┘
+┌→──────────────────────────────────────────────┐
+│┌→────────────────────┐ ┌→────────────────────┐│
+││┌→──┐ ┌→──────┐ ┌→──┐│ │┌→──┐ ┌→──────┐ ┌→──┐││
+││↓1 A│ │┌→──┐ 7│ │ABC││ │↓0  │ │┌→──┐ 0│ │   │││
+│││B 2│ ││1 2│  │ └───┘│ ││  0│ ││0 0│  │ └───┘││
+││└───┘ │└───┘  │      │ │└───┘ │└───┘  │      ││
+││      └∊──────┘      │ │      └∊──────┘      ││
+│└∊∊───────────────────┘ └∊∊───────────────────┘│
+└∊∊∊────────────────────────────────────────────┘
+┌→──────────────────────────────────────────────┐
+│┌→────────────────────┐ ┌→────────────────────┐│
+││┌→──┐ ┌→──────┐ ┌→──┐│ │┌→──┐ ┌→──────┐ ┌→──┐││
+││↓0  │ │┌→──┐ 0│ │   ││ │↓1 A│ │┌→──┐ 7│ │ABC│││
+│││  0│ ││0 0│  │ └───┘│ ││B 2│ ││1 2│  │ └───┘││
+││└───┘ │└───┘  │      │ │└───┘ │└───┘  │      ││
+││      └∊──────┘      │ │      └∊──────┘      ││
+│└∊∊───────────────────┘ └∊∊───────────────────┘│
+└∊∊∊────────────────────────────────────────────┘
+#+end_example
+
+More info: [[https://aplwiki.com/EmptyArraysAndPrototypes][Empty Arrays and Prototypes]]
+
+** Vector Notation
+
+Nothing new here. Just pay attention to how the vectors are
+constructed:
+
+#+begin_src gnu-apl
+8⎕CR 'ABC' 'DEF'
+8⎕CR (1 2 3) 'DEF'
+⍴1 2 3 'DEF'
+⍴1 2 3 'D' 'E' 'F'
+8⎕CR ((1 2) (3 4)) 2 3
+
+X←2 2⍴⍳4
+Y←'HELLO'
+8⎕CR (X Y)  ⍝ Variables entered in vector form
+⍴X Y
+#+end_src
+
+#+begin_example
+      8⎕CR 'ABC' 'DEF'
+┌→──────────┐
+│┌→──┐ ┌→──┐│
+││ABC│ │DEF││
+│└───┘ └───┘│
+└∊──────────┘
+      8⎕CR ((1 2 3) 'DEF')
+┌→────────────┐
+│┌→────┐ ┌→──┐│
+││1 2 3│ │DEF││
+│└─────┘ └───┘│
+└∊────────────┘
+      ⍴1 2 3 'DEF'
+4
+      ⍴1 2 3 'D' 'E' 'F'
+6
+      8⎕CR ((1 2) (3 4)) 2 3
+┌→────────────────┐
+│┌→──────────┐ 2 3│
+││┌→──┐ ┌→──┐│    │
+│││1 2│ │3 4││    │
+││└───┘ └───┘│    │
+│└∊──────────┘    │
+└∊∊───────────────┘
+      X←2 2⍴⍳4
+      Y←'HELLO'
+      8⎕CR (X Y)  ⍝ Variables entered in vector form
+┌→────────────┐
+│┌→──┐ ┌→────┐│
+│↓1 2│ │HELLO││
+││3 4│ └─────┘│
+│└───┘        │
+└∊────────────┘
+      ⍴X Y
+2
+#+end_example
+
+** Variables and Indexing
+
+Nothing new too.
+
+#+begin_src gnu-apl
+LIST←12 24 36 48
+LIST[2]
+LIST[1]+LIST[4]
+
+ALF←'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+ALF[26 1 13 2 9 1]
+
+TABLE←10×2 4⍴⍳8
+TABLE[1;4]
+TABLE[1;⍳4]+TABLE[2;⍳4]
+TABLE[1;]+TABLE[2;]
+(⍴TABLE[1;2 3])=(⍴1),⍴2 3
+
+ALF[2 2⍴⍳4]
+⍴TABLE[1;]      ⍝ Rows indexed by scalar, result is vector
+⍴TABLE[,1;]     ⍝ Rows indexed by vector, result is matrix
+⍴TABLE[1 1⍴1;]  ⍝ Rows indexed by matrix, result is cube
+#+end_src
+
+*** The Index (=⌷=) function
+
+#+begin_src gnu-apl
+TABLE[1;2]=1 2⌷TABLE
+
+2⌷⍳5
+(⊂3 4)⌷⍳5    ⍝ Use a nested scalar for multiple index.
+
+TAB←2 5⍴⍳10
+8⎕CR TAB
+
+2 3⌷TAB
+2 (2 3)⌷TAB      ⍝ 2nd element of indexing vec is an enclosed vec
+⍝ Nested 2-elts vector for multiple indexes.
+⍝ Result is a submatrix of TAB located at
+⍝ rows 1 2, columns 2 3.
+(1 2) (2 3)⌷TAB
+
+⍝ An empty left argument is OK for index when
+⍝ a scalar is the right argument. This returns
+⍝ the scalar itself.
+(⍳0)⌷37
+#+end_src
+
+** Multiple Specification
+
+Nothing new here as well.
+
+#+begin_src gnu-apl
+(A B C)←1 2 3
+A ◊ B ◊ C
+
+(A B C)←5
+A ◊ B ◊ C
+
+(A B C)←'HI' 'THERE' 'FOLKS'
+⍴A   ⍝ See that A received 'HI' only
+
+(A B C)←⊂'HI' 'THERE' 'FOLKS'
+⍴A   ⍝ All three variables received a vec of the three char vecs
+8⎕CR A
+#+end_src
+
+** Selective Specification
+
+Some functions in APL can be used to select portions of an array. When
+associated with assignment, they can be used to assign values to
+portions of such array.
+
+Bracket indexing is the easiest example.
+
+#+begin_src gnu-apl
+TAB←2 3⍴⍳6
+TAB[2;1]←8
+#+end_src
+
+Let's assign the first three elements of a vector by using the Take
+(dyadic =↑=) function.
+
+#+begin_src gnu-apl
+VEC←⍳5
+(3↑VEC)←'ABC'
+8⎕CR VEC
+#+end_src
+
+#+begin_example
+┌→──────┐
+│ABC 4 5│
+└───────┘
+#+end_example
+
+Let's use the Ravel (monadic =,=) on a matrix to assign a new vector
+value to it:
+
+#+begin_src gnu-apl
+MAT←3 4⍴'ABCDEFGHIJKL'
+(,MAT)←'NEW DATAHERE'  ⍝ Ravelled matrix appears as a vector
+8⎕CR MAT               ⍝ Assignment occurs in matrix itself
+#+end_src
+
+#+begin_example
+┌→───┐
+↓NEW │
+│DATA│
+│HERE│
+└────┘
+#+end_example
+
+Now let's combine Compression (dyadic =/=) and Ravel (monadic =,=) to
+select all A's on the matrix, and replace them by asterisk:
+
+#+begin_src gnu-apl
+(('A'=,MAT)/,MAT)←'*'
+8⎕CR MAT
+#+end_src
+
+#+begin_example
+┌→───┐
+↓NEW │
+│D*T*│
+│HERE│
+└────┘
+#+end_example
+
+We can also combine Take (dyadic =↑=) and Ravel (monadic =,=) to replace
+elements at the top-left 2×2 submatrix of =MAT=:
+
+#+begin_src gnu-apl
+(,2 2↑MAT)←'⎕⎕⎕⎕'
+8⎕CR MAT
+#+end_src
+
+#+begin_example
+┌→───┐
+↓⎕⎕W │
+│⎕⎕T*│
+│HERE│
+└────┘
+#+end_example
+
+We can also use the Compression (=/=) function for selection.
+
+#+begin_src gnu-apl
+TABLE←3 4⍴⍳12
+8⎕CR TABLE
+(1 0 1 0/TABLE)←3 2⍴100
+8⎕CR TABLE
+#+end_src
+
+#+begin_example
+┌→─────────┐
+↓1  2  3  4│
+│5  6  7  8│
+│9 10 11 12│
+└──────────┘
+┌→────────────┐
+↓100  2 100  4│
+│100  6 100  8│
+│100 10 100 12│
+└─────────────┘
+#+end_example
+
+In the next example, we have a vector =X=. We want to replace the first
+=⍴X= elements of =DATA= with the contents of =X=.
+
+#+begin_src gnu-apl
+DATA←⍳13
+X←10×⍳3
+8⎕CR DATA
+((⍴X)↑DATA)←X
+8⎕CR DATA
+#+end_src
+
+#+begin_example
+┌→────────────────────────────┐
+│1 2 3 4 5 6 7 8 9 10 11 12 13│
+└─────────────────────────────┘
+┌→───────────────────────────────┐
+│10 20 30 4 5 6 7 8 9 10 11 12 13│
+└────────────────────────────────┘
+#+end_example
+
+Replace the first =X+2= elements of =Y= with the reverse of a vector
+containing numbers =1= up to =X+2:=
+
+#+begin_src gnu-apl
+Y←⍳10
+X←3
+8⎕CR Y
+
+((2+X)↑Y)←⌽⍳X+2
+8⎕CR Y
+#+end_src
+
+#+begin_example
+┌→───────────────────┐
+│1 2 3 4 5 6 7 8 9 10│
+└────────────────────┘
+┌→───────────────────┐
+│5 4 3 2 1 6 7 8 9 10│
+└────────────────────┘
+#+end_example
+
+We can use Enlist (monadic =∊=) to remove nesting from an array.
+
+#+begin_src gnu-apl
+8⎕CR NEST←(2 2⍴⍳4) 'TEXT' (3 1⍴⍳3)
+(∊NEST)←0
+8⎕CR NEST
+
+⍝ Set specific position to number
+(6⌷∊NEST)←999
+8⎕CR NEST
+
+⍝ Set specific position to character vector (text).
+⍝ For that, introduce extra nesting to the new text.
+(7⌷∊NEST)←⊂'TEXT'
+8⎕CR NEST
+#+end_src
+
+#+begin_example
+┌→───────────────┐
+│┌→──┐ ┌→───┐ ┌→┐│
+│↓1 2│ │TEXT│ ↓1││
+││3 4│ └────┘ │2││
+│└───┘        │3││
+│             └─┘│
+└∊───────────────┘
+┌→──────────────────┐
+│┌→──┐ ┌→──────┐ ┌→┐│
+│↓0 0│ │0 0 0 0│ ↓0││
+││0 0│ └───────┘ │0││
+│└───┘           │0││
+│                └─┘│
+└∊──────────────────┘
+┌→────────────────────┐
+│┌→──┐ ┌→────────┐ ┌→┐│
+│↓0 0│ │0 999 0 0│ ↓0││
+││0 0│ └─────────┘ │0││
+│└───┘             │0││
+│                  └─┘│
+└∊────────────────────┘
+┌→─────────────────────────┐
+│┌→──┐ ┌→─────────────┐ ┌→┐│
+│↓0 0│ │0 999 ┌→───┐ 0│ ↓0││
+││0 0│ │      │TEXT│  │ │0││
+│└───┘ │      └────┘  │ │0││
+│      └∊─────────────┘ └─┘│
+└∊∊────────────────────────┘
+#+end_example
+
+The function First (monadic =↑=) selects the first element of an
+array. Here, we shall replace the first 2×2 matrix of =NEST= by a
+character vector.
+
+#+begin_src gnu-apl
+(↑NEST)←'ABC'
+8⎕CR NEST
+#+end_src
+
+So, the sky is the limit. For more info, see [[https://aplwiki.com/LearnMoreApl/SelectiveSpecification][this page]].
+
+** Binding Strengths
+
+In general, APL evaluates from right to left. However, some elements
+can be said to have stronger binding.
+
+Here is a descending list of binding strength.
+
+|-----------------------+--------------------------------------|
+| Binding               | Bound items                          |
+|-----------------------+--------------------------------------|
+| Brackets =[]=           | Brackets to object to the left       |
+| Specification =←= left  | =←= to object on its left              |
+| Right operand         | Dyadic operator to its right operand |
+| Vector                | Array to array                       |
+| Left operand          | Operator to its left operand         |
+| Left argument         | Function to left argument            |
+| Right argument        | Function to right argument           |
+| Specification =←= right | =←= to object on its right             |
+|-----------------------+--------------------------------------|
+
+And parentheses can override the binding strength hierarchy.
+
+For more info, see [[https://aplwiki.com/LearnMoreApl/BindingStrengths][this page]].
+
+** Pervasive Functions
+
+There are Scalar and Mixed functions in APL. Scalar functions have the
+property of being /pervasive/, that is, they apply to all levels of
+nesting on the data.
+
+Here are some scalar functions:
+
+#+begin_example
++ - × ÷ | ⌈ ⌊ * ⍟ ○ ! ^ ∨ ⍲ ⍱ < ≤ = ≥ > ≠
+Monadic ~
+Monadic ?
+#+end_example
+
+For more info, see [[https://aplwiki.com/LearnMoreApl/PervasiveFunctions][this page]].
+
+** OO, Classes and Inheritance
+
+GNU APL does not support object orientation, therefore I will not be
+covering it. However, Dyalog APL does.
+
+Object-oriented APL [[https://aplwiki.com/LearnMoreApl/AplClasses][information can be found on this page]].
+
+* Finishing
+
+#+begin_src gnu-apl
+⍝ Closes the script file.
+)OFF
+#+end_src
+

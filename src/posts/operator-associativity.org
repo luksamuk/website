@@ -1,0 +1,236 @@
+#+TITLE:  Associatividade de Operadores em C/C++
+#+SETUPFILE: setupfile.org
+#+LANGUAGE:  pt_BR
+
+#+AUTHOR: Lucas Vieira
+#+EMAIL:  lucasvieira@lisp.com.br
+#+DATE:  Dec 02, 2018
+
+Recentemente, estive sanando algumas dúvidas de colegas e amigos a respeito de
+programação, mais especificamente a respeito de C/C++. Ao analisarmos alguns
+exercícios simples passados por nosso professor, deparamo-nos com o seguinte
+enunciado:
+
+#+BEGIN_QUOTE
+/Receba três números, cada número sendo o comprimento de um lado diferente de um/
+/triângulo. Verifique se a existência deste triângulo é possível e, se for,/
+/imprima na tela o tipo deste triângulo. Se não for, imprima que este triângulo/
+/não pode existir./
+#+END_QUOTE
+
+Associado ao exercício, tivemos uma ajuda extra de informações um pouco óbvias,
+mas que aqui descrevo para que o leitor possa passar diretamente ao que
+interessa, neste caso.
+
+- Um triângulo só existe se cada lado for menor que a soma dos outros dois;
+- Um triângulo de três lados iguais é equilátero;
+- Um triângulo de dois lados iguais é isósceles;
+- Um triângulo de lados diferentes é escaleno.
+
+Normalmente, nas aulas não-práticas de programação, utilizamos um estilo de
+pseudocódigo baseado na literatura de /Farrer et al./ Então, a primeira solução
+para o exercício foi elaborada no mesmo, levando em consideração as regras
+acima.
+
+Mas, quando tratamos de C++, estamos falando de uma linguagem diferente e,
+portanto, de regras sintáticas diferentes. /Farrer et al./ foi feita para ser
+"interpretada" pelo cérebro; C++ foi feita para ser interpretada por um
+compilador e, portanto, em certas ocasiões, é necessária uma pedância extra para
+com a forma como escrevemos o algoritmo, do contrário, situações inesperadas
+acontecem.
+
+* Solução Inicial
+
+Tomemos, como exemplo, um fragmento do pseudocódigo que institui a comparação
+relacionada aos três últimos pontos:
+
+#+BEGIN_SRC fundamental
+Se X = Y = Z então
+   imprima "Triângulo Equilátero"
+Senão Se X = Y OU Y = Z OU Z = X então
+   imprima "Triângulo Isósceles"
+Senão
+   imprima "Triângulo Escaleno"
+Fim Se
+#+END_SRC
+
+O pseudocódigo é bem explícito, e é de fácil compreensão para um humano. Mas não
+representa a forma exata como isto deveria ser escrito em C/C++,
+obviamente. Ainda assim, ocorrem situações em que o programador possa ficar
+confuso com esta notação, uma vez que os operadores equivalentes em C/C++ não
+retém todas as propriedades dos operadores do sistema formal matemático.
+
+Vejamos a comparação relacionada ao triângulo equilátero. Ao reescrever este
+raciocínio em C++, um programador um pouco inexperiente poderia ficar tentado
+a escrever:
+
+#+BEGIN_SRC cpp
+if(x == y == z) {
+    std::cout << "Triangulo Equilatero" << std::endl;
+}
+#+END_SRC
+
+Esta comparação, porém, está equivocada, e não produzirá o efeito
+pretendido. Mas afinal, qual o motivo para isto?
+
+* Associatividade de Operadores
+
+A Wikipedia[fn:1] em Inglês possui um artigo sobre o tema da /Associatividade de
+Operadores/. Um dos subtópicos deste artigo, relacionado a associatividade do
+operador de atribuição (Em C/C++, ===), diz que
+
+#+BEGIN_QUOTE
+/For example, in C, the assignment =a = b= is an expression that returns a value/
+/(namely, =b= converted to the type of =a=) with the side effect of setting =a= to this/
+/value. An assignment can be performed in the middle of an expression. The/
+/right-associativity of the === operator allows expressions such as =a = b = c= to be/
+/interpreted as =a = (b = c)=, thereby setting both =a= and =b= to the value of =c=./
+#+END_QUOTE
+
+Apesar do artigo falar a respeito do operador de atribuição, um dos aspectos
+dele (que pretendo aqui explorar) ocorre para todos os outros operadores em
+C/C++ que possuem mais de um operando, desde que eles tenham natureza
+equivalente ou sejam iguais: a ideia de uma associatividade "à direita".
+
+Ou seja, uma situação como esta:
+
+#+BEGIN_SRC text
+A OPERADOR B OPERADOR C
+#+END_SRC
+
+É validada, em tempo de compilação, como esta:
+
+#+BEGIN_SRC text
+A OPERADOR (B OPERADOR C)
+#+END_SRC
+
+Quando temos operadores de similar natureza (por exemplo, operadores aritméticos
+iguais, ou operadores de comparação de qualquer tipo).
+
+Se aplicarmos esta regra ao nosso operador de igualdade (====), teremos que
+
+#+BEGIN_SRC cpp
+// Isto
+(x == y == z)
+
+// Equivale a isto
+(x == (y == z))
+#+END_SRC
+
+Mas uma operação como ~(y == z)~ não resulta no valor de ~y~ ou de ~z~. Esta operação
+equivale a um predicado da Lógica Proposicional, ou seja, só pode ser
+interpretada como =true= ou =false=.
+
+Em C/C++, tratamos como =false= qualquer valor que seja nulo (preferencialmente
+valores inteiros), e como =true= qualquer valor que seja não-nulo (normalmente, a
+constante booleana =true= equivale a =1=).
+
+Em outras palavras: suponhamos que =y= não seja igual a =z=. Dessa forma, a operação
+final que estaremos fazendo será:
+
+#+BEGIN_SRC cpp
+(x == false)
+
+// Que equivale a
+(x == 0)
+#+END_SRC
+
+O que não faz sentido algum, e está completamente fora do que pretendíamos, em
+primeiro lugar!
+
+Da mesma forma, mesmo que =y= fosse igual a =z=, estaríamos comparando se =x= é igual
+a =true= e, portanto, se =x= é igual a =1=.
+
+* Solução
+
+A solução para este problema é quebrar esta igualdade em duas, e transformá-la
+em uma relação lógica. Em C/C++, teríamos:
+
+#+BEGIN_SRC cpp
+if((x == y) && (y == z)) {
+    std::cout << "Triangulo Equilatero" << std::endl;
+}
+#+END_SRC
+
+O operador ~&&~ é um operador lógico que avalia dois operandos e é interpretado
+como ~true~ se ambos os operandos forem verdadeiros. Este é o operador ~AND~.
+
+Poderemos reescrever o pseudocódigo na sintaxe de /Farrer et al./,
+utilizando C/C++, desta forma:
+
+#+BEGIN_SRC cpp
+if((x == y) && (y == z)) {
+    std::cout << "Triangulo Equilatero" << std::endl;
+} else if((x == y) || (y == z) || (z == x)) {
+    std::cout << "Triangulo Isosceles" << std::endl;
+} else {
+    std::cout << "Triangulo Escaleno" << std::endl;
+}
+#+END_SRC
+
+Veja que, no caso da comparação para o triângulo isósceles, só nos preocupamos
+em saber se, realmente, há pelo menos um lado igual ao outro. O motivo para isso
+é que esta comparação só será feita se a comparação relacionada ao triângulo
+equilátero for falsa e, portanto, poderemos ter certeza de que os três lados não
+são iguais.
+
+Adicionalmente, podemos ver que, como estamos procurando uma solução onde uma *ou*
+outra situação ocorre, precisamos especificar o caso ~(z == x)~, já que o operador
+~OR~ (~||~) invalida a utilidade da transitividade da igualdade que exploramos
+anteriormente, da forma como a comparação foi escrita.
+
+* Extra: O Operador Ternário
+
+Em uma nota extra, considere o operador ternário (~?:~) de C/C++. Dada a seguinte
+expressão:
+
+#+BEGIN_SRC cpp
+pred1 ? conseq1 : pred2 ? conseq2 : altern;
+#+END_SRC
+
+Podemos esclarecer o sentido desta expressão ao adicionarmos parênteses,
+destacando a associatividade "à direita" da expressão:
+
+#+BEGIN_SRC cpp
+pred1 ? conseq1 : (pred2 ? conseq2 : altern);
+#+END_SRC
+
+Como a sintaxe sugere, o segundo ternário será interpretado como alternativa ao
+primeiro. Devido à regra de associatividade, C++ infere que o primeiro
+agrupamento à direita que sirva como um ternário completo seja interpretado como
+uma estrutura válida, e este agrupamento, então, será um valor único a ser
+utilizado pelo próximo agrupamento a ser feito da direita para a esquerda, e
+assim sucessivamente. Desta forma, pode-se criar facilmente uma relação do tipo
+~if...elseif...else~, utilizando apenas uma cadeia de operadores ternários.
+
+** O Ternário em PHP
+
+Em uma nota relacionada, há uma intensa crítica[fn:2] sobre o operador ternário
+de PHP, em especial por ele não se comportar desta forma. Considerando a
+expressão similar:
+
+#+BEGIN_SRC php
+$pred1 ? $conseq1 : $pred2 ? $conseq2 : $altern;
+#+END_SRC
+
+Temos, no interpretador de PHP, o procedimento padrão de que esta
+associatividade, exclusivamente do operador ternário, será feita da esquerda
+para a direita. Em outras palavras, a expressão acima será interpretada como:
+
+#+BEGIN_SRC php
+($pred1 ? $conseq1 : $pred2) ? $conseq2 : $altern;
+#+END_SRC
+
+Portanto, cuidado com o operador ternário em PHP. ~:P~
+
+* Próximos passos
+
+Encerrarei por aqui minha postagem, mas esta discussão está intimamente ligada à
+existência dos ~lvalues~ e ~rvalues~ em C++. Este tópico, porém, pode ser mais
+extenso e, portanto, deixarei para um momento mais específico.
+
+* Footnotes
+
+[fn:1] [[https://en.wikipedia.org/wiki/Operator_associativity#Right-associativity_of_assignment_operators][Wikipedia: Operator Associativity]]
+
+[fn:2] [[http://phpsadness.com/sad/30][PHP Sadness: Ternary Operator Associativity]]

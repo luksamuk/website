@@ -1,0 +1,1106 @@
+#+TITLE: Classificando Lisps: O Caso Clojure
+
+#+LATEX_CLASS_OPTIONS: [a4paper,11pt,oneside]
+#+LATEX_HEADER: \usepackage{times}
+#+LATEX_HEADER: \usepackage{microtype}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \usepackage{mathtools}
+# #+LATEX_HEADER: \usepackage{draftwatermark}
+#+LATEX_HEADER: \usepackage[a4paper]{geometry}
+#+LATEX_HEADER: \usepackage[brazil]{babel}
+#+LATEX_HEADER: \hypersetup{colorlinks, citecolor=black, filecolor=black, linkcolor=blue, urlcolor=blue}
+# , linkcolor=black, urlcolor=black
+#+OPTIONS: toc:nil num:1 email:t footer:nil
+
+#+LATEX_HEADER: \usepackage{geometry}
+#+LATEX_HEADER: \geometry{a4paper, left=3cm, right=2cm, top=2.5cm, bottom=2.5cm}
+
+# Uso seletivo de setupfile, apenas para HTML
+#+begin_src emacs-lisp :exports results :results value raw
+(if (and (boundp 'org-export-current-backend)
+	   (eq org-export-current-backend 'html))
+  "#+SETUPFILE: setupfile.org\n#+OPTIONS: toc:nil\n"
+  "")
+#+end_src
+
+#+LANGUAGE: pt_BR
+#+AUTHOR:   Lucas Vieira
+#+EMAIL:    lucasvieira@lisp.com.br
+#+DATE:     Ago 16, 2019
+#+STARTUP:  overview inlineimages latexpreview
+
+
+
+#+begin_abstract
+Clojure é um dialeto moderno de Lisp que possui alta popularidade e
+grande uso na indústria. Este dialeto de Lisp utiliza sintaxe e ideias
+pouco ortodoxas com relação a outros dialetos mais conhecidos; estas
+diferenças são suficientes para que alguns membros da comunidade
+de dialetos Lisp questione se Clojure é, realmente, um dialeto de
+Lisp. Este artigo pretende expor meu ponto de vista com relação à
+linguagem, e também propor uma forma diferente de análise de dialetos
+Lisp, substituindo uma visão discreta (ser ou não ser um dialeto de
+Lisp) por uma visão descritível em uma escala, que relaciona a
+expressividade e a versatilidade dos Lisps tradicionais com a
+linguagem comparada. Proponho uma forma de ver Clojure sob esta ótica,
+e então mostro como uma comparação polarizada pode ser prejudicial,
+tendo em vista críticas baseadas neste ponto de vista antigo.
+#+end_abstract
+
+
+* Introdução
+
+Você conhece a linguagem Clojure? Costumo falar muito de
+linguagens como Common Lisp e Scheme, mas não cheguei a mostrar o que
+acho desta primeira. Algumas pessoas perguntam minha opinião a
+respeito da mesma, e inclusive me perguntam se realmente considero-a
+um dialeto de Lisp.
+
+Pois bem, chegou a hora de dar uma dimensão do que penso a respeito de
+Clojure. Ressalto desde já que não gosto muito deste tipo de
+discussão, em especial porque detesto tratar de tópicos em que a maior
+parte da argumentação está atrelada a preferência pessoal. Mas
+não minimizo a importância do debate. Estou envolvido com a comunidade
+/Common Lisp Brasil/, e minhas ideias acabam perpassando a forma como
+enxergo CL, também. Todavia, que fique bem claro que esta é unicamente
+a minha opinião, e que não necessariamente reflete a opinião dos
+outros membros da comunidade /Common Lisp Brasil/.
+
+# #+begin_export html
+# O que quero pedir a você, leitor, é algo extremamente difícil:
+# leia até o fim. Não espero que este pedido seja acatado com tanto
+# rigor, pois estamos em uma era onde informação é bombardeada no
+# internauta o tempo todo, mas acredito que as portas da discussão
+# mantém-se abertas para quem sabe ouvir, assim como sei que também
+# deverei saber ouvir críticas a este texto; assuntos polêmicos demandam
+# cuidado tanto na leitura quanto na escrita.
+# #+end_export
+
+* A linguagem Clojure
+
+Clojure é uma linguagem amplamente reconhecida como um dos muitos
+dialetos de Lisp. Sua plataforma primária é a /Java Virtual
+Machine/. Seu design foi feito por Rich Hickey, e já ouvi falar que
+este design foi feito de forma cuidadosa -- algo crucial no
+desenvolvimento de uma linguagem de programação, e que [[https://eev.ee/blog/2012/04/09/php-a-fractal-of-bad-design/][nem sempre é
+levado em consideração de verdade]].
+
+Adicionalmente, Clojure é considerado um dialeto de Lisp pouco
+ortodoxo, o que de fato faz com que programadores de outros dialetos
+desconfiem das decisões tomadas em seu /design/ -- inclusive, não estou
+isento da realização destes questionamentos. De qualquer forma, é o
+dialeto de Lisp atualmente mais utilizado na indústria, tendo
+sobretudo seus ramos no Brasil, em empresas como a Nubank, por
+exemplo.
+
+* Experiência pessoal
+
+Sou um programador versátil, e tive contato com várias linguagens
+diferentes ao longo da minha vida. Inevitavelmente, desenvolvi uma
+opinião forte a respeito das linguagens que eu achava boas, e das
+características que eu gostava nestas linguagens. Mas ao ter contato
+com outras linguagens e programadores que eram -- ainda bem! -- muito
+mais razoáveis que eu, aprendi que é necessário um grau de
+tolerância para uma opinião madura a respeito do assunto,
+juntamente com um toque de pé-no-chão. Em suma, eis algumas máximas
+interessantes que explicam parte da minha visão:
+
+- De nada adianta uma linguagem que /resolve/ seu problema e não o faz
+  de forma /elegante/;
+- De nada adianta uma linguagem /elegante/ que não /resolve/ seu
+  problema.
+
+Estas duas frases criam um balanço tênue entre pragmatismo e
+expressividade. Admito que parte disso é culpa das escolas de
+pensamento do [[https://sarabander.github.io/sicp/][SICP]] e da [[https://pt.wikipedia.org/wiki/Filosofia_Unix][Filosofia UNIX]], das quais gosto muito.
+
+Quando falo em /elegância/, estou me referindo ao conceito de criação de
+peças simples que se conectam para uma funcionalidade mais complexa. Em
+outras palavras, refiro-me a conceber componentes pequenos, que
+interagem de forma transparente. Isto também pode ser compreendido
+através da ideia de /robustez/, mas o conceito de /elegância/ não
+significa que todo e qualquer /software/ feito em uma linguagem com esta
+característica seja, necessariamente, /robusto/.
+
+/Software/ demanda trabalho e análise cuidadosa e não se cria da noite
+para o dia, então boa parte da /robustez/ de um /software/ depende apenas
+do programador; a linguagem /elegante/ apenas possibilita que o
+programador crie /software/ robusto com maior facilidade.
+
+O que quero dizer com este raciocínio é que o desenvolvimento do seu
+/software/ deve levar em consideração tanto a utilidade quanto a
+manutenção; e quando falamos em manutenção, exigimos robustez no
+/software/ analisado, para que esta atividade seja facilitada. No
+entanto, o que vejo por aí é que algumas soluções desenvolvidas no
+mercado (sobretudo para desenvolvimento web) esqueceram-se disso, e
+tornaram-se um arranjo de bugs e problemas escorrendo por todos os
+cantos. Mas este é um tópico para outro dia.
+
+* COMMENT O que acho de Clojure
+
+# Esta seção é longa e meio pedante. Me sinto mal por tentar colocá-la
+# no artigo. Mas ela poderia evoluir para um artigo diferente. Seria
+# legal colocá-la como uma espécie de continuação para a discussão,
+# removendo minha opinião pessoal e o esforço retórico em prol de uma
+# comparação sem opinião explícita,
+
+Gostaria de destacar o que realmente penso da linguagem Clojure, antes
+de me aprofundar em alguns detalhes. A linguagem não me empolga,
+particularmente, e para mim, de fato é um Lisp. Porém, alguns aspectos
+nela me incomodam além da conta. Vou enumerar alguns destes aspectos
+nas subseções que se seguem.
+
+Também é essencial salientar que estes são pontos arbitrários. Eu não
+espero levá-los a ferro e fogo e também quero dar a mim mesmo a
+oportunidade de mudar minha opinião com relação a Clojure, mas não
+vejo isto acontecendo em um futuro próximo.
+
+** =cond= e =let=
+
+Considere as seguintes funções, escritas em Clojure.
+
+#+begin_src clojure
+(defn debrief-player-status [status]
+  (cond (eq status 'alive) (println "Player is alive")
+        (eq status 'dead) (println "Player is dead")
+        :else (println "Unknown player status!")))
+
+(defn debrief-player [the-player]
+  (let [health (player-health the-player)
+        status (player-status the-player)]
+    (printf "Player health: %s\n" health)
+    (debrief-player-status status)))
+#+end_src
+
+Elas representam o uso dos /special forms/ =cond= e =let=. O primeiro
+serve para controle de fluxo com mais de uma cláusula. O segundo, para
+declarar variáveis e determinar um /environment/ onde elas "existem".
+
+Vejamos a forma como estes campos seriam escritos em Common
+Lisp[fn:8]:
+
+#+begin_src lisp
+(defun debrief-player-status (status)
+  (cond ((eq status 'alive) (format t "Player is alive~%"))
+	((eq status 'dead) (format t "Player is dead~%"))
+	(t (format t "Unknown player status!"))))
+
+(defun debrief-player (the-player)
+  (let ((health (player-health the-player))
+	(status (player-status the-player)))
+    (format t "Player health: ~a~%" health)
+    (debrief-player-status status)))
+#+end_src
+
+Enquanto olhos mais ingênuos vêem a sintaxe de Clojure como
+sendo fundamentalmente mais "limpa" por conter menos parênteses, eu
+vejo como um perigo de confusão ao codificar. As declarações de
+variáveis de =let= e as declarações de cláusulas em =cond= não possuem
+listas extras aninhadas, e isto significa que cada cláusula deve ser
+identificada como um par de expressões.
+
+Isto é problemático, em especial no caso do =cond=, uma vez que uma
+cláusula pode ter mais de uma consequência. Veja este exemplo em
+pseudo-Common Lisp:
+
+#+begin_src lisp
+(cond ((evenp my-number)
+       (format t "O numero e par!~%")
+       (push my-number *even-numbers*))
+      ((< number 1) ...)
+      (t ...))
+#+end_src
+
+Nesta situação em específico, podemos ver pelo aninhamento de
+parênteses que o predicado a ser verificado é =(evenp my-number)=, e
+todo o restante que vem no aninhamento é um conjunto de expressões que
+será executada caso o predicado esteja satisfeito. Ao passo que, em
+Clojure, o programador seria obrigado a utilizar um /form/ extra, o =do.=
+Veja este exemplo em pseudo-Clojure:
+
+#+begin_src lisp
+(cond (evenp my-number)
+      (do (println "O numero e par!")
+          (push my-number *even-numbers*))
+      (< number 1) ...
+      :else ...)
+#+end_src
+
+Fica difícil delimitar visualmente o que é cláusula e onde começa cada
+cláusula. Esta forma também obriga o programador a escrever coisas na
+frente, como no primeiro exemplo, se ele quiser resolver o problema da
+legibilidade:
+
+#+begin_src lisp
+(cond (evenp my-number) (do (println "O numero e par!")
+                            (push my-number *even-numbers*))
+      (< number 1) ...
+      :else ...)
+#+end_src
+
+Mas isto fica muito feio.
+
+Para resumir, veja que a legibilidade do código fica delegada à forma
+como você utiliza a indentação. A meu ver, isto abre precedente para
+atrelamento de importância extra a um espaço em branco (neste caso, a
+quebra de linha), que deveria ser mera regra de estilo, auxiliando na
+compreensão do código. Tradicionalmente, o próprio aninhamento -- que
+falta a Clojure -- deveria dar conta disso.
+
+** Docstrings
+
+Docstrings em Clojure são colocadas sempre antes da sequência que
+enumera os parâmetros formais de uma função[fn:9], quando temos uma
+definição de função simples.
+
+#+begin_src clojure
+(defn debrief-player-status
+  "Prints player status information on screen"
+  [status]
+  (cond (eq status 'alive) (println "Player is alive")
+        (eq status 'dead) (println "Player is dead")
+        :else (println "Unknown player status!")))
+
+(defn debrief-player
+  "Prints player information on screen"
+  [the-player]
+  (let [health (player-health the-player)
+        status (player-status the-player)]
+    (printf "Player health: %s\n" health)
+    (debrief-player-status status)))
+#+end_src
+
+A posição dos parâmetros formais é estranha até mesmo aos olhos das
+pessoas que não estão acostumadas com Lisps, ouso dizer. Comparando
+com o padrão de Common Lisp, temos exatamente o oposto:
+
+#+begin_src lisp
+(defun debrief-player-status (status)
+  "Prints player status information on screen"
+  (cond ((eq status 'alive) (format t "Player is alive~%"))
+	((eq status 'dead) (format t "Player is dead~%"))
+	(t (format t "Unknown player status!"))))
+
+(defun debrief-player (the-player)
+  "Prints player information on screen"
+  (let ((health (player-health the-player))
+	(status (player-status the-player)))
+    (format t "Player health: ~a~%" health)
+    (debrief-player-status status)))
+#+end_src
+
+Admito que o local das /docstrings/ de Clojure é prudente para os casos
+em que temos funções com múltiplas cláusulas -- que não são definições
+simples. Por exemplo:
+
+#+begin_src clojure
+(defn foo
+  "This function does something"
+  ([] (println "No args given"))
+  ([x] (printf "X is %s\n" x))
+  ([x y] (printf "X is %s, Y is %s\n" x y)))
+#+end_src
+
+Mas este problema poderia ser resolvido com um mero uso de /pattern
+matching/ para desestruturar uma lista genérica de argumentos.
+
+É interessante destacar que este tipo de problema não ocorre em Common
+Lisp porque  utilizamos /generics/ por convenção; implementar uma
+função para argumentos diferentes é implementar um novo método,
+baseando-se no /generic/ associado, e realizando despacho
+dinâmico. Clojure tem um conceito similar, baseado nos /forms/ =defmulti=
+e =defmethod=. Poderia ser mais interessante que utilizar um único /form/
+que implemente a função com todas as suas aridades e assinaturas de
+uma vez só.
+
+Obviamente, esta é uma sugestão arbitrária. Alguns Lisps, como Shen,
+possuem uma sintaxe muito menos ortodoxa, e também utilizam este
+sistema de múltiplas assinaturas, com certo poder de
+desestruturamento, de uma vez só. Veja este fragmento de um
+interpretador de um mini-Lisp, escrito em Shen. Informações de tipos
+foram omitidas pela irrelevância:
+
+#+begin_src shen
+(define eval
+  {expr --> env --> expr}
+  
+  N Env -> N where (number? N)
+  
+  [lambda X Y] Env -> [closure [lambda X Y] Env]
+  
+  Var Env -> (eval (lookup-env Var Env) Env)
+             where (symbol? Var)
+			       
+  [let Var E1 E2] Env -> (eval E2 [[Var | (eval E1 Env)] | Env])
+  
+  [Exp1 Exp2] Env -> (let Cl (eval Exp1 Env)
+		       (handle-closure Cl Exp2))
+  
+  ...
+
+  Exp _ -> (error "Cannot understand expression ~A" Exp))
+#+end_src
+
+** =cons= e (inexistência de) Cons Cells
+
+Este já é um problema mais sério, a meu ver. Como Lisp significa /List
+Processor/, fica bem claro que um Lisp deve ser capaz de lidar com
+listas. E a forma canônica de se falar desta estrutura em Lisps é por
+meio de /cons cells/.
+
+Abrindo um breve parêntese, uma /cons cell/ é uma célula de memória
+dividida em duas regiões.
+
+#+CAPTION: Exemplo do uso de /cons/ e de uma /cons cell/ em Common Lisp.
+#+begin_src emacs-lisp :exports results :results value raw
+(case (and (boundp 'org-export-current-backend)
+	   org-export-current-backend)
+  (nil "")
+  (latex "[[file:./img/cons-example-black.png]]")
+  (html  "[[file:./img/cons-example.png]]"))
+#+end_src
+
+
+A definição canônica de uma lista, em Lisp, é a de uma /cons cell/, cujo
+primeiro elemento seja um ponteiro para uma informação arbitrária (um
+átomo ou uma lista, tanto faz), e o segundo elemento seja uma /outra
+lista/. Some a isto o fato de considerarmos a /lista vazia/ como uma
+lista, e poderemos dizer que Lisps lidam com listas encadeadas, da
+forma como aprendemos nas matérias da faculdade.
+
+O pulo do gato nesta definição é que, enquanto as listas que
+programamos em =C= envolvem a definição de uma estrutura de dados que
+desempenha o papel de um /nó/ -- nó este que carrega uma informação e um
+ponteiro para o próximo elemento --, em Lisp temos o conceito de um
+mero /par/, ou seja, de uma /cons cell/, e nos aproveitamos dele para
+realizar este encadeamento.
+
+#+CAPTION: Exemplo da construção de uma lista em Scheme e Common Lisp, usando /cons cells/.
+#+begin_src emacs-lisp :exports results :results value raw
+(case (and (boundp 'org-export-current-backend)
+	   org-export-current-backend)
+  (nil "")
+  (latex "[[file:./img/cons-list-example-black.png]]")
+  (html  "[[file:./img/cons-list-example.png]]"))
+#+end_src
+
+Em Clojure, as listas utilizam uma ideia diferente, e há uma função
+=cons=, porém seu uso é igualmente diferente da forma como é feita em
+Scheme e Common Lisp: o segundo elemento precisa
+[[https://clojure.org/reference/sequences#_cons_item_seq][implementar a interface =ISeq=]]. Em outras palavras,
+podemos aplicar a função =cons= em dois parâmetros, *se e somente se o
+segundo parâmetro for uma sequência*. Não temos, portanto, o conceito
+de /pares/ e, finalmente, o conceito de /cons cell/ nem ao menos existe em
+Clojure! O nome da função ficou por tradição, mas causa mais confusão
+que ajuda.
+
+Uma pessoa que tentar seguir o capítulo de /operadores genéricos/ do
+SICP, codificando em Clojure, ao implementar dados compostos por
+dois elementos (como números complexos ou frações), não poderá
+utilizar a função =cons= para tal, e acabará recorrendo a
+listas. Trata-se de uma quebra violenta de tradições, por vezes
+ignorada.
+
+** Vocabulário para /maps/
+
+Esta é uma discussão que já tive com outras pessoas, e que culminou em
+argumentos variados.
+
+Clojure tem uma forma simples para escrever /maps/ (a estrutura de
+dados! Não confunda com as operações =map=, =mapcar=, =mapc=, =mapcan=, etc).
+E isto não é um defeito; é um elogio. Veja:
+
+#+begin_src clojure
+(def my-map {:name "John Doe" :age 40 :fav-pizza "Pepperoni"})
+#+end_src
+
+Eu não sou muito fã da ideia de ter ={}= e =[]= com significado
+diferenciado em Lisps, mas esta é uma mudança que eu hoje acredito ser
+bem-vinda em Clojure. Também temos estes símbolos em Racket, mas com a
+mesma conotação do uso de parênteses.
+
+A disposição dos elementos no /map/, ao contrário do que já falei a
+respeito de =let= e =cond=, não me parece ruim, também. Em especial
+porque, mesmo quando as chaves não são =keywords= (como mostrado no
+exemplo), é fácil pensar na sintaxe de definição do /map/ de Clojure
+como a sintaxe para uma =plist=[fn:1].
+
+Primeiramente, vamos revisar o que são /maps/. Um /map/ é uma estrutura
+que *mapeia* uma certa chave para um outro valor. Em algumas linguagens,
+é conhecida como dicionário. Não existe um método fixo de
+implementação para esta abstração; Common Lisp usa /tabelas hash/, e
+=C++=, pela implementação da GNU, usa uma árvore /red-black/. O importante
+desta estrutura e dados é saber o significado do mapeamento, e saber
+que os elementos (leia-se: pares) não têm uma ordem fixa. Além do
+mais, uma chave deverá mapear para /apenas um valor/.
+
+Vejamos o que ocorre em outros Lisps.
+
+Scheme não possui, por padrão, uma implementação para outra estrutura
+que seja /cons cells/ ou /listas/, pelo fato de ser uma linguagem
+projetada para a simplicidade e também para a didática. Racket, um
+dialeto de Scheme, equivalente "pythonístico" em termos de
+disponibilidade de bibliotecas no mundo Lisp, [[https://docs.racket-lang.org/guide/hash-tables.html][possui sua implementação
+de /tabelas hash/]].
+
+Como já dito, Common Lisp possui /hash tables/, mas não tem um
+vocabulário para defini-las como literais:
+
+#+begin_src lisp
+(defparameter my-map
+  (let ((my-table (make-hash-table)))
+    (setf (gethash :name my-table) "John Doe")
+    (setf (gethash :age my-table) 40)
+    (setf (gethash :fav-pizza my-table) "Pepperoni")
+    my-table))
+#+end_src
+
+Existe um projeto com tentativa de modernização da sintaxe de algumas
+coisas em Common Lisp, chamado [[http://cl21.org/][CL21]], que propõe a implementação de
+algumas funcionalidades através de /reader macros/[fn:2]. Uma delas é para as
+/hash tables/:
+
+#+begin_src lisp
+(defparameter my-map #H(:name "John Doe" :age 40 :fav-pizza))
+#+end_src
+
+Voltando a Clojure, meu incômodo relacionado aos /maps/ está em duas das
+três formas para expressar, sintaticamente, a recuperação de dados nos
+mesmos.
+
+A primeira forma é a mais óbvia. Há uma função, que toma nossa coleção
+(nosso /map/), e a chave que será procurada.
+
+#+begin_src clojure
+(get my-map :name)
+#+end_src
+
+As outras duas formas envolvem a aplicação de uma /chave/ em um /map/, e a
+aplicação de um /map/ em uma /chave/.
+
+#+begin_src clojure
+(:name my-map)
+(my-map :name)
+#+end_src
+
+Ambos os vocabulários sugerem duas coisas sintaticamente
+diferentes. No primeiro, a chave parece tomar o /status/ de /função/; no
+segundo, o /map/ parece tomar este /status/ de função. E para piorar,
+ambas as sintaxes são válidas na linguagem.
+
+Vamos destrinchar isto um pouco mais, e para isso, vamos precisar
+recorrer a um pouco de teoria.
+
+*** Aplicação de /chave/ em /map/
+
+Vamos começar simplificando as coisas. Considere este /map/:
+
+#+begin_src clojure
+(def my-map {1 "John Doe"   2 40   3 "Pepperoni"})
+#+end_src
+
+Troquei as =keywords= por números, para tornar a análise mais
+conveniente; mas suponhamos que esta substituição seja fruto de um
+mapeamento adequado, de =keyword= para números, apesar de isto não ser
+essencial[fn:3]. Ao fazermos esta substituição, podemos constatar uma
+das formas de recuperar o nome neste /map/:
+
+#+begin_src clojure
+(1 my-map)
+#+end_src
+
+Então, temos um valor sendo aplicado a uma estrutura de dados.
+
+O valor =1= funciona como uma /função seletora/; ele toma um /map/
+arbitrário, e "transforma-o" no valor ali dentro, que estiver
+associado ao =1= (neste caso, o valor é ="John Doe"=).
+
+Na computação, temos a ideia dos [[https://pt.m.wikipedia.org/wiki/Codifica%C3%A7%C3%A3o_de_Church][numerais de Church]], que são
+representações para números naturais, de forma que cada número
+corresponde a uma função. Suponha que estivéssemos utilizando um
+dialeto de Lisp capaz de realizar /currying/; poderíamos então definir
+estas funções neste pseudo-Lisp, da seguinte forma:
+
+#+begin_example
+(define 0 (lambda (f x) x))
+(define 1 (lambda (f x) (f x)))
+(define 2 (lambda (f x) (f (f x))))
+(define 3 (lambda (f x) (f (f (f x)))))
+...
+#+end_example
+
+Ou seja, o número $n$ é a aplicação de uma certa função $f$ sobre um
+número $x$, e a quantidade de aplicações sucessivas corresponde a
+$n$.
+
+Caso você esteja com dificuldade para entender este conceito, suponha
+$x = 0$, e $f$ como sendo a função $succ$, que calcula o sucessor de
+um número. Assim, o número $2$ corresponderia a duas aplicações da
+função $succ$ em $0$. Ou seja:
+
+\begin{equation*}
+2(0, succ) = succ(succ(0)) = succ(1) = 2
+\end{equation*}
+
+Tomando por base esta ideia, podemos aplicar uma \beta-redução, ou
+seja, algumas substituições na nossa operação original. Perceba que
+não tentamos ainda desempacotar o significado matemático de =my-map=,
+que será discutido daqui a pouco:
+
+#+begin_example
+   (1 my-map)
+|- ((lambda (f x) (f x)) my-map)
+|- (lambda (x) (my-map x))
+#+end_example
+
+Neste momento, temos um impasse. A aplicação de =my-map= sobre um
+certo valor faz sentido, por motivos que pretendo explicar na próxima
+seção, então o corpo da função gerada parece plausível; para
+compreensão preliminar, suponha que =(my-map x)= retorne o valor que de
+fato está associado à chave =x=.
+
+O valor =1= de fato agiu como uma espécie de seletor, mas não da forma
+como esperávamos: ao invés de desempacotar =my-map= e retornar um
+valor, ele nos deu uma função que retorna um valor para uma chave! O
+"seletor" acabou por virar uma fábrica de seletores.
+
+Observando o que acontece para o valor =2= como seletor, teremos o
+seguinte:
+
+#+begin_example
+   (2 my-map)
+|- ((lambda (f x) (f (f x))) my-map)
+|- (lambda (x) (my-map (my-map x)))
+#+end_example
+
+Aqui temos um novo seletor, mas desta vez, trata-se do seguinte:
+determinamos o valor associado para a chave =x= em =my-map=, e então
+usamos este valor retornado como uma nova chave, para uma nova
+consulta a =my-map=.
+
+Não é difícil enxergar que números maiores farão um maior número de
+procuras sucessivas no /map/. Este resultado parece oferecer uma
+perspectiva interessante, mas de qualquer forma, fica claro que há
+algo estranho.
+
+Finalmente, poderei agora dizer: aplicar uma certa informação a um /map/
+não determina, pelos numerais de Church, uma álgebra que culmine
+exatamente em uma operação de verificação no /map/. $\blacksquare$
+
+Ufa! Há apenas uma ponta solta aí. Eu disse que aplicar =my-map= a uma
+chave fazia sentido, e agora pretendo explicar como isto pode ser
+possível.
+
+*** Aplicação de /map/ em /chave/
+
+Tomemos, ainda, a definição de =my-map= para uma chave numérica,
+como apresentada anteriormente. O que significa aplicar /map/ a uma
+chave?
+
+Bem, esta é uma discussão interessante, porque nos leva à definição
+matemática de um /map/. Sabemos que um /map/ enumera algumas chaves, e
+estas chaves possuem sempre uma única correspondência.
+
+Isto significa que o /map/ corresponde, no mínimo, a uma *função
+injetora*, quando o domínio é $\mathbb{N}$. Isto significa que, para
+cada valor $n$ válido ao qual o /map/ é aplicado, é gerado um único
+$n'$, configurando determinismo.
+
+Pela nomenclatura de Clojure (e da maioria das linguagens que
+implementam a estrutura /map/, claro), não podemos dizer que a função é
+/sobrejetora/, pois só temos alguns mapeamentos definidos; em outras
+palavras, não podemos alcançar todos os valores numéricos[fn:4]
+possíveis; isto também elimina a chance de um /map/ poder descrever uma
+função /bijetora/.
+
+Veja que falei em valores de chave /válidos/, propositalmente. O motivo
+para isso é que o nosso /map/ enumera apenas alguns valores de chave;
+para chaves que não estão definidas no /map/, teremos um valor
+/indefinido/. Esta é uma característica importante, pois indica que
+estamos lidando com uma *função parcial*.
+
+Certo, sabemos que um /map/ então corresponde a uma função injetora e
+parcial. A boa notícia disso é que, de fato, aplicar um /map/ a uma
+/chave/ faz sentido, o que também valida o argumento que utilizei na
+seção anterior.
+
+A má notícia é que, dito isto, o /map/ não passa de uma descrição fraca
+para uma função, em vista do que poderia ser feito com expressões
+/lambda/ e =defn=. E não obstante, esta "fraqueza" reflete-se também nas
+regras sintáticas do /map/.
+
+Esta frase requer um pouco mais de elaboração.
+
+Suponhamos uma função booleana, com suas únicas entradas válidas sendo
+=0= e =1=. Nosso objetivo é realizar a operação =NOT=, que inverte a entrada
+informada. Podemos codificar isto em Clojure, da seguinte forma[fn:10]:
+
+#+begin_src clojure
+(defn not [x]
+  (cond (= x 0) 1
+        (= x 1) 0))
+#+end_src
+
+Considerando a afirmativa de que um /map/ é uma função, e considerando o
+domínio $\{0, 1\}$ já mostrado, poderíamos ter definido esta função
+assim:
+
+#+begin_src clojure
+(def not
+  {0 1
+   1 0})
+#+end_src
+
+A computação realizada seria exatamente a mesma, e não teríamos
+alteração alguma no resultado; também não faríamos mudança alguma na
+forma de expressar uma negação:
+
+#+begin_src clojure
+(not 0)
+(not 1)
+(not (not 0))
+#+end_src
+
+Agora, vamos aumentar um pouco este problema. Ao invés de utilizarmos
+um domínio $D = \{0, 1\}$, vamos utilizar um domínio $D = \mathbb{N}$:
+Todo valor /nulo/ será considerado /falso/; reciprocamente, todo valor
+/não-nulo/ será considerado /verdadeiro/:
+
+\begin{equation*}
+not(x) = \begin{cases}
+         0 &\text{se $x = 0$}\\
+         1 &\text{caso contrário}
+         \end{cases}
+\end{equation*}
+
+Codificar este comportamento é muito simples, usando a notação padrão
+de uma função.
+
+#+begin_src clojure
+(defn not [x]
+  (if (= x 0) 0 1))
+#+end_src
+
+Mas este comportamento é impossível de ser expressado com um mero
+/map/. E o motivo para isso é simples: não existe uma forma de expressar
+uma chave equivalente a um /else/, na estrutura de um /map/ -- a única
+forma de expressar algo assim seria definir o valor =1= como resposta
+para todas as chaves $x \in \mathbb{N}$.
+
+Poderíamos dizer que este comportamento pode ser emulado através da
+função =get=, uma das formas de se manipular /maps/ para recuperar
+valores, que permite declarar um valor padrão quando uma chave não é
+encontrada no mesmo, mas esta solução tem dois problemas:
+primeiramente, ela transcende a estrutura do /map/ em termos de
+definição, sendo mais uma ferramenta de prevenção de erros, e não um
+valor anexo ao /map/; e ela também descaracteriza a aplicação de um /map/
+a uma /chave/[fn:11].
+
+Programadores mais astutos poderão sugerir que esta funcionalidade
+de uma "chave geral", em caso de falha na consulta, seja acrescentada
+à sintaxe do /map/, mas esta adição é redundante perante a sintaxe de
+funções em Clojure. Ademais, usar extensivamente /maps/ como substitutos
+de funções "comuns" não é um procedimento muito prático.
+
+* Clojure é um Lisp, afinal?
+
+Um ponto interessante é o quanto o design de Clojure desvia-se de
+outros Lisps. Já vi pessoas chamarem Clojure de linguagem /Lisp-like/,
+sugerindo que esta seja uma linguagem que emula a sintaxe de um Lisp
+mas não o é. Acredito que esta opinião seja injusta. Para
+contra-argumentar, eu mantinha minha própria lista arbitrária de
+opiniões a respeito do que caracteriza uma linguagem como Lisp.
+
+Todavia, percebi que esta lista arbitrária era uma péssima ferramenta
+de análise da linguagem, assim como tantas outras listas arbitrárias
+de características já boladas por outros internautas. Resolvi
+descartá-la, em prol de uma aproximação muito melhor que já exponho a
+seguir. Inclusive, esta discussão acerca de "o que é ou não Lisp" já
+causou [[https://groups.google.com/d/topic/comp.lang.lisp/Bj8Hx6mZEYI/discussion][brigas homéricas em listas de e-mails]], drama que não pretendo
+escavar ou reproduzir através deste artigo. De qualquer forma, ficar
+classificando linguagens entre Lisp e não-Lisp não é algo tão
+valoroso, [[http://journal.stuffwithstuff.com/2013/07/18/javascript-isnt-scheme/][exceto em casos muito extremos]][fn:14]; mais valoroso ainda é
+determinar o quanto a linguagem retém do que se espera de um Lisp,
+como coloco a seguir.
+
+** Classificando Lisps
+
+Mesmo considerando Clojure um Lisp, ainda me parece insatisfatória
+essa classificação discreta. Estou muito inclinado a aceitar este
+ponto de vista, mas algumas linguagens, que clamam ser dialetos de
+Lisp, são mais difíceis eu engolir. Um exemplo gritante do que
+considero um pseudo-Lisp é LFE (/Lisp Flavored Erlang/). Eu gosto de
+usar LFE, e seu uso melhorou a escrita de alguns programas meus, mas
+vejo LFE como nada mais que Erlang em pele de Lisp[fn:12].
+
+Parece-me que existe uma escala, onde os "Lisps Raiz"  e os "Falsos
+Lisps" colocam-se[fn:5]. Mas o que exatamente esta escala mede?
+
+O Eduardo Lopes, da /Common Lisp Brasil/, me deu uma ideia interessante
+quanto a isso: ao invés de nos perguntarmos /"Linguagem X é um Lisp?"/,
+devemos nos perguntar /"Linguagem X conserva o poder expressivo e a
+versatilidade originais dos Lisps?"/. Assim, poderíamos ter uma boa
+base de debate, e ao mesmo tempo abster-nos de discussões
+improdutivas.
+
+Antes de aplicarmos este conceito, é interessante que eu explicite o
+que entendo como /"poder expressivo"/ e /"versatilidade"/ de Lisp, que não
+necessariamente seguem o mesmo entendimento do
+Eduardo. Expressividade, para mim, está diretamente associada a
+sintaxe; isto envolve ter sintaxe simples e não-ambígua, mas que ainda
+assim permita extensão irrestrita. E veja que este poder chega ao
+ponto em que, para expressões subsequentes que foram construídas por
+esta base expressiva, a simplicidade e não-ambiguidade das mesmas
+ficam à mercê do bom-senso do programador[fn:13].
+
+A versatilidade estaria associada ao aspecto da homoiconicidade que, a
+meu ver, transita entre sintaxe e semântica: ainda que tenhamos listas
+como elementos sintáticos que permeiam a escrita, temos também as
+mesmas listas como estruturas manipuláveis, na semântica dos
+programas. Em outras palavras, Lisps são versáteis porque o que você
+declara sintaticamente é uma estrutura de dados, que é interpretada
+como tal, e pode ser manipulada, inclusive em /runtime/.
+
+Agora sim podemos retornar à escala, e dizer que os "Lisps Raiz" são
+as linguagens que melhor conservam o poder expressivo e a
+versatilidade de /LISP 1.5/. Entre estas, alegremente coloco dialetos
+desaparecidos como /ZetaLisp/, /Maclisp/, /Interlisp/, /Lisp Machine Lisp/
+(das máquinas da Symbolics, por exemplo); também coloco /Common Lisp/ e
+/Emacs Lisp/. /Scheme/ e /Racket/ ficariam um pouco mais longe de /LISP 1.5/,
+mas ainda estariam ali, firmes e fortes.
+
+Clojure, então, eu veria como algo que transita para o meio da
+escala. Independentemente da conveniência do /design/ da linguagem, esta
+ainda quebra muitas convenções de /expressividade/ e /versatilidade/ que
+foram pré-estabelecidas nos dialetos anteriores. Clojure não deriva de
+nenhum dialeto anterior de Lisp em particular; Common Lisp e Emacs
+Lisp tiveram dialetos muito inspirados em /LISP 1.5/ como
+precursores.
+
+Sendo assim, Clojure tem uma característica forte de rompimento com
+toda uma cultura da família de linguagens. Isto não é algo
+necessariamente prejudicial, mas deixa claro um bom motivo para o
+gosto amargo que o dialeto poderia deixar na boca de programadores
+Lisp mais experientes.
+
+* Raiva comunitária
+
+Como um último tópico, eu gostaria de analisar um pouco as discussões
+e respostas negativas que se colocam ao redor da linguagem Clojure,
+sobretudo considerando o que vi [[http://www.loper-os.org/?p=42][neste post]]. Vou tentar conciliar com
+críticas tanto aos programadores Lisp mais "tradicionais" quanto aos
+programadores Clojure que se manifestaram. Obviamente, não foram
+opiniões salutares, e não capturam a totalidade de nenhuma
+comunidade.
+
+Utilizo o termo /"tradicionais"/ com certo resguardo, pois o autor da
+postagem em questão também deixa claro que acha /Common Lisp/ uma
+/"abominação"/, e tenta comparar Clojure à experiência que o mesmo
+teve com máquinas da Symbolics. Pessoalmente, nunca utilizei uma Lisp
+Machine, mas ainda pretendo fazê-lo e escrever a respeito.
+
+Deixo também claro que estes comentários datam de 2012, tendo
+completado sete anos no momento de escrita deste post. Opiniões podem
+ter mudado, e eu posso estar /chutando cachorro morto/ e fazendo papel
+de /advogado do diabo/ ao mesmo tempo.
+
+** O "lado" clojurista
+
+#+begin_quote
+"Posts like these are the reason I was never interested in being a
+part of the CL community. If you want this dream to come true, start
+playing the f****** game."
+#+end_quote
+
+O autor deixa claro, como expliquei anteriormente, que seu objetivo
+não é fazer com que interessados em Lisp converjam para Common Lisp ao
+invés de Clojure. Ao invés disso, ele tenta apontar, ainda que não
+seja de forma adequada, que existe um legado que Clojure parece não
+respeitar, e por isso ele não acha Clojure um bom Lisp.
+
+
+#+begin_quote
+"...make Common Lisp libraries that solve real problems..."
+#+end_quote
+
+Atualmente, há bibliotecas em Common Lisp para resolver uma gama de
+problemas ditos "reais"[fn:6]. A comunidade japonesa de Common Lisp, em
+particular, está muito ativa atualmente, e cria ferramentas muito
+boas, desde servidores web de baixa latência a formas de distribuição
+e instalação de software escrito em Common Lisp (veja [[https://github.com/roswell/roswell][Roswell]]).
+
+#+begin_quote
+"...most of its libraries are undocumented, half-implemented hacks..."
+#+end_quote
+
+Este é definitivamente um dos problemas mais sérios da comunidade de
+Common Lisp. Muitas das ferramentas pecam enormemente em documentação
+(o autor tenta negar isto em seus comentários). Este problema e seus
+possíveis motivos foram abordados por Rudolf Winestock em seu famoso
+artigo [[http://www.winestockwebdesign.com/Essays/Lisp_Curse.html][The Lisp Curse]], que deixo como leitura adicional ao invés de
+tentar repetir o que está exposto nele.
+
+#+begin_quote
+"I can't build usable software in CL anywhere near as short a time as
+I can with Java"
+#+end_quote
+
+Tomando muito cuidado aqui, vou dizer que, se esta frase descreveu uma
+experiência genuína, então havia algum problema com a forma de
+desenvolvimento da pessoa que a escreveu. Tive a experiência de
+desenvolver alguns projetos em Common Lisp, incluindo um pequeno
+compilador. Este pequeno compilador possuía um modelo para que fosse
+desenvolvido em Java passo-a-passo.
+
+Ao invés de utilizar-me do modelo exposto no material didático que
+segui, arquitetei o /software/ da forma como eu quis e, com uma boa dose
+de organização, pude perceber que os ciclos de teste eram extremamente
+mais rápidos que qualquer aplicação que eu já tivesse feito com Java
+ou C++; o mero fato de ter um REPL à disposição e reinterpretação
+seletiva de definições já tornou muito fácil e rápida a depuração de
+problemas e os testes locais.
+
+Este é um argumento anedótico, é claro, mas satisfatório como resposta
+para outro argumento anedótico. Ainda assim, caro leitor, é mais
+interessante que você mesmo analise as potencialidades de Java e
+Common Lisp e [[http://alchemist.sdf.org/posts/oop-java-vs-cl.html][tire suas próprias conclusões]], ao invés de acatar as
+minhas.
+
+** O "lado" tradicional
+
+#+begin_quote
+"Common Lisp is a Stradivari violin, not a kazoo. It simply isn't for
+you..."
+#+end_quote
+
+Considero esta uma resposta muito ruim, e também é o tipo de
+pensamento que fazemos questão de não cultivar na /Common Lisp
+Brasil/. Todo e qualquer programador com interesse em Common Lisp
+deveria ser bem-vindo à comunidade. Há pessoas na comunidade
+brasileira que simpatizam e que não simpatizam com Clojure, algumas
+até mesmo utilizam a linguagem no trabalho.
+
+Se alguém considera Common Lisp melhor que Clojure, o ideal é mostrar
+a opinião de maneira respeitosa e intelectualmente honesta.
+
+#+begin_quote
+"F*** your so-called 'facts of life'. Superior mind-amplifying tools
+existed and will exist again."
+#+end_quote
+
+Falar de Lisps antigos (e também de Common/Emacs Lisp) como
+ferramentas superiores e amplificadoras de mentes soa pedante, mas por
+trás desta agressividade (totalmente desnecessária, diga-se de
+passagem), podemos destacar o ponto do autor: sua maior crítica é
+dizer que Clojure é uma linguagem que encoraja o programador a não
+importar-se com a forma como as coisas funcionam por baixo.
+
+Esta ideia parece contra-intuitiva do ponto de vista de uma linguagem
+de alto-nível, mas o que o autor explica é que mesmo Lisps como Common
+Lisp possuem um senso de "construção" na constituição de seus
+elementos, uma ideia bem palpável do que possibilita a abstração que
+você está escrevendo na tela; e para ele, em Clojure, você apenas
+escreve o que ele chama de /"magia negra"/ e se dá por vencido. Para
+todos os efeitos, aqui entram as ideias de /robustez/, /simplicidade/ e
+/versatilidade/, construídas por uma linguagem suficientemente
+/expressiva/. Estes aspectos foram discutidos anteriormente.
+
+É importante lembrar que esta característica das ferramentas de
+desenvolvimento em particular -- independentemente de ser algo
+realmente observável em Clojure ou não -- é o curso do
+desenvolvimento de software na indústria, que já perdura por décadas,
+não sendo um problema apenas da comunidade Lisp. Infelizmente, alguns
+desenvolvedores (e muitas empresas!) não se importam com robustez em
+seu /software/, e um [[https://www.freecodecamp.org/news/we-fired-our-top-talent-best-decision-we-ever-made-4c0a99728fde/][famigerado Programador Rick]] (ou um programador
+incompetente, mesmo) que vier resolver um problema grave de
+infraestrutura e performance, passando por cima de boas práticas, será
+coroado como heroi.
+
+#+begin_quote
+"...the Clojure community still replies to the criticisms therein
+with... only insults. This is what comes of a product fundamentally
+brain-damaged at birth."
+#+end_quote
+
+Não há algo para ser escavado nesta mensagem, que está logo no topo do
+texto, mas eu gostaria de apontar apenas que esta é uma alfinetada
+proveniente do autor, que consequentemente só gera mais comentários
+raivosos de entusiastas de Clojure. Interessante notar que aqui
+perdura a máxima /"não existe marketing negativo"/, porque este ataque
+extra só atrai mais acessos, e que uma postagem ou comentário raivosos
+tendem a não atrair uma discussão sensata; este curso de ação pode ser
+observado através dos comentários ali deixados.
+
+#+begin_quote
+"The cult of Good Enough which seems to pervade all of modern
+computing has finally chewed its way through to the Lisp community"
+#+end_quote
+
+Esta passagem possuía, originalmente, um link para o texto
+[[https://www.jwz.org/doc/worse-is-better.html][The Rise of "Worse is Better"]], de Richard Gabriel. Esta filosofia
+curiosa busca tomar a Filosofia UNIX e dobrá-la em um outro eixo,
+colocando a simplicidade de interface e implementação com maior peso
+que outros atributos da Filosofia UNIX, como consistência e
+corretude.
+
+Não pretendo entrar no mérito da validade desta ideia, mas gostaria de
+discutir a expressão /"Cult of Good Enough"/. A meu ver, ela tem duas
+conotações: a primeira, mais óbvia e pretendida pelo autor, diz
+respeito ao /software/ feito "nas coxas" (vide meu comentário para a
+citação sobre /"facts of life"/).
+
+Mas, nesta expressão, há também outra conotação: a ideia do /comodismo/,
+que é onde o argumento do autor do texto sai pela culatra, e que
+pode contaminar a impressão que um programador de outros dialetos
+de Lisp tem sobre Clojure (veja, isto também inclui a mim). O que
+parece /bom o suficiente/ aos nossos olhos tende a sugerir estagnação,
+a ponto de tornar-se desgosto por novas sugestões. Até onde estamos
+disponíveis para perceber coisas novas?
+
+* Conclusão
+
+Este último pensamento coloca na mesa o local onde eu gostaria de
+chegar, e também soma-se ao que falei anteriormente para mostrar a
+totalidade do meu ponto de vista.
+
+Lisps são linguagens maleáveis por definição. Talvez isto seja
+proveniente da cultura, talvez seja proveniente da homoiconicidade, ou
+de qualquer aspecto mostrado antes, mas esta maleabilidade é melhor
+percebida na forma como as ferramentas são construídas ao utilizar a
+linguagem. O programador Lisp experiente é capaz de entrar em um
+[[https://pt.wikipedia.org/wiki/Fluxo_(psicologia)][estado de fluxo]] muito rapidamente, uma vez que a expressão sintática
+fica de lado e dá espaço à semântica dos programas.
+
+Todavia, esta maleabilidade também demanda um bom nível de
+receptividade ao novo, porque ela vem normalmente acompanhada de um
+processo criativo. /LISP 1.5/ foi originalmente criada para lidar com
+inteligência artificial, e McCarthy acreditava que Lisp era uma forma
+superior de realizar computação, por ser sintaticamente
+simples[fn:7]. Mas uma família de linguagens tão poderosa não
+necessariamente faz com que seus programadores tenham uma mente
+maleável com relação a novas ideias.
+
+Ressalto também que uma mente aberta não pressupõe esquecer suas
+origens. Criar algo novo envolve obter conhecimento do que veio
+antes, para percebermos as coisas boas que foram feitas e que podem
+ser reaproveitadas. O paradigma funcional em geral, por exemplo, não é
+algo novo, mas foi redescoberto quando percebeu-se que /software/
+predominantemente feito de forma funcional escala muito bem, quando
+colocado em conjunto com programação concorrente, /clusters/ ou até
+microsserviços.
+
+Cabe aos seres sensatos das comunidades de programação o ato de
+/inventar sem reinventar/: Tomar o que há de bom, e mudar o que
+verdadeiramente não está bom. Assim, talvez finalmente percebamos que
+não existe bala de prata em desenvolvimento de /software/, e que sempre
+haverá espaço para experimentação com boas ideias, sejam elas novas ou
+não-tão-novas-assim.
+
+* Footnotes
+
+[fn:14] O importante aqui é lembrar que existem linguagens que
+simplesmente *não são* Lisps. JavaScript é uma dessas linguagens, e é o
+motivo de eu ter adicionado o link referenciado.
+
+[fn:13] Saliento que este conceito de /simplicidade/ é um apelo ao fluxo
+sintático, e não necessariamente à forma como a linguagem foi
+projetada. Em outras palavras, se é possível ser extremamente
+expressivo com pouca e inteligível escrita e, se isto não for
+possível, se há liberdade para que o programador crie a própria forma
+de expressão sintática.
+
+[fn:12] Se não me engano, este é exatamente o propósito de LFE: não
+ser um Lisp de fato, mas promover uma melhor escrita de programas em
+Erlang através de uma sintaxe similar a Lisp. 
+
+[fn:11] Um terceiro aspecto interessante é que, para uma função
+não-determinística (em especial, uma que necessita de /side-effects/),
+parte ou toda a computação precisam ser feitas no momento de /consulta/
+ao valor correspondente no /map/. Todavia, um /map/ não implementa o
+conceito de /binding/ de variáveis em um certo /contexto/, como uma
+clausura qualquer já faz. Ainda assim, implementar este tipo de
+característica seria algo redundante, uma vez que já temos como
+expressar esta situação através de funções "comuns". Mas Clojure é uma
+linguagem que "desgosta" de mutabilidade e /side-effects/, então este
+problema não merece tanta evidência.
+
+[fn:10] O uso de =cond= aqui é deliberado, uma vez que há apenas dois
+valores possíveis. Uma melhor implementação será mostrada mais
+adiante. 
+
+[fn:9] O motivo para eu falar em sequências aqui é que o nome comum
+para isso seria /lambda-list/, porém Clojure utiliza vetores para
+guardar, manipular e enumerar os parâmetros. Isto também me incomoda,
+porque usar vetores no lugar de listas para algumas situações, em prol
+de velocidade, é uma otimização interna do compilador. Esta decisão
+parece ser um vazamento da implementação do compilador para dentro da
+linguagem. Mas isto tem uma importância pequena o suficiente para
+servir apenas de nota de rodapé.
+
+[fn:4] Lembre-se, novamente, que mesmo que estejamos falando de uma
+/string/ ou de algum valor não-numérico, podemos criar um mapeamento que
+transforme esta operação em um número exclusivo para a mesma. Isto
+também diz respeito à numeração de Gödel. Transformar as informações
+em números binários, por exemplo, seriam um bom começo.
+
+[fn:3] Poderíamos entender isso como uma troca que não é tão troca
+assim. Em muitos sistemas Lisp, /keywords/ e /symbols/ são expressos como
+letras (mas não /strings/), mas cada um deles possui uma entidade que
+normalmente é armazenada em formato numérico, em alguma tabela de
+procura no contexto; portanto, no fim das contas, qualquer chave pode
+ser compreendida como um valor numérico correspondente, dado um
+mapeamento válido. Isto é um exemplo clássico da tradução de um
+certo valor arbitrário para uma Máquina de Turing, e também algo
+análogo à numeração de Gödel. Não pretendo me debruçar sobre este
+tópico aqui, por falta de espaço e tempo para tal.
+
+[fn:2] Uma das funcionalidades mais poderosas em Lisps é o uso de
+/macros/, que permitem reescrita de código antes da
+interpretação/compilação. Estes sistemas são poderosos o suficiente
+para possibilitar a criação de novas funcionalidades e de linguagens
+de domínio específico. Todavia, os /reader macros/ são uma categoria
+diferente de /macros/, porque seu objetivo não é criar açúcar sintático,
+e sim modificar a forma como o /parser/ lê o que é escrito no programa
+ou no REPL. Por
+exemplo, com poucas linhas de de Common Lisp, é possível fazer com que
+[[https://lisper.in/reader-macros][dados no formato JSON sejam reconhecidos e traduzidos para /hash
+tables/]].
+
+[fn:1] =plists=, ou /Property Lists/, são listas cuja disposição de
+elementos é composta de duplas, que não possuem delimitação, assim
+como no /map/ mostrado -- de fato, basta trocar os colchetes por
+parênteses neste exemplo, e você terá uma =plist=. Esta estrutura também
+poderia ser compreendida como uma das muitas implementações para um
+/map/, mas pesquisar pela chave na estrutura requer percorrer a lista a
+sua procura. Ainda que algo assim, com complexidade $\Theta(n)$, não
+seja muito atrativo, pode ser mais eficiente para conjuntos pequenos
+de dados. O compilador de Common Lisp =SBCL= realiza otimizações para
+garantir um bom acesso em =plists= pequenas.
+
+[fn:8] O objetivo aqui não é realizar uma comparação especificamente
+com Common Lisp, mas sim com Lisps em geral. Os /forms/ em questão
+seguem as mesmas regras em CL e em Scheme, por exemplo. A diferença
+entre escrever o exemplo em Scheme está nas formas de declarar as
+funções, na cláusula =else= do =cond= e no uso da função =format=.
+
+[fn:7] /"McCarthy wanted to show that Lisp was a superior way to describe computation; he thought that the best way to do that was to create the 'universal Lisp function'"./
+Em [[https://lwn.net/Articles/778550/][Lisp and the foundations of computing]], parágrafo 16.
+
+[fn:6] Confesso que já ouvi o termo /"problemas reais"/ mais de uma vez,
+e ainda não o compreendo; se há um problema que demanda uma solução
+tecnológica, ele só pode ser real. Um problema que não seja real me
+parece indicativo de necessidade de consulta psiquiátrica. Normalmente
+este termo é jogado ao vento por gerentes de projeto que se entitulam
+muito pragmáticos, para designar os problemas que não pertencem ao
+escopo do /software/ desenvolvido pela empresa onde trabalham.
+
+[fn:5] Linguagens como JavaScript não estão convidadas para a escala,
+sinto muito. Aqui só entram linguagens que poderiam se passar por
+Lisps; e deixo aqui esta definição vaga de forma proposital, porque
+percepção é subjetiva, e portanto cabe debate.
+
+
+
+
+

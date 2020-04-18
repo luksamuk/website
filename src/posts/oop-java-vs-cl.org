@@ -1,0 +1,770 @@
+#+TITLE:     Orientação a Objetos: Java /versus/ Common Lisp
+#+SETUPFILE: setupfile.org
+#+LANGUAGE:  pt_BR
+#+PROPERTY: header-args:lisp :cache yes :exports code :tangle yes
+#+PROPERTY: header-args:java :cache yes :exports code :tangle yes
+#+OPTIONS: toc:t
+#+EVAL: (setq org-html-link-org-files-as-html nil)
+
+#+AUTHOR: Lucas Vieira
+#+EMAIL:  lucasvieira@lisp.com.br
+#+DATE:   Jan 08, 2019
+
+#+STARTUP: showall
+
+* Introdução
+
+Este é mais um post envolvendo programação literada no meu blog -- desta vez, em
+Português mesmo.
+
+Neste texto, pretendo falar a respeito de /programação orientada a objetos/,
+apresentando um paralelo entre a forma como este paradigma foi adotado pela
+indústria e a forma como foi originalmente concebido por Alan Kay[fn:1].
+
+#+BEGIN_NOTES
+*NOTA:* Este post foi escrito para meu blog utilizando ~org-mode~ no Emacs, o que
+ possibilita a extração do código, na ordem apresentada, e salvamento do mesmo
+ em seus respectivos arquivos das linguagens aqui utilizadas. Veja a conclusão
+ para visualizar o arquivo ~.org~ da postagem, e para exportar os arquivos de
+ código para arquivos externos.
+#+END_NOTES
+
+** História da concepção da /orientação a objetos/
+
+Segundo Alan Kay, o paradigma de orientação a objetos foi inspirado pela antiga
+linguagem /Simula/, que realizava certas operações (definidas por procedimentos)
+sobre estruturas de dados. Kay via /Simula/ como algo que parecia querer chegar a
+algo, mas ainda não sabia descrever o que era.
+
+O conceito de orientação a objetos, como originalmente concebido, tinha como
+base uma organização hierárquica originalmente vista na biologia. Poderia-se
+compreender que organismos, em especial células, comportavam-se como estruturas
+com comportamento interno complexo, porém opaco ao resto do sistema; o contato
+da célula com o mundo exterior a ela e vice-versa era feito através de um /canal/,
+que poderia ser compreendido como uma membrana externa, que filtra certas
+/mensagens/ e decide como as responde, e se responde-as.
+
+Ainda tomando este modelo de estrutura opaca com um canal de comunicação externo
+por mensagens, percebeu-se que, quando aplicado um contexto matemático a esta
+ideia, poderia surgir uma álgebra própria onde estas estruturas poderiam ser
+manipuladas, de forma que esta troca de mensagens poderia ser descrita.
+
+Às estruturas opacas, Alan Kay deu o nome de /objetos/, e estes foram os pilares
+que o fizeram começar a trabalhar na linguagem Smalltalk. Para Kay, este
+conceito de /objetos/ não significaria apenas estruturas em uma linguagem, mas
+também formas de representar estruturas reais e criar meios de comunicação
+abstrata (por exemplo, entre computadores em uma rede). A influência de
+Smalltalk chegou à comunidade de (Common) Lisp e, eventualmente, surgiu o CLOS
+(/Common Lisp Object System/).
+
+Estes conceitos influenciaram na criação da linguagem C++ e de outras linguagens
+que, por sua vez, possibilitaram a implementação da orientação a objetos na
+indústria de hoje, o que incluiu o advento da linguagem Java. Nestas linguagens,
+o principal foco está na organização de objetos como uma evolução de estruturas
+de dados, contendo, internamente, campos de dados e métodos que este objeto
+poderia executar, seja alterando seu próprio estado interno, seja comunicando-se
+com outros objetos do contexto.
+
+A orientação a objetos estabelecida na indústria e ensinada nas universidades
+normalmente lembra a forma como classifica-se em C++ e Java, e acabou
+tornando-se um assunto controverso entre os puristas e estudiosos do assunto.
+
+** O que será feito?
+
+Neste post, pretendo mostrar implementações em Java e Common Lisp,
+respectivamente, como representantes de dois modos de pensar a respeito de
+orientação a objetos: Java como sendo uma vertente mais associada a C++, e
+Common Lisp como uma vertente mais associada a Smalltalk. Tentaremos resolver o
+seguinte problema, que é extremamente simples:
+
+#+BEGIN_QUOTE
+Temos um certo conjunto de /formas/. Estas formas podem ser /círculos/, /quadrados/ ou
+/pentágonos/, todos sendo formas regulares. Cada uma das formas têm suas
+peculiaridades necessárias para a sua construção, como /raio/ ou /tamanho do
+lado/. Gere um conjunto arbitrário de /formas/, e mostre as somas de seus
+perímetros, as somas de suas áreas, e as somas do quadrado da medida do lado de
+cada forma, caso seja possível.
+#+END_QUOTE
+
+*** ACHTUNG!
+
+O objetivo deste exercício não é destacar uma linguagem ou uma visão do
+paradigma como melhor que o outro, mas sim demonstrar a diferença no raciocínio
+e na produção das soluções para o problema em questão. Evidenciam-se os
+contrastes semânticos, acima dos sintáticos, ainda que não sejam completamente
+dissociáveis.
+
+Obviamente, possuo minhas próprias preferências com relação às linguagens
+utilizadas, mas aqui pretendo apresentar uma espécie de pedra de roseta, e
+deixar que o leitor tome suas próprias conclusões com relação às visões e formas
+de resolução apresentadas.
+
+Também não há a pretensão, aqui, de gerar código com excelência de performance,
+sendo o entendimento do leitor o alvo mais importante. Todavia, como Common Lisp
+pode ser uma linguagem muito ortodoxa, algumas seções incluem explicações extras
+acerca da aparelhagem sintática da mesma. Recomendo abusar dos /links/ entre o
+texto e notas de rodapé, e vice-versa.
+
+* OO do "jeito Java"
+
+O "jeito Java" consiste na declaração de uma abstração-mor, e então
+na criação de sub-abstrações, para a resolução do problema.
+
+Temos uma abstração que determina as operações básicas de uma forma: uma
+/interface/. As formas em si são abstraídas por /classes/ que implementam esta
+interface.
+
+Criamos um contêiner capaz de armazenar instâncias de classes que implementem a
+interface declarada, e então poderemos iterar sobre este contêiner, para então
+calcular as três operações requisitadas pelo enunciado.
+
+** Inicialização
+
+Um programa Java é inicializado com a declaração do pacote que conterá as
+estruturas a serem utilizadas. Logo em seguida, importamos outros pacotes (ou
+classes específicas em certos pacotes) que auxiliarão na implementação do nosso
+programa.
+
+#+BEGIN_SRC java
+package OOPTest;
+
+import java.util.ArrayList;
+import java.lang.UnsupportedOperationException;
+import java.lang.Math;
+#+END_SRC
+
+#+BEGIN_NOTES
+*NOTA:* Nenhuma das estruturas a seguir será declarada com acesso público, uma vez
+que o objetivo do programa é criar uma aplicação auto-contida e simples, não um
+projeto formal. Esta decisão torna desnecessário declarar estas estruturas em
+seus próprios arquivos.
+#+END_NOTES
+
+** Interface para as formas
+
+Implementamos uma interface chamada ~IShape~, que descreve valores básicos, que
+podem ser obtidos proceduralmente para uma forma qualquer: /perímetro/, /área/ e
+/quadrado do lado/.
+
+#+BEGIN_SRC java
+interface IShape {
+    float perimeter();
+    float area();
+    float squaredSide();
+}
+#+END_SRC
+
+** Implementação das formas
+
+Uma vez declarada a interface a ser implementada por cada forma, podemos
+declarar as classes para as formas em si.
+
+*** Círculo
+
+A classe ~Circle~ implementa a forma de um círculo. Como atributos próprios da
+classe, temos um valor decimal especificando o raio do círculo, chamado ~radius~,
+e também temos um construtor para a classe, que explicita a necessidade de um
+valor para o raio, ao criarmos uma instância da mesma[fn:2].
+
+#+BEGIN_SRC java
+class Circle implements IShape {
+    private float radius;
+
+    public Circle(float radius) {
+        this.radius = radius;
+    }
+
+    public float perimeter() {
+        return 2.0f * (float)Math.PI * this.radius;
+    }
+
+    public float area() {
+        return (float)Math.PI * this.radius * this.radius;
+    }
+
+    public float squaredSide() {
+        throw new UnsupportedOperationException("A circle has no sides");
+    }
+}
+#+END_SRC
+
+Note que, como estamos tratando de um círculo, não possuímos valor para seu
+lado. Poderíamos tratar o lado como sendo o comprimento da circunferência do
+mesmo, mas este seria seu perímetro; ao invés disso, vamos assumir que esta
+operação é impossível, uma vez que um círculo, tecnicamente, não possui lados.
+
+#+BEGIN_NOTES
+*NOTA:* Veja que o método que implementa o quadrado do lado de um círculo levanta
+ uma exceção do tipo ~UnsupportedOperationException~, com uma mensagem específica
+ de erro. Esta exceção é uma forma de mostrar que a operação não é suportada por
+ esta classe. Fazemos isto porque ~Circle~ implementa a interface ~IShape~, que
+ obriga nossas classes a implementarem /todas/ as operações da interface.
+#+END_NOTES
+
+*** Quadrado
+
+O quadrado é, provavelmente, a classe de mais simples implementação: todas as
+suas operações são triviais, e o quadrado do seu lado é idêntico à sua área.
+
+Internamente, armazenamos o tamanho de seu lado, e explicitamos, no construtor,
+a necessidade do fornecimento deste valor para que possamos instanciar
+adequadamente a classe.
+
+#+BEGIN_SRC java
+class Square implements IShape {
+    private float side;
+    
+    public Square(float side) {
+        this.side = side;
+    }
+    
+    public float perimeter() { 
+        return 4.0f * this.side;
+    }
+    
+    public float area() { 
+        return this.side * this.side;
+    }
+    
+    public float squaredSide() { 
+        return this.side * this.side;
+    }
+}
+#+END_SRC
+
+*** Pentágono
+
+O pentágono possui as mesmas características do quadrado com relação ao seu
+construtor, seu perímetro, e o quadrado do seu lado. Mas o cálculo da área do
+pentágono é um pouco diferente.
+
+#+BEGIN_SRC java
+class Pentagon implements IShape {
+    private float side;
+    
+    public Pentagon(float side) {
+        this.side = side;
+    }
+    
+    public float perimeter() { 
+        return 5.0f * this.side;
+    }
+
+    private float apothem() {
+        return (this.side / 2.0f) / (float)Math.tan(Math.toRadians(36.0f));
+    }
+    
+    public float area() { 
+        return (this.apothem() * this.perimeter()) / 2.0f;
+    }
+    
+    public float squaredSide() { 
+        return this.side * this.side;
+    }
+}
+#+END_SRC
+
+Como você pode perceber, temos um método a mais, com acesso /privado/, que calcula
+o comprimento do /apótema/[fn:3] do pentágono. Baseado neste método, que só pode
+ser acessado internamente pela classe, podemos calcular a área do pentágono,
+baseada no comprimento do apótema e no seu perímetro.
+
+** Utilitários
+
+A geração de uma quantidade arbitrária de formas e o cálculo das operações (soma
+dos perímetros, soma das áreas, soma dos quadrados dos lados) são encapsulados
+como métodos estáticos de uma classe ~Utility~, para melhor
+compartimentalização. A implementação destas operações é bem evidente, com
+exceção da implementação da soma dos quadrados dos lados.
+
+As formas em questão são armazenadas em um ~ArrayList~, que será então repassado
+aos métodos de cálculo em questão.
+
+Outra informação relevante é que, pelo fato de estes métodos serem estáticos,
+não é necessário instanciarmos esta classe para utilizá-los. Uma chamada
+conveniente a ~Utility.nomeDoMetodo(...)~ é o suficiente para seus usos.
+
+#+BEGIN_SRC java
+class Utility {
+    public static ArrayList<IShape> makeShapes(int numShapes) {
+        ArrayList<IShape> arr = new ArrayList<IShape>();
+        for(int i = 1; i <= (int)(numShapes / 3); i++) {
+            arr.add(new Circle(i));
+            arr.add(new Square(i));
+            arr.add(new Pentagon(i));
+        }
+        return arr;
+    }
+
+    public static float sumOfPerimeters(ArrayList<IShape> arr) {
+        float sum = 0.0f;
+        for(IShape s : arr) {
+            sum += s.perimeter();
+        }
+        return sum;
+    }
+
+    public static float sumOfAreas(ArrayList<IShape> arr) {
+        float sum = 0.0f;
+        for(IShape s : arr) {
+            sum += s.area();
+        }
+        return sum;
+    }
+
+    public static float sumOfSquaredSides(ArrayList<IShape> arr) {
+        float sum = 0.0f;
+        for(IShape s : arr) {
+            try {
+                sum += s.squaredSide();
+            } catch(UnsupportedOperationException e) {
+                /* ... */
+            }
+        }
+        return sum;
+    }
+}
+#+END_SRC
+
+Para a operação da soma dos quadrados dos lados, iteramos sobre o nosso
+contêiner de formas. Porém, se a forma atual em questão for um círculo, sabemos
+que este levantará uma exceção de ~UnsupportedOperationException~. Para evitar que
+isto signifique a interrupção do nosso programa, encapsulamos a tentativa de
+contabilização do quadrado do lado da forma atual em um bloco ~try-catch~. Este
+bloco /trata a exceção/, executando o bloco ~catch~ caso ela seja levantada.
+
+Neste exemplo, caso a exceção em questão seja levantada, a contabilização do
+quadrado do lado para a forma atual será apenas ignorada.
+
+** Ponto de entrada do programa
+
+Enfim, podemos executar nosso programa. Para tanto, precisamos de mais uma
+classe, que aqui chamamos ~Program~, com um método estático chamado ~main~. Aqui,
+criamos dez formas, e então imprimimos cada uma das operações, baseadas no
+conjunto de dez formas que criamos arbitrariamente.
+
+#+BEGIN_SRC java
+class Program {
+    public static void main(String[] args) {
+        ArrayList<IShape> shapes = Utility.makeShapes(10);
+        System.out.println("Sum of Perimeters: "
+                + Utility.sumOfPerimeters(shapes));
+        System.out.println("Sum of Areas: " + Utility.sumOfAreas(shapes));
+        System.out.println("Sum of Squared Sides: "
+                + Utility.sumOfSquaredSides(shapes));
+    }
+}
+#+END_SRC
+
+* OO do "jeito Common Lisp"
+
+O "jeito Common Lisp" consiste no uso da forma "original" de orientação a
+objetos, mencionada anteriormente.
+
+Esta forma de orientação a objetos lembra o funcionamento de Smalltalk, e é
+tratada, por alguns autores, como uma boa interpretação da orientação a objetos,
+ao ser implementada em uma linguagem de programação[fn:4].
+
+O /Common Lisp Object System/ foi criado muito depois da concepção da linguagem
+Lisp original, sendo originalmente uma extensão de Common Lisp, que
+posteriormente viria a ser incluída na especificação da linguagem[fn:5].
+
+** Inicialização
+
+Primeiramente, vamos iniciar nosso projeto através da criação de um pacote em
+Common Lisp. Aqui estarei utilizando, também, o /system/ ~iterate~, que substitui o
+uso do macro ~loop~ na linguagem[fn:6].
+
+#+BEGIN_SRC lisp
+(ql:quickload :iterate)
+
+(defpackage :oop-test
+  (:use #:cl #:iterate))
+#+END_SRC
+
+Common Lisp exige que exportemos certos símbolos, caso precisemos utilizá-los em
+outros pacotes. O /environment/ de Common Lisp é inicializado no "pacote" ~cl-user~
+(ou ~common-lisp-user~). Como este é apenas um teste de propósito geral, podemos
+adentrar o pacote e definir símbolos logo dentro dele.
+
+#+BEGIN_SRC lisp
+(in-package :oop-test)
+#+END_SRC
+
+#+BEGIN_NOTES
+*NOTA:* Caso você já possua o arquivo de código deste programa e esteja
+simplesmente tentando revisitar o que foi feito neste pacote, basta executar a
+linha acima no seu REPL, após dar ~(load "arquivo.lisp")~. Não entrarei aqui em
+pormenores da modularização de Common Lisp, por acreditar que isto seria melhor
+endereçado em um post sobre Quicklisp, Quickproject, ASDF, /systems/ e /packages/,
+que posso vir a fazer no futuro.
+#+END_NOTES
+
+** Operações genéricas
+
+Baseado no que foi dito na introdução, precisamos de um vocabulário inicial
+de mensagens que podemos passar para alguns objetos, como uma espécie de lista
+de comandos gerais.
+
+#+BEGIN_SRC lisp
+(defgeneric perimeter (shape)
+  (:documentation "Calculates perimeter of a shape."))
+
+(defgeneric area (shape)
+  (:documentation "Calculates area of a shape."))
+
+(defgeneric squared-side (shape)
+  (:documentation "Squares the side value of a regular shape."))
+#+END_SRC
+
+Aproveitamos, também, para utilizar o suporte da linguagem a /docstrings/ para
+criar documentação mínima para nossas operações genéricas. Isto poderia ser
+útil, caso esquecêssemos do que cada uma destas mensagens poderia requisitar.
+
+Perceba que o uso do átomo ~shape~ como aparente argumento destas operações
+genéricas é completamente arbitrário, apesar de possuir carga semântica para o
+programador. Em outras palavras, Common Lisp não possui exigência sobre a
+natureza dos símbolos utilizados em argumentos de /generics/; eles só estão lá
+para "marcar lugares" de argumentos em métodos -- isto será entendido logo mais.
+
+** Classes
+
+Em CLOS, classes são definidas a partir de duas coisas: uma lista de
+superclasses das quais derivam, e uma lista de /slots/, cada qual com suas
+propriedades. Aqui não teremos nenhuma superclasse para derivar, mas temos três
+classes, cada qual com um slot relevante.
+
+#+BEGIN_SRC lisp
+(defclass circle ()
+  ((%radius :initarg :radius
+            :reader radius)))
+
+(defclass square ()
+  ((%side :initarg :side
+          :reader side)))
+
+(defclass pentagon ()
+  ((%side :initarg :side
+          :reader side)))
+#+END_SRC
+
+A classe ~circle~ define nosso círculo. Temos um /slot/ chamado ~%radius~, que
+armazenará o raio do nosso círculo.
+
+O mesmo vale para o /slot/ ~%side~ de ~square~ e ~pentagon~, que representa o tamanho do
+lado destas formas.
+
+Veja que definimos duas propriedades extras para cada /slot/. A primeira é o
+~initarg~; a segunda, um ~reader~. O ~initarg~ representa o átomo que simboliza a
+chave para definir o valor para aquele /slot/, durante o instanciamento da
+classe[fn:7].
+
+Já o ~reader~ é a definição rápida de uma forma de realizar a leitura daquele
+/slot/, em outros cantos do código. Ele será necessário para que possamos,
+efetivamente, recuperar os dados da instância. No caso de ~circle~, o raio
+de um círculo poderá ser recuperado de uma instância com ~(radius
+instancia)~. Situações similares ocorrerão para os lados de ~square~ e
+~pentagon~[fn:8].
+
+** Métodos
+
+/Métodos/, em Common Lisp, nada mais são que especificações das /operações
+genéricas/.[fn:9] Ao definirmos o método, normalmente teremos um ou mais
+parâmetros na lista de parâmetros que determinam a forma como a operação será
+despachada, de acordo com o objeto passado por parâmetro.
+
+Por exemplo, um argumento de assinatura ~(variavel nome-da-classe)~ implica que
+aquele método possui implementação para a classe ~nome-da-classe~ e, portanto,
+~variavel~ terá uma mensagem a retornar mediante a invocação do método em
+questão[fn:10].
+
+Realizaremos a implementação dos métodos por mensagem, ao invés de
+implementarmos todos os métodos para cada classe, por vez.
+
+*** Perímetro
+
+A implementação das operações de perímetro são simples. A passagem da mensagem
+~perimeter~ para cada uma das instâncias das três classes realizará o despacho
+para o método relativo ao tipo da classe.
+
+#+BEGIN_SRC lisp
+(defmethod perimeter ((s circle))
+  (* 2 pi (radius s)))
+
+
+(defmethod perimeter ((s square))
+  (* 4 (side s)))
+
+
+(defmethod perimeter ((s pentagon))
+  (* 5 (side s)))
+#+END_SRC
+
+*** Área
+
+O cálculo da área para um círculo e um quadrado também não é diferente, nem
+envolve complexidade extra alguma.
+
+#+BEGIN_SRC lisp
+(defmethod area ((s circle))
+  (* pi (radius s) (radius s)))
+
+
+(defmethod area ((s square))
+  (* (side s) (side s)))
+#+END_SRC
+
+Todavia, sabemos que teremos complexidade extra ao calcular a área de um
+pentágono. Vamos nos preparar para isto, definindo um /macro/[fn:11] que converte
+um ângulo em graus para radianos.
+
+#+BEGIN_SRC lisp
+(defmacro deg->rad (angle-in-degrees)
+  `(/ (* ,angle-in-degrees pi) 180))
+#+END_SRC
+
+Podemos, agora, definir a forma de se calcular a área de um pentágono. Começamos
+definindo uma função aninhada ao método[fn:12], que calcula o
+apótema. Utilizando esta função aninhada, e baseando-nos no cálculo do apótema e
+do perímetro do pentágono, calculamos a área.
+
+#+BEGIN_SRC lisp
+(defmethod area ((s pentagon))
+  (labels ((apothem (s)
+             (/ (/ (side s) 2)
+                (tan (deg->rad 36)))))
+    (/ (* (apothem s)
+          (perimeter s))
+       2)))
+#+END_SRC
+
+*** Quadrado do lado
+
+Aqui, definimos o cálculo do quadrado dos lados para o quadrado e para o
+pentágono. *Note que, no caso do círculo, simplesmente não definimos o método*.
+
+#+BEGIN_SRC lisp
+(defmethod squared-side ((s square))
+  (* (side s) (side s)))
+
+
+(defmethod squared-side ((s pentagon))
+  (* (side s) (side s)))
+#+END_SRC
+
+** Utilitários
+
+Da mesma forma como fizemos no "jeito" anterior, definiremos alguns
+procedimentos como utilitários, tanto para gerar nosso contêiner de instâncias
+como para gerar nossas operações.
+
+As instâncias, seja lá quais forem, serão armazenadas em uma lista. O /form/
+~collect~, no /macro/ ~iter~, garante que cada uma das instâncias geradas sejam
+incorporadas ao fim da lista. Enquanto isso, ~make-instance~ demonstra como
+podemos instanciar uma classe qualquer (veja a utilização das chaves previamente
+definidas nos ~:initarg~ dos /slots/ de cada classe).
+
+#+BEGIN_SRC lisp
+(defun make-shapes (num-shapes)
+  (iter (for x from 1 to (/ num-shapes 3))
+        (collect (make-instance 'circle   :radius x))
+        (collect (make-instance 'square   :side x))
+        (collect (make-instance 'pentagon :side x))))
+
+(defun sum-of-perimeters (list)
+  (iter (for elt in list)
+        (sum (perimeter elt))))
+
+(defun sum-of-areas (list)
+  (iter (for elt in list)
+        (sum (area elt))))
+#+END_SRC
+
+*** Soma dos quadrados dos lados
+
+Temos um pequeno problema ao calcularmos as somas dos quadrados dos lados:
+alguns de nossos objetos (mais especificamente, aqueles que sejam instâncias de
+~circle~) não implementam o método ~squared-side~. Como proceder?
+
+Há diversas formas de fazer isto. Podemos implementar um método a ser chamado
+para toda e qualquer mensagem enviada a ~circle,~ que não tenha uma resposta
+definida; mas não abordaremos isto aqui. Outra forma seria /tratar a condição
+sinalizada/ quando o método não está implementado para o objeto[fn:13].
+
+Mas faremos isto de forma ainda mais simples, para manter o código mais sucinto.
+
+Lembra-se da definição da nossa operação genérica ~squared-side~? Pois bem, Common
+Lisp é uma linguagem que permite a reescrita e a recompilação de certos "blocos"
+de código, mesmo enquanto o programa continua sendo executado. Podemos tanto
+escrever uma nova definição para ~squared-side~ quanto editar diretamente a
+definição inicial e recompilá-la, caso estivéssemos utilizando uma IDE de Common
+Lisp.
+
+Nesta nova definição da operação genérica, temos um /form/ extra ao fim,
+começado com ~:method~, que define a *implementação padrão* do método para quaisquer
+classes que não possuam implementação para ele. Como queremos que círculos
+passem a não influenciar na soma, podemos criar, neste /form/, um método que
+simplesmente retorna o valor ~0~.
+
+#+BEGIN_SRC lisp
+(defgeneric squared-side (shape)
+  (:documentation "Squares the side value of a regular shape.")
+  (:method (obj) 0))
+#+END_SRC
+
+Depois disso, basta implementar a função de soma dos quadrados dos lados, como
+se absolutamente nenhuma inconsistência pudesse acontecer antes.
+
+#+BEGIN_SRC lisp
+(defun sum-of-squared-sides (list)
+  (iter (for elt in list)
+        (sum (squared-side elt))))
+#+END_SRC
+
+
+** Função principal para testes
+
+Definamos uma função qualquer, incumbida de gerar nossa sequência de dez formas,
+e então imprimir os resultados das operações na tela. O uso do nome ~main~ aqui é
+arbitrário, podendo ser substituído por qualquer outra coisa.
+
+#+BEGIN_SRC lisp
+(defun main ()
+  (let ((shapes (make-shapes 10)))
+    (format t "Sum of Perimeters: ~a~%"
+	    (sum-of-perimeters shapes))
+    (format t "Sum of Areas: ~a~%" (sum-of-areas shapes))
+    (format t "Sum of Squared Sides: ~a~%"
+	    (sum-of-squared-sides shapes))))
+#+END_SRC
+
+* Conclusão
+
+Chegamos ao fim de ambas as implementações do mesmo problema. Possuimos duas
+formas de resolução, sob o que outrora seria o mesmo paradigma, porém estas duas
+formas mostraram-se bem diferentes.
+
+** Comparação
+
+Podemos montar um pequeno quadro, destacando as partes mais relevantes das
+implementações e estabelecendo um paralelo entre elas.
+
+| /Feature/                          | Java                       | Common Lisp                |
+|----------------------------------+----------------------------+----------------------------|
+| Abrangência da OO                | Obrigatória                | Suportada                  |
+| Dados internos do objeto         | Campos privados            | /Slots/                      |
+| Modelagem genérica               | Interface                  | /Generics/                   |
+| Implementação do modelo genérico | Total                      | Parcial                    |
+| Localização dos métodos          | Na definição da classe     | No pacote ou no /top level/  |
+| Abstração mental do método       | Ação relacionada ao objeto | Mensagem passada ao objeto |
+
+Neste momento, peço que pause e pondere a respeito do que apresentei neste
+artigo. Veja se meu paralelo parece fazer sentido, se você notou mais alguma
+diferença (ou se não notou diferença alguma).
+
+Independente do conceito visto como melhor por você, leitor, lembre-se de que
+situações específicas exigem ferramentas específicas.
+
+** /Tangling/ dos arquivos
+
+#+TODO: Linkar código fonte
+Como este artigo foi escrito no Emacs, em ~org-mode~, você poderá obter o código
+do mesmo a seguir. Os arquivos das linguagens Java e Common Lisp,
+contendo o código-fonte em si, poderão ser obtidos ao colocar-se o
+cursor sobre o bloco de código a seguir, e utilizando o atalho ~C-c C-c~:
+
+#+BEGIN_SRC emacs-lisp :eval yes :exports code
+(org-babel-tangle)
+#+END_SRC
+
+#+RESULTS:
+| oop-java-vs-cl.java | oop-java-vs-cl.lisp |
+
+#+HTML: <a href="./oop-java-vs-cl.org">Clique aqui para ir para o código-fonte.</a>
+
+** Licenciamento
+
+Todo e qualquer código descrito aqui é disponibilizado sob a licença BSD
+2-Clause. Para mais informação, veja [[https://opensource.org/licenses/BSD-2-Clause][este link.]]
+
+Copyright (c) 2019, Lucas Vieira.
+
+
+* Footnotes
+
+[fn:1] Boa parte do que levo em consideração como sendo "orientação a objetos
+como originalmente concebida" foi o que vi Alan Kay explicando, em pessoa, na
+sua [[https://www.youtube.com/watch?v=oKg1hTOQXoY][palestra na OOPSLA 1997]]. Minha descrição é compacta, então uma melhor
+compreensão dos aspectos e do contexto podem ser vistos na palestra em si.
+
+[fn:2] Um círculo pode ser definido, matematicamente, como uma coordenada no
+plano, e o tamanho do seu raio. Como não lidaremos com a posição do círculo em
+nenhuma das hipóteses apresentadas, só precisamos obrigar o programador a
+fornecer o raio do círculo. Este conceito de mínimo de atributos necessários
+acaba se estendendo também ao quadrado e ao pentágono regulares que, aqui, são
+determinados pelos tamanhos de seus lados.
+
+[fn:3] Para mais informações: [[https://pt.wikihow.com/Descobrir-a-%C3%81rea-de-um-Pent%C3%A1gono][wikiHow - Como Descobrir a Área de um Pentágono]].
+
+[fn:4] Vide o livro [[https://www.amazon.com/Art-Metaobject-Protocol-Gregor-Kiczales/dp/0262610744][The Art of the Metaobject Protocol]]. Infelizmente ainda não
+tive a oportunidade de lê-lo, mas Alan Kay sugere que este livro é uma boa
+literatura para a compreensão de como a orientação a objetos deveria ser
+implementada.
+
+[fn:5] Para saber mais sobre CLOS, você pode ler, de graça, os capítulos
+relevantes do livro Practical Common Lisp, [[http://www.gigamonkeys.com/book/object-reorientation-generic-functions.html][aqui]] e [[http://www.gigamonkeys.com/book/object-reorientation-classes.html][aqui]]. Ademais, recomendo a
+[[http://www.gigamonkeys.com/book/][leitura completa do livro]] para maiores informações sobre a linguagem.
+
+[fn:6] O motivo para esta substituição é puramente arbitrário; ando
+experimentando com o uso de um vocabulário mais "líspico", ao invés do formato
+com átomos aparentemente soltos que o macro ~loop~ disponibiliza, por mera questão
+de corretude, mas isto é desnecessário. Para mais informações acerca disso, veja
+[[https://dspace.mit.edu/bitstream/handle/1721.1/41498/AI_WP_324.pdf][este paper]], de Jonathan Amsterdan (também disponível [[https://common-lisp.net/project/iterate/doc/Don_0027t-Loop-Iterate.html][em HTML]]).
+
+[fn:7] A real forma de utilização destas chaves será vista na seção de
+Utilitários, mais adiante.
+
+[fn:8] Um ~:reader~ de um /slot/ define apenas uma forma de recuperação dos dados,
+dada uma instância qualquer da classe. Para que o valor seja alterado, é
+necessário definir um ~:writer~. Por exemplo, caso o ~:writer~ para o raio do
+círculo fosse chamado ~radius~, poderíamos redefinir o raio com ~(setf (radius
+instancia) valor)~. Adicionalmente, quando o ~:reader~ e o ~:writer~ têm o mesmo
+nome, podemos simplesmente definir o que chamamos de ~:accessor~. Se ~radius~ fosse
+o ~:accessor~ do raio, poderíamos tanto recuperar o raio com ~(radius instancia)~
+quanto redefinir o raio com ~(setf (radius instancia) valor)~. Isto evita a
+necessidade da utilização de funções de acesso a um /slot/ de uma classe, e também
+evita a necessidade de definir genéricos e métodos para tal.
+
+[fn:9] Na verdade, é possível definirmos métodos, sem a necessidade de
+especificar as operações genéricas para eles (neste caso, o compilador criará as
+operações genéricas automaticamente). Todavia, é boa prática ter genéricos
+especificados previamente, da mesma forma como um /overview/ do conteúdo de um
+arquivo em ~C/C++~ é melhor identificado pelos protótipos nos cabeçalhos (arquivos
+~.h~, ~.hpp~, ~.hxx~, etc).
+
+[fn:10] Podemos ter métodos que são despachados de acordo com os tipos de um ou
+mais argumentos, ou seja, mais de um argumento pode ter o nome de sua classe
+especificado na implementação do método. Isto é mais útil que realizar
+verificações por tipos de classes para certos argumentos.
+
+[fn:11] Em Lisp, /macros/ são estruturas capazes de gerar partes de código em
+tempo de compilação, efetivamente sendo as estrelas da metaprogramação na
+linguagem, juntamente com a chamada homoiconicidade. Contudo, dialetos de Lisp
+são famosos por tornar a definição de /macros/ uma tarefa extremamente simples,
+além de encorajada -- desde que, como qualquer outra /feature/ de uma linguagem,
+não haja abusos em seu uso.
+
+[fn:12] Em Common Lisp, funções aninhadas são definidas através dos "blocos"
+~flet~ e ~labels~ (este último é capaz de definir funções aninhadas recursivas),
+sendo as funções definidas sob estes blocos válidas até o final do "bloco" em
+si. O equivalente em comportamento para /macros/ é o ~macrolet~.
+
+[fn:13] Enquanto algumas linguagens orientadas a objetos possuem o conceito de
+exceções que são sinalizadas quando uma situação ocorre -- exceções estas que,
+quando não-tratadas, interrompem imediatamente a execução do programa --, Common
+Lisp possui a ideia de /conditions/, que suportam a intervenção direta do
+programador no REPL ou na IDE, quando não são tratadas. O tratamento de uma
+exceção normalmente ocorre através da utilização de blocos ~try-catch~, enquanto
+/conditions/ possuem ~handlers~, que podem também estar associados à chamada
+automática de ~restarts,~ sejam eles definidos ou não pelo programador. Mais sobre
+isto poderá ser visto no [[http://www.gigamonkeys.com/book/beyond-exception-handling-conditions-and-restarts.html][capitulo relevante]] do Practical Common Lisp.

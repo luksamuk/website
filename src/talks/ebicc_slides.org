@@ -1,0 +1,331 @@
+#+TITLE:          Gödel, /Strange Loops/ e suas Implicações em Teoria Enativa e Sistemas Complexos
+#+AUTHOR:         Lucas Samuel Vieira
+#+EMAIL:          lucasvieira@protonmail.com
+#+DATE:           Setembro de 2019
+#+LANGUAGE:       pt_BR
+#+REVEAL_ROOT:    ./reveal.js
+#+REVEAL_THEME:   serif
+#+REVEAL_PLUGINS: (print-pdf zoom)
+#+REVEAL_MARGIN:  0.2
+#+REVEAL_TRANS:   linear
+#+OPTIONS: num:nil timestamp:nil toc:nil
+#+OPTIONS: reveal_single_file:t
+
+
+#+BIND: org-reveal-title-slide "<h3>%t<br/><br/>%a</h3><br/><p>Co-autor: Leonardo Lana de Carvalho<br/>Universidade Federal dos Vales do Jequitinhonha e Mucuri<br/>%d</p>"
+
+* /Gödel, Escher, Bach/
+
+#+ATTR_HTML: :width 50%
+#+CAPTION: Alegoria na capa de /Gödel, Escher, Bach/.
+[[file:img/geb1.jpg]]
+
+- Obra publicada em 1979 por Douglas R. Hofstadter
+
+* Objetivos e Metodologia
+
+Este trabalho é uma análise conceitual que aproxima o conceito de
+Hierarquia Entrelaçada (HE) de Hofstadter do pensamento enativo e do
+conceito de autopoiese.
+
+** Objetivos específicos
+
+1. Apresentar o conceito de HE;
+2. Apresentar o conceito de Sistema Complexo Autopoiético (SCA)
+   entendendo-o como uma HE;
+3. Apresentar condições a serem satisfeitas para caracterizar um SCA
+   como uma HE.
+
+Este trabalho pauta-se na Teoria da Computação, sob a perspectiva da
+Teoria Enativa da Computação (TEC).
+
+* /Strange Loops/ ou Hierarquias Entrelaçadas
+
+# Adicionar citação direta aqui!
+Representação /simbólica/ com características de autorreplicação e
+auto-referência, que está ligada a um /nível inviolável/ que a
+sustenta.
+
+Hofstadter introduz alegorias que exemplificam Hieraquias Entrelaçadas
+(HEs), nas obras de Mauritz Cornelius Escher e Johann Sebastian Bach.
+
+** M. C. Escher
+
+#+CAPTION: Detalhe de /Relativity/, de M. C. Escher (litografia, 1953).
+#+ATTR_HTML: :width 55%
+[[file:img/escher_relativity.jpg]]
+
+- Um /todo/ unificado, completo e portanto inconsistente.
+
+#+REVEAL: split
+
+#+CAPTION: /Drawing Hands/, de M. C. Escher (litografia, 1948).
+#+ATTR_HTML: :width 50%
+[[file:img/escher_hands.jpg]]
+
+#+REVEAL: split
+
+# Execute este código fonte apenas para gerar a imagem.
+#+BEGIN_SRC dot :file img/hands_strangeloop.svg :cmdline -Kfdp -Tsvg :results silent
+digraph {
+        arrowType=vee;
+        LH[shape="circle"; pos="-1, 1!"];
+        RH[shape="circle"; pos="1, 1!"];
+        Escher[shape="rectangle"; label="M. C. Escher"; pos="0,-1!"];
+
+        lsep[shape="point"; pos="-1.5, 0.1!"; label=""; style="invis"];
+        rsep[shape="point"; pos=" 3.5, 0.1!"; label=""; style="invis"];
+        lsep -> rsep[dir="none";];
+
+        strlp [
+              shape="none";
+              label="Strange Loop ou\nHierarquia Entrelaçada";
+              pos="2.5, 0.7!";
+              ];
+
+        inviol [
+              shape="none";
+              label="Nível inviolável\n(invisível)";
+              pos="2.5, -0.7!";
+              ];
+
+        Escher -> LH[headlabel="desenha"; labeldistance=7.5; labelangle=-25];
+        Escher -> RH[headlabel="desenha"; labeldistance=7.5; labelangle=25];
+        
+        LH -> RH [
+              headlabel="\"desenha\"";
+              labeldistance=5.5;
+              labelangle=-10;
+              arrowType="vee";
+              ];
+        RH -> LH [
+              headlabel="\"desenha\"";
+              labeldistance=5.5;
+              labelangle=-10;
+              arrowType="vee";
+              ];
+        
+        
+}
+#+END_SRC
+
+#+CAPTION: Diagrama abstrato de /Drawing Hands/, de M. C. Escher.
+#+ATTR_HTML: :width 95%
+[[file:img/hands_strangeloop.svg]]
+
+** J. S. Bach
+
+As músicas de Bach possuíam características autorreferenciais.
+
+Este aspecto está bem explícito na obra /The Musical Offering/ (/Das
+Musikalisches Opfer/, BWV 1079).
+
+- /Canon a 2 per Tonos/
+- /Canon a 2 cancrizans/
+
+** Kurt Gödel
+
+Hofstadter identifica um exemplo quintessencial de HE nas provas de
+Gödel.
+
+As provas de Gödel buscavam uma solução para o Segundo Problema de
+David Hilbert: /provar que os axiomas da aritmética são consistentes/.
+
+Para tanto, Gödel precisava de uma forma de /referenciar/ proposições da
+lógica, dentro da própria lógica.
+
+#+REVEAL: split
+
+Como exemplo, suponhamos um sistema lógico formal /austero/, equivalente
+ao sistema formal utilizado na obra /Principia Mathematica/, de
+Whitehead e Russell.
+
+O sistema só é capaz de falar a respeito de propriedades
+numéricas. Portanto, realizaremos um mapeamento das proposições para o
+conjunto do números naturais $(\mathbb{N})$.
+
+Gödel demonstrou que este mapeamento equivale ao que coloquialmente
+compreendemos como /paráfrase/ ou /citação/.
+
+#+REVEAL: split
+
+Um número natural $n$ poderá ser escrito como uma sucessão de $n$
+símbolos $S$, catenados a um símbolo $0$. Exemplo:
+
+\begin{gather*}
+        0 \Rightarrow 0\\
+        1 \Rightarrow S0\\
+        2 \Rightarrow SS0\\
+        3 \Rightarrow SSS0
+\end{gather*}
+
+Falar de uma proposição $\equiv$ provar uma propriedade numérica.
+
+#+REVEAL: split
+
+Axiomas para um sistema lógico formal (baseado em Hofstadter):
+
+\begin{gather}
+        \forall a:\lnot{}Sa=0\\
+        \forall a:(a+0)=a\\
+        \forall a:\forall a':(a+Sa')=S(a+a')\\
+        \forall a:(a\times{}0)=0\\
+        \forall a:\forall a':(a\times{}Sa')=((a\times{}a')+a)
+\end{gather}
+
+#+REVEAL: split
+
+| Núm | Símb.     | Núm | Símb. | Núm | Símb.    |
+|-----+-----------+-----+-------+-----+----------|
+|   1 | $\lnot$   |   7 | $0$   |  13 | $\times$ |
+|   2 | $\forall$ |   8 | $S$   |  14 | $a$      |
+|   3 | $\supset$ |   9 | $($   |  15 | $'$      |
+|   4 | $\exists$ |  10 | $)$   |  16 | $:$      |
+|   5 | $\forall$ |  11 | ,     |     |          |
+|   6 | $=$       |  12 | $+$   |     |          |
+
+#+REVEAL: split
+
+Mapearemos o segundo axioma (poderia ser qualquer proposição).
+
+$\forall a:(a+0)=a$
+
+Tomando os $n$ números equivalentes aos símbolos:
+
+$(5, 14, 16, 9, 14, 12, 7, 10, 6, 14)$
+
+Tomando os $n$ primeiros números primos:
+
+\begin{equation*}
+        (2, 3, 5, 7, 11, 13, 17, 19, 23, 29)
+\end{equation*}
+
+#+REVEAL: split
+
+Pareamos cada primo $p$ com cada número $m$ gerando $p^{m}$, e
+realizamos um somatório dos valores:
+
+\begin{gather*}
+2^{5} + 3^{14} + 5^{16} + 7^{9} + 11^{14} + 13^{12} +\\
+17^{7} + 19^{10} + 23^{6} + 29^{4}\\
+  = 297.558.642.007.975.828.799
+\end{gather*}
+
+Este será chamado /número gödeliano/ do segundo axioma, e poderá então
+ser reescrito no sistema formal, utilizando a notação austera
+$(SSSSS...S0)$.
+
+** HE Quintessencial
+
+Seja $T$ uma proposição que informa se uma proposição pertence ao
+sistema lógico-matemático, ou seja, se ela é um /teorema/.
+
+$T$ recebe como entrada o número gödeliano $G(a)$, de uma proposição
+$a$.
+
+Se $T$ é uma proposição, então $\exists\,G(T)$.
+
+Sendo assim, o que nos diria $T(G(T))$? Ou seja, $T$ é uma proposição
+derivável em $n$ passos no sistema lógico-matemático?
+
+#+REVEAL: split
+
+# Como apontam Newman e Nagel,...
+Kurt Gödel descobriu que não.
+
+Sendo assim, o sistema lógico-matemático é /incompleto/, porque há
+/teoremas/ que não podem ser derivados no mesmo.
+
+Para que $T$ seja derivável, o sistema deve suportar /antinomias/ -- o
+que exige autorreferência.
+
+# Uma citação viria bem aqui
+Hofstadter vê isto como uma oportunidade para transcender os limites
+do computável.
+
+* Sistemas autopoiéticos
+
+Uma HE depende de um nível constituinte /inviolável/ para a mesma.
+
+O /nível inviolável/ é percebido como um sistema formal, consistente e
+incompleto.
+
+Este /nível/ dá origem e/ou acesso a uma porção identificável como um
+sistema /informal/, que é a própria HE.
+
+A possibilidade de uma HE abrigar uma /antinomia/ dá a ela um potencial
+de /completude/.
+
+#+REVEAL: split
+
+Uma HE pode ser compreendida como produto emergente do seu nível
+estruturante, sendo portanto um /contexto emergente/.
+
+A HE, então, pode ser vista como um componente /à deriva/ em um /sistema
+complexo autopoiético/ (SCA).
+
+Defendemos que SCAs podem ser compreendidos como sistemas com
+consistência e completude em seus /subsistemas à deriva/, capazes de
+envolver contradições $(P \land \lnot P)$.
+
+#+REVEAL: split
+
+Três critérios são essenciais para a viabilidade desta ideia:
+
+1. A possibilidade de surgimento de SCAs depende de processos
+   consistentes ao nível dos elementos estruturantes do mesmo.
+2. A autonomia dos processos leva o sistema a bifurcações, e até mesmo
+   a contradições.
+3. O SCA torna-se possível graças à auto-organização, a qual envolve
+   suas ações paradoxais em um sistema aberto e unificado à deriva no
+   ambiente.
+
+#+REVEAL: split
+
+Estes /subsistemas/ são macroscopicamente visíveis como entidades
+independentes que se comunicam, mas compartilhariam um mesmo nível
+inferior, demonstrando indissociabilidade.
+
+* Considerações Finais
+
+- Partimos das HEs de Hofstadter;
+- Compreendemos as HEs sob a perspectiva do enativismo, como produto
+  de comportamento emergente;
+- Equiparamos HEs a um sistema /informal/ em contato com um /nível
+  constituinte formal/;
+- Defendemos que este modelo possui potencial de /completude/ e poderia
+  caracterizar SCAs.
+
+#+REVEAL: split
+
+Como perspectivas, buscamos vias formais para modelar e sintetizar
+este encapsulamento de um aglomerado de sistemas /formais/ e /informais/
+que têm, por definição, a capacidade de interagir mutuamente em suas
+computações.
+
+Visamos uma representação formal adequada a longo prazo, enquanto
+modelo computacional efetivo de SCAs.
+
+* Agradecimentos
+
+* Referências
+
+#+ATTR_HTML: :style font-size:0.7em;text-align:left;
+HOFSTADTER, D. R. *Gödel, Escher, Bach: An eternal golden braid*. New
+York: Basic Books, 1979. ISBN 978-0-465-02656-2.
+
+#+ATTR_HTML: :style font-size:0.7em;text-align:left;
+NAGEL, E.; NEWMAN, J. R. *Gödel's proof* (revised edition). New York:
+New York University Press, 2001. ISBN 0-8147-5816-9.
+
+#+ATTR_HTML: :style font-size:0.7em;text-align:left;
+CARVALHO, L. L.; PEREIRA, D. J; COELHO, S. A. *Origins and evolution of
+enactive cognitive science:* *Toward an enactive cognitive
+architecture*. /Science Direct, volume 16/, pp. 169–17. DOI:
+10.1016/j.bica.2015.09.010.
+
+#+ATTR_HTML: :style font-size:0.7em;text-align:left;
+VARELA, F. J.; THOMPSON, E.; ROSCH, E. *The embodied mind: Cognitive
+Science and Human Experience*. Cambridge: MIT Press, 1991. ISBN:
+978-0262529365.
+
