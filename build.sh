@@ -1,16 +1,16 @@
 #!/bin/sh
 # Create project tree
-./scripts/make_tree.sh
+sh ./scripts/make_tree.sh
 
 # Copy static assets
-./scripts/copy_static.sh
+sh ./scripts/copy_static.sh
 
 # Export index and pages
-./scripts/export_index.sh
-./scripts/export_pages.sh
+sh ./scripts/export_index.sh
+sh ./scripts/export_pages.sh
 
 # Export posts
-./scripts/export_posts.sh
+sh ./scripts/export_posts.sh
 
 # Export talks
-./scripts/export_talks.sh
+sh ./scripts/export_talks.sh
