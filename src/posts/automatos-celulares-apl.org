@@ -1,0 +1,641 @@
+#+TITLE:  Programando Autômatos Celulares em APL
+#+SETUPFILE: setupfile.org
+#+LANGUAGE:  pt_BR
+#+STARTUP:   inlineimages showall
+
+#+AUTHOR: Lucas S. Vieira
+#+EMAIL:  lucasvieira@protonmail.com.br
+#+DATE:   Abr 21, 2020
+
+Neste    post,     pretendo    tratar    de     Autômatos    Celulares
+unidimensionais. Adquiri há alguns meses uma cópia do livro /A New Kind
+of Science/, de  Stephen Wolfram. Enquanto não tenho  ainda uma opinião
+definitiva sobre o livro (já que não o terminei), acho particularmente
+interessante  o  tópico  dos  autômatos  celulares.  Incentivado  pela
+leitura  deste  livro, procurei  desenvolver  um  pequeno conjunto  de
+funções  que   tornasse  possível   inspecionar  alguns   autômatos  e
+imprimi-los na tela.
+
+Bem, na  minha opinião, como ACs  unidimensionais tratam primariamente
+de /vetores/, nenhuma linguagem seria melhor de tratar deste problema
+que APL. Não pretendo fazer  um discurso advogando esta linguagem, mas
+uso-a primariamente  porque os programas ficam  extremamente sucintos;
+cada função é como uma expressão matemática, economizando linhas. E eu
+particularmente acho APL muito bonita.
+
+Para os exemplos a seguir, utilizarei  [[https://www.dyalog.com/][Dyalog APL]] ao invés de GNU APL,
+porque já me acostumei com este primeiro dialeto.
+
+Ah! Este post é uma espécie  de "tutorial rápido" de APL. Ao contrário
+do  que  já  fiz  anteriormente  por aqui,  desta  vez,  vou  explicar
+passo-a-passo  das  operações  mais   simples,  para  que  você  possa
+compreender melhor a linguagem.
+
+*** ACHTUNG!
+
+Já falei disso no meu [[./usando-apl][último post sobre APL]], mas é importante que você
+tenha uma /fonte compatível instalada/ no seu dispositivo ou computador.
+Por exemplo, veja se esta imagem...
+
+#+CAPTION: Uma expressão em Dyalog APL.
+[[file:img/apl-characters-2.png]]
+
+...corresponde ao código a seguir:
+
+#+begin_example
+{1+⊃+/((-⍺-(⌊⍺÷2))+⍳⍺)⌽¨(⌽2*¯1+⍳⍺)×¨⊂⍵}
+#+end_example
+
+Se você não  conseguir ver os caracteres no exemplo  acima, então você
+não conseguirá ler o restante deste post. Se este for o caso, recomendo
+utilizar a fonte GNU FreeFont, ou alguma das fontes recomendadas para
+Dyalog APL [[https://www.dyalog.com/apl-font-keyboard.htm][que estão aqui]].
+
+* ACs Unidimensionais
+
+Vamos  repassar um  pouco  sobre o  que são  /autômatos  celulares/ e  a
+importância  deles.   Repetindo   um  pouco  o  que   já  disse  [[../talks/slide-apres-tc.org][nesta
+apresentação]], autômatos  celulares são sistemas dinâmicos  discretos e
+espacialmente-estendidos, que  têm sido estudados  extensivamente como
+modelos     de    processos     físicos     e    como     dispositivos
+computacionais[fn:1].  Focando  neste   mesmo  aspecto  computacional,
+podemos enxergar ACs como uma  forma de falar de computação paralela,
+de uma forma bem rudimentar.
+
+Como estamos  tratando de ACs  unidimensionais, imagine que  temos uma
+fita, completamente dividida em partes  iguais. Cada uma destas partes
+será uma /célula/.
+
+A seguir,  para os propósitos  do nosso experimento, imagine  que esta
+fita tem seu  fim e seu início conectados, sendo  portanto /circular/ --
+ou seja, imagine que esta fita está  ao redor de uma lata, de um jeito
+que não  possamos identificar  qual é  a primeira  ou a  última célula
+dela (vide Figura [[fig_torus]]).
+
+#+NAME: fig_torus
+#+CAPTION: Exemplo de uma fita circular de células. Cada número nas células representa o estado da célula atual.
+[[file:img/ac-torus.png]]
+
+Em cada célula desta fita, teremos  um número, que representa o /estado/
+desta célula. Para facilitarmos, tomaremos  o número ~0~ representando o
+estado de uma célula /morta/, e o número ~1~ representando o estado de uma
+célula /viva/.
+
+Adicionalmente,  teremos /regras  fixas/ baseadas  na vizinhança  de uma
+certa célula,  que definirão qual  será o  estado da mesma  no próximo
+passo de tempo. Ou seja, para  sabermos se uma célula permanecerá /viva/
+ou /morta/,  levamos em consideração  seu /atual  estado/ e os  estados de
+seus vizinhos à /esquerda/ e à /direita/.
+
+Vou  começar criando  uma /fita/  deste tipo,  em APL.  Para tanto,  vou
+representá-la em um vetor:
+
+#+begin_src dyalog
+r←¯5⌽1,(10⍴0)
+#+end_src
+
+** Destrinchando a criação do vetor
+
+Vamos parar  um pouco. Vou  tentar mostrar de  uma forma melhor  o que
+estou fazendo.
+
+APL, como  eu disse, envolve  criar /expressões/ que façam  a computação
+que precisamos. Assim, programar em APL é algo incremental, no sentido
+de que escrevemos expressões simples e vamos adicionando operações até
+que os dados tornem-se o que precisamos.
+
+A expressão a seguir
+
+#+begin_src dyalog
+10⍴0
+#+end_src
+
+Cria um vetor de 10 elementos, onde todos são zeros:
+
+#+begin_example
+0 0 0 0 0 0 0 0 0 0
+#+end_example
+
+Em seguida,  /catenamos/ um número  ~1~ ao início deste  vetor, aumentando
+seu tamanho, e transformando-o em um vetor de 11 elementos, onde todos
+os  números são  zeros,  exceto  o primeiro:
+
+#+begin_src dyalog
+1,(10⍴0)
+#+end_src
+
+#+begin_example
+1 0 0 0 0 0 0 0 0 0 0
+#+end_example
+
+Veja  que esta  operação  envolve reescrever  a expressão  adicionando
+algo. Isto é facilitado no ambiente de Dyalog APL, pois podemos voltar
+a expressões, reescrevê-las  e fazer com que o  ambiente as interprete
+ao final, como se tivessem sido ali escritas.
+
+Em seguida, lembre-se  de que este vetor representa,  na realidade, um
+/cilindro/  (como visto  na Figura  [[fig_torus]]). Assim,  se rotacionarmos
+este cilindro  *cinco células para  a direita*, colocaremos o  número ~1~,
+que estava no início, no exato *meio* do nosso vetor.
+
+Isto  pode ser  feito  com  uma rotação  horizontal  de  ~-5~ casas  no
+vetor. Veja como APL faz isso:
+
+#+begin_src dyalog
+      ¯5⌽1,(10⍴0)
+0 0 0 0 0 1 0 0 0 0 0
+#+end_src
+
+A  única coisa  restante  é salvar  este vetor  em  uma variável,  que
+daremos o nome de ~r~.
+
+#+begin_src dyalog
+r←¯5⌽1,(10⍴0)
+#+end_src
+
+* ACs em APL
+
+Agora que  temos um  vetor no qual  podemos testar  nossos algoritmos,
+vamos  programar   algumas  regras  básicas  de   autômatos  celulares
+unidimensionais que possamos utilizar também.
+
+** Rule 90
+
+A /Rule 90/ é uma regra interessante, porque é capaz de gerar um [[https://pt.wikipedia.org/wiki/Fractal][fractal]]
+chamado [[https://pt.wikipedia.org/wiki/Tri%C3%A2ngulo_de_Sierpinski][Triângulo de Sierpinski]].
+
+Usando a notação visual de Wolfram[fn:2], podemos expressá-la assim:
+
+#+NAME: rule90
+#+CAPTION: Visualização gráfica da Rule 90. Fonte: Wolfram (2002; adaptado).
+[[file:img/rule90.png]]
+
+A regra é expressada como /seis/ situações possíveis, condizentes com as
+seis  /vizinhanças/  possíveis,  para  uma vizinhança  de  três  células
+(vizinho esquerdo, célula atual, e vizinho direito).
+
+Em cada  situação, o estado  atual da vizinhança é  representado pelos
+três quadrados de cima, e o estado  que a célula ao meio da vizinhança
+assumirá  no  próximo passo  será  o  mesmo estado  representado  pelo
+quadrado solitário, na segunda linha.
+
+Por  exemplo, na  Rule 90,  caso uma  célula esteja  /viva/ e  seus dois
+vizinhos estejam  também /vivos/, esta  célula /morrerá/ (veja  o primeiro
+caso na Figura [[rule90]]).
+
+Podemos gerar um gráfico, onde cada  linha representa uma nova fita de
+células, após  aplicarmos as regras  do autômato celular à  linha logo
+acima da mesma.
+
+Para uma linha  inicial com apenas uma célula viva  ao centro, teremos
+um desenho similar a este:
+
+:RULE90_REPR:
+
+#+NAME: rule90_evol
+#+CAPTION: Evolução da Rule 90 através do tempo. Fonte: Wolfram (2002; adaptado)
+[[file:img/rule90_evol.png]]
+:END:
+
+** Construindo a Rule 90 em APL
+
+Vamos  passo  a  passo  criar  uma expressão  em  APL  que  possa  ser
+transformada em função.
+
+Primeiro, começamos com nosso vetor inicial.
+
+#+begin_src dyalog
+      r
+0 0 0 0 0 1 0 0 0 0 0
+#+end_src
+
+Em seguida, criaremos um vetor  com dois elementos; cada elemento será
+uma cópia de ~r~.
+
+#+begin_src dyalog
+      r r
+ 0 0 0 0 0 1 0 0 0 0 0  0 0 0 0 0 1 0 0 0 0 0
+#+end_src
+
+Agora, faremos com que o primeiro vetor seja rotacionado uma casa para
+a *direita*,  e que  o segundo  vetor seja rotacionado  uma casa  para a
+*esquerda*.
+
+Normalmente aplicaríamos uma rotação horizontal a cada um, mas podemos
+simplesmente  distribuir  rotações  a  ~-1~ e  ~1~  para  cada  respectivo
+vetor. Veja:
+
+#+begin_src dyalog
+      ¯1 1⌽¨r r
+ 0 0 0 0 0 0 1 0 0 0 0  0 0 0 0 1 0 0 0 0 0 0
+#+end_src
+
+Agora, somaremos ambos os vetores, de forma a criar um só:
+
+#+begin_src dyalog
+      +/¯1 1⌽¨r r
+ 0 0 0 0 1 0 1 0 0 0 0
+#+end_src
+
+Vamos   fazer  uma   pausa  aqui   e  contemplar   o  que   temos  até
+então, comparando ~r~ a esse resultado parcial:
+
+#+begin_example
+r       => 0 0 0 0 0 1 0 0 0 0 0
+parcial => 0 0 0 0 1 0 1 0 0 0 0
+#+end_example
+
+Se observarmos com bastante atenção, veremos que ~parcial~ nada mais é
+que a quantidade de vizinhos vivos de cada célula respectiva de ~r~!
+
+Se experimentarmos  isso com um  novo vetor ~z~,  com três números  ~1~ ao
+centro, obteremos o seguinte:
+
+#+begin_src dyalog
+      z←¯5⌽1 1 1,(10⍴0)
+
+      z            ⍝ Novo vetor z
+0 0 0 0 0 1 1 1 0 0 0 0 0
+
+      +/¯1 1⌽¨z z ⍝ Parcial
+ 0 0 0 0 1 1 2 1 1 0 0 0 0
+#+end_src
+
+Mais explicitamente:
+
+#+begin_example
+z       => 0 0 0 0 0 1 1 1 0 0 0 0 0
+parcial => 0 0 0 0 1 1 2 1 1 0 0 0 0
+#+end_example
+
+Isto é algo muito bom; uma vez  que temos a contagem de vizinhos vivos
+à  esquerda  e à  direita  de  uma  célula,  podemos tomar  um  atalho
+interessante na Rule 90.
+
+Se observarmos  a Figura [[rule90]],  podemos ver  que o estado  da célula
+atual não  é verdadeiramente  importante para  esta regra.  Assim, não
+precisamos  levar  em  consideração  a  célula  atual.
+
+Também  não  precisamos levar  em  consideração  quais vizinhos  estão
+vivos, pois a Rule 90 parece operar apenas com uma quantidade exata de
+vizinhos vivos.
+
+Assim,  temos uma  única frase  que resume  a Rule  90: *uma  célula só
+permanecerá viva se tiver exatamente um vizinho vivo*.
+
+Isto pode ser feito através de comparar cada um dos elementos do vetor
+resultante com o número ~1~, da seguinte forma:
+
+#+begin_src dyalog
+      1=+/¯1 1⌽¨r r
+ 0 0 0 0 1 0 1 0 0 0 
+#+end_src
+
+Em APL, toda  vez que realizamos uma comparação entre  um escalar e um
+vetor,  o  vetor  é  implicitamente  percorrido,  e  cada  elemento  é
+comparado  com o  escalar fornecido  (neste caso,  ~1~). Como  resposta,
+recebemos um  /novo vetor/, contendo  a resposta de cada  comparação. Em
+APL,  ~true~   e  ~false~  estão   diretamente  relacionados  a  ~1~   e  ~0~,
+respectivamente, portanto nosso novo vetor também é populado por ~1~'s e
+~0~'s.
+
+Com isso, temos  nossa nova expressão que calcula o  próximo estado da
+Rule 90 para uma fita circular. Veja que em nenhum momento mencionamos
+o  /tamanho do  vetor/, portanto  a  expressão independe  do tamanho  do
+mesmo.
+
+Podemos melhorar um pouco nossa  expressão. O resultado, na verdade, é
+um /vetor  encapsulado/, que podemos  desencapsular com uma  operação de
+/disclose/:
+
+#+begin_src dyalog
+      ⊃1=+/¯1 1⌽¨r r
+0 0 0 0 1 0 1 0 0 0 0
+#+end_src
+
+E  também   podemos  evitar  a   repetição  do  vetor  ~r~   através  do
+encapsulamento  do  mesmo,  o  que  fará com  que  as  rotações  sejam
+distribuídas para  quantas cópias de  ~r~ sejam necessárias,  através da
+operação /enclose/:
+
+#+begin_src dyalog
+      ⊃1=+/¯1 1⌽¨⊂r
+0 0 0 0 1 0 1 0 0 0 0
+#+end_src
+
+Tudo  o  que  resta  é   transformar  esta  expressão  em  uma  função
+propriamente  dita.  Para tanto,  vamos  substituir  ~r~ pelo  parâmetro
+formal ~⍵~, e colocar a expressão  no escopo de uma expressão lambda, ou
+seja, de uma função /inline/:
+
+#+begin_src dyalog
+{⊃1=+/¯1 1⌽¨⊂⍵}
+#+end_src
+
+Esta  expressão pode  então  ser  atribuída a  um  nome qualquer,  que
+chamaremos ~rule90~.
+
+#+begin_src dyalog
+rule90←{⊃1=+/¯1 1⌽¨⊂⍵}
+#+end_src
+
+* Generalizando as regras
+
+Há algum tempo atrás, criei algumas funções para generalizar a criação
+de regras de autômatos celulares,  cujos estados sejam apenas /vivos/ ou
+/mortos/.
+
+A expressão a seguir[fn:3]...
+
+#+begin_src dyalog
+findrule←{1+⊃+/((-⍺-(⌊⍺÷2))+⍳⍺)⌽¨(⌽2*¯1+⍳⍺)×¨⊂⍵}
+#+end_src
+
+..é uma função /diádica/ (tomando dois  argumentos; um à esquerda e um à
+direita). Seu primeiro argumento enumera  a quantidade de elementos na
+vizinhança, sendo  sempre ímpar; seu  segundo argumento toma  um vetor
+arbitrário de ~0~'s e ~1~'s.
+
+Assim, se aplicarmos ~findrule~ a ~3~ e ao nosso vetor ~r~
+
+#+begin_src dyalog
+      3 findrule r
+1 1 1 1 2 3 5 1 1 1 1
+#+end_src
+
+veremos que cada  um dos elementos se enquadra em  um caso de qualquer
+regra arbitrária que  sirva para uma vizinhança de  três elementos; se
+contarmos  os casos  da  Figura  [[rule90]] da  esquerda  para a  direita,
+começando de ~1~, teremos um paralelo com a Rule 90, por exemplo.
+
+Para facilitar, podemos especificar  ~findrule~ apenas para situações de
+uma  vizinhança   de  três   elementos.  O   operador  /jot/   (~∘~)  liga
+permanentemente o valor  ~3~ a uma cópia da  função ~findrule~, produzindo
+uma  nova   função,  no   processo,  que   demande  apenas   um  único
+parâmetro. Nomearemos esta função como ~findrule3~:
+
+#+begin_src dyalog
+findrule3←3∘findrule
+#+end_src
+
+Por fim, vamos especificar uma função  que toma apenas um vetor com os
+números  das regras  onde  /a  célula permanece  viva/,  e substitui  os
+números do resultado de ~findrule3~ por ~1~ ou ~0~, dependendo da existência
+do estado em questão no vetor informado a essa função.
+
+#+begin_src dyalog
+do_rule3←{(findrule3 ⍺)⌷¨⊂⌽(⍳8)∊⍵}
+#+end_src
+
+Por exemplo, podemos emular a aplicação  de ~rule90~ em ~r~ através do uso
+de ~do_rule3~ para os casos ~2~, ~4~, ~5~ e ~7~, que são os números dos casos de
+vizinhança para os quais a célula em questão sobrevive (vide a Figura [[rule90]]):
+
+#+begin_src dyalog
+      rule90 r
+0 0 0 0 1 0 1 0 0 0 0
+
+      r do_rule3 2 4 5 7
+0 0 0 0 1 0 1 0 0 0 0
+#+end_src
+
+* Criando mais regras de ACs
+
+Com estas simples funções  podemos, finalmente, criar outros autômatos
+celulares à base de simples  generalização. Vejamos como podemos criar
+outras regras:
+
+#+begin_src dyalog
+rule30  ← {⍵ do_rule3 4 5 6 7}       ⍝ Aleatório
+rule110 ← {⍵ do_rule3 2 3 5 6 7}     ⍝ Estruturas localizadas
+rule250 ← {⍵ do_rule3 1 2 3 4 5 7}   ⍝ Repetição
+rule254 ← {⍵ do_rule3 1 2 3 4 5 6 7} ⍝ Repetição
+#+end_src
+
+Segundo  Wolfram  (2002)  e  Mitchell, Hraber  e  Crutchfield  (1993),
+autômatos  celulares podem  se classificar  de algumas  formas, quanto
+mais  se aproximam  da ideia  de /caos/,  sendo estruturas  extremamente
+recorrentes na natureza também.
+
+Vamos  criar mais  algumas  funções  e estruturas  para  nos ajudar  a
+visualizar estas classificações.
+
+* Representação visual
+
+Começamos atribuindo  uma função  qualquer de  autômato celular  a uma
+variável global ~fn~ em nosso  /workspace/. Poderemos trocar esta função à
+medida que for necessário.
+
+#+begin_src dyalog
+fn←rule90
+#+end_src
+
+Finalmente, criarei uma função que gera  uma matriz de evolução de uma
+fita de acordo com uma certa quantidade de gerações informada.
+
+#+begin_src dyalog
+genboard←{board←⍺⋄{(fn⍣⍵)board}¨(⍵ 1)⍴¯1+⍳⍵}
+#+end_src
+
+A matriz gerada é similar à Figura [[rule90_evol]], porém numérica:
+
+#+begin_src dyalog
+      r genboard 10
+ 0 0 0 0 0 1 0 0 0 0 0
+ 0 0 0 0 1 0 1 0 0 0 0
+ 0 0 0 1 0 0 0 1 0 0 0
+ 0 0 1 0 1 0 1 0 1 0 0
+ 0 1 0 0 0 0 0 0 0 1 0
+ 1 0 1 0 0 0 0 0 1 0 1
+ 1 0 0 1 0 0 0 1 0 0 1
+ 1 1 1 0 1 0 1 0 1 1 1
+ 0 0 1 0 0 0 0 0 1 0 0
+ 0 1 0 1 0 0 0 1 0 1 0
+#+end_src
+
+Podemos abstrair isso mais um  pouco, trocando os ~0~'s pelo caractere
+de espaço e os ~1~'s pelo caractere ~o~ minúsculo, através desta função:
+
+#+begin_src dyalog
+showboard←{{' o'[1+⍵]}¨(⍺ genboard ⍵)}
+#+end_src
+
+O  resultado  é uma  representação  que  lembra  mais ainda  a  Figura
+[[rule90_evol]]:
+
+#+begin_src dyalog
+      r showboard 10
+      o
+     o o
+    o   o
+   o o o o
+  o       o
+ o o     o o
+ o  o   o  o
+ ooo o o ooo
+   o     o
+  o o   o o
+
+#+end_src
+
+** Representando outros autômatos visualmente
+
+Podemos  usar  nova representação  visual  para  testar nossos  outros
+autômatos celulares.
+
+Vamos  começar atribuindo  a ~r~  um novo  vetor de  51 elementos,  onde
+apenas a célula do meio está viva:
+
+#+begin_src dyalog
+r←¯25⌽1,(50⍴0)
+#+end_src
+
+A Rule 30  é conhecida por representar um AC  /aleatório/, ou seja, gera
+estruturas  aleatórias em  seu desenvolvimento.  É, portanto,  uma boa
+representação de comportamento /caótico/:
+
+#+begin_src dyalog
+      fn←rule30  ⋄ r showboard 20
+                          o
+                         ooo
+                        oo  o
+                       oo oooo
+                      oo  o   o
+                     oo oooo ooo
+                    oo  o    o  o
+                   oo oooo  oooooo
+                  oo  o   ooo     o
+                 oo oooo oo  o   ooo
+                oo  o    o oooo oo  o
+               oo oooo  oo o    o oooo
+              oo  o   ooo  oo  oo o   o
+             oo oooo oo  ooo ooo  oo ooo
+            oo  o    o ooo   o  ooo  o  o
+           oo oooo  oo o  o ooooo  ooooooo
+          oo  o   ooo  oooo o    ooo      o
+         oo oooo oo  ooo    oo  oo  o    ooo
+        oo  o    o ooo  o  oo ooo oooo  oo  o
+       oo oooo  oo o  oooooo  o   o   ooo oooo
+
+#+end_src
+
+A Rule  110 é  conhecida por  ser /Turing-completa/,  ou seja,  dada uma
+entrada adequada, é capaz de simular uma Máquina de Turing.
+
+Como sua evolução ocorre para a  "esquerda", criarei um novo vetor /ad
+hoc/ de 21 elementos, onde apenas o elemento mais à direita vale ~1~.
+
+A Rule  110, é,  portanto, um  sistema /à beira  do caos/,  onde podemos
+ainda  observar   estruturas  localizadas  em  meio   a  comportamento
+caótico.
+
+#+begin_src dyalog
+      fn←rule110  ⋄ (1⌽1,(20⍴0)) showboard 20
+                     o
+                    oo
+                   ooo
+                  oo o
+                 ooooo
+                oo   o
+               ooo  oo
+              oo o ooo
+             ooooooo o
+            oo     ooo
+           ooo    oo o
+          oo o   ooooo
+         ooooo  oo   o
+        oo   o ooo  oo
+       ooo  oooo o ooo
+      oo o oo  ooooo o
+     oooooooo oo   ooo
+    oo      oooo  oo o
+   ooo     oo  o ooooo
+  oo o    ooo oooo   o
+#+end_src
+
+As Rules 250 e 254 constituem-se de padrões de repetição mais simples,
+e um pouco menos interessantes.
+
+#+begin_src dyalog
+      fn←rule250  ⋄ r showboard 20
+                          o
+                         o o
+                        o o o
+                       o o o o
+                      o o o o o
+                     o o o o o o
+                    o o o o o o o
+                   o o o o o o o o
+                  o o o o o o o o o
+                 o o o o o o o o o o
+                o o o o o o o o o o o
+               o o o o o o o o o o o o
+              o o o o o o o o o o o o o
+             o o o o o o o o o o o o o o
+            o o o o o o o o o o o o o o o
+           o o o o o o o o o o o o o o o o
+          o o o o o o o o o o o o o o o o o
+         o o o o o o o o o o o o o o o o o o
+        o o o o o o o o o o o o o o o o o o o
+       o o o o o o o o o o o o o o o o o o o o
+
+      fn←rule254  ⋄ r showboard 20
+                          o
+                         ooo
+                        ooooo
+                       ooooooo
+                      ooooooooo
+                     ooooooooooo
+                    ooooooooooooo
+                   ooooooooooooooo
+                  ooooooooooooooooo
+                 ooooooooooooooooooo
+                ooooooooooooooooooooo
+               ooooooooooooooooooooooo
+              ooooooooooooooooooooooooo
+             ooooooooooooooooooooooooooo
+            ooooooooooooooooooooooooooooo
+           ooooooooooooooooooooooooooooooo
+          ooooooooooooooooooooooooooooooooo
+         ooooooooooooooooooooooooooooooooooo
+        ooooooooooooooooooooooooooooooooooooo
+       ooooooooooooooooooooooooooooooooooooooo
+
+#+end_src
+
+* Conclusão
+
+Muito foi explorado  até aqui, no sentido dos padrões  e da informação
+que  poderiam ser  criados. O  mais interessante  é que  este processo
+quase não demandou linhas de código.
+
+Na  minha apresentação,  mostrei formas  de codificar  a ~rule90~,  como
+feito anteriormente, usando  as mesmas ideias, porém em  Common Lisp e
+em C++; foram  bem mais trabalhosas em termos de  quantidade de código
+escrito,  mesmo operando  sobre suas  respectivas estruturas  de dados
+mais acessíveis (listas e ~std::vector~, respectivamente). Todavia, pude
+transportar a  ideia por trás  do algoritmo para estas  linguagens sem
+maiores problemas.
+
+A lição que fica para o uso  de APL no contexto de autômatos celulares
+é a de que, mesmo que uma  linguagem pareça não ser tão útil, acredito
+que aprender tal  linguagem possa abrir as portas da  mente para novas
+formas de desenvolver alguns algoritmos. Muitas vezes, por ter um foco
+diferenciado,  uma  linguagem  pode   apresentar-nos  outra  forma  de
+resolver  um  problema,  por  vezes  de  forma  mais  sucinta  para  o
+programador.
+
+* Footnotes
+
+[fn:3] Vou me abster de explicar passo a passo a partir de agora, pois
+serão expressões  um pouco  mais rebuscadas, apesar  de não  serem tão
+complicadas quanto parecem. Os textos explicativos falarão por si.
+
+[fn:2] Adaptado de Wolfram, S. A New Kind of Science, ano 2002. 
+
+[fn:1]  "Cellular   automata  (CA)  are   discrete  spetially-extended
+dynamical  systems that  have been  studied extensively  as models  of
+physical  processes   and  as  computational  devices".   Retirado  de
+Mitchell, M., Hraber,  P. & Crutchfield, J. P. --  /Revisiting the edge
+of chaos/: Evolving Cellular  Automata to Perform Computations. Revista
+/Complex Systems/, número 7, páginas 89 a 130, ano 1993.
