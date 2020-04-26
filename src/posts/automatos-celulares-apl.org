@@ -2,10 +2,10 @@
 #+SETUPFILE: setupfile.org
 #+LANGUAGE:  pt_BR
 #+STARTUP:   inlineimages showall latexpreview
-
 #+AUTHOR: Lucas S. Vieira
 #+EMAIL:  lucasvieira@protonmail.com.br
 #+DATE:   Abr 21, 2020
+#+OPTIONS:   toc:t
 
 Neste    post,     pretendo    tratar    de     Autômatos    Celulares
 unidimensionais. Adquiri há alguns meses uma cópia do livro /A New Kind
@@ -16,18 +16,18 @@ leitura  deste  livro, procurei  desenvolver  um  pequeno conjunto  de
 funções  que   tornasse  possível   inspecionar  alguns   autômatos  e
 imprimi-los na tela.
 
-Bem, na  minha opinião, como ACs  unidimensionais tratam primariamente
-de /vetores/, nenhuma linguagem seria melhor de tratar deste problema
-que APL. Não pretendo fazer  um discurso advogando esta linguagem, mas
-uso-a primariamente  porque os programas ficam  extremamente sucintos;
-cada função é como uma expressão matemática, economizando linhas. E eu
-particularmente acho APL muito bonita.
+Bem,   na  minha   opinião,   como   ACs  unidimensionais   baseiam-se
+primariamente  em /vetores/,  nenhuma linguagem  seria melhor  de tratar
+deste problema que APL. Não  pretendo fazer um discurso advogando esta
+linguagem,  mas   uso-a  primariamente   porque  os   programas  ficam
+extremamente sucintos;  cada função  é como uma  expressão matemática,
+economizando linhas. E eu particularmente acho APL muito bonita.
 
 Para os exemplos a seguir, utilizarei  [[https://www.dyalog.com/][Dyalog APL]] ao invés de GNU APL,
 porque já me acostumei com este primeiro dialeto.
 
 Ah! Este post é uma espécie  de "tutorial rápido" de APL. Ao contrário
-do  que  já  fiz  anteriormente  por aqui,  desta  vez,  vou  explicar
+do que já fiz anteriormente por aqui, desta vez, vou explicar o
 passo-a-passo  das  operações  mais   simples,  para  que  você  possa
 compreender melhor a linguagem.
 
@@ -56,7 +56,7 @@ Dyalog APL [[https://www.dyalog.com/apl-font-keyboard.htm][que estão aqui]].
 Vamos  repassar um  pouco  sobre o  que são  /autômatos  celulares/ e  a
 importância  deles.   Repetindo   um  pouco  o  que   já  disse  [[../talks/slide-apres-tc.org][nesta
 apresentação]], autômatos  celulares são sistemas dinâmicos  discretos e
-espacialmente-estendidos, que  têm sido estudados  extensivamente como
+espacialmente estendidos, que têm sido estudados extensivamente como
 modelos     de    processos     físicos     e    como     dispositivos
 computacionais[fn:1].  Focando  neste   mesmo  aspecto  computacional,
 podemos enxergar ACs como uma  forma de falar de computação paralela,
@@ -76,8 +76,8 @@ dela (vide Figura [[fig_torus]]).
 #+CAPTION: Exemplo de uma fita circular de células. Cada número nas células representa o estado da célula atual.
 [[file:img/ac-torus.png]]
 
-Em cada célula desta fita, teremos  um número, que representa o /estado/
-desta célula. Para facilitarmos, tomaremos  o número ~0~ representando o
+Em cada parte desta fita, teremos  um número, que representa o /estado/
+de sua célula. Para facilitarmos, tomaremos o número ~0~ representando o
 estado de uma célula /morta/, e o número ~1~ representando o estado de uma
 célula /viva/.
 
@@ -85,7 +85,8 @@ Adicionalmente,  teremos /regras  fixas/ baseadas  na vizinhança  de uma
 certa célula,  que definirão qual  será o  estado da mesma  no próximo
 passo de tempo. Ou seja, para  sabermos se uma célula permanecerá /viva/
 ou /morta/,  levamos em consideração  seu /atual  estado/ e os  estados de
-seus vizinhos à /esquerda/ e à /direita/.
+seus vizinhos à  /esquerda/ e à /direita/ (em  outras palavras, trataremos
+de uma vizinhança de três células).
 
 Vou  começar criando  uma /fita/  deste tipo,  em APL.  Para tanto,  vou
 representá-la em um vetor:
@@ -93,6 +94,9 @@ representá-la em um vetor:
 #+begin_src dyalog
 r←¯5⌽1,(10⍴0)
 #+end_src
+
+Se  isto pareceu  estranho, não  se  preocupe. Explicarei  o que  está
+acontecendo logo a seguir.
 
 ** Destrinchando a criação do vetor
 
@@ -110,7 +114,8 @@ A expressão a seguir
 10⍴0
 #+end_src
 
-Cria um vetor de 10 elementos, onde todos são zeros:
+Cria, com  ajuda da  função /rho/  (~⍴~), um vetor  de 10  elementos, onde
+todos são zeros:
 
 #+begin_example
 0 0 0 0 0 0 0 0 0 0
@@ -121,24 +126,26 @@ seu tamanho, e transformando-o em um vetor de 11 elementos, onde todos
 os  números são  zeros,  exceto  o primeiro:
 
 #+begin_src dyalog
-1,(10⍴0)
-#+end_src
-
-#+begin_example
+      1,(10⍴0)
 1 0 0 0 0 0 0 0 0 0 0
-#+end_example
+#+end_src
 
 Veja  que esta  operação  envolve reescrever  a expressão  adicionando
 algo. Isto é facilitado no ambiente de Dyalog APL, pois podemos voltar
 a expressões, reescrevê-las  e fazer com que o  ambiente as interprete
 ao final, como se tivessem sido ali escritas.
 
+Em geral, a expressão escrita possuirá sempre um recuo à sua esquerda,
+enquanto  seu resultado  estará logo  abaixo, sem  recuo. Usarei  esta
+escrita aqui,  pois ela se  assemelha ao console interativo  de Dyalog
+APL e de GNU APL.
+
 Em seguida, lembre-se  de que este vetor representa,  na realidade, um
 /cilindro/  (como visto  na Figura  [[fig_torus]]). Assim,  se rotacionarmos
 este cilindro  *cinco células para  a direita*, colocaremos o  número ~1~,
 que estava no início, no exato *meio* do nosso vetor.
 
-Isto  pode ser  feito  com  uma rotação  horizontal  de  ~-5~ casas  no
+Isto pode ser feito com uma rotação horizontal (~⌽~) de ~-5~ casas no
 vetor. Veja como APL faz isso:
 
 #+begin_src dyalog
@@ -150,7 +157,7 @@ A  única coisa  restante  é salvar  este vetor  em  uma variável,  que
 daremos o nome de ~r~.
 
 #+begin_src dyalog
-r←¯5⌽1,(10⍴0)
+      r←¯5⌽1,(10⍴0)
 #+end_src
 
 * ACs em APL
@@ -170,8 +177,11 @@ Usando a notação visual de Wolfram[fn:2], podemos expressá-la assim:
 #+CAPTION: Visualização gráfica da Rule 90. Fonte: Wolfram (2002; adaptado).
 [[file:img/rule90.png]]
 
-A regra é expressada como /seis/ situações possíveis, condizentes com as
-seis  /vizinhanças/  possíveis,  para  uma vizinhança  de  três  células
+Na figura acima, células /pretas/  estão vivas, enquanto células /brancas/
+estão mortas.
+
+A regra é expressada como /oito/ situações possíveis, condizentes com as
+oito /vizinhanças/ possíveis, para uma vizinhança de três células
 (vizinho esquerdo, célula atual, e vizinho direito).
 
 Em cada  situação, o estado  atual da vizinhança é  representado pelos
@@ -180,8 +190,8 @@ assumirá  no  próximo passo  será  o  mesmo estado  representado  pelo
 quadrado solitário, na segunda linha.
 
 Por  exemplo, na  Rule 90,  caso uma  célula esteja  /viva/ e  seus dois
-vizinhos estejam  também /vivos/, esta  célula /morrerá/ (veja  o primeiro
-caso na Figura [[rule90]]).
+vizinhos estejam também /vivos/, esta célula /morrerá/ (veja o caso mais à
+esquerda na Figura [[rule90]]).
 
 Podemos gerar um gráfico, onde cada  linha representa uma nova fita de
 células, após  aplicarmos as regras  do autômato celular à  linha logo
@@ -200,7 +210,9 @@ um desenho similar a este:
 ** Construindo a Rule 90 em APL
 
 Vamos  passo  a  passo  criar  uma expressão  em  APL  que  possa  ser
-transformada em função.
+transformada  em  uma  função;  esta  função  deverá  tomar  um  vetor
+arbitrário e binário qualquer, e retornar  um novo vetor com o /próximo
+passo/ do autômato celular Rule 90.
 
 Primeiro, começamos com nosso vetor inicial.
 
@@ -221,16 +233,17 @@ Agora, faremos com que o primeiro vetor seja rotacionado uma casa para
 a *direita*,  e que  o segundo  vetor seja rotacionado  uma casa  para a
 *esquerda*.
 
-Normalmente aplicaríamos uma rotação horizontal a cada um, mas podemos
-simplesmente  distribuir  rotações  a  ~-1~ e  ~1~  para  cada  respectivo
-vetor. Veja:
+Normalmente aplicaríamos  uma rotação  horizontal (~⌽~)  a cada  um, mas
+podemos simplesmente distribuir rotações a ~-1~ e ~1~ para cada respectivo
+vetor, através de /rotate each/ (~⌽¨~). Veja:
 
 #+begin_src dyalog
       ¯1 1⌽¨r r
  0 0 0 0 0 0 1 0 0 0 0  0 0 0 0 1 0 0 0 0 0 0
 #+end_src
 
-Agora, somaremos ambos os vetores, de forma a criar um só:
+Agora, somaremos  ambos os  vetores, elemento a  elemento, de  forma a
+criar um só, através de uma redução com somatório (~+/~):
 
 #+begin_src dyalog
       +/¯1 1⌽¨r r
@@ -246,7 +259,7 @@ parcial => 0 0 0 0 1 0 1 0 0 0 0
 #+end_example
 
 Se observarmos com bastante atenção, veremos que ~parcial~ nada mais é
-que a quantidade de vizinhos vivos de cada célula respectiva de ~r~!
+que a quantidade de vizinhos vivos de cada célula respectiva de ~r~.
 
 Se experimentarmos  isso com um  novo vetor ~z~,  com três números  ~1~ ao
 centro, obteremos o seguinte:
@@ -257,22 +270,22 @@ centro, obteremos o seguinte:
       z            ⍝ Novo vetor z
 0 0 0 0 0 1 1 1 0 0 0 0 0
 
-      +/¯1 1⌽¨z z ⍝ Parcial
+      +/¯1 1⌽¨z z ⍝ Vetor parcial
  0 0 0 0 1 1 2 1 1 0 0 0 0
 #+end_src
 
-Mais explicitamente:
+Mais explicitamente, compare:
 
 #+begin_example
 z       => 0 0 0 0 0 1 1 1 0 0 0 0 0
 parcial => 0 0 0 0 1 1 2 1 1 0 0 0 0
 #+end_example
 
-Isto é algo muito bom; uma vez  que temos a contagem de vizinhos vivos
+Isto é algo muito bom. Uma vez que temos a contagem de vizinhos vivos
 à  esquerda  e à  direita  de  uma  célula,  podemos tomar  um  atalho
 interessante na Rule 90.
 
-Se observarmos  a Figura [[rule90]],  podemos ver  que o estado  da célula
+Observando a Figura [[rule90]],  podemos ver  que o estado  da célula
 atual não  é verdadeiramente  importante para  esta regra.  Assim, não
 precisamos  levar  em  consideração  a  célula  atual.
 
@@ -332,8 +345,8 @@ seja, de uma função /inline/:
 {⊃1=+/¯1 1⌽¨⊂⍵}
 #+end_src
 
-Esta  expressão pode  então  ser  atribuída a  um  nome qualquer,  que
-chamaremos ~rule90~.
+Esta  expressão pode  então ser  atribuída a  um nome  qualquer. Neste
+caso, chamaremos ela de ~rule90~.
 
 #+begin_src dyalog
 rule90←{⊃1=+/¯1 1⌽¨⊂⍵}
@@ -345,7 +358,7 @@ Há algum tempo atrás, criei algumas funções para generalizar a criação
 de regras de autômatos celulares,  cujos estados sejam apenas /vivos/ ou
 /mortos/.
 
-A expressão a seguir[fn:3]...
+A expressão ~findrule~ a seguir...
 
 #+begin_src dyalog
 findrule←{1+⊃+/((-⍺-(⌊⍺÷2))+⍳⍺)⌽¨(⌽2*¯1+⍳⍺)×¨⊂⍵}
@@ -365,10 +378,11 @@ Assim, se aplicarmos ~findrule~ a ~3~ e ao nosso vetor ~r~
 
 veremos que cada  um dos elementos se enquadra em  um caso de qualquer
 regra arbitrária que  sirva para uma vizinhança de  três elementos; se
-contarmos  os casos  da  Figura  [[rule90]] da  esquerda  para a  direita,
+contarmos os casos da Figura [[rule90]] da direita para a esquerda,
 começando de ~1~, teremos um paralelo com a Rule 90, por exemplo.
 
-Explicarei melhor o funcionamento de ~findrule~ [[explain_findrule][ao final deste artigo]].
+Explicarei melhor o  funcionamento de ~findrule~ [[explain_findrule][ao  final deste artigo]],
+pois não é de entendimento trivial.
 
 Para facilitar, podemos especificar  ~findrule~ apenas para situações de
 uma  vizinhança   de  três   elementos.  O   operador  /jot/   (~∘~)  liga
@@ -377,7 +391,7 @@ uma  nova   função,  no   processo,  que   demande  apenas   um  único
 parâmetro. Nomearemos esta função como ~findrule3~:
 
 #+begin_src dyalog
-findrule3←3∘findrule
+      findrule3←3∘findrule
 #+end_src
 
 Por fim, vamos especificar uma função  que toma apenas um vetor com os
@@ -386,7 +400,7 @@ números do resultado de ~findrule3~ por ~1~ ou ~0~, dependendo da existência
 do estado em questão no vetor informado a essa função.
 
 #+begin_src dyalog
-do_rule3←{(findrule3 ⍺)⌷¨⊂⌽(⍳8)∊⍵}
+      do_rule3←{(findrule3 ⍺)⌷¨⊂⌽(⍳8)∊⍵}
 #+end_src
 
 Por exemplo, podemos emular a aplicação  de ~rule90~ em ~r~ através do uso
@@ -429,14 +443,14 @@ variável global ~fn~ em nosso  /workspace/. Poderemos trocar esta função à
 medida que for necessário.
 
 #+begin_src dyalog
-fn←rule90
+      fn←rule90
 #+end_src
 
 Finalmente, criarei uma função que gera  uma matriz de evolução de uma
 fita de acordo com uma certa quantidade de gerações informada.
 
 #+begin_src dyalog
-genboard←{board←⍺⋄{(fn⍣⍵)board}¨(⍵ 1)⍴¯1+⍳⍵}
+      genboard←{board←⍺⋄{(fn⍣⍵)board}¨(⍵ 1)⍴¯1+⍳⍵}
 #+end_src
 
 A matriz gerada é similar à Figura [[rule90_evol]], porém numérica:
@@ -459,7 +473,7 @@ Podemos abstrair isso mais um  pouco, trocando os ~0~'s pelo caractere
 de espaço e os ~1~'s pelo caractere ~o~ minúsculo, através desta função:
 
 #+begin_src dyalog
-showboard←{{' o'[1+⍵]}¨(⍺ genboard ⍵)}
+      showboard←{{' o'[1+⍵]}¨(⍺ genboard ⍵)}
 #+end_src
 
 O  resultado  é uma  representação  que  lembra  mais ainda  a  Figura
@@ -628,6 +642,8 @@ diferenciado,  uma  linguagem  pode   apresentar-nos  outra  forma  de
 resolver  um  problema,  por  vezes  de  forma  mais  sucinta  para  o
 programador.
 
+#+HTML: <hr>
+
 * Extra: Explicando ~findrule~
 <<explain_findrule>>
 
@@ -641,7 +657,7 @@ findrule←{1+⊃+/((-⍺-(⌊⍺÷2))+⍳⍺)⌽¨(⌽2*¯1+⍳⍺)×¨⊂⍵}
 trivial e por  ser um pouco mais complexa. Tentarei  fazer isto agora,
 mostrando passo-a-passo como construi-la, assim como fiz com ~rule90~.
 
-Devo dizer  que esta seção é  bem extensa. Como esta  manipulação é um
+Devo dizer que esta seção é mais extensa. Como esta manipulação é um
 pouco  mais   complicada,  não   medi  palavras  para   explicá-la.  O
 interessante  do raciocínio  exposto  a seguir  é  que, muitas  vezes,
 alguns recursos complexos chegam a  tornarem-se óbvios dado o poder de
@@ -700,8 +716,8 @@ Vamos começar  definindo duas  variáveis: ~a~, que  indica o  tamanho da
 nossa vizinhança, e ~r~, que será a nossa /fita/ para testes.
 
 #+begin_src dyalog
-a←3
-r←¯5⌽1 1 1,(10⍴0)
+      a←3
+      r←¯5⌽1 1 1,(10⍴0)
 #+end_src
 
 ** Vetor decrescente de múltiplos de ~2~
@@ -714,7 +730,7 @@ Primeiramente, geramos um vetor com números de ~1~ a ~a~.
 #+end_src
 
 Em  seguida,  subtraimos  ~1~  de  cada um  dos  elementos  deste  vetor
-gerado. Isto equivale também  a somar ~-1~ a cada um  dos valores, o que
+gerado. Isto equivale também  a somar ~¯1~ a cada um  dos valores, o que
 fazemos  para   tomar  vantagem  do   fato  de  APL   ser  normalmente
 interpretada da /direita/ para a /esquerda/, no que tange à precedência de
 funções e operadores.
@@ -725,7 +741,7 @@ funções e operadores.
 #+end_src
 
 Em seguida, tomaremos cada um destes números, e tornaremo-os expoentes
-para o número  ~2~. Por exemplo, para cada número  ~x~, calcularemos ~2^x~ e
+para o número ~2~. Por exemplo, para cada número ~x~, calcularemos $2^x$ e
 colocaremos em um novo vetor, no seu lugar.
 
 #+begin_src dyalog
@@ -733,8 +749,8 @@ colocaremos em um novo vetor, no seu lugar.
 1 2 4
 #+end_src
 
-Finalmente, usaremos a forma /monádica/ da função de /rotação horizontal/,
-que inverterá o vetor.
+Finalmente, usaremos a forma /monádica/  da função de /rotação horizontal/
+(~⌽~), que inverterá o vetor.
 
 #+begin_src dyalog
       ⌽2*¯1+⍳a
@@ -771,10 +787,13 @@ estados de:
 - A célula em questão por ~2~;
 - O vizinho da direita por ~1~.
 
+E então, estes três resultados são somados.
+
 Estes números de multiplicação  dizem respeito justamente à vizinhança
-de /três/  elementos, podendo  mudar para vizinhanças  subsequentes (por
-exemplo,   a   próxima  vizinhança   válida   seria   uma  com   cinco
-elementos). Veja que a célula atual sempre assumiria o valor do /meio/.
+de  /três/  elementos  de  cada  uma das  células,  podendo  mudar  para
+outros tipos de vizinhanças (por  exemplo, o próximo tamanho válido de
+vizinhança seria  com cinco elementos).   Veja que o estado  da célula
+atual sempre multiplica o valor do /meio/ da vizinhança.
 
 Sendo  assim, a  expressão  anterior  foi feita  para  gerar um  vetor
 decrescente de múltiplos de 2,  que serão posteriormente utilizados em
@@ -798,15 +817,25 @@ números ~1~ foram transformados em um dos múltiplos de ~r~.
 ** Rotacionando os vetores resultantes
 
 Agora, precisamos  dar um jeito de  fazer com que estes  vetores sejam
-ligeiramente rotacionados para  que cada múltiplo fique  na posição do
-vizinho ao qual se enquadra.
+ligeiramente rotacionados para que cada valor passe a ficar exatamente
+no local da célula da qual diz respeito.
+
+Ou seja, o vetor de valores à esquerda será rotacionado uma vez para a
+direita;  o vetor  de valores  à direita  será rotacionado  uma vez  à
+esquerda, e o vetor de valores no local correto não será rotacionado.
+
+Esse  deslocamento é  importante para  a  soma de  múltiplos do  nosso
+cálculo anterior; ao realizarmos a soma destes vetores rotacionados, o
+número na base dez representando a vizinhança para a célula em questão
+poderá  ser obtido  através da  soma elemento-a-elemento  de todos  os
+vetores.
 
 Por exemplo,  um número ~4~,  como já vimos,  diz respeito à  célula que
-está imediatamente à sua  /direita/, portanto precisamos rotacioná-lo ~-1~
-casas, efetivamente levando o número ~4~ a direita.
+está imediatamente  à /direita/ de si. Portanto, precisamos rotacioná-lo
+~-1~ casas, efetivamente levando o número ~4~ a direita.
 
-Já um número ~1~ diz respeito à célula imediatamente à sua /esquerda/,
-portanto rotacionamos  o último vetor  ~1~ casa, efetivamente  levando o
+Já um número ~1~ diz respeito à célula imediatamente à /esquerda/ de si.
+Portanto, rotacionamos o último vetor ~1~ casa, efetivamente levando o
 número ~1~ à esquerda.
 
 O motivo para isso é que, se somarmos finalmente os vetores elemento a
@@ -814,7 +843,8 @@ elemento,  teremos  o  número  representado  pela  vizinhança  daquela
 célula. Assim, estaremos tratando três vizinhanças de apenas uma vez.
 
 Vejamos um exemplo visual. Se tivéssemos uma vizinhança como ~0 1 0~
- e multiplicássemos suas cópias por ~4~, ~2~ e ~1~, teríamos os vetores:
+ e multiplicássemos suas cópias por ~4~,  ~2~ e ~1~, teríamos os respectivos
+ vetores:
 
 #+begin_example
 0 4 0
@@ -827,12 +857,12 @@ Agora, podemos locomover o primeiro vetor  uma casa para a frente, e o
 célula em questão, ele poderá ficar onde está:
 
 #+begin_example
-0 0 4
+0 0 4   ⍝ Movido para a direita
 0 2 0
-1 0 0
+1 0 0   ⍝ Movido para a esquerda
 #+end_example
 
-Se somarmos estes elementos número a número, teremos:
+Se somarmos estes vetores elemento-a-elemento, teremos:
 
 #+begin_example
 1 2 4
@@ -848,11 +878,13 @@ correspondem, exatamente, a tais números:
 1 0 0 => 4
 #+end_example
 
-Para  tanto, seria  suficiente criar  um vetor  como ~¯1 0 1~,  que foi
-anteriormente usado,  e usar  uma rotação horizontal  distribuída (~⌽¨~)
-sobre estes  múltiplos. Todavia, veja  que este vetor não  tem tamanho
-fixo; se  tivéssemos uma vizinhança de  cinco elementos, precisaríamos
-de um vetor como ~¯2 ¯1 0 1 2~.
+Para tanto, seria suficiente criar um vetor de índices de rotação como
+~¯1 0 1~, similar  ao que foi anteriormente usado em  ~rule90~, e usar uma
+rotação horizontal distribuída (~⌽¨~) sobre estes  múltiplos já gerados.
+
+Todavia,  veja que  este  vetor não  pode ter  este  tamanho fixo;  se
+tivéssemos  trabalhando com  uma  vizinhança de  cinco elementos,  por
+exemplo, precisaríamos de um vetor como ~¯2 ¯1 0 1 2~.
 
 Assim, precisamos, primeiro, de uma expressão  em função de ~a~ que crie
 este vetor.
@@ -886,12 +918,21 @@ rotação.
 2
 #+end_src
 
-Veja que isto /garante/ a lógica  envolvida: se subtrairmos ~2~ do vetor ~1
-2 3~, teremos ~¯1 0 1~.
+Veja que isto /garante/ a lógica  envolvida: se subtrairmos ~2~ do vetor...
 
-Para  facilitar a  escrita em  APL, vamos  inverter este  resultado, e
-então somá-lo  ao vetor. Não é  a única forma de  fazer esta operação,
-mas é o suficiente por enquanto.
+#+begin_example
+1 2 3
+#+end_example
+
+...teremos...
+
+#+begin_example
+¯1 0 1
+#+end_example
+
+Para  facilitar  a  escrita  em  APL, vamos  inverter  o  sinal  deste
+resultado, e então somá-lo ao vetor. Não é a única forma de fazer esta
+operação, mas é o suficiente por enquanto.
 
 #+begin_src dyalog
       -a-(⌊a÷2)
@@ -909,7 +950,8 @@ múltiplos de ~2~ e os índices gerados.
 
 Colocaremos  a  expressão  dos   índices  entre  parênteses,  e  então
 aplicaremos a  rotação para  a outra expressão.  Os parênteses  só são
-necessários para esta expressão, por ela estar mais à esquerda.
+necessários  para  a expressão  dos  índices,  por  ela estar  mais  à
+esquerda.
 
 #+begin_src dyalog
       ((-a-(⌊a÷2))+⍳a)⌽¨(⌽2*¯1+⍳a)×¨⊂r 
@@ -947,14 +989,15 @@ vetor.
 
 ** Finalizando
 
-Finalmente, esta  é a expressão que  calcula o caso para  cada uma das
-regras  de  um autômato  celular  arbitrário,  dado um  tamanho  ímpar
-qualquer para a vizinhança (variável ~a~) e um vetor de células qualquer
-com estados binários (variável ~r~).
+Finalmente, esta  é a expressão que  calcula o /caso/ para  cada uma das
+células  de um  vetor,  para  qualquer regra  de  um autômato  celular
+unidimensional  arbitrário,  dado um  tamanho  ímpar  qualquer para  a
+vizinhança (variável  ~a~) e o já  citado vetor de células  qualquer com
+estados binários (variável ~r~).
 
 Substituiremos ~a~ e ~r~ pelos  parâmetros formais ~⍺~ e ~⍵~, respectivamente,
-que  simbolizam  o   parâmetro  passado  à  função  à   esquerda  e  à
-direita, e também  colocamos a expressão em chaves,  para que torne-se
+que  simbolizam  o   parâmetro  passado  à  função à   esquerda  e  à
+direita, e também colocaremos a expressão em chaves, para que torne-se
 uma expressão lambda. Vejamos seu uso /ad hoc/:
 
 #+begin_src dyalog
@@ -963,7 +1006,7 @@ uma expressão lambda. Vejamos seu uso /ad hoc/:
 #+end_src
 
 Podemos  dar a  essa expressão  lambda o  nome ~findrule~,  e finalmente
-poderemos utilizá-la como pretendido.
+poderemos utilizá-la de forma mais sucinta.
 
 #+begin_src dyalog
       findrule←{⊃+/((-⍺-(⌊⍺÷2))+⍳⍺)⌽¨(⌽2*¯1+⍳⍺)×¨⊂⍵}
@@ -974,13 +1017,9 @@ poderemos utilizá-la como pretendido.
 
 * Footnotes
 
-[fn:3] Vou me abster de explicar passo a passo a partir de agora, pois
-serão expressões  um pouco  mais rebuscadas, apesar  de não  serem tão
-complicadas quanto parecem. Os textos explicativos falarão por si.
-
 [fn:2] Adaptado de Wolfram, S. A New Kind of Science, ano 2002. 
 
-[fn:1]  "Cellular   automata  (CA)  are   discrete  spetially-extended
+[fn:1]  "Cellular   automata  (CA)  are   discrete  spatially-extended
 dynamical  systems that  have been  studied extensively  as models  of
 physical  processes   and  as  computational  devices".   Retirado  de
 Mitchell, M., Hraber,  P. & Crutchfield, J. P. --  /Revisiting the edge
