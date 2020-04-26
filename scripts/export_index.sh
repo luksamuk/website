@@ -1,6 +1,10 @@
 #!/bin/bash
 for f in `find src/ -maxdepth 1 -name "*.org"`; do
     echo "$f";
-    emacs --batch -l "~/.emacs.d/init.el" --kill "$f" -f org-html-export-to-html;
+    emacs --batch \
+	  -l "~/.emacs.d/init.el" \
+	  --kill \
+	  "$f" \
+	  -f org-html-export-to-html;
     mv "${f%%.org}.html" docs/
 done

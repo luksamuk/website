@@ -1,7 +1,7 @@
 #+TITLE:  Programando Autômatos Celulares em APL
 #+SETUPFILE: setupfile.org
 #+LANGUAGE:  pt_BR
-#+STARTUP:   inlineimages showall
+#+STARTUP:   inlineimages showall latexpreview
 
 #+AUTHOR: Lucas S. Vieira
 #+EMAIL:  lucasvieira@protonmail.com.br
@@ -368,6 +368,8 @@ regra arbitrária que  sirva para uma vizinhança de  três elementos; se
 contarmos  os casos  da  Figura  [[rule90]] da  esquerda  para a  direita,
 começando de ~1~, teremos um paralelo com a Rule 90, por exemplo.
 
+Explicarei melhor o funcionamento de ~findrule~ [[explain_findrule][ao final deste artigo]].
+
 Para facilitar, podemos especificar  ~findrule~ apenas para situações de
 uma  vizinhança   de  três   elementos.  O   operador  /jot/   (~∘~)  liga
 permanentemente o valor  ~3~ a uma cópia da  função ~findrule~, produzindo
@@ -578,7 +580,9 @@ e um pouco menos interessantes.
          o o o o o o o o o o o o o o o o o o
         o o o o o o o o o o o o o o o o o o o
        o o o o o o o o o o o o o o o o o o o o
+#+end_src
 
+#+begin_src dyalog
       fn←rule254  ⋄ r showboard 20
                           o
                          ooo
@@ -600,7 +604,6 @@ e um pouco menos interessantes.
          ooooooooooooooooooooooooooooooooooo
         ooooooooooooooooooooooooooooooooooooo
        ooooooooooooooooooooooooooooooooooooooo
-
 #+end_src
 
 * Conclusão
@@ -624,6 +627,350 @@ formas de desenvolver alguns algoritmos. Muitas vezes, por ter um foco
 diferenciado,  uma  linguagem  pode   apresentar-nos  outra  forma  de
 resolver  um  problema,  por  vezes  de  forma  mais  sucinta  para  o
 programador.
+
+* Extra: Explicando ~findrule~
+<<explain_findrule>>
+
+Mais acima, simplesmente mostrei esta função...
+
+#+begin_src dyalog
+findrule←{1+⊃+/((-⍺-(⌊⍺÷2))+⍳⍺)⌽¨(⌽2*¯1+⍳⍺)×¨⊂⍵}
+#+end_src
+
+...e disse  que a explicaria  mais tarde,  justamente por não  ser tão
+trivial e por  ser um pouco mais complexa. Tentarei  fazer isto agora,
+mostrando passo-a-passo como construi-la, assim como fiz com ~rule90~.
+
+Devo dizer  que esta seção é  bem extensa. Como esta  manipulação é um
+pouco  mais   complicada,  não   medi  palavras  para   explicá-la.  O
+interessante  do raciocínio  exposto  a seguir  é  que, muitas  vezes,
+alguns recursos complexos chegam a  tornarem-se óbvios dado o poder de
+manutenção vetorial da  linguagem, porém exige um pouco  mais de tempo
+de explicação para que o leitor acostume-se ao raciocínio.
+
+** Racionalizando a função
+
+Primeiramente,  vamos falar  a  respeito  de como  a  função  em si  é
+codificada, sem fazer nenhuma operação.
+
+As  regras  de  autômatos  celulares são  constituídas  com  base  nas
+vizinhanças e demonstram dados /binários/  a respeito do estado final da
+célula. Se  tomarmos a Rule  90 e  a transcrevermos em  ASCII, teremos
+algo assim:
+
+#+begin_example
+111 110 101 100 011 010 001 000
+ 0   1   0   1   1   0   1   0
+
+ 8   7   6   5   4   3   2   1
+#+end_example
+
+Se observarmos a segunda linha, que diz respeito somente ao estado das
+células para  cada caso  da regra, teremos  o número  binário ~01011010~
+que, não coincidentemente, equivale ao número ~90~ na base decimal.
+
+A terceira  linha, mais abaixo, é  uma ordem imposta para  os casos em
+questão, de forma que iniciemos a contagem da direita para a esquerda,
+uma decisão a ser explicada logo a seguir.
+
+A  ideia  de  ~findrule~  é  que,  dada  uma  configuração  qualquer  de
+vizinhança, dado o seu tamanho e  uma ordem da *direita* para a *esquerda*
+(começando do número ~1~), possamos identificar qual o número do /caso da
+regra/ ao qual aquela vizinhança se aplica.
+
+Por exemplo, se tivermos uma fita contendo apenas ~0 1 1~ para uma
+vizinhança de tamanho ~3~, teremos como resultado os números ~6 4 7~, pois
+estas são as ordens equivalentes para os casos das vizinhanças ~101~ (da
+primeira  célula),  ~011~  (da  segunda   célula)  e  ~110~  (da  terceira
+célula). Lembre-se de que nossas /fitas/ de células são circulares.
+
+Assim, para a construção do  próximo estado do nosso autômato celular,
+bastaria percorrer cada um dos elementos do  vetor ~6 4 7~. O número ali
+informado equivaleria à posição do novo estado de cada célula no vetor
+de saídas para cada caso (a  segunda linha do quadro anterior, onde se
+lê o número ~90~ em binário).
+
+Isto  significa que  a  fita  circular ~0  1  1~  transforma-se na  fita
+circular ~0 1 1~ no próximo passo da  Rule 90, mas isto já não abrange a
+operação de ~findrule~, e sim utiliza seu resultado.
+
+** Iniciando variáveis de apoio
+
+Vamos começar  definindo duas  variáveis: ~a~, que  indica o  tamanho da
+nossa vizinhança, e ~r~, que será a nossa /fita/ para testes.
+
+#+begin_src dyalog
+a←3
+r←¯5⌽1 1 1,(10⍴0)
+#+end_src
+
+** Vetor decrescente de múltiplos de ~2~
+
+Primeiramente, geramos um vetor com números de ~1~ a ~a~.
+
+#+begin_src dyalog
+      ⍳a
+1 2 3 
+#+end_src
+
+Em  seguida,  subtraimos  ~1~  de  cada um  dos  elementos  deste  vetor
+gerado. Isto equivale também  a somar ~-1~ a cada um  dos valores, o que
+fazemos  para   tomar  vantagem  do   fato  de  APL   ser  normalmente
+interpretada da /direita/ para a /esquerda/, no que tange à precedência de
+funções e operadores.
+
+#+begin_src dyalog
+      ¯1+⍳a
+0 1 2 
+#+end_src
+
+Em seguida, tomaremos cada um destes números, e tornaremo-os expoentes
+para o número  ~2~. Por exemplo, para cada número  ~x~, calcularemos ~2^x~ e
+colocaremos em um novo vetor, no seu lugar.
+
+#+begin_src dyalog
+      2*¯1+⍳a
+1 2 4
+#+end_src
+
+Finalmente, usaremos a forma /monádica/ da função de /rotação horizontal/,
+que inverterá o vetor.
+
+#+begin_src dyalog
+      ⌽2*¯1+⍳a
+4 2 1
+#+end_src
+
+** Explicação do vetor de múltiplos criado
+
+Vamos parar por um momento para fazer um apanhado do que foi feito até
+agora.
+
+Esta  expressão  gera  um  vetor  decrescente  de  elementos  que  são
+múltiplos de ~2~. A quantidade de  múltiplos é dada pela variável ~a~, que
+estabelecemos previamente.
+
+Como  cada  vizinhança pode  ser  compreendida  como sendo  um  número
+binário com  uma quantidade ~a~  de dígitos,  o que pretendemos  fazer é
+transformar tal número de volta para a base decimal.
+
+Por exemplo,  uma vizinhança  como ~0 1 1~  pode ser  transformada para
+números decimais através  da multiplicação de cada um  de seus dígitos
+por um múltiplo de ~2~, desta forma:
+
+\begin{align*}
+        011_{2} &= (0 \times 2^2) + (1 \times 2^1) + (0 \times 2^0)\\
+        &= (0 \times 4) + (1 \times 2) + (1 \times 1)\\
+        &= 3_{10}
+\end{align*}
+
+Veja  que,  para esta  vizinhança,  o  que  fazemos é  multiplicar  os
+estados de:
+
+- O vizinho da esquerda por ~4~;
+- A célula em questão por ~2~;
+- O vizinho da direita por ~1~.
+
+Estes números de multiplicação  dizem respeito justamente à vizinhança
+de /três/  elementos, podendo  mudar para vizinhanças  subsequentes (por
+exemplo,   a   próxima  vizinhança   válida   seria   uma  com   cinco
+elementos). Veja que a célula atual sempre assumiria o valor do /meio/.
+
+Sendo  assim, a  expressão  anterior  foi feita  para  gerar um  vetor
+decrescente de múltiplos de 2,  que serão posteriormente utilizados em
+vizinhanças para sua eventual transformação em um número decimal.
+
+** Distribuindo multiplicativamente o vetor para cópias de ~r~
+
+Continuando com nosso  código em APL, multiplicaremos,  agora, cada um
+desses  números  por  uma  cópia   da  fita  original,  armazenada  em
+~r~.  Podemos  fazer  isso  distribuindo   uma  cópia  de  ~r~  para  cada
+multiplicação necessária:
+
+#+begin_src dyalog
+      (⌽2*¯1+⍳a)×¨⊂r 
+ 0 0 0 0 0 4 4 4 0 0 0 0 0  0 0 0 0 0 2 2 2 0 0 0 0 0  0 0 0 0 0 1 1 1 0 0 0 0 0
+#+end_src
+
+Veja que esta operação gerou  três vetores subsequentes, onde todos os
+números ~1~ foram transformados em um dos múltiplos de ~r~.
+
+** Rotacionando os vetores resultantes
+
+Agora, precisamos  dar um jeito de  fazer com que estes  vetores sejam
+ligeiramente rotacionados para  que cada múltiplo fique  na posição do
+vizinho ao qual se enquadra.
+
+Por exemplo,  um número ~4~,  como já vimos,  diz respeito à  célula que
+está imediatamente à sua  /direita/, portanto precisamos rotacioná-lo ~-1~
+casas, efetivamente levando o número ~4~ a direita.
+
+Já um número ~1~ diz respeito à célula imediatamente à sua /esquerda/,
+portanto rotacionamos  o último vetor  ~1~ casa, efetivamente  levando o
+número ~1~ à esquerda.
+
+O motivo para isso é que, se somarmos finalmente os vetores elemento a
+elemento,  teremos  o  número  representado  pela  vizinhança  daquela
+célula. Assim, estaremos tratando três vizinhanças de apenas uma vez.
+
+Vejamos um exemplo visual. Se tivéssemos uma vizinhança como ~0 1 0~
+ e multiplicássemos suas cópias por ~4~, ~2~ e ~1~, teríamos os vetores:
+
+#+begin_example
+0 4 0
+0 2 0
+0 1 0
+#+end_example
+
+Agora, podemos locomover o primeiro vetor  uma casa para a frente, e o
+último vetor uma casa  para trás. Como o vetor do  meio diz respeito à
+célula em questão, ele poderá ficar onde está:
+
+#+begin_example
+0 0 4
+0 2 0
+1 0 0
+#+end_example
+
+Se somarmos estes elementos número a número, teremos:
+
+#+begin_example
+1 2 4
+#+end_example
+
+Se  analisarmos  adequadamente,  poderemos   ver  que  as  respectivas
+vizinhanças   das  células   cujos   lugares   estes  números   ocupam
+correspondem, exatamente, a tais números:
+
+#+begin_example
+0 0 1 => 1
+0 1 0 => 2
+1 0 0 => 4
+#+end_example
+
+Para  tanto, seria  suficiente criar  um vetor  como ~¯1 0 1~,  que foi
+anteriormente usado,  e usar  uma rotação horizontal  distribuída (~⌽¨~)
+sobre estes  múltiplos. Todavia, veja  que este vetor não  tem tamanho
+fixo; se  tivéssemos uma vizinhança de  cinco elementos, precisaríamos
+de um vetor como ~¯2 ¯1 0 1 2~.
+
+Assim, precisamos, primeiro, de uma expressão  em função de ~a~ que crie
+este vetor.
+
+** Criando vetor de índices de rotação
+
+Começaremos criando um novo vetor com os números de ~1~ a ~a~ inclusive.
+
+#+begin_src dyalog
+      ⍳a                                                      
+1 2 3
+#+end_src
+
+Precisamos  calcular o  número "do  meio" deste  vetor, que  deverá se
+transformar em zero.  Sabemos para nosso experimento que ~a~  vale ~3~; se
+dividíssemos ~a~ por ~2~, teríamos  um valor quebrado (como esperado, pois
+~a~ é sempre ímpar):
+
+#+begin_src dyalog
+      a÷2                                                      
+1.5
+#+end_src
+
+Se tomarmos o /chão/ (/floor/) desse valor e subtrairmos este resultado de
+~a~, teremos um número que poderia  ser subtraído de cada um dos números
+do  vetor anterior,  de forma  a criarmos  nosso vetor  de índices  de
+rotação.
+
+#+begin_src dyalog
+      a-(⌊a÷2) 
+2
+#+end_src
+
+Veja que isto /garante/ a lógica  envolvida: se subtrairmos ~2~ do vetor ~1
+2 3~, teremos ~¯1 0 1~.
+
+Para  facilitar a  escrita em  APL, vamos  inverter este  resultado, e
+então somá-lo  ao vetor. Não é  a única forma de  fazer esta operação,
+mas é o suficiente por enquanto.
+
+#+begin_src dyalog
+      -a-(⌊a÷2)
+¯2
+
+      (-a-(⌊a÷2))+⍳a
+¯1 0 1
+#+end_src
+
+** Distribuindo as rotações para os vetores criados
+
+O próximo passo  é juntar ambas as expressões,  realizando uma rotação
+horizontal distribuída (ou /rotate each/, ~⌽¨~)  entre cada um dos vetores de
+múltiplos de ~2~ e os índices gerados.
+
+Colocaremos  a  expressão  dos   índices  entre  parênteses,  e  então
+aplicaremos a  rotação para  a outra expressão.  Os parênteses  só são
+necessários para esta expressão, por ela estar mais à esquerda.
+
+#+begin_src dyalog
+      ((-a-(⌊a÷2))+⍳a)⌽¨(⌽2*¯1+⍳a)×¨⊂r 
+ 0 0 0 0 0 0 4 4 4 0 0 0 0  0 0 0 0 0 2 2 2 0 0 0 0 0  0 0 0 0 1 1 1 0 0 0 0 0 0
+#+end_src
+
+Finalmente, somaremos  todos os vetores criados,  elemento a elemento,
+através de uma redução por soma (ou /reduce sum/, ~+/~).
+
+O  vetor  resultante  estará  /encapsulado/  devido  à  distribuição  de
+multiplicações  de ~r~.  Portanto,  precisaremos  desencapsulá-lo com  a
+operação /disclose/ (~⊃~).
+
+#+begin_src dyalog
+      +/((-a-(⌊a÷2))+⍳a)⌽¨(⌽2*¯1+⍳a)×¨⊂r
+ 0 0 0 0 1 3 7 6 4 0 0 0 0
+
+      ⊃+/((-a-(⌊a÷2))+⍳a)⌽¨(⌽2*¯1+⍳a)×¨⊂r 
+0 0 0 0 1 3 7 6 4 0 0 0 0
+#+end_src
+
+Isto é quase o suficiente, à  exceção de um último detalhe: APL começa
+a contar seus elementos a partir do  índice ~1~, e não do índice ~0~. Este
+vetor resultante é  /zero-based/, portanto precisamos somar ~1~  a cada um
+destes elementos.
+
+Para tanto,  basta somar  um escalar  ~1~ no  início desta  expressão; o
+escalar será automaticamente distribuído para cada um dos elementos do
+vetor.
+
+#+begin_src dyalog
+      1+⊃+/((-a-(⌊a÷2))+⍳a)⌽¨(⌽2*¯1+⍳a)×¨⊂r 
+1 1 1 1 2 4 8 7 5 1 1 1 1
+#+end_src
+
+** Finalizando
+
+Finalmente, esta  é a expressão que  calcula o caso para  cada uma das
+regras  de  um autômato  celular  arbitrário,  dado um  tamanho  ímpar
+qualquer para a vizinhança (variável ~a~) e um vetor de células qualquer
+com estados binários (variável ~r~).
+
+Substituiremos ~a~ e ~r~ pelos  parâmetros formais ~⍺~ e ~⍵~, respectivamente,
+que  simbolizam  o   parâmetro  passado  à  função  à   esquerda  e  à
+direita, e também  colocamos a expressão em chaves,  para que torne-se
+uma expressão lambda. Vejamos seu uso /ad hoc/:
+
+#+begin_src dyalog
+      a {⊃+/((-⍺-(⌊⍺÷2))+⍳⍺)⌽¨(⌽2*¯1+⍳⍺)×¨⊂⍵} r 
+0 0 0 0 1 3 7 6 4 0 0 0 0
+#+end_src
+
+Podemos  dar a  essa expressão  lambda o  nome ~findrule~,  e finalmente
+poderemos utilizá-la como pretendido.
+
+#+begin_src dyalog
+      findrule←{⊃+/((-⍺-(⌊⍺÷2))+⍳⍺)⌽¨(⌽2*¯1+⍳⍺)×¨⊂⍵}
+
+      a findrule r
+0 0 0 0 1 3 7 6 4 0 0 0 0
+#+end_src
 
 * Footnotes
 
