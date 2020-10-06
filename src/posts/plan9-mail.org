@@ -1,0 +1,328 @@
+#+TITLE:     Reading E-mail from Gmail on Plan 9 from Bell Labs
+#+SETUPFILE: setupfile.org
+#+LANGUAGE:  en_us
+#+STARTUP:   inlineimages showall latexpreview
+#+AUTHOR:    Lucas S. Vieira
+#+EMAIL:     alchemist@sdf.org
+#+DATE:      Oct 06, 2020
+
+#+attr_org: :width 450
+[[file:img/desktop_bootcamp.png]]
+
+* Introduction
+
+Over the past weekend  -- and over this week too -- there  is a Plan 9
+bootcamp taking  place at SDF.org.  People were welcome  to subscribe,
+and I was  one of the lucky  ones who got in. We  were given temporary
+VPS access so that we can try Plan 9 and connect remotely to it.
+
+SDF is a service that has been  online for (most of) 35 years now, and
+offers free Unix shell access to anyone willing to go the distance and
+learn the basics of  Unix. All they ask for is an  initial, fee of US$
+1, which validates your account forever  (though it will not grant you
+extra capabilities which proper signatures give you).
+
+SDF ends  up being a  community of hackers, in  the best sense  of the
+world.  Those are  people  passionate about  technology  and that  are
+willing to  learn new stuff  -- while  also leveraging the  old stuff,
+from the golden days of computation.
+
+SDF has  been the home  of this blog until  last year, when  I finally
+switched to  a new  place. But SDF  has always been  on my  heart and,
+though  I did  not  interact  enough on  mailing  lists,  ~com~, or  its
+Mastodon instance. But I've taken the opportunity to come back at full
+force, and  to learn new stuff  about Plan 9  so I can improve  my own
+Plan 9 box I got at home.
+
+* Before going forward
+
+This is not an introduction to Plan 9. This post is mostly directed to
+the hackers that may be struggling with mail support in it.
+
+I  assume you  have some  familiarity  with ~sam~.  You may  also do  it
+directly  on  a  single-machine  Plan  9 box  or  through  a  ~drawterm~
+connection.
+
+This could  also be  done by  console and  using ~ed~,  though I  do not
+recommend it; Plan  9 is supposed to be graphical  before anything. It
+is  much more  enjoyable to  use a  graphical terminal  and a  3-mouse
+button.
+
+** Achtung!
+
+Before  anything, here  are some  links which  I used  to compile  the
+informations to come. You may find it useful to take a look at them.
+
+- [[http://fqa.9front.org/fqa8.html#8.4.1.1.2][9front FQA: 8.4.1.1.2 Sending mail with Gmail]]
+- [[https://9p.io/wiki/plan9/Mail_configuration/index.html][9p.io: Mail Configuration]]
+- [[https://www.youtube.com/watch?v=byoznMe8ab4][YouTube:  Acme Mail  Demo]].  This  shows details  on  using Acme  for
+  e-mail. You may want to see it at the end.
+
+Let's get started.
+
+* Configuring Gmail
+
+First  of  all,  you  need  to configure  Gmail  so  that  this  could
+work. Access Gmail from a  browser, go to settings, IMAP/POP settings,
+then enable IMAP and SMTP connections.
+
+After  that, you  will need  to allow  Gmail to  be accessed  by "less
+secure   apps",  which   means   apps  that   don't  have   two-factor
+authentication.      You      can      check     this      out      at
+https://myaccount.google.com/lesssecureapps.
+
+There is a way to use a password just for your app, though it involves
+extra bureaucracy.  You will  likely find it  on tutorials  setting up
+Gmail for  other programs  such as  ~offlineimap~ and  ~mbsync/isync~, but
+this is out of the scope of this post.
+
+* Configuring passwords
+
+We need to configure  passwords so that they can be  used for IMAP and
+SMTP authentication. Running these  commands instructs ~factotum~ to ask
+you for entering the password on console.
+
+Most people will just echo stuff  directly into ~factotum~'s ~ctl~ file; I
+deliberately chose  not to do that,  since ~factotum~ can prompt  us for
+stuff which should not be echoed to the console in the first place.
+
+You may  find this pattern useful  for entering passwords for  ~ssh~ and
+~git~ in the future as well.
+
+For more info, run ~man factotum~.
+
+#+begin_src rc
+% auth/factotum -g 'proto=pass server=imap.gmail.com service=imap user=your-mail@example.com !password?'
+% auth/factotum -g 'proto=pass server=smtp.gmail.com service=smtp user=your.mail@example.com !password?'
+#+end_src
+
+Optionally, add these passwords to a file, e.g.  ~/bin/termrc.local~ or
+~$home/lib/profile~, if you want  ~factotum~'s knowledge of your passwords
+to persist at an eventual reboot of your auth server.
+
+Obviously,  this is  not  safe  if you  want  to  keep your  passwords
+encrypted:
+
+#+begin_src rc
+auth/factotum -g 'proto=pass server=imap.gmail.com service=imap user=your.mail@example.com !password=YOURPASSWORD'
+auth/factotum -g 'proto=pass server=smtp.gmail.com service=smtp user=your.mail@example.com !password=YOURPASSWORD'
+#+end_src
+
+Note that Plan  9 is not the kind  of OS which expects you  to shut it
+down or reboot  it entirely, all the time. In  fact, the best approach
+is to have  an auth server, responsible for managing  ~factotum~, so you
+just have to enter these passwords once and leave it running, managing
+only that, and preferably using an encrypted file.
+
+* Starting ~upasfs~ and receiving mail over IMAP
+
+~upas/fs~ effectively mounts  a remote mailbox so that you  can see your
+email locally. It supports POP3 and IMAP, with or without SSL.
+
+We  will be  using  IMAP with  SSL.  For that,  run  this on  console,
+replacing with your mail on pertinent parts:
+
+#+begin_src rc
+% upas/fs -f /imaps/imap.gmail.com/your.mail@example.com
+#+end_src
+
+This  command is  supposed to  *fail*, giving  you an  error related  to
+server certificate, more or less like this:
+
+#+begin_example
+upas/fs imap: server certificate sha256=xxxx not recognized
+#+end_example
+
+Copy the  ~sha256~ hash  fragment (including the  ~sha256~ part)  and tell
+~libtls~ that it should be trusted:
+
+#+begin_src rc
+% echo 'x509 sha256=xxxx' >>/sys/lib/tls/mail
+#+end_src
+
+After that,  make ~upas/fs~  run on  startup, as  it was  written above,
+preferably  after  starting  ~plumber~.  I recommend  doing  it  at  file
+~$home/lib/profile~, which runs at the beginning of every session.
+
+If  you are  using the  default ~profile~  script, the  ~upas/fs~ starting
+command can  be put at  both ~terminal~ and  ~cpu~ cases.  They  relate to
+"local" connection (physical, directly using a keyboard and a mouse on
+your  box) and  a "remote"  connection (from  another terminal,  using
+~drawterm~).
+
+The ~con~ case is just the case  for raw console, which is rather crappy
+and you should not use anyways.
+
+* Running ~faces~ to see user icons
+
+We can check if it works by running ~faces~ on console:
+
+#+begin_src rc
+% faces -i
+#+end_src
+
+If everything  worked out,  you should see  some icons  populating the
+screen. Each icon corresponds to the  user who sent a single e-mail to
+you.
+
+[[file:img/faces_bootcamp.png]]
+
+If you right  click them, it will open a  console running ~nedmail~, and
+you'll  be able  to read  your  e-mail, though  this is  not the  most
+comfortable way to do this. So we'll set up Acme Mail later.
+
+Finally, if you are interested in  running ~faces~ on boot, you may want
+to add it to your ~$home/bin/rc/riostart~  script. Here's how I start it
+on my box:
+
+#+begin_src rc
+window 161,0,560,117 faces -i
+#+end_src
+
+Make    sure   that    ~rio~    invokes   the    ~riostart~   script    on
+~$home/lib/profile~.  If  it doesn't,  you  may  want to  replace  ~rio~'s
+startup command with:
+
+#+begin_src rc
+rio -i riostart
+#+end_src
+
+* Sending e-mail over SMTP
+
+Before enjoying  our mail service,  we need to  make sure that  we can
+/send/ mail.  For that, some extra  configuration is needed, so  that we
+can set up SMTP.
+
+You will  need to setup  ~/mail/lib/rewrite~. When opening it,  the text
+already written there  will instruct you to copy and  paste one of the
+files ~rewrite.gateway~ or ~rewrite.direct~ into it.  Note that both these
+files are also in ~/mail/lib~.
+
+Since we are relying on the  remote Gmail server to manage our e-mail,
+copy  everything  inside  ~rewrite.gateway~   into  ~rewrite~.
+
+Now,  wherever the  address  ~YOURDOMAIN.DOM~ is  listed  on that  file,
+replace it with ~gmail.com~. For example:
+
+#+begin_example
+# append the local domain to addresses without a domain
+local!"(.+)" 	   alias     \1@gmail.com
+local!(.*)	   alias     \1@gmail.com
+#+end_example
+
+For more information on those files and what they do, see ~man rewrite~.
+
+Now open ~/lib/ndb/local~. At its end, define the ~$smtp~ variable:
+
+#+begin_src rc
+smtp=smtp.gmail.com
+#+end_src
+
+Finally, open ~/mail/lib/remotemail~. This will  allow you to gateway to
+your Gmail  account. This is  the script which effectively  sends your
+e-mail.
+
+#+begin_src rc
+ #!/bin/rc
+shift
+sender=your.mail@example.com
+shift
+addr=tcp!smtp.gmail.com!587
+shift
+fd=‘{/bin/upas/aliasmail -f $sender}
+switch($fd){
+case *.*
+    ;
+case *
+    fd=gmail.com
+}
+exec /bin/upas/smtp -u your.mail@example.com -a -h $fd $addr $sender $*
+#+end_src
+
+** Fixing certificates
+
+We are  almost done. The  only problem is that  Plan 9 still  does not
+trust Gmail's SMTP server.
+
+Try sending an example e-mail:
+
+#+begin_src rc
+% echo hello | mail -s test your.username@gmail.com
+#+end_src
+
+*This will fail*, but it will  also yield a certificate error, which you
+can see when you ~cat~ the file  ~/sys/log/smtp~. It will list your IP and
+the current date, and then a message like this will follow:
+
+#+begin_example
+cert for smtp.gmail.com not recognized: sha=xxxx
+#+end_example
+
+Just like we  did with ~upas/fs~, we  need to make it  trusted, but this
+time we echo to a different file:
+
+#+begin_src rc
+% echo 'x509 sha256=xxxx' >>/sys/lib/tls/smtp
+#+end_src
+
+You can try the command to send an e-mail again now. It should work.
+
+** Configuring the header
+
+It is interesting  to have a header set up  with your information when
+sending   a    mail.   This   can    be   done   through    the   file
+~/mail/box/$user/headers~. Here is an example of what can be put there:
+
+#+begin_example
+From: "Glenda" <your.username@gmail.com>
+#+end_example
+
+* Using Acme Mail
+
+Now that  everything is set up,  we just need  to use Acme to  run its
+mail client. Once  it is run, right clicks on  ~faces~'s icons will just
+open said mail on Acme's window.
+
+To open Acme Mail, just write  ~"Mail"~ (sans the quotes) anywhere, then
+middle-click it. Acme will then open  a buffer containing your list of
+e-mails.
+
+#+attr_org: :width 500
+[[file:img/acme_bootcamp.png]]
+
+You'll  notice  that each  e-mail  has  a  numbered directory  at  its
+left. Right-clicking that number will open the e-mail in a new buffer.
+
+You  can reply  to that  e-mail by  right-clicking ~"Reply"~,  quote the
+e-mail by right-clicking ~"Q"~, and so on.
+
+If  you  want  to  reply  to  a  mailing  list,  you  can  select  and
+middle-click  ~"Reply  all"~  (or  even middle-select  ~"Reply  all"~  and
+release the button).
+
+To compose new  mail, just right-click the word ~"Mail"~  on top of your
+mail list (not on top of Acme window!).
+
+Composing  mail is  just  a matter  of typing  stuff  directly in  the
+buffer. For example, typing this:
+
+#+begin_example
+To: <someone@example.com>
+Subject: Testing mail
+
+Testing e-mail on Acme!
+#+end_example
+
+is everything that is needed  for writing an e-mail and its metadata.
+
+When you are done, middle-click ~"Post"~, or click ~"Del"~ to cancel.
+
+* Conclusion
+
+That's it  for now. This is  supposed to be a  concise tutorial; there
+may be errors here and things I  did not explore. For that, I count on
+the reader  to take a peek  at the links mentioned  earlier; they will
+provide greater insight than anything I could ever say here.
+
+And  if you're  a  bootcamper, don't  forget to  interact  on ~com~  and
+through the mailing lists!
