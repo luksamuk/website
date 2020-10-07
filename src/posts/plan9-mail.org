@@ -5,6 +5,7 @@
 #+AUTHOR:    Lucas S. Vieira
 #+EMAIL:     alchemist@sdf.org
 #+DATE:      Oct 06, 2020
+#+OPTIONS:   toc:t
 
 #+attr_org: :width 450
 [[file:img/desktop_bootcamp.png]]
@@ -13,34 +14,33 @@
 
 Over the last  days, a Plan 9  bootcamp is taking place  at SDF.org. I
 was one of the lucky people who got in, and so I and a bunch of people
-were given  temporary VPS  acess so  that we  can try,  experiment and
+were given  temporary VPS  access so  that we  can try,  experiment and
 discover things about Plan 9 through remote connection.
 
 SDF is a community that has  been operating for 35 years now, offering
 free Unix  shell access  to anyone  willing to  learn more  about Unix
 systems. It is  a welcoming community to both  newbies and experienced
-hackers  -- in  the best  sense  of the  world. The  users are  people
+hackers  -- in  the  best sense  of  the word.  The  users are  people
 passionate about  technology in  general, who  learn about  new things
 while also  leveraging the  good, old  things from  the golden  age of
 computation.
 
-In this post, I describe some of  the things I did to configure E-mail
+In this post, I describe some of  the stuff I did to configure e-mail
 reading and sending on  Plan 9. And of course, it  will be possible to
 do that through Acme.
 
 ** Before going forward
 
 This is not an introduction to Plan 9. This post is mostly directed to
-the hackers that may be struggling with mail support in it.
+hackers that may be struggling with mail support in it.
 
 I  assume you  have some  familiarity  with ~sam~.  You may  also do  it
 directly  on  a  single-machine  Plan  9 box  or  through  a  ~drawterm~
 connection.
 
-This could also  be done from text  console and using ~ed~,  though I do
-not  recommend  it;  Plan  9   is  supposed  to  be  graphical  before
-anything. It is much more enjoyable  to use a graphical terminal and a
-3-button mouse.
+The described steps could also be done from text console and using ~ed~,
+though I  do not  recommend it;  Plan 9  is supposed  to be  much more
+enjoyable to use from a graphical terminal, with a 3-button mouse.
 
 ** Achtung!
 
@@ -58,19 +58,21 @@ Let's get started.
 
 * Configuring Gmail
 
-First  of  all,  you  need  to configure  Gmail  so  that  this  could
-work. Access Gmail from a  browser, go to settings, IMAP/POP settings,
-then enable IMAP and SMTP connections.
+First of  all, you  need to  configure your  Gmail account  for remote
+access.
+
+Go to  Gmail from a browser,  go to settings, IMAP/POP  settings, then
+enable IMAP and SMTP connections.
 
 After  that, you  will need  to allow  Gmail to  be accessed  by "less
 secure   apps",  which   means   apps  that   don't  have   two-factor
 authentication.      You      can      check     this      out      at
 https://myaccount.google.com/lesssecureapps.
 
-There is a way to use a password just for your app, though it involves
-extra bureaucracy.  You will  likely find it  on tutorials  setting up
-Gmail for  other programs  such as  ~offlineimap~ and  ~mbsync/isync~, but
-this is out of the scope of this post.
+There seems to be  a way to use a password just  for a single program,
+though  it involves  extra bureaucracy.   You will  likely find  it on
+tutorials setting up Gmail for  other programs such as ~offlineimap~ and
+~mbsync/isync~, but this is out of the scope of this post.
 
 * Configuring passwords
 
@@ -92,17 +94,19 @@ For more info, run ~man factotum~.
 % auth/factotum -g 'proto=pass server=smtp.gmail.com service=smtp user=your.mail@example.com !password?'
 #+end_src
 
-Optionally, add these passwords to a file, e.g.  ~/bin/termrc.local~ or
-~$home/lib/profile~, if you want  ~factotum~'s knowledge of your passwords
-to persist at an eventual reboot of your auth server.
-
-Obviously,  this is  not  safe  if you  want  to  keep your  passwords
-encrypted:
+Optionally, you can change those  commands slightly so that you inform
+the  passwords  explicitly.  Those  commands can  be  put  on  session
+initialization files, e.g.  ~/bin/termrc.local~ or ~$home/lib/profile~, if
+you  want ~factotum~'s  knowledge of  your  passwords to  persist at  an
+eventual reboot of your auth server:
 
 #+begin_src rc
 auth/factotum -g 'proto=pass server=imap.gmail.com service=imap user=your.mail@example.com !password=YOURPASSWORD'
 auth/factotum -g 'proto=pass server=smtp.gmail.com service=smtp user=your.mail@example.com !password=YOURPASSWORD'
 #+end_src
+
+Obviously,  this is  not  safe  if you  want  to  keep your  passwords
+encrypted.
 
 Note that Plan  9 is not the kind  of OS which expects you  to shut it
 down or reboot  it entirely, all the time. In  fact, the best approach
@@ -130,15 +134,18 @@ upas/fs imap: server certificate sha256=xxxx not recognized
 #+end_example
 
 Copy the  ~sha256~ hash  fragment (including the  ~sha256~ part)  and tell
-~libtls~ that it should be trusted:
+~tls~ that it should be trusted:
 
 #+begin_src rc
 % echo 'x509 sha256=xxxx' >>/sys/lib/tls/mail
 #+end_src
 
-After that,  make ~upas/fs~  run on  startup, as  it was  written above,
-preferably  after  starting  ~plumber~.  I recommend  doing  it  at  file
-~$home/lib/profile~, which runs at the beginning of every session.
+After that, make  ~upas/fs~ run on startup by copying  the command above
+to a  session initialization file, preferably  after starting ~plumber~.
+I  recommend doing  it at  file ~$home/lib/profile~,  which runs  at the
+beginning of every session.
+
+** Caveats on the ~profile~ script
 
 If  you are  using the  default ~profile~  script, the  ~upas/fs~ starting
 command can  be put at  both ~terminal~ and  ~cpu~ cases.  They  relate to
@@ -175,9 +182,14 @@ on my box:
 window 161,0,560,117 faces -i
 #+end_src
 
-Make    sure   that    ~rio~    invokes   the    ~riostart~   script    on
-~$home/lib/profile~.  If  it doesn't,  you  may  want to  replace  ~rio~'s
-startup command with:
+** Enabling ~riostart~
+
+It may  be the  case that  ~riostart~ is  disabled for  connections from
+~drawterm~ into you CPU server.
+
+Make    sure   that    ~rio~   invokes   the    ~riostart~   script    on
+~$home/lib/profile~, (specially on the ~cpu~ case for remote connections).
+If it doesn't, you may want to replace ~rio~'s startup command with:
 
 #+begin_src rc
 rio -i riostart
@@ -186,8 +198,10 @@ rio -i riostart
 * Sending e-mail over SMTP
 
 Before enjoying  our mail service,  we need to  make sure that  we can
-/send/ mail.  For that, some extra  configuration is needed, so  that we
+/send/ mail.   For that, some extra  configuration is needed so  that we
 can set up SMTP.
+
+** Setting up ~/mail/lib/rewrite~
 
 You will  need to setup  ~/mail/lib/rewrite~. When opening it,  the text
 already written there  will instruct you to copy and  paste one of the
@@ -208,11 +222,15 @@ local!(.*)	   alias     \1@gmail.com
 
 For more information on those files and what they do, see ~man rewrite~.
 
+** Setting up SMTP server variable
+
 Now open ~/lib/ndb/local~. At its end, define the ~$smtp~ variable:
 
 #+begin_src rc
 smtp=smtp.gmail.com
 #+end_src
+
+** Setting up ~/mail/lib/remotemail~
 
 Finally, open ~/mail/lib/remotemail~. This will  allow you to gateway to
 your Gmail  account. This is  the script which effectively  sends your
@@ -235,7 +253,7 @@ case *
 exec /bin/upas/smtp -u your.mail@example.com -a -h $fd $addr $sender $*
 #+end_src
 
-** Fixing certificates
+** Fixing SMTP certificates
 
 We are  almost done. The  only problem is that  Plan 9 still  does not
 trust Gmail's SMTP server.
@@ -263,7 +281,7 @@ time we echo to a different file:
 
 You can try the command to send an e-mail again now. It should work.
 
-** Configuring the header
+** Configuring mail headers
 
 It is interesting  to have a header set up  with your information when
 sending   a    mail.   This   can    be   done   through    the   file
