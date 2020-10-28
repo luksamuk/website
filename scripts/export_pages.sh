@@ -7,6 +7,7 @@ for f in `find src/pages -name "*.org"`; do
 	  --kill \
 	  "$f" \
 	  -f org-html-export-to-html;
-    mv "${f%%.org}.html" docs/pages/
+    mv "${f%%.org}.html" docs/pages/;
+    cp src/pages/*.cpp docs/pages;
 done
 
