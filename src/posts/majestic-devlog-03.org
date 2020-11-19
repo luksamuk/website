@@ -11,12 +11,12 @@
 [[file:img/majestic-repl-1.png]]
 
 Estamos em mais uma  reta final de um ano que vai  deixar sua marca na
-história. E  certamente esse ano vai  também deixar sua marca  em mim,
-quando medito  sobre tudo  o que  fiz e  sobre o  que deixei  de fazer
-nele.
+história.  E  certamente esse  ano  vai  também  deixar sua  marca  em
+mim. Sinto  isso quando  medito sobre  tudo o  que fiz  e sobre  o que
+deixei de fazer nele.
 
 Dentre  as coisas  boas  que vigoram  como  produto do  distanciamento
-social  e do  período  conturbado  de aulas  via  internet, fulgura  o
+social  e do  período  conturbado  de aulas  via  Internet, fulgura  o
 desenvolvimento da linguagem que venho  criando: Majestic Lisp. Já fiz
 alguns posts  sobre [[./apresentando-majestic-lisp.org][alguns de  seus conceitos iniciais]] e  também sobre
 [[./majestic-lisp-pt2.org][conceitos que  possam ser considerados mais  avançados]], principalmente
@@ -458,6 +458,90 @@ mas que sofre  do mesmo problema com recursividade; por  isso, caso as
 funções  precisem  ser recursivas,  recomenda-se  o  uso da  estrutura
 ~labels~.  Pela  forma  como  as  coisas  estão,  acredito  que  revisar
 implementações dessas construções seja um bom ponto de partida.
+
+#+html: <hr>
+
+* /Post-scriptum/: ~letrec~
+
+Após trocar  algumas ideias  com alguns  amigos, acabei  chegando hoje
+(19/11/2020) a uma solução prática  para o problema: ~letrec~, uma forma
+especial capaz de definir funções que não apenas podem ser recursivas,
+mas que também podem chamar-se em recursão mútua.
+
+~letrec~ toma  seu nome emprestado de  dialetos como Scheme e  Racket, e
+funciona como ~letrec~ nessas linguagens,  ou similar a ~labels~ em Common
+Lisp.
+
+~letrec~  é um  /special form/  porque, diferente  de ~let~,  ~let*~, ~letfn~  e
+~letfn*~,   esta  precisa   /modificar  a   forma  como   expressões  são
+interpretadas/, mais especificamente modificando  o que cada função ali
+declarada compreende como sendo seu próprio contexto capturado.
+
+Não expliquei  aqui nada  sobre ~letfn~ e  ~letfn*~ mas,  basicamente, são
+sintaxes especiais  de ~let~  e ~let*~ para  que possamos  definir funções
+locais de um jeito mais confortável.
+
+Em  termos de  implementação, ~letrec~  gera  cada uma  das funções  ali
+descritas, com  a captura  de escopo esperada.  Em seguida,  /injeta/ um
+contexto  léxico  nas  respectivas  funções,  onde  todas  elas  sejam
+conhecidas,   mantendo   ainda   o  contexto   capturado   durante   a
+interpretação das mesmas.
+
+Compartilho na  íntegra a  descrição dessas  funções nos  apêndices do
+livro de Majestic Lisp, atualmente em escrita:
+
+#+begin_quote
+- ~(letrec bindings body)~
+
+Define uma lista de funções que serão bem-definidas durante a execução
+da expressão ~body~.
+
+~bindings~  é uma  lista  de  definições de  funções  similares a  ~defn~,
+todavia  sem o  símbolo ~defn~  em seu  início. ~letrec~  segue as  mesmas
+regras sintáticas de ~letfn~ e ~letfn*~.
+
+O funcionamento de ~letrec~ aproxima-se muito  do uso prático de ~letfn~ e
+~letfn*~.  Todavia, ~letrec~  permite a  declaração de  /funções mutuamente
+recursivas/. Para tanto, cada função ali declarada não apenas captura o
+contexto  em que  ~letrec~  é  utilizado, como  também  deve capturar  o
+próprio contexto criado  por ~letrec~ /após a definição de  todas as suas
+funções/.
+
+Como esse  tipo de operação exige  modificar a forma como  funções são
+declaradas  -- mais  precisamente,  modificar a  forma  como ocorre  a
+captura  de  contexto  --,  ~letrec~ precisa  ser  uma  forma  especial,
+diferente de ~letfn~ e ~let~, que podem ser declarados como macros.
+#+end_quote
+
+#+begin_example
+> (letrec ((foo ()
+             (do (print "Calling foo")
+                 (bar)))
+           (bar ()
+             (do (print "Calling bar")
+                 (baz)))
+           (baz ()
+             (print "Calling baz")))
+    (foo))
+Calling foo
+Calling bar
+Calling baz
+nil
+
+> (letrec ((iter (x)
+             (if (> x 0)
+                 (do (print "Recursion #{}" x)
+                     (iter (- x 1)))
+                 (print "Finished"))))
+    (iter 5))
+Recursion #5
+Recursion #4
+Recursion #3
+Recursion #2
+Recursion #1
+Finished
+nil
+#+end_example
 
 * Footnotes
 
