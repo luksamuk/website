@@ -1,0 +1,478 @@
+#+title: Majestic Lisp:
+#+subtitle: do Zero ao Lisp em Rust
+#+author: Lucas S. Vieira
+#+email: lucas.vieira@ufvjm.edu.br
+#+language: pt_BR
+#+date: 08 de dezembro de 2020
+#+startup: showall inlineimages
+
+#+reveal_theme: black
+#+reveal_plugins: (print-pdf zoom)
+#+reveal_margin: 0.2
+#+reveal_trans: linear
+#+options: num:nil timestamp:nil toc:1
+
+:HTML_OPTIONS:
+#+reveal_title_slide: <h2>%t</h2><p>%s</p><br/><h3 style="font-size:0.9em">%a</h3><br/><p style="font-size:0.7em;">%e<br/>Universidade Federal dos Vales do Jequitinhonha e Mucuri<br/>%d</p>
+#+html_head: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+#+html: <style>
+#+html: .container{
+#+html:     display: flex;
+#+html: }
+#+html: .col{
+#+html:     flex: 1;
+#+html: }
+#+html: </style>
+:END:
+
+* Introdução
+
+** Quem sou eu?
+
+# container begin
+#+html: <div class="container">
+
+# Column begin
+#+html: <div class="col">
+#+attr_html: :style font-size:0.7em;text-align:left;
+Discente de Sistemas de Informação pela UFVJM
+
+#+attr_html: :style font-size:0.7em;text-align:left;
+*Interesses:* Inteligência  artificial, ciência cognitiva,  filosofia da
+mente,  teoria   da  computação,  desenvolvimento  de   linguagens  de
+programação, desenvolvimento de jogos, programação bare-metal
+
+#+html: <div style="font-size:0.7em;text-align:left;">
+#+html: <p>Co-fundador da Common Lisp Brasil
+#+html: <br/>
+#+html: <i class="fa fa-globe" aria-hidden="true"></i><code> lisp.com.br</code>
+#+html: </p></div>
+
+# Column end
+#+html: </div>
+
+# Column begin
+#+html: <div class="col">
+
+#+attr_html: :width 200
+#+attr_org: :width 200
+[[file:img/eu.jpg]]
+
+#+html: <div style="font-size:0.7em;text-align:left;">
+#+html: <i class="fa fa-twitter" aria-hidden="true"></i><code> @luksamuk</code><br/>
+#+html: <i class="fa fa-globe" aria-hidden="true"></i><code> luksamuk.codes</code><br/>
+#+html: <i class="fa fa-github" aria-hidden="true"></i><code> luksamuk</code>
+#+html: </div>
+
+# Column end
+#+html: </div>
+
+# container end
+#+html: </div>
+
+** O que é Majestic Lisp?
+
+Dialeto da família das linguagens Lisp.
+
+#+ATTR_REVEAL: :frag (appear)
+- Feito para propósito educacional: Aprenda a construir o seu Lisp.
+- Inspirado em Common Lisp, Scheme, Clojure, APL...
+- Sobretudo, inspirado em Bel.
+
+** Um segundo. O que é Bel?
+
+Dialeto de Lisp criado por Paul Graham em 2018.
+
+#+ATTR_REVEAL: :frag (appear)
+- Criado para ser "cozinhado" como formalismo por um tempo, nos moldes
+  de LISP 1.5.
+- Tentei implementar em C logo no mês que foi lançado...
+- Não era "simples" o suficiente. Muitas idiossincrasias!
+- Decidi criar logo meu próprio dialeto.
+
+** Objetivos de Majestic Lisp
+
+Escrito como /literate  program/ na forma de livro, guia  o leitor sobre
+como construir um interpretador de Majestic passo-a-passo em Rust.
+
+#+ATTR_REVEAL: :frag (appear)
+- Propósito educacional, implementação didática;
+- Corretude antes de performance;
+- Simplicidade e sintaxe óbvia para quem vem de outros Lisps.
+- Fazer sua linguagem não é algo intangível!
+- Pode ser executado no /papel/.
+
+* Características e Implementação
+** Live Demo
+
+# - Tipos primitivos
+# - Aritmética
+# - Listas (pontuadas e adequadas).
+# - Definições, mutabilidade.
+# - Funções de primeira ordem, escopo léxico.
+# - Aplicação parcial (Exemplo: ~with-a~, numerais de Church).
+
+** Arquitetura do projeto :noexport:
+
+#+begin_src dot :file img/modelo_geral.svg :cache yes :cmdline -Kdot -Tsvg
+digraph G {
+      graph [pad="0.23",
+             nodesep="0.75",
+             ranksep="0.5",
+             fontsize=12,
+	         fontname="serif"];
+	  edge[style="bold", color="#555555"];
+      node[style="filled", color="#666666", fillcolor="#aaaaaa"];
+      bgcolor="#ffffff00"
+      
+      file[label="Código", shape="note", fontsize=11];
+
+      subgraph cluster_reader {
+      tokenizer[label="Tokenizador", shape="box", fontsize=11];
+      parser[label="Parser", shape="box", fontsize=11];
+      tokenizer:s -> parser:n;
+      label="Leitor";
+      fontcolor="white";
+      color=orange;
+      }
+
+      subgraph cluster_interpreter {
+      apply[label="apply", fontname="mono", fontsize=10];
+      eval[label="eval", fontname="mono", fontsize=10];
+
+      apply -> eval;
+      eval:s -> apply:s;
+
+      {rank="same"; eval; apply;}
+      label="Interpretador";
+      fontcolor="white";
+      color=orange;
+      }
+
+      screen[label="Tela", shape="box3d", fontsize=11];
+
+      subgraph cluster_printer {
+      format[label="format", fontname="mono", fontsize="10"];
+      formatter[label="Formatador", shape="box", fontsize=11];
+
+      {rank=same; format; formatter;}
+      format -> formatter;
+      formatter:sw -> format:se;
+
+      label="Impressão";
+      fontcolor="white";
+      color=orange;
+      }
+
+      subgraph cluster_global {
+      penwidth=0;
+      rankdir=LR;
+      state[shape=Mrecord,
+            style="filled",
+	      color="#666666",
+	      fillcolor="#eeeeee",
+	      fontsize=11,
+            label="{<f3> Streams | <f1> Símbolos | <f2> Contexto Global} | {<f4> Axiomas | <f5> Primitivas}"];
+      label="Estado Global & Núcleo";
+      fontcolor="white";
+      }
+
+      file -> tokenizer:w;
+      parser:w -> eval:n;
+      apply:se -> format:n;
+      format -> screen;
+      state:f1 -> parser[style="dashed", dir="both"];
+      state:f2 -> eval[style="dashed", dir="both"];
+      state:f1 -> formatter:n[style="dashed", dir="both"];
+}
+#+end_src
+
+#+attr_html: :width 500
+#+RESULTS[d682a59d3d660cc6a980f38ef017e7c1e7411b9d]:
+[[file:img/modelo_geral.svg]]
+
+** Por que Rust?
+
+A  escolha não  foi motivada  por performance,  corretude ou  /safety/ /
+/security/.
+
+#+ATTR_REVEAL: :frag (appear)
+- Maior facilidade ao expressar abstrações com dados;
+- Usa ~rust-gc~ para coleta de lixo;
+- WebAssembly (via WASI)!
+
+*** Exemplo: Objeto básico de Bel (C11)
+
+#+begin_src C
+typedef struct BEL Bel;
+typedef struct
+{
+    Bel *car;
+    Bel *cdr;
+} Bel_pair;
+
+struct BEL
+{
+    BEL_TYPE type;
+    union {
+        Bel_sym     sym;
+        Bel_pair   *pair;
+        Bel_char    chr;
+        Bel_stream  stream;
+        Bel_number  number;
+    };
+};
+#+end_src
+
+*** Exemplo: Objeto básico de Majestic (Rust 2018)
+
+#+begin_src rust
+#[derive(Debug, Trace, Finalize, Clone)]
+pub enum Maj {
+    Sym(u64),
+    Cons {
+        car: Gc<Maj>,
+        cdr: Gc<Maj>
+    },
+    Char(char),
+    Stream(MajStream),
+    Number(MajNumber)
+}
+#+end_src
+
+* Comparando Majestic e outros Lisps
+
+** Exemplo
+
+#+begin_src majestic
+(def *my-list* '(a b c d))
+(map (cons 'z) *my-list*)
+#+end_src
+
+#+begin_example
+((z . a) (z . b) (z . c) (z . d))
+#+end_example
+
+#+ATTR_REVEAL: :frag (appear)
+Faremos comparações com Scheme, Common Lisp, Clojure e Shen.
+
+** Scheme
+
+#+begin_src scheme
+(define *my-list* '(a b c d))
+(map (lambda (x) (cons 'z x)) *my-list*)
+#+end_src
+
+Sem muitas diferenças, exceto na aplicação parcial.
+
+Scheme tem desgosto por mutabilidade.
+
+** Common Lisp
+
+#+begin_src lisp
+(defparameter *my-list* '(a b c d))
+(mapcar (lambda (x) (cons 'z x)) *my-list*)
+;; ou...
+(loop for x in *my-list* collect (cons 'z x))
+#+end_src
+
+Algumas considerações...
+
+#+reveal: split
+
+#+ATTR_REVEAL: :frag (appear)
+- CL  é um  Lisp-2. Funções  e variáveis  podem ter  o mesmo  nome sem
+  conflito.
+- CL  é /obrigatoriamente/  compilado  (o compilador  fica exposto  para
+  invocação em runtime).
+- CL é *multiparadigma*, e sua OO é uma das mais elegantes que existem.
+
+** Clojure
+
+#+begin_src clojure
+(def *my-list* '(a b c d))
+(map #(cons 'z %) *my-list*)
+#+end_src
+
+#+ATTR_REVEAL: :frag (appear)
+#+attr_html: :style font-size:0.5em;
+...pera, não. Isso dá erro.
+
+#+reveal: split
+
+Vamos tentar de novo.
+
+#+begin_src clojure
+(def *my-list* '(a b c d))
+(map #(list 'z %) *my-list*)
+#+end_src
+
+#+begin_example
+((z a) (z b) (z c) (z d))
+#+end_example
+
+Algumas considerações...
+
+#+reveal: split
+
+#+ATTR_REVEAL: :frag (appear)
+- Clojure tem desgosto por mutabilidade.
+- Clojure é primariamente funcional.
+- Clojure é *pouco ortodoxa* quando comparada a outros Lisps.
+
+** Shen
+
+#+begin_src shen
+(set *my-list* [a b c d])
+(map (cons z) (value *my-list*))
+#+end_src
+
+Voltada para metaprogramação. Possui  aplicação parcial como Majestic,
+trabalha com um sistema de tipos estático e opcional.
+
+* Interpretador metacircular
+
+#+begin_src dot :file img/metacircular.svg :cache yes :cmdline -Kdot -Tsvg
+digraph G {
+      graph [pad="0.23",
+             nodesep="0.75",
+             ranksep="0.5",
+             fontsize=10];
+	edge[style="bold", color="#555555"];
+      node[style="filled", color="#666666", fillcolor="#aaaaaa"];
+      bgcolor="#ffffff00"
+      
+      expr[label="Expressão", shape="note"];
+      result[label="Resultado", shape="box3d"];
+
+      eval[fontname="mono", fontsize="10"];
+      apply[fontname="mono", fontsize="10"];
+
+      expr:e -> eval:w;
+      eval:n -> apply:n;
+      apply:s -> eval:s;
+      apply:e -> result:w;
+
+      { rank = "same"; eval, apply }
+}
+#+end_src
+
+#+attr_html: :width 500
+#+RESULTS[9d9195824995f59480b958846ec55457e51a0d02]:
+[[file:img/metacircular.svg]]
+
+#+ATTR_REVEAL: :frag (appear)
+- Exemplo relevante de programa em um Lisp
+- Duas funções + análise de casos + funções auxiliares
+
+** ~eval~
+
+#+begin_src majestic
+(defn eval. (exp env)
+  (cond
+    ((numberp exp) exp)
+    ((symbolp exp) (lookup. exp env))
+    ((eq (first exp) 'quote)
+     (second exp))
+    ((eq (first exp) 'fn)
+     (list 'closure (rest exp) env))
+    ((primitivep exp) exp)
+    ((eq (first exp) 'cond)
+     (evcond. (rest exp) env))
+    ((eq (first exp) 'def)
+     (define. (second exp) (third exp) env))
+    (t (apply. (eval. (first exp) env)
+               (evlist. (rest exp) env)))))
+#+end_src
+
+** ~apply~
+
+#+begin_src majestic
+(defn apply. (proc args)
+  (cond
+    ((primitivep proc) (apply proc args))
+    ((eq (first proc) 'closure)
+     (eval. (second (second proc))
+            (bind. (first (second proc))
+                   args
+                   (third proc))))
+    (t (err "Undefined procedure: {}" proc))))
+#+end_src
+
+** Exemplos
+
+#+html: <div class="container">
+#+html: <div class="col">
+
+#+begin_src majestic
+(quote foo)
+
+,*mynum*
+
+(def square (fn (x) (* x x)))
+
+(square 6)
+
+(cond ((eq (= 1 1) t)
+       (quote okay))
+      (t (quote nay)))
+
+(((fn (x)
+    (fn (y) (+ x y))) 3)
+ 4)
+#+end_src
+
+#+html: </div>
+
+#+html: <div class="col">
+
+# This is just for a first run
+#+begin_src bash :exports results :results verbatim :cache yes :eval no
+majestic --script ../examples/metacircular.maj -e "(metacircular-evaluator-test)"
+#+end_src
+
+
+#+begin_src lisp
+foo
+
+7
+
+square
+
+36
+
+okay
+
+
+
+7
+
+
+#+end_src
+
+#+html: </div>
+#+html: </div>
+
+#+reveal: split
+
+Perguntas?
+
+* Referências
+
+#+attr_html: :style font-size:0.7em;text-align:left;
+ABELSON, H.; SUSSMAN,  G. J. *Structure and  Interpretation of Computer
+Programs*. MIT Press: Cambridge, 1996. ISBN: 978-0-262-51087-5.
+
+#+attr_html: :style font-size:0.7em;text-align:left;
+TARVER,   M.   *Coding   a   Lisp   interpreter   in   Shen*:   A   case
+study.               2011.                Disponível               em:
+http://www.shenlanguage.org/shenpaper.pdf. Acesso em 24/11/2020.
+
+#+attr_html: :style font-size:0.7em;text-align:left;
+GRAHAM,  P.   *The Bel  Language*.   Outubro  de 2019.   Disponível  em:
+http://www.paulgraham.com/bel.html. Acesso em 02/11/2020.
+
+#+attr_html: :style font-size:0.7em;text-align:left;
+GRAHAM,  P.  *The  roots of  Lisp*.   Janeiro de  2002.  Disponível  em:
+http://www.paulgraham.com/rootsoflisp.html. Acesso em 02/11/2020.
