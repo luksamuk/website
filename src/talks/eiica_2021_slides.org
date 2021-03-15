@@ -1,0 +1,270 @@
+#+title:    Development of Enactive Computational Models for Autopoietic Systems
+#+author:   Lucas Samuel Vieira
+#+email:    lucasvieira@protonmail.com
+#+date:     March 2021
+#+language: en_us
+#+reveal_margin: 0.2
+#+reveal_trans: linear
+#+reveal_theme: serif
+#+reveal_plugins: (print-pdf zoom)
+#+options: num:nil timestamp:nil toc:nil
+#+reveal_init_options: slideNumber:true
+#+startup: latexpreview showall inlineimages
+# #+options: reveal_single_file:t
+
+#+reveal_title_slide: <h3>%t<br/><br/>%a</h3><br/><p>Co-author: Leonardo Lana de Carvalho<br/>Universidade Federal dos Vales do Jequitinhonha e Mucuri<br/>%d</p>
+
+* Introduction: Autopoietic Systems (AS)
+
+In our previous  work, we established the foundations for  the idea of
+an Autopoietic System (AS).
+
+Our model of an AS is  a system produced by consistent processes (e.g.
+a  Turing   Machine),  giving  rise  to   an  emergent,  inconsistent,
+open-ended environment.
+
+#+reveal: split
+
+Such environment  has a property  of completeness, and  its autonomous
+processes    would    lead    to    bifurcations/contradictions    and
+self-organization  through paradoxical  actions,  possibly leading  to
+new, emerging consistent processes adrift in said environment.
+
+This  leads to  an  idea closely  resembling that  of  a /Strange  Loop/
+(HOFSTADTER, 1979).
+
+#+reveal: split
+
+#+CAPTION: /Drawing Hands/, by M. C. Escher (litography, 1948).
+#+ATTR_HTML: :width 50%
+[[file:img/escher_hands.jpg]]
+
+#+reveal: split
+
+#+BEGIN_SRC dot :file img/hands_strangeloop.svg :cmdline -Kfdp -Tsvg :results file :cache yes
+digraph {
+        arrowType=vee;
+        LH[shape="circle"; pos="-1, 1!"];
+        RH[shape="circle"; pos="1, 1!"];
+        Escher[shape="rectangle"; label="M. C. Escher"; pos="0,-1!"];
+
+        lsep[shape="point"; pos="-1.5, 0.1!"; label=""; style="invis"];
+        rsep[shape="point"; pos=" 3.5, 0.1!"; label=""; style="invis"];
+        lsep -> rsep[dir="none";];
+
+        strlp [
+              shape="none";
+              label="Strange Loop\n(visible)";
+              pos="2.5, 0.7!";
+              ];
+
+        inviol [
+              shape="none";
+              label="Inviolate level\n(invisible)";
+              pos="2.5, -0.7!";
+              ];
+
+        Escher -> LH[headlabel="draws"; labeldistance=7.5; labelangle=-25];
+        Escher -> RH[headlabel="draws"; labeldistance=7.5; labelangle=25];
+        
+        LH -> RH [
+              headlabel="\"draws\"";
+              labeldistance=5.5;
+              labelangle=-10;
+              arrowType="vee";
+              ];
+        RH -> LH [
+              headlabel="\"draws\"";
+              labeldistance=5.5;
+              labelangle=-10;
+              arrowType="vee";
+              ];
+}
+#+END_SRC
+
+#+CAPTION: Abstract diagram for /Drawing Hands/, by M. C. Escher (HOFSTADTER, 1979, p. 690, adapted)
+#+RESULTS[847b219b3aa15fdab22a10f4f2b63c8ed87c1208]:
+[[file:img/hands_strangeloop_eng.svg]]
+
+* Objective of this work
+
+We aim to  continue our previous work, by pointing  two impediments to
+computational and logico-mathematical modelling  of an AS, and present
+possible  solutions   to  those  impediments  which   may  impact  the
+development of models for AS in general.
+
+** Specific objectives
+
+1. Present  the problem of a  lack of proper criteria  for identifying
+   individuals in an AS;
+2.  Present the  problem  of algebraic  modelling  of an  inconsistent
+   system which is the basis for the AS;
+3. Point  the direction  for potential solution  of these  problems: a
+   criteria  of  individuality  and  a  way  to  handle  inconsistency
+   algebraically.
+
+* Individuation as a tool for AS recognition
+
+Agents   as   fluid   framings    of   actions   in   an   autopoietic
+environment. Agents can also be understood as individuals.
+
+This   can  be   very   abstract,  and   may   demand  analogies   for
+comprehension.
+
+#+reveal: split
+
+Humans  tend  to seek  examples  of  agents and  environments  through
+antropomorphization and examples in biology.
+
+Furthermore,  experimentation  and analysis  tend  to  begin with  the
+agents  and, from  there,  we analyze  lexical  convergence and  other
+factors.
+
+#+reveal: split
+
+We  should  step back  and  talk  about how  agents  may  arise in  an
+autopoietic context.
+
+#+reveal: split
+
+We understand that
+
+1. An AS demands a proper environment, as described in previous works;
+2. Individuation is a criterion for identifying an AS.
+
+** Individuation as a tool for modelling
+
+It is imperative  to seek more precise tools for  recognition of those
+"framings" of actions -- the agents (here, individuals in an AS).
+
+Biological  and   antropomorphical  analogies  are  desired   but  may
+contaminate the conclusion of whether a system is autopoietic or not.
+
+#+reveal: split
+
+It  is possible  to  develop  more precise  tools  for recognition  of
+enactive agents in an open-ended environment, using information theory
+as basis.
+
+** Individuality from an Information Theory perspective
+
+# Foram realizadas experimentações com processos estocásticos
+
+#+begin_quote
+/(...) individuals are  aggregates that  "propagate" information  from the
+past  to the  future and  have temporal  integrity (...)/  (KRAKAUER /et
+al./, 2020)
+#+end_quote
+
+#+reveal: split
+
+#+caption: Space-time diagram of $\phi_{100}$, a cellular automaton discovered by genetic algorithms (MITCHELL, 1998).
+[[file:./img/mitchell_phi100.png]]
+
+#+reveal: split
+
+For that, we would seek fundamental properties of individuality, apart
+from seeking properties derived from individuality.
+
+#+reveal: split
+
+Krakauer /et al./ (2020) propose criteria defining individuality:
+
+- Individuality  is  a  continuous  factor, like  a  grade,  for  each
+  process;
+- Individuality may emerge at any level of an organization;
+- Individuality may be nested.
+
+#+reveal: split
+
+These  considerations  remove  a  dichotomy  of  a  process  being  an
+individual or  not, and relate to  the enactive ideas of  coupling and
+natural drift.
+
+Individuation  analysis would  then seem  like a  lens; adjusting  the
+lens's focus and direction would  also impact on observed individuals,
+and  how  "individual"   they  are,  but  not  on   the  criteria  for
+individuality.
+
+* Paraconsistency on formal descriptions of an AS
+
+An AS  is composed  of potentially  consistent individuals  arisen and
+adrift on an inconsistent context.
+
+Modelling this  kind of situation (computationally  and algebraically)
+becomes inevitable at some point.
+
+#+reveal: split
+
+Since   the  context   harbors  contradictions,   formalization  seems
+incompatible due to the principle of explosion; a contradictory system
+leads to uselessness.
+
+#+reveal: split
+
+However, in  paraconsistent systems,  the principle of  explosion does
+not hold (CIUCIURA, 2020).
+
+#+reveal: split
+
+It is  possible to  formalize a system  where paradoxes  are partially
+tolerated.
+
+Ciuciura  (2020) shows  the usage  of a  /gently paraconsistent/  logic,
+where a law  of "gentle explosion" is added  to positive propositional
+calculi.
+
+#+reveal: split
+
+In /gently paraconsistent/  logic, the principle of  explosion holds if,
+and only if:
+
+\begin{equation*}
+A \rightarrow (\lnot A \rightarrow (\lnot\lnot A \rightarrow B))
+\end{equation*}
+
+#+reveal: split
+
+This   kind  of   reasoning  approaches   inductive  logic,   allowing
+contradictions such as  $A \land \lnot A$, which lead  to explosion if
+and only if the (now not-excluded) middle is proven true.
+
+This could be a proper  framework for expressing consistent logic from
+theorems  that  can  handle  contradictions from  the  perspective  of
+classical logic.
+
+* Conclusion
+
+As future  perspectives, we  aim to  develop computational  models and
+algebraic representations  for Autopoietic  Systems by  leveraging the
+criteria of individuality from  the information theory perspective and
+paraconsistent logic.
+
+* References
+
+#+ATTR_HTML: :style font-size:0.65em;text-align:left;
+CARVALHO, L. L.; PEREIRA, D. J; COELHO, S. A. *Origins and evolution of
+enactive cognitive science:* *Toward an enactive cognitive
+architecture*. /Science Direct, volume 16/, pp. 169–17. 2015. DOI:
+10.1016/j.bica.2015.09.010.
+
+#+ATTR_HTML: :style font-size:0.65em;text-align:left;
+CIUCIURA,    J.   *Gently    paraconsistent    calculi*.   2020.    DOI:
+10.3390/axioms9040142.
+
+#+ATTR_HTML: :style font-size:0.65em;text-align:left;
+HOFSTADTER, D. R. *Gödel, Escher, Bach: An eternal golden braid*. New
+York: Basic Books, 1979. ISBN 978-0-465-02656-2.
+
+#+ATTR_HTML: :style font-size:0.65em;text-align:left;
+KRAKAUER,  D.;  BERTSCHINGER, N.;  OLBRICH,  E.;  FLACK, J.   C.   *The
+information theory of individuality*.  Theory in Biosciences, 2020. DOI:
+10.1007/s12064-020-00313-7.
+
+#+ATTR_HTML: :style font-size:0.65em;text-align:left;
+MITCHELL,  M.  *A  Complex-Systems   Perspective  on  the  "Computation
+vs. Dynamics" Debate in Cognitive Science*. 1998. [[https://pdxscholar.library.pdx.edu/cgi/viewcontent.cgi?article=1124&context=compsci_fac][Link]].
+
+#+ATTR_HTML: :style font-size:0.65em;text-align:left;
+NAGEL, E.; NEWMAN, J. R. *Gödel's proof* (revised edition). New York:
+New York University Press, 2001. ISBN 0-8147-5816-9.
