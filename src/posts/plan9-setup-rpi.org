@@ -1,0 +1,364 @@
+#+title:     Plan 9: Setting up 9front on a Raspberry Pi
+#+SETUPFILE: setupfile.org
+#+LANGUAGE:  en_US
+#+STARTUP:   inlineimages showall latexpreview
+#+AUTHOR:    Lucas S. Vieira
+#+EMAIL:     lucasvieira@protonmail.com
+#+DATE:      Apr 10, 2021
+
+Hello, everyone.  Today I  wanted to  upgrade my  Raspberry Pi  to the
+latest release of 9front, however the source code was not compiling on
+arm64, so I decided to reinstall 9front on my Raspberry Pi.
+
+The following steps were built atop some  quick notes I did so I never
+forget this stuff.  There's a small chance I'll update  this post with
+more stuff.
+
+* Preparation
+
+#+attr_org: :width 200
+#+caption: My local Raspberry Pi setup.
+[[file:./img/rpi.jpg]]
+
+Here's what you'll need:
+
+- A Raspberry Pi (I used a Pi 3 Model B+ for this example);
+- An SD Card which can store 9front's files (up to 2GB will do);
+- A spare keyboard  and a spare 3-button mouse (most  wheel mouses are
+  compatible);
+- A 9front Raspberry Pi image (use one compatible with your Pi);
+- An HDMI cable (and some TV or monitor to connect your RPi to);
+- An Ethernet cable to plug the  Pi to your router (or whatever device
+  you use);
+- A computer running a Linux distribution with the programs:
+  - ~arp-scan~, for device discovery on local network;
+  - 9front's spin of  the ~drawterm~ program, which can be  found on its
+    website.
+
+Downloading the Linux programs and 9front  Pi image is a trivial task,
+so I'll let you figure this out.
+
+You'll also want to  write the SD Card image to  your SD Card. Extract
+it from  the ~.img.gz~  file, and write  the ~.img~ file  to your  SD Card
+using ~dd~. I'll let you figure this one out to.
+
+Plug the SD Card  to the card slot of your Raspberry  Pi, and plug the
+ethernet cable to  your Pi and to your router  (or to whatever network
+device you  have at  your disposal).  The important  thing here  is to
+ensure that  the Raspberry Pi and  your Linux computer have  access to
+the same network.
+
+Furthermore, plug both  the mouse, the keyboard and the  HDMI cable to
+your  Raspberry  Pi.  This  will  be necessary  only  on  the  initial
+configuration,  but if  you want  to update  9front's kernel  anytime,
+you'll need to plug these before  booting again -- the reasons will be
+described later.
+
+* Automatic boot
+
+Let's  start with  the basics.  Suppose you  have written  your 9front
+image to an SD  Card, plugged it in you Raspberry  Pi, and plugged the
+power in. You also have a mouse  and a keyboard connected, and the RPI
+is plugged to your TV or monitor.
+
+Once the RPI  boots, you'll be greeted with the  Plan 9 Console, which
+may be graphical  or not. In any  case, you'll need to  press Return a
+couple times  to enter  the bootargs,  username, etc.  Pressing Return
+will select the default option for everything.
+
+The first step is removing  these annoying prompts. Since the bootargs
+and the user are always the  same, we can configure the ~plan9.ini~ file
+so that they are not asked.
+
+At this point, you'll probably be  at the ~rio~ window manager. Remember
+that, regardless  of your  keyboard, 9front will  use the  US keyboard
+layout.
+
+Open up a terminal,  mount the DOS partition of the RPI  and go to its
+mount directory by using these commands:
+
+#+begin_src rc
+9fs pidos
+cd /n/pidos
+#+end_src
+
+On  the RPI  image  of 9front,  there  is not  ~plan9.ini~  file; it  is
+actually generated on boot by taking  the commands written on the file
+~cmdline.txt~.
+
+You may then open the file ~cmdline.txt~  with ~sam~ or ~acme~, or even edit
+it using ~ed~.
+
+Ensure that the following is written on the file:
+
+#+begin_src text
+console=0 user=glenda nobootprompt=local!/dev/sdM0/fs
+#+end_src
+
+~console~ is a parameter which is already expected to be there, and ~user~
+is straightforward. ~nobootprompt~ suppresses the query for the value of
+~bootargs~ when  booting 9front.  This is because,  if we  used ~bootargs~
+instead, we'd only be setting up ~bootargs~'s default value, so the boot
+would hang expecting a Return key press anyway.
+
+Notice that the  user ~glenda~ is default to most  Plan 9 distributions,
+so do not change that, unless you know what you're doing.
+
+Make sure that there is a line break  at the end of the file, and save
+it.
+
+You can now reboot the RPi by  using the ~reboot~ command on any command
+line to  test it. Make sure  you keep keyboard, mouse  and video still
+attached.
+
+* Configuring remote access
+
+Next,  we'll  configure  9front  so   that,  after  booting,  it  will
+automatically allow other machines to connect to it remotely.
+
+Specifically,  what we'll  be doing  here  is starting  a CPU  Server,
+although the  RPi will still  work as other  kinds of servers  as well
+(for example, it will still provide local storage).
+
+Open the file ~$home/lib/profile~ by using ~sam~, ~acme~ or ~ed~.
+
+There  is  a  ~switch~  structure  comparing the  value  of  a  ~$service~
+environment variable, which relates to  the way the user has connected
+to the  current session.  In short, you're  currently on  the ~terminal~
+case;  but we're  interested  on the  ~cpu~ case,  which  is the  remote
+connection of a computer to a CPU Server.
+
+Before this ~switch~ structure, add  the following lines. You may change
+them according to your needs, but *keep the user ~glenda~*.
+
+#+begin_src rc
+auth/factotum -g 'key proto=p9sk1 dom=plan9 user=glenda !password=glenda' >[2]/dev/null
+aux/listen1 -t tcp!*!ncpu /bin/cpu -R >[2]/dev/null &
+ip/ipconfig >[2]/dev/null
+#+end_src
+
+A few command line programs are used  here, so we'll take some time to
+understand what exactly are they doing  -- for further info, check out
+their  /manpages/ (seriously,  please  do. Using  Plan  9 means  reading
+manpages).
+
+~factotum~ talks  to the  Auth Servers which  are running.  The specific
+command above registers a password to a specific user ~glenda~ which may
+be trying  to remotely connect  to a cpu  server. The password  may be
+anything you like, and there are ways to encrypt this information, but
+we won't be doing that.
+
+~listen1~ is  a simplified way  to open up the  current cpu server  to a
+remote connection... and let's leave the explanation at that.
+
+~ipconfig~ sets up  an IP address for your Raspberry  Pi on your current
+network (you  may notice that tools  such as ~ip/ping~ won't  work until
+this command is run!).
+
+These commands  are positioned in such  a way that, no  matter when or
+how  a  user  starts  a  session   in  9front,  they  will  always  be
+run.  And at  this point,  even  if the  RPi were  powered on  without
+keyboard, mouse  or video output,  it would still  log in to  the user
+~glenda~, therefore running this script.
+
+Luckly,  running these  commands  several times  will  not affect  the
+behaviour of our system.
+
+The 9front instance running on RPi  may not be remotely accessed using
+~drawterm~  from another  operating system,  or by  using ~/bin/ncpu~.  We
+won't be covering the latter one in this post, though.
+
+You  can now  temporarily  turn  off your  RPi.  Run  ~fshalt~ from  any
+console, await the  "done halting" message, and unplug  it from power;
+remove all cables, except the ethernet cable to your network device.
+
+You can  now turn  the RPi on  again. And this  time, nothing  but the
+power chord and the Ethernet cable are needed.
+
+* Connecting remotely
+
+Now we'll connect remotely to our RPi which runs 9front.
+
+Note that remote  access makes you unable to access  the DOS partition
+(~pidos~),  so if  you want  to edit  ~cmdline.txt~ again  or update  your
+kernel,  you'll  need  to  reboot  your  RPi  with  video  output  and
+keyboard/mouse input.
+
+On Linux, first  find out what is  the IP of the Raspberry  Pi on your
+network.
+
+#+begin_src bash :eval no
+sudo arp-scan --local
+#+end_src
+
+This will ask you for your password, and will show you some output:
+
+#+begin_example
+Interface: xxxx, type: xxxx, MAC: xx:xx:xx:xx:xx:xx, IPv4: 192.168.2.x
+Starting arp-scan 1.9.7 with 256 hosts (https://github.com/royhills/arp-scan)
+...
+192.168.2.7	xx:xx:xx:xx:xx:xx	Raspberry Pi Foundation
+...
+
+4 packets received by filter, 0 packets dropped by kernel
+Ending arp-scan 1.9.7: 256 hosts scanned in 1.889 seconds (135.52 hosts/sec). 4 responded
+#+end_example
+
+In my case, my rpi has an IP ~192.168.2.7~ on my local network.
+
+Let's  use drawterm  to connect.  We just  have to  run the  following
+command; the  ~-a~ argument should point  to a machine running  the auth
+server, and ~-h~ points to the machine running the CPU (host) server. In
+our case, they're  on the same machine. ~-u~ just  defines a user, which
+is "glenda".
+
+#+begin_src bash
+drawterm -a 192.168.2.7 -h 192.168.2.7 -u glenda
+#+end_src
+
+This will open a Drawterm window containing the following prompt:
+
+#+begin_example
+glenda@plan9 p9sk1 password:
+#+end_example
+
+Type the  password previously  defined with  ~factotum~ (/glenda/  in this
+example), then press  Return. Note that it will not  echo. You may see
+an error related to ~ipconfig~ (since it  is being run for a second time
+-- first time was on boot). It will then give you a prompt:
+
+#+begin_example
+cpu%
+#+end_example
+
+From there, type ~rio~ and press enter to get a graphical interface.
+
+You'll notice that there is nothing onscreen, since we haven't started
+~rio~ by  telling it to run  some script (normally ~riostart~,  on a local
+terminal). Let's change that.
+
+* Logging in remotely to a graphical session
+
+The ~riostart~ script assumes that you are booting 9front by plugging an
+HDMI  cable, a  keyboard and  a mouse  to it,  so we  need an  adapted
+version of it for a drawterm session.
+
+Create a  console window and  cd to ~$home/bin/rc~.  You'll  notice that
+the ~bin~ folder on ~$home~ has  two subfolders, one called ~rc~ and another
+with the name of your architecture, probably ~arm~ or ~arm64~.
+
+~rc~ is where all executable ~rc~ scripts go.
+
+Let's make a new one.
+
+#+begin_src rc
+touch riostart-remote
+#+end_src
+
+Then open  it using ~sam~  or ~acme~, and add  a shebang ~#!/bin/rc~  at its
+beginning.
+
+From now on your config is related  to your taste. I like to have some
+windows opened on boot with some information, such as ~stats~, ~clock~ and
+~winwatch~.
+
+Here is my config as an example.  You may even copy it from your Linux
+system and paste it to your file (which is better done through Acme).
+
+#+begin_src rc
+#!/bin/rc
+window 0,0,161,117 stats -lmisc
+window 161,0,278,117 clock
+window 278,0,478,117 winwatch -e '^(winwatch|stats|clock|faces)'
+
+#+end_src
+
+Make sure that this file *ends with a line break*.
+
+Now, make it executable.
+
+#+begin_src rc
+chmod +x riostart-remote
+#+end_src
+
+Let's head back and edit ~$home/lib/profile~.  Scroll to the case of the
+switch called  ~cpu~ -- that's the  case for a remote  connection to our
+~cpu~ server.
+
+After the  definition of the function  ~fn cpu%~, let's add  a few lines
+(make sure to add indentation):
+
+#+begin_src rc
+if(! webcookies >[2]/dev/null)
+	webcookies -f /tmp/webcookies
+webfs
+plumber
+rio -i riostart-remote
+#+end_src
+
+Make sure that these are the last lines of that case.
+
+~webcookies~ starts  the manager for HTTP  cookies. If it fails  to run,
+then it tries running again, using the file ~/tmp/webcookies~ as default
+cookies file.
+
+~webfs~ binds a web file system interface  so that we may browse the web
+using ~abaco~ or ~mothra~.
+
+~plumber~ binds an  interprocess messaging system to the  file system so
+that we may do interesting stuff,  e.g. open a PDF from command prompt
+by plumbing its name.
+
+The last line  starts ~rio~, and instructs it to  run ~riostart-remote~ on
+startup.
+
+You can now close drawterm after saving the file, and then login again
+through the  command above. It  will not cause instability  on 9front;
+drawterm is basically just a terminal, so it is isolated from the rest
+of the system.
+
+Upon  logging  in  again  through drawterm,  you'll  be  automatically
+greeted by ~rio~.
+
+* Binding the local filesystem
+
+One interesting way to use the ~9fs~ protocol indirectly is to have your
+local filesystem avaiable to access on your drawterm session.
+
+This means  that your Linux files  can be accessed from  your drawterm
+session, in an isolated manner, so  that the files are only visible on
+said  drawterm session  -- not  for another  session, not  for another
+user.
+
+This is done automatically once you  log into your 9front box, and the
+root of your filesystem is then  mounted to ~/mnt/term~. So all you need
+to do is create a "link" to your folder somewhere.
+
+On Linux, we'd think of symlinks. Here,  we just need to bind a folder
+to another.
+
+Edit  ~$home/lib/profile~ again.  Right before  starting ~webfs~,  add the
+following:
+
+#+begin_src rc
+bind -a /mnt/term/home /usr >[2]/dev/null
+#+end_src
+
+This will bind  all files in ~/mnt/term/home/~ to ~/usr~.  So all files in
+~/usr~ (e.g. your 9front home folder ~/usr/glenda~) will be kept, plus all
+files in ~/mnt/term/home/~ will also be seen under ~/usr~.
+
+So for example, if your user folder on Linux is at ~/home/user~, it will
+now  be available  on  9front  (through a  drawterm  session only)  at
+~/usr/user~.
+
+This is particularly  useful for transferring files  between Linux and
+9front, even allowing  for direct usage of remote  storage through the
+~9fs~ protocol.
+
+You may want to experiment with binding other directories.
+
+#+caption: Final result of configuration. This screenshot was taken from Drawterm.
+#+attr_org: :width 500
+[[file:./img/plan9rpi.png]]
+
