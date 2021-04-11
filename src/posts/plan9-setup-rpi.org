@@ -5,6 +5,7 @@
 #+AUTHOR:    Lucas S. Vieira
 #+EMAIL:     lucasvieira@protonmail.com
 #+DATE:      Apr 10, 2021
+#+OPTIONS:   toc:2
 
 Hello, everyone.  Today I  wanted to  upgrade my  Raspberry Pi  to the
 latest release of 9front, however the source code was not compiling on
@@ -14,7 +15,7 @@ The following steps were built atop some  quick notes I did so I never
 forget this stuff.  There's a small chance I'll update  this post with
 more stuff.
 
-/Last updated at/ [2021-04-11 18:32]
+/Last updated at/ [2021-04-11 20:58]
 
 * Preparation
 
@@ -310,7 +311,8 @@ using ~abaco~ or ~mothra~.
 
 ~plumber~ binds an  interprocess messaging system to the  file system so
 that we may do interesting stuff,  e.g. open a PDF from command prompt
-by plumbing its name.
+by plumbing its name. We'll have a moment to set it up properly at the
+end.
 
 The last line  starts ~rio~, and instructs it to  run ~riostart-remote~ on
 startup.
@@ -355,6 +357,10 @@ So for example, if your user folder on Linux is at ~/home/user~, it will
 now  be available  on  9front  (through a  drawterm  session only)  at
 ~/usr/user~.
 
+Notice that, if  you wish to create new files  under ~/usr~, you'll have
+to use  ~-ac~ instead  of ~-a~  on the  ~bind~ command.  For more  info, see
+~bind(1)~.
+
 This is particularly  useful for transferring files  between Linux and
 9front, even allowing  for direct usage of remote  storage through the
 ~9fs~ protocol.
@@ -364,6 +370,58 @@ You may want to experiment with binding other directories.
 #+caption: Final result of configuration. This screenshot was taken from Drawterm.
 #+attr_org: :width 500
 [[file:./img/plan9rpi.png]]
+
+* Setting up the Plumber
+
+The  ~plumber(4)~ is  a  very important  interprocess message  protocol,
+which  is initialized  by  the  command ~plumber~  when  we  log onto  a
+session.
+
+Right now,  the ~plumber~  will not work;  however, with  minimal setup,
+we'll be able to allow it to perform simple redirection defaults, such
+as opening image and  PDF files with ~page~, or text  files with ~acme~ or
+~sam~, or opening URLs in ~mothra~.
+
+Create a file ~$home/lib/plumbing~. Then, using  Acme or Sam, edit it so
+it looks like the following:
+
+#+begin_example
+editor = sam
+include basic
+#+end_example
+
+This is  all we  need, though you  can add more  rules prior  to these
+lines. For more info on the syntax to plumbing rules, see ~plumb(6)~.
+
+Here's my  own ~plumbfile~.  Here, I  just set Acme  as my  default text
+editor,  and  made  clear  that  ~mothra~  is  my  default  web  browser
+(specifically, I  state that  I want to  open webpages  using ~mothra~'s
+alt  display  mode).  These  variables  are  then  used on  the  basic
+plumbing rules, which we've included at the end of the file.
+
+#+begin_example
+editor  = acme
+browser = 'mothra -a'
+include basic
+#+end_example
+
+Now you  can ~cd~ to  folders containing images/pdfs and,  after listing
+the files,  mark their  name with the  mouse, middle-click  and select
+'plumb'   to  open   them  in   a  new   window,  with   their  proper
+application. With web  links, you just have to mark  them anywhere and
+plumb them by the same means.
+
+This will also allow you to  open webpages by plumbing links, and will
+also affect the opening of emails once you've configured it.
+
+You  can update  manually the  plumbing rules  by using  the following
+command:
+
+#+begin_src rc
+cp $home/lib/plumbing /mnt/plumb/rules
+#+end_src
+
+Or you may log in to a new session to see your changes take effect.
 
 * Extra stuff
 
@@ -404,7 +462,6 @@ Acme or Sam to edit it and add stuff like the following:
 [user]
 	name=Your Name
 	email=youremail@example.com
-
 #+end_example
 
 Make sure you add the newline at the end of the file.
