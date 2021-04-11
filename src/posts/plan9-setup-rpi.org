@@ -371,7 +371,7 @@ You may want to experiment with binding other directories.
 repository. The following just repeats  the instructions on the linked
 repo.
 
-First we obtain a boostrap copy.
+First we obtain a bootstrap copy.
 
 #+begin_src rc
 cd /tmp
@@ -427,8 +427,8 @@ overwrites ~local~. Here's how I did with mine:
 cp /adm/timezone/Brazil_East /adm/timezone/local
 #+end_src
 
-First, let's discuss a manual update.  You can just run something like
-this:
+Let's discuss  a manual  update of  your RPi time.   You can  just run
+something like this:
 
 #+begin_src rc
 aux/timesync -n pool.ntp.org
@@ -490,4 +490,63 @@ window bar
 
 You don't need  to specify the window size or  position, ~bar~ will take
 care of that.
+
+** Lua
+
+Lua  5.4 works  fine on  Plan  9, and  there are  some libraries  that
+enhance the interoperability of Lua with Plan 9.
+
+Go to ~$home/src~ and clone the ~lu9~ repository:
+
+#+begin_src rc
+cd $home/src
+git/clone https://git.sr.ht/~kvik/lu9
+#+end_src
+
+Now, we need  to fetch a few dependencies, and  then build and install
+them:
+
+#+begin_src rc
+cd $home/src/lu9
+mk pull
+mk install
+#+end_src
+
+To use ~lu9~, you can either run a  Lua file with ~lu9 file.lua~ or run an
+interactive shell through ~lu9 -i~.
+
+** Scheme
+
+There is [[http://www.t3x.org/s9fes/][an awesome implementation of Scheme]] by Nils M. Holm which not
+only runs on Plan 9, but was also built for it.
+
+I also recommend  taking a look at [[http://www.t3x.org/s9book/index.html][the author's  book]], which basically
+teaches you to build it from scratch.
+
+There  is  a [[https://github.com/bakul/s9fes][repository  on  GitHub]]  which runs  fine  on  any Plan  9
+architecture, plus can be installed on the system.
+
+#+begin_src rc
+cd $home/src
+git/clone https://github.com/bakul/s9fes
+cd s9fes
+mk
+mk inst
+#+end_src
+
+To use Scheme 9 from Empty Space, just run the program ~s9~.
+
+#+begin_example
+cpu% s9
+Scheme 9 from Empty Space (Reimagined)
+> (+ 1 2 3)
+6
+> ,l draw-tree
+; loading from /usr/glenda/lib/s9fes/draw-tree.scm
+> (draw-tree '(a b c))
+[o|o]---[o|o]---[o|/]
+ |       |       |      
+ a       b       c      
+> 
+#+end_example
 
