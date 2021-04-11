@@ -16,6 +16,7 @@ more stuff.
 
 * Preparation
 
+#+attr_html: :width 500
 #+attr_org: :width 200
 #+caption: My local Raspberry Pi setup.
 [[file:./img/rpi.jpg]]
@@ -361,4 +362,132 @@ You may want to experiment with binding other directories.
 #+caption: Final result of configuration. This screenshot was taken from Drawterm.
 #+attr_org: :width 500
 [[file:./img/plan9rpi.png]]
+
+* Extra stuff
+
+** Setting up Git
+
+[[https://github.com/oridb/git9][Git for Plan 9]] can be set up with easy steps, as it is stated on their
+repository. The following just repeats  the instructions on the linked
+repo.
+
+First we obtain a boostrap copy.
+
+#+begin_src rc
+cd /tmp
+hget https://orib.dev/git/git9/HEAD/snap.tar.gz | tar xvz
+cd git9
+mk all
+mk install
+#+end_src
+
+Now we'll get a copy which can  have new updates /pull/'ed every once in
+a while. I did that by creating a ~$home/src~ directory, then performing
+the following operations:
+
+#+begin_src rc
+cd $home/src
+git/clone gits://orib.dev/git9
+cd git9
+mk all
+mk install
+#+end_src
+
+The next step is setting up a  username and an email.
+
+Create a  file ~$home/lib/git~, which can  be done with ~touch~.  Then use
+Acme or Sam to edit it and add stuff like the following:
+
+#+begin_example
+[user]
+	name=Your Name
+	email=youremail@example.com
+
+#+end_example
+
+Make sure you add the newline at the end of the file.
+
+Now you can look at the manpages ~git(1)~ and ~gitfs(4)~ to get started.
+
+** Setup automatic time synchronization
+
+If you're  someone like me who  is not currently in  January 1st 1970,
+you may  want to  set up  Plan 9 to  fetch the  current date  from the
+internet. Luckly, that's an easy thing to do.
+
+This is  something that is  set up  on 9front's installation  on other
+platforms, but since our RPi  image comes with 9front preinstalled, we
+need to manually setup our timezone.
+
+Looking  at the  directory ~/adm/timezone~,  you'll see  a list  of many
+timezones.  All you  need  to do  is  copy your  timezone  so that  it
+overwrites ~local~. Here's how I did with mine:
+
+#+begin_src rc
+cp /adm/timezone/Brazil_East /adm/timezone/local
+#+end_src
+
+First, let's discuss a manual update.  You can just run something like
+this:
+
+#+begin_src rc
+aux/timesync -n pool.ntp.org
+#+end_src
+
+Or,  if  you're in  Brazil just like me:
+
+#+begin_src rc
+aux/timesync -n pool.ntp.br
+#+end_src
+
+Now, open  again your ~$home/lib/profile~  file. Right after  setting up
+~ipconfig~, add the previous command.
+
+9front is supposed  to run this command on  boot through ~/rc/bin/cpurc~
+or ~/rc/bin/termrc~, but unfortunately, none of these will work prior to
+having an IP address.
+
+However, you  may want to  edit these  files to include  the following
+somewhere -- just  *make sure that the files end  with a newline*, after
+editing:
+
+#+begin_src rc
+TIMESYNCARGS=(-n pool.ntp.org)
+#+end_src
+
+(Or use the brazillian NTP server instead).
+
+Reboot to see your changes take effect.
+
+This info  was somewhat copied from  [[https://clueelf.wordpress.com/2018/06/29/clocks-time-ntp-plan9-9front/][here]], and I recommend  looking at
+the [[https://9p.io/wiki/plan9/installation_instructions/][9p.io wiki]] as well.
+
+** Bottom bar
+
+There's  an [[https://git.sr.ht/~ft/bar][interesting  widget I  stumbled across]],  which shows  some
+information -- the  current date, specially, which I miss  the most.
+
+This widget is part of a  suite of experiments with ~rio~ called [[https://git.sr.ht/~ft/riow][~riow~]],
+which enables keyboard window management on ~rio~ -- but I haven't tried
+using that yet.
+
+If you already installed git9, you can clone and build ~bar~:
+
+#+begin_src rc
+cd $home/src
+git/clone https://git.sr.ht/~ft/bar
+cd bar
+mk install
+#+end_src
+
+You'll  get  a   binary  ~/bin/bar~  on  your  system.   Now  edit  your
+~$home/bin/rc/riostart-remote~ file,  and add the following  line at the
+end of it (remember to leave a dangling newline afterwards!):
+
+#+begin_src rc
+window bar
+#+end_src
+
+You don't need  to specify the window size or  position, ~bar~ will take
+care of that.
 
