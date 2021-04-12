@@ -15,7 +15,7 @@ The following steps were built atop some  quick notes I did so I never
 forget this stuff.  There's a small chance I'll update  this post with
 more stuff.
 
-/Last updated at/ [2021-04-12 00:39]
+/Last updated at/ [2021-04-12 14:38]
 
 * Preparation
 
@@ -634,4 +634,74 @@ mk -f Make_plan9.mk install
 
 After  installation,  you'll  have  ~xxd~  and  ~vim~  installed  on  your
 system. ~xxd~ is useful for generating hexdumps.
+
+** Netsurf
+
+Mothra is  a browser that  works for the  simplest tasks, but  you may
+want to use a browser which renders HTML properly.
+
+You'll want  to compile Netsurf from  source. This will take  a while,
+and I  recommend you to  use whatever external  storage you can  to do
+this.
+
+#+caption: Comparison between Google.com rendering on both Mothra (left) and NetSurf (right).
+#+attr_org: :width 500
+[[file:./img/plan9rpi-netsurf.png]]
+
+Personally,  since I'm  connecting to  my  RPi from  a Linux  Drawterm
+session, I  take advantage of  that (by using the  bindings previously
+described) so that every built file  is stored on Linux instead of the
+RPi. After building, I then installed on the Plan 9 system itself.
+
+First of all, create a folder where you can clone Netsurf. My ~projects~
+folder was previously bound using ~bind -ac~ to ~$home/projects~.
+
+#+begin_src rc
+mkdir $home/projects
+bind -ac /mnt/term/home/alchemist/projects $home/projects
+mkdir $home/projects/plan9
+cd $home/projects/plan9
+#+end_src
+
+Now, clone  the repository  which has the  proper ~mkfile~  for building
+Netsurf's port. You'll  need Git9 for that; refer to  the previous Git
+configuration section.
+
+#+begin_src rc
+git/clone https://github.com/netsurf-plan9/nsport
+#+end_src
+
+After  that, fetch  other  libraries which  are  crucial for  building
+~netsurf~. You can use the ~fetch~ script on ~nsport~'s repository root.
+
+Note that fetching all library repositories will take a while.
+
+#+begin_src rc
+cd nsport
+fetch clone git
+#+end_src
+
+Every once in a while, you may  want to update the Netsurf source code
+so you can get  new patches and improvements. You can  ~cd~ to this same
+repo and run, before building:
+
+#+begin_src rc
+fetch pull
+#+end_src
+
+Now all we have to do is build Netsurf and install it to our system.
+
+Needless  to say,  this  might take  long,  specially considering  the
+bottleneck related to file transfers between 9front's filesystem cache
+and Linux's filesystem.
+
+#+begin_src rc
+mk
+mk install
+#+end_src
+
+You may  also want to edit  your ~$home/lib/plumbing~ to use  Netsurf as
+your default plumbing action for  web links. Just replace your browser
+with ~netsurf~.
+
 
