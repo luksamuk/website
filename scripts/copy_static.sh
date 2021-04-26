@@ -12,3 +12,4 @@ cp -r src/talks/images src/talks/img docs/talks/
 cp -r static docs/
 
 chmod -R +r docs/*
+chmod -R +r docs/static/*
