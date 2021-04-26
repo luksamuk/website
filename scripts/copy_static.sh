@@ -9,4 +9,6 @@ cp -r src/pages/images src/pages/img docs/pages/
 
 cp -r src/talks/images src/talks/img docs/talks/
 
+cp -r static/ docs/static/
+
 chmod -R +r docs/*
