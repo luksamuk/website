@@ -1,0 +1,1690 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
+<head>
+<!-- 2021-05-05 Wed 12:28 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Árvore AVL</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Lucas S. Vieira" />
+<meta name="description" content="Implementação de uma árvore AVL em C++.
+Programming, Tech, and occasional rant space by Lucas Vieira"
+ />
+<meta name="keywords" content="avl, cpp, documentação, algoritmos, estruturas de dados" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="../css/main.css" />
+<link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="../css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="../img/cat-i-mage.jpg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:image" content="../img/cat-i-mage.jpg">
+<meta name="theme-color" content="#14171e">
+</head>
+<body>
+<div id="preamble" class="status">
+<h1 class="title">Árvore AVL</h1><p><i>Escrito em 22 de outubro de 2020 por Lucas S. Vieira<br/><a href="mailto:lucasvieira@protonmail.com">lucasvieira@protonmail.com</a></i></p>
+</div>
+<div id="content">
+<div id="table-of-contents">
+<h2>&Iacute;ndice</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgcef8dc2">Introdução</a></li>
+<li><a href="#org916c4a2">Cabeçalhos e bibliotecas</a></li>
+<li><a href="#org7d45c52">Estilo de impressão</a></li>
+<li><a href="#orgb45d8f2">Início da classe AVLTree</a></li>
+<li><a href="#org51b793d">Elementos privados</a>
+<ul>
+<li><a href="#org7f72c19">Altura de um nó</a></li>
+<li><a href="#orgb69c0a4">Balanceamento</a>
+<ul>
+<li><a href="#org8cd3f4b">Cálculo de índice de balanceamento</a></li>
+<li><a href="#org89a2067">Rotação à esquerda</a></li>
+<li><a href="#org98d160e">Rotação à direita</a></li>
+<li><a href="#org6843e1b">Rotação dupla à direita</a></li>
+<li><a href="#org9166f06">Rotação dupla à esquerda</a></li>
+<li><a href="#org2fa88a4">Função de balanceamento</a></li>
+</ul>
+</li>
+<li><a href="#org109bab1">Inserção</a></li>
+<li><a href="#orgd4e3046">Impressão</a>
+<ul>
+<li><a href="#org229a1e0">Impressão em ordem</a></li>
+<li><a href="#org3b744ac">Impressão em pré-ordem</a></li>
+<li><a href="#orgc374acc">Impressão em pós-ordem</a></li>
+<li><a href="#org0d10f41">Impressão por nível</a></li>
+<li><a href="#org606fff7">Impressão triangular</a></li>
+<li><a href="#org6f9edd3">Exemplo de uso da impressão triangular</a></li>
+</ul>
+</li>
+<li><a href="#org941cfdb">Limpeza de sub-árvore</a></li>
+<li><a href="#org22fdac2">Pesquisa</a></li>
+<li><a href="#org4df2700">Remoção</a></li>
+</ul>
+</li>
+<li><a href="#org5307cad">Elementos públicos</a>
+<ul>
+<li><a href="#org3271fa6">Construtores</a></li>
+<li><a href="#org1606eff">Destrutor</a></li>
+<li><a href="#org44e597e">Métodos externos</a>
+<ul>
+<li><a href="#orgc8c8869">Inserção</a></li>
+<li><a href="#org6ebca2c">Impressão</a></li>
+<li><a href="#org2b8ae67">Limpeza</a></li>
+<li><a href="#org2083155">Pesquisa</a></li>
+<li><a href="#org5565dbf">Remoção</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org6937bd2">Testes</a>
+<ul>
+<li><a href="#org32722da">Impressão de elementos na tela</a></li>
+<li><a href="#org06b7ab3">Teste de inserção</a></li>
+<li><a href="#org0300305">Teste de construtor</a></li>
+<li><a href="#org4204221">Teste de caracteres</a></li>
+<li><a href="#org93fbaee">Teste de pesquisa</a></li>
+<li><a href="#org790aa01">Teste de remoção</a></li>
+</ul>
+</li>
+<li><a href="#org09b2c0a">Ponto de entrada</a></li>
+<li><a href="#orge503f05">Compilação</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgcef8dc2" class="outline-2">
+<h2 id="orgcef8dc2">Introdução</h2>
+<div class="outline-text-2" id="text-orgcef8dc2">
+<p>
+Este documento visa implementar uma árvore AVL utilizando a linguagem
+C++, em sua especificação de 2014. A árvore é implementada utilizando
+o recurso de <i>template</i> para sua generalização.
+</p>
+
+<p>
+Este código foi feito no editor Emacs através do formato Org, podendo
+ser transformado em um único arquivo de código.
+</p>
+
+<p>
+O  documento em  questão pode  ser atualizado  à medida  que surgir  a
+necessidade, ou  à medida  que bugs forem  sendo encontrados.  Se você
+encontrou um problema no código ou deseja fazer uma sugestão, envie um
+e-mail para o autor (como visto no cabeçalho desta página), ou crie um
+<i>pull request</i> no repositório deste website.
+</p>
+
+<p>
+Caso queira ver  apenas o código, <a href="avltree.cpp">poderá encontrá-lo aqui</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org916c4a2" class="outline-2">
+<h2 id="org916c4a2">Cabeçalhos e bibliotecas</h2>
+<div class="outline-text-2" id="text-org916c4a2">
+<p>
+Começamos identificando cabeçalhos de bibliotecas úteis a serem
+utilizadas. Temos bibliotecas para Entrada e Saída e para Matemática
+em geral.
+</p>
+
+<p>
+Também utilizaremos as estruturas <code>std::queue</code> e <code>std::vector</code> como
+utilitários para escrita da árvore em níveis e para manipulação de
+elementos a serem adicionados na árvore, respectivamente.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;iostream&gt;</span>
+<span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;cmath&gt;</span>
+<span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;queue&gt;</span>
+<span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;vector&gt;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7d45c52" class="outline-2">
+<h2 id="org7d45c52">Estilo de impressão</h2>
+<div class="outline-text-2" id="text-org7d45c52">
+<p>
+<a id="org4143111"></a>
+</p>
+
+<p>
+A enumeração a seguir descreve cinco estilos de impressão para uma
+árvore AVL. Estes estilos são:
+</p>
+
+<ul class="org-ul">
+<li><i>In order</i>: Descreve os elementos em ordem crescente. Determina a
+impressão recursiva da sub-árvore da esquerda, do elemento atual, e
+a impressão recursiva da árvore da direita.</li>
+<li><i>Preorder</i>: Imprime o elemento atual e em seguida imprime
+recursivamente as sub-árvores da esquerda e da direita.</li>
+<li><i>Post-order</i>: Imprime primeiramente as sub-árvores da esquerda e da
+direita, e então imprime o elemento atual.</li>
+<li><i>Level</i>: Imprime sequencialmente a árvore, nível a nível.</li>
+<li><i>Triangle</i>: Funciona como <i>level</i>, porém imprime cada nível em uma
+linha. Ponteiros nulos também serão impressos por conveniência.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">enum</span> <span style="color: #62D2DB;">TreePrintStyle</span>
+{
+    <span style="color: #7CF083;">TREEPRINT_INORDER</span>,
+    <span style="color: #7CF083;">TREEPRINT_PREORDER</span>,
+    <span style="color: #7CF083;">TREEPRINT_POSTORDER</span>,
+    <span style="color: #7CF083;">TREEPRINT_LEVEL</span>,
+    <span style="color: #7CF083;">TREEPRINT_TRIANGLE</span>
+};
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb45d8f2" class="outline-2">
+<h2 id="orgb45d8f2">Início da classe AVLTree</h2>
+<div class="outline-text-2" id="text-orgb45d8f2">
+<p>
+A classe <code>AVLTree</code> é uma classe construída utilizando <i>templates</i>. Desta
+forma, esta classe pode ser generalizada para qualquer tipo
+comparável<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>.
+</p>
+
+<p>
+Iniciamos por  declarar a classe  propriamente dita. Os  métodos serão
+implementados de forma subsequente.
+</p>
+
+<p>
+Adicionalmente, aqui declaramos os seguintes elementos:
+</p>
+
+<ul class="org-ul">
+<li><b>Estrutura interna  de um  nó.</b> A  estrutura a  seguir descreve  um nó
+qualquer  da árvore.  Esta estrutura  é acessível  apenas no  escopo
+interno da  mesma. Portanto,  é bom observar  que não  será possível
+"exportar" ponteiros de nós pertencentes à árvore.</li>
+<li><b>Ponteiro para o nó-raiz da  árvore.</b> Este atributo da classe armazena
+um ponteiro para o nó-raiz da árvore.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #9d81ba;">class</span> <span style="color: #62D2DB;">AVLTree</span>
+{
+<span style="color: #9d81ba;">public</span>:
+    <span style="color: #0bc9cf;">AVLTree</span>();
+    <span style="color: #0bc9cf;">AVLTree</span>(<span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">vector</span>&lt;<span style="color: #62D2DB;">T</span>&gt;);
+    ~<span style="color: #0bc9cf;">AVLTree</span>();
+
+    <span style="color: #62D2DB;">bool</span> <span style="color: #0bc9cf;">insert</span>(<span style="color: #62D2DB;">T</span>);
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">print</span>(<span style="color: #62D2DB;">TreePrintStyle</span> <span style="color: #7CF083;">s</span> = TREEPRINT_INORDER) <span style="color: #9d81ba;">const</span>;
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">clear</span>(<span style="color: #62D2DB;">void</span>);
+    <span style="color: #62D2DB;">bool</span> <span style="color: #0bc9cf;">search</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">T</span>) <span style="color: #9d81ba;">const</span>;
+    <span style="color: #62D2DB;">bool</span> <span style="color: #0bc9cf;">remove</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">T</span>);
+<span style="color: #9d81ba;">private</span>:
+    <span style="color: #9d81ba;">struct</span> <span style="color: #62D2DB;">node_t</span>
+    {
+        <span style="color: #62D2DB;">T</span> <span style="color: #7CF083;">info</span>;
+        <span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">left</span>;
+        <span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">right</span>;
+    };
+
+    <span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">_root</span>;
+
+    <span style="color: #62D2DB;">int</span> <span style="color: #0bc9cf;">_height</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">node_t</span>*) <span style="color: #9d81ba;">const</span>;
+    <span style="color: #62D2DB;">int</span> <span style="color: #0bc9cf;">_balance_index</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">node_t</span>*) <span style="color: #9d81ba;">const</span>;
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">_lrot</span>(<span style="color: #62D2DB;">node_t</span>*&amp;);
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">_rrot</span>(<span style="color: #62D2DB;">node_t</span>*&amp;);
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">_rrot_dbl</span>(<span style="color: #62D2DB;">node_t</span>*&amp;);
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">_lrot_dbl</span>(<span style="color: #62D2DB;">node_t</span>*&amp;);
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">_balance</span>(<span style="color: #62D2DB;">node_t</span>*&amp;);
+
+    <span style="color: #62D2DB;">bool</span> <span style="color: #0bc9cf;">_insert</span>(<span style="color: #62D2DB;">T</span>, <span style="color: #62D2DB;">node_t</span>*&amp;);
+
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">_print_inorder</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">node_t</span>*) <span style="color: #9d81ba;">const</span>;
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">_print_preorder</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">node_t</span>*) <span style="color: #9d81ba;">const</span>;
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">_print_postorder</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">node_t</span>*) <span style="color: #9d81ba;">const</span>;
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">_print_bylevel</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">node_t</span>*) <span style="color: #9d81ba;">const</span>;
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">_print_triangle</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">node_t</span>*) <span style="color: #9d81ba;">const</span>;
+
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">_clear</span>(<span style="color: #62D2DB;">node_t</span>*);
+
+    <span style="color: #62D2DB;">bool</span> <span style="color: #0bc9cf;">_search</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">node_t</span>*, <span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">T</span>&amp;) <span style="color: #9d81ba;">const</span>;
+
+    <span style="color: #62D2DB;">node_t</span> *<span style="color: #0bc9cf;">_detach_rightmost</span>(<span style="color: #62D2DB;">node_t</span>*&amp;);
+    <span style="color: #62D2DB;">bool</span> <span style="color: #0bc9cf;">_remove</span>(<span style="color: #62D2DB;">node_t</span>*&amp;, <span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">T</span>&amp;);
+};
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org51b793d" class="outline-2">
+<h2 id="org51b793d">Elementos privados</h2>
+<div class="outline-text-2" id="text-org51b793d">
+</div>
+<div id="outline-container-org7f72c19" class="outline-3">
+<h3 id="org7f72c19">Altura de um nó</h3>
+<div class="outline-text-3" id="text-org7f72c19">
+<p>
+Este método calcula a altura de um nó arbitrário da árvore. Ele é
+especialmente útil para a programação do balanceamento da mesma.
+</p>
+
+<p>
+A altura de um nó é descrita sob as seguintes regras:
+</p>
+
+<ul class="org-ul">
+<li><code>-1</code> quando o nó atual é nulo;</li>
+<li><code>0</code> quando o nó atual é um <i>nó-folha</i>;</li>
+<li><code>1 + a</code>, para um valor <code>a</code> que seja o maior tamanho entre as alturas
+dos nós à esquerda e à direita.</li>
+</ul>
+
+<p>
+Retornar <i>-1</i> para um nó nulo não é o procedimento padrão para árvores
+AVL, mas este valor acaba não afetando no cálculo recursivo da altura
+de um certo nó, uma vez que utilizamos <code>std::max</code> para obtermos sempre o
+maior valor.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">int</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_height</span>(<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">node</span>) <span style="color: #9d81ba;">const</span>
+{
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>node) <span style="color: #9d81ba;">return</span> -<span style="color: #f5c791;">1</span>;
+
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>node-&gt;left &amp;&amp; <span style="color: #e55c7a;">!</span>node-&gt;right)
+        <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">0</span>;
+
+    <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">1</span> + <span style="color: #0D9C94;">std</span>::max(_height(node-&gt;left),
+                        _height(node-&gt;right));
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb69c0a4" class="outline-3">
+<h3 id="orgb69c0a4">Balanceamento</h3>
+<div class="outline-text-3" id="text-orgb69c0a4">
+<p>
+Os métodos a seguir descrevem o balanceamento baseado no algoritmo
+AVL.
+</p>
+
+<p>
+A maioria dos métodos envolve a modificação direta de um ponteiro de
+nó, portanto recebemos este ponteiro <i>por referência</i>. Isto evita um
+eventual uso de um <i>ponteiro para ponteiro</i> (<code>node_t**</code>).
+</p>
+</div>
+
+<div id="outline-container-org8cd3f4b" class="outline-4">
+<h4 id="org8cd3f4b">Cálculo de índice de balanceamento</h4>
+<div class="outline-text-4" id="text-org8cd3f4b">
+<p>
+Este método calcula o índice de balanceamento para um nó
+arbitrário. Este cálculo é feito através da diferença entre <i>esquerda</i> e
+<i>direita</i>, onde <i>esquerda</i> é a "altura" da sub-árvore esquerda do nó, e
+<i>direita</i> é a "altura" da sub-árvore direita do nó.
+</p>
+
+<p>
+Uma sub-árvore não-nula já contabiliza a soma de uma unidade no valor
+da altura daquela sub-árvore. Todavia, caso aquela sub-árvore seja
+nula, sua "altura" será zero.
+</p>
+
+<p>
+Este valor de "altura" é, portanto, não exatamente a altura da
+sub-árvore em si, mas sim a quantidade máxima de passos para que o nó
+atual chegue ao nó-folha mais baixo.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">int</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_balance_index</span>(<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">node</span>) <span style="color: #9d81ba;">const</span>
+{
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>node) <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">0</span>;
+
+    <span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">left_idx</span> =
+        (<span style="color: #e55c7a;">!</span>node-&gt;left) ? <span style="color: #f5c791;">0</span> : (<span style="color: #f5c791;">1</span> + _height(node-&gt;left));
+    <span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">right_idx</span> =
+        (<span style="color: #e55c7a;">!</span>node-&gt;right) ? <span style="color: #f5c791;">0</span> : (<span style="color: #f5c791;">1</span> + _height(node-&gt;right));
+
+    <span style="color: #9d81ba;">return</span> left_idx - right_idx;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org89a2067" class="outline-4">
+<h4 id="org89a2067">Rotação à esquerda</h4>
+<div class="outline-text-4" id="text-org89a2067">
+<p>
+Uma rotação à esquerda é realizada em um certo nó <code>a</code>, trocando-o pela
+sua sub-árvore da direita <code>b</code>. O nó <code>a</code> em questão, por conseguinte,
+torna-se o filho esquerdo do nó <code>b</code> que tomou seu lugar.
+</p>
+
+<p>
+A sub-árvore esquerda do nó <code>b</code> torna-se a sub-árvore direita do nó <code>a</code>.
+</p>
+
+
+<div id="org32f6f47" class="figure">
+<p><object type="image/svg+xml" data="img/lrot.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">void</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_lrot</span>(<span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span>*&amp; <span style="color: #7CF083;">root</span>)
+{
+    <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">b</span> = root-&gt;right-&gt;left;
+    root-&gt;right-&gt;left = root;
+    root = root-&gt;right;
+    root-&gt;left-&gt;right = b;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org98d160e" class="outline-4">
+<h4 id="org98d160e">Rotação à direita</h4>
+<div class="outline-text-4" id="text-org98d160e">
+<p>
+Uma rotação à direita é realizada em um certo nó <code>a</code>, trocando-o pela
+sua sub-árvore da esquerda <code>b</code>. O nó <code>a</code> em questão, por conseguinte,
+torna-se o filho direito do nó <code>b</code> que tomou seu lugar.
+</p>
+
+<p>
+A sub-árvore direita do nó <code>b</code> torna-se a sub-árvore esquerda do nó <code>a</code>.
+</p>
+
+
+<div id="org23e44bc" class="figure">
+<p><object type="image/svg+xml" data="img/rrot.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">void</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_rrot</span>(<span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span>*&amp; <span style="color: #7CF083;">root</span>)
+{
+    <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">b</span> = root-&gt;left-&gt;right;
+    root-&gt;left-&gt;right = root;
+    root = root-&gt;left;
+    root-&gt;right-&gt;left = b;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6843e1b" class="outline-4">
+<h4 id="org6843e1b">Rotação dupla à direita</h4>
+<div class="outline-text-4" id="text-org6843e1b">
+<p>
+Uma rotação dupla à direita constitui-se de rotacionar um certo nó <code>a</code>
+em duas etapas. Na primeira etapa, realizamos uma rotação <i>à esquerda</i>
+no <i>filho esquerdo</i> de <code>a</code>; em seguida, rotacionamos <code>a</code> à direita.
+</p>
+
+
+<div id="org1d2037f" class="figure">
+<p><object type="image/svg+xml" data="img/rrot_dbl.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">void</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_rrot_dbl</span>(<span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span>*&amp; <span style="color: #7CF083;">root</span>)
+{
+    _lrot(root-&gt;left);
+    _rrot(root);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9166f06" class="outline-4">
+<h4 id="org9166f06">Rotação dupla à esquerda</h4>
+<div class="outline-text-4" id="text-org9166f06">
+<p>
+Uma rotação dupla à esquerda constitui-se de rotacionar um certo nó <code>a</code>
+em duas etapas. Na primeira etapa, realizamos uma rotação no filho
+<i>direito</i> de <code>a</code>; em seguida, rotacionamos <code>a</code> à direita.
+</p>
+
+
+<div id="orgbf3f5cc" class="figure">
+<p><object type="image/svg+xml" data="img/lrot_dbl.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">void</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_lrot_dbl</span>(<span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span>*&amp; <span style="color: #7CF083;">root</span>)
+{
+    _rrot(root-&gt;right);
+    _lrot(root);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2fa88a4" class="outline-4">
+<h4 id="org2fa88a4">Função de balanceamento</h4>
+<div class="outline-text-4" id="text-org2fa88a4">
+<p>
+A função de balanceamento a seguir realiza, efetivamente, o
+balanceamento de uma sub-árvore cuja raiz seja passada por parâmetro.
+</p>
+
+<p>
+O balanceamento ocorrerá se o valor absoluto do coeficiente de
+balanceamento da árvore for igual a <code>2</code>. Caso um valor diferente deste
+for encontrado, o balanceamento ocorrerá.
+</p>
+
+<p>
+Esta é primariamente uma função de despacho de rotações em um nó de
+coeficiente com valor absoluto igual a <code>2</code>.
+</p>
+
+<p>
+Quando o nó problemático tem um coeficiente igual a <code>+2</code>, então:
+</p>
+<ul class="org-ul">
+<li>Caso o <i>filho esquerdo</i> do nó possua coeficiente <code>-1</code>, realizaremos uma
+<i>rotação dupla à direita</i>.</li>
+<li>Caso contrário, realizaremos uma <i>rotação simples à direita</i>.</li>
+</ul>
+
+<p>
+Quando o nó problemático tem um coeficiente igual a <code>-2</code>, então:
+</p>
+<ul class="org-ul">
+<li>Caso o <i>filho direito</i> do nó possua coeficiente <code>+1</code>, realizaremos uma
+<i>rotação dupla à esquerda</i>.</li>
+<li>Caso contrário, realizaremos uma <i>rotação simples à esquerda</i>.</li>
+</ul>
+
+<p>
+Por convenção, ignoramos nós nulos. Isso será útil durante a remoção.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">void</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_balance</span>(<span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span>*&amp; <span style="color: #7CF083;">node</span>)
+{
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>node) <span style="color: #9d81ba;">return</span>;
+    <span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">coef</span> = _balance_index(node);
+    <span style="color: #9d81ba;">if</span>(<span style="color: #0D9C94;">std</span>::abs(coef) == <span style="color: #f5c791;">2</span>) {
+        <span style="color: #9d81ba;">if</span>(coef == <span style="color: #f5c791;">2</span>) {
+            <span style="color: #9d81ba;">if</span>(_balance_index(node-&gt;left) == -<span style="color: #f5c791;">1</span>)
+                _rrot_dbl(node);
+            <span style="color: #9d81ba;">else</span> _rrot(node);
+        } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(coef == -<span style="color: #f5c791;">2</span>) {
+            <span style="color: #9d81ba;">if</span>(_balance_index(node-&gt;right) == <span style="color: #f5c791;">1</span>)
+                _lrot_dbl(node);
+            <span style="color: #9d81ba;">else</span> _lrot(node);
+        }
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org109bab1" class="outline-3">
+<h3 id="org109bab1">Inserção</h3>
+<div class="outline-text-3" id="text-org109bab1">
+<p>
+O método de <i>inserção</i> retorna <i>verdadeiro</i> se a chave ainda não existir
+na árvore, e for portanto inserida com sucesso; caso contrário,
+retorna um valor <i>falso</i>.
+</p>
+
+<p>
+Caso o nó seja nulo, consideramos que este seja o caso válido para
+inserção de tal no. Criamos uma nova estrutura dinâmica de um novo nó,
+atribuimos a ele a informação, e então determinamos a nulidade das
+sub-árvores do mesmo.
+</p>
+
+<p>
+Caso o nó não seja nulo, verificamos se a informação deverá ser
+inserida na sub-árvore esquerda ou direita, dependendo da chave
+utilizada. Se a chave for igual à chave do nó atual, o nó não será
+inserido, e a função retornará um valor de falsidade.
+</p>
+
+<p>
+Após a inserção do nó, caso o nó seja inserido, a função
+recursivamente realiza balanceamento na árvore. Este balanceamento
+retroativo garante que os coeficientes de balanceamento obedeçam à
+regra <code>0 &lt;= |coef| &lt;= 2</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">bool</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_insert</span>(<span style="color: #62D2DB;">T</span> <span style="color: #7CF083;">info</span>, <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span>*&amp; <span style="color: #7CF083;">node</span>)
+{
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>node) {
+        node = <span style="color: #9d81ba;">new</span> <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span>;
+        node-&gt;info = info;
+        node-&gt;left = <span style="color: #0D9C94;">nullptr</span>;
+        node-&gt;right = <span style="color: #0D9C94;">nullptr</span>;
+        <span style="color: #9d81ba;">return</span> <span style="color: #0D9C94;">true</span>;
+    }
+
+    <span style="color: #62D2DB;">bool</span> <span style="color: #7CF083;">ret_value</span>;
+
+    <span style="color: #9d81ba;">if</span>(info &lt; node-&gt;info)
+        ret_value = _insert(info, node-&gt;left);
+    <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(info &gt; node-&gt;info)
+        ret_value = _insert(info, node-&gt;right);
+    <span style="color: #9d81ba;">else</span> ret_value = <span style="color: #0D9C94;">false</span>; <span style="color: #454459;">// </span><span style="color: #454459;">info == node-&gt;info</span>
+
+    <span style="color: #9d81ba;">if</span>(ret_value)
+        _balance(node);
+
+    <span style="color: #9d81ba;">return</span> ret_value;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd4e3046" class="outline-3">
+<h3 id="orgd4e3046">Impressão</h3>
+<div class="outline-text-3" id="text-orgd4e3046">
+<p>
+Os métodos a seguir demonstram a implementação de várias formas de
+impressão dos elementos da árvore na tela, de acordo com o que foi
+previamente descrito na Seção <a href="#org4143111">No description for this link</a>.
+</p>
+</div>
+
+<div id="outline-container-org229a1e0" class="outline-4">
+<h4 id="org229a1e0">Impressão em ordem</h4>
+<div class="outline-text-4" id="text-org229a1e0">
+<p>
+Imprimir um nó <i>em ordem</i> envolve imprimir recursivamente a sub-árvore
+de seu filho esquerdo, imprimir seu próprio valor, e imprimir
+recursivamente a sub-árvore de seu filho direito.
+</p>
+
+<p>
+Como árvores binárias realizam inserções e remoções mantendo a
+hierarquia dos elementos, a impressão <i>em ordem</i>, para este exemplo,
+imprime os elementos da árvore em ordem crescente.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">void</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_print_inorder</span>(<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">node</span>) <span style="color: #9d81ba;">const</span>
+{
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>node) <span style="color: #9d81ba;">return</span>;
+    _print_inorder(node-&gt;left);
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; node-&gt;info &lt;&lt; <span style="color: #f5c791;">' '</span>;
+    _print_inorder(node-&gt;right);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3b744ac" class="outline-4">
+<h4 id="org3b744ac">Impressão em pré-ordem</h4>
+<div class="outline-text-4" id="text-org3b744ac">
+<p>
+Imprimir um nó <i>em pré-ordem</i> envolve imprimir primeiramente o valor do
+nó, e então imprimir recursivamente a sub-árvore dos filhos esquerdo e
+direito deste nó, respectivamente.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">void</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_print_preorder</span>(<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">node</span>) <span style="color: #9d81ba;">const</span>
+{
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>node) <span style="color: #9d81ba;">return</span>;
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; node-&gt;info &lt;&lt; <span style="color: #f5c791;">' '</span>;
+    _print_inorder(node-&gt;left);
+    _print_inorder(node-&gt;right);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc374acc" class="outline-4">
+<h4 id="orgc374acc">Impressão em pós-ordem</h4>
+<div class="outline-text-4" id="text-orgc374acc">
+<p>
+Imprimir um nó em <i>pós-ordem</i> envolve, primeiramente, imprimir em
+recursão a sub-árvore dos filhos direito e esquerdo, e então imprimir
+o valor do nó atual.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">void</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_print_postorder</span>(<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">node</span>) <span style="color: #9d81ba;">const</span>
+{
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>node) <span style="color: #9d81ba;">return</span>;
+    _print_inorder(node-&gt;left);
+    _print_inorder(node-&gt;right);
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; node-&gt;info &lt;&lt; <span style="color: #f5c791;">' '</span>;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0d10f41" class="outline-4">
+<h4 id="org0d10f41">Impressão por nível</h4>
+<div class="outline-text-4" id="text-org0d10f41">
+<p>
+Impressão <i>por nível</i> envolve imprimir, em sequência, todos os nós
+existentes na árvore, em um formato linear. Note que esta impressão em
+nível não deixa explícito o relacionamento entre os nós impressos.
+</p>
+
+<p>
+Para realizar esta impressão, utilizamos uma <i>fila</i> (<code>std::queue</code>) de
+ponteiros para nós. À medida que nós são retirados do início da fila,
+suas informações são impressas. Em seguida, os ponteiros para os
+filhos esquerdo e direito deste nó, respectivamente, são enfileirados,
+a não ser que sejam <i>nulos</i>. A impressão acaba quando não há mais nós na
+fila.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">void</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_print_bylevel</span>(<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">node</span>) <span style="color: #9d81ba;">const</span>
+{
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>node) <span style="color: #9d81ba;">return</span>;
+    <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">queue</span>&lt;<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span>*&gt; <span style="color: #7CF083;">nodes</span>;
+    nodes.push(node);
+
+    <span style="color: #9d81ba;">while</span>(<span style="color: #e55c7a;">!</span>nodes.empty()) {
+        <span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">front</span> = nodes.front();
+        nodes.pop();
+        <span style="color: #9d81ba;">if</span>(front) {
+            nodes.push(front-&gt;left);
+            nodes.push(front-&gt;right);
+            <span style="color: #0D9C94;">std</span>::cout &lt;&lt; front-&gt;info &lt;&lt; <span style="color: #f5c791;">' '</span>;
+        }
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org606fff7" class="outline-4">
+<h4 id="org606fff7">Impressão triangular</h4>
+<div class="outline-text-4" id="text-org606fff7">
+<p>
+A impressão <i>triangular</i> é muito similar à impressão <i>por nível</i>, todavia
+utilizamos <i>duas filas</i> (<code>std::queue</code>) para realizar a impressão.
+</p>
+
+<p>
+A ideia é que, ao invés de enfileirarmos os ponteiros dos nós-filhos
+em uma única fila, enfileiramo-nos em uma fila de "próximo
+nível". Quando a fila atual esvazia, quebramos uma linha na impressão,
+e trazemos todos os elementos da fila de "próximo nível" para a fila
+padrão.
+</p>
+
+<p>
+Também realizamos a impressão conveniente de ponteiros nulos. Com esta
+prática, passa a ser extremamente simples o ato de tomar uma saída
+triangular e desenhar uma árvore binária apropriada em papel.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">void</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_print_triangle</span>(<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">node</span>) <span style="color: #9d81ba;">const</span>
+{
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>node) <span style="color: #9d81ba;">return</span>;
+    <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">queue</span>&lt;<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span>*&gt; <span style="color: #7CF083;">curr</span>;
+    <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">queue</span>&lt;<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span>*&gt; <span style="color: #7CF083;">next</span>;
+
+    curr.push(node);
+
+    <span style="color: #9d81ba;">while</span>(<span style="color: #e55c7a;">!</span>curr.empty()) {
+        <span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">front</span> = curr.front();
+        curr.pop();
+        <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>front)
+            <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">'*'</span>;
+        <span style="color: #9d81ba;">else</span> {
+            next.push(front-&gt;left);
+            next.push(front-&gt;right);
+            <span style="color: #0D9C94;">std</span>::cout &lt;&lt; front-&gt;info;
+        }
+
+        <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">' '</span>;
+        <span style="color: #9d81ba;">if</span>(curr.empty() &amp;&amp; <span style="color: #e55c7a;">!</span>next.empty()) {
+            <span style="color: #0D9C94;">std</span>::swap(curr, next);
+            <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+        }
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6f9edd3" class="outline-4">
+<h4 id="org6f9edd3">Exemplo de uso da impressão triangular</h4>
+<div class="outline-text-4" id="text-org6f9edd3">
+<p>
+Tomemos a impressão triangular a seguir:
+</p>
+
+<pre class="example" id="orge1144c9">
+28 
+22 35 
+20 25 32 39 
+13 * * * * 33 * 51 
+* * * * * * 
+</pre>
+
+<p>
+Sabendo que estamos tratando de uma árvore binária, podemos deduzir os
+relacionamentos:
+</p>
+
+<ul class="org-ul">
+<li><code>28</code> é pai de <code>22</code> e <code>35</code>;</li>
+<li><code>22</code> é pai de <code>20</code> e <code>25</code>;</li>
+<li><code>35</code> é pai de <code>32</code> e <code>39</code>;</li>
+<li><code>20</code> é pai de <code>13</code> e <code>*</code>;</li>
+<li><code>25</code> é pai de <code>*</code> e <code>*</code> (portanto, um nó folha);</li>
+<li><code>32</code> é pai de <code>*</code> e <code>33</code>;</li>
+<li><code>39</code> é pai de <code>*</code> e <code>51</code>;</li>
+<li><code>13</code> é pai de <code>*</code> e <code>*</code> (portanto, um nó folha);</li>
+<li><code>33</code> é pai de <code>*</code> e <code>*</code> (portanto, um nó folha);</li>
+<li><code>51</code> é pai de <code>*</code> e <code>*</code> (portanto, um nó folha).</li>
+</ul>
+
+<p>
+Assim, teremos a árvore AVL conforme desenhado a seguir.
+</p>
+
+
+<div id="orga0b6208" class="figure">
+<p><object type="image/svg+xml" data="img/triangle_print.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org941cfdb" class="outline-3">
+<h3 id="org941cfdb">Limpeza de sub-árvore</h3>
+<div class="outline-text-3" id="text-org941cfdb">
+<p>
+O método a seguir <i>limpa</i> a sub-árvore do nó informado, incluindo o nó
+atual e removendo todos os nós abaixo do mesmo.
+</p>
+
+<p>
+Este não é um método de remoção propriamente dito, uma vez que o
+intuito principal é realizar liberação de memória recursivamente. Este
+método é melhor utilizado na <i>raiz</i> da árvore; todavia, se chamado
+diretamente, é necessário também fazer com que a raiz em questão
+torne-se um ponteiro <i>nulo</i>, caso mais operações sejam esperadas.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">void</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_clear</span>(<span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span>* <span style="color: #7CF083;">node</span>)
+{
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>node) <span style="color: #9d81ba;">return</span>;
+    _clear(node-&gt;left);
+    _clear(node-&gt;right);
+    <span style="color: #9d81ba;">delete</span> node;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org22fdac2" class="outline-3">
+<h3 id="org22fdac2">Pesquisa</h3>
+<div class="outline-text-3" id="text-org22fdac2">
+<p>
+O método a seguir realiza uma pesquisa na árvore, procurando por uma
+informação passada por referência.
+</p>
+
+<p>
+O método realiza a pesquisa recursivamente, direcionando-a de acordo
+com o valor da informação dada para determinar o ramo a ser
+seguido. A resposta será um valor booleano.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">bool</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_search</span>(<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span>* <span style="color: #7CF083;">node</span>, <span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">T</span>&amp; <span style="color: #7CF083;">info</span>) <span style="color: #9d81ba;">const</span>
+{
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>node) <span style="color: #9d81ba;">return</span> <span style="color: #0D9C94;">false</span>;
+
+    <span style="color: #9d81ba;">if</span>(node-&gt;info == info) <span style="color: #9d81ba;">return</span> <span style="color: #0D9C94;">true</span>;
+
+    <span style="color: #9d81ba;">if</span>(info &lt; node-&gt;info) {
+        <span style="color: #9d81ba;">return</span> _search(node-&gt;left, info);
+    }
+
+    <span style="color: #9d81ba;">return</span> _search(node-&gt;right, info);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4df2700" class="outline-3">
+<h3 id="org4df2700">Remoção</h3>
+<div class="outline-text-3" id="text-org4df2700">
+<p>
+A implementação da remoção de um nó envolve três casos:
+</p>
+
+<ul class="org-ul">
+<li>Nó sem filhos;</li>
+<li>Nó com apenas um filho;</li>
+<li>Nó com dois filhos.</li>
+</ul>
+
+<p>
+Um nó sem filhos constitui um caso trivial: basta removê-lo.
+</p>
+
+<p>
+Para um nó com apenas um filho, basta eliminar o nó em questão, e
+fazer com que seu único filho tome o seu lugar.
+</p>
+
+<p>
+Quando o nó possui ambos os filhos, precisamos tomar um dos elementos
+mais profundos dos filhos como substituto para tal nó. Isto pode ser
+feito buscando:
+</p>
+
+<ul class="org-ul">
+<li>O nó-folha <i>mais à direita</i> na sub-árvore <i>esquerda</i>;</li>
+<li>O nó-folha <i>mais à esquerda</i> na sub-árvore <i>direita</i>.</li>
+</ul>
+
+<p>
+Como convenção, obteremos sempre o nó <i>mais à direita</i> na sub-árvore
+<i>esquerda</i> do nó <i>temporariamente  desafixado</i>, e então substituiremos tal
+nó pelo nó sendo removido; isso  fará com que esse nó desafixado ganhe
+também os filhos do nó removido.
+</p>
+
+<p>
+Finalmente, após a remoção, realizamos um balanceamento no novo nó que
+tomou a posição do atual, a não ser que este nó seja nulo.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">bool</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_remove</span>(<span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span>*&amp; <span style="color: #7CF083;">node</span>, <span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">T</span>&amp; <span style="color: #7CF083;">info</span>)
+{
+    <span style="color: #454459;">// </span><span style="color: #454459;">Not found</span>
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>node) <span style="color: #9d81ba;">return</span> <span style="color: #0D9C94;">false</span>;
+
+    <span style="color: #9d81ba;">if</span>(node-&gt;info == info) {
+        <span style="color: #62D2DB;">bool</span> <span style="color: #7CF083;">no_left</span>  = <span style="color: #e55c7a;">!</span>node-&gt;left;
+        <span style="color: #62D2DB;">bool</span> <span style="color: #7CF083;">no_right</span> = <span style="color: #e55c7a;">!</span>node-&gt;right;
+        <span style="color: #9d81ba;">if</span>(no_left &amp;&amp; no_right) {
+            <span style="color: #454459;">// </span><span style="color: #454459;">No children; delete</span>
+            <span style="color: #9d81ba;">delete</span> node;
+            node = <span style="color: #0D9C94;">nullptr</span>;
+        } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>no_left &amp;&amp; <span style="color: #e55c7a;">!</span>no_right) {
+            <span style="color: #454459;">// </span><span style="color: #454459;">Both children</span>
+            <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">rightmost_left</span>;
+            rightmost_left = _detach_rightmost(node-&gt;left);
+            rightmost_left-&gt;left  = node-&gt;left;
+            rightmost_left-&gt;right = node-&gt;right;
+            <span style="color: #9d81ba;">delete</span> node;
+            node = rightmost_left;
+        } <span style="color: #9d81ba;">else</span> {
+            <span style="color: #454459;">// </span><span style="color: #454459;">Raise single child</span>
+            <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">tmp</span>;
+            tmp = no_left ? node-&gt;right : node-&gt;left;
+            <span style="color: #9d81ba;">delete</span> node;
+            node = tmp;
+        }
+        <span style="color: #454459;">// </span><span style="color: #454459;">Balance new node</span>
+        _balance(node);
+        <span style="color: #9d81ba;">return</span> <span style="color: #0D9C94;">true</span>;
+    }
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Recursively remove</span>
+    <span style="color: #9d81ba;">return</span> _remove((info &lt; node-&gt;info)
+                   ? node-&gt;left
+                   : node-&gt;right,
+                   info);
+}
+</pre>
+</div>
+
+<p>
+No  caso  do  processo  de  desafixar  o nó  mais  à  direita  de  uma
+sub-árvore, duas situações podem ocorrer:
+</p>
+
+<ol class="org-ol">
+<li>O nó será uma folha;</li>
+<li>O nó possuirá um filho à esquerda.</li>
+</ol>
+
+<p>
+Para mitigar tal  problema, poderemos dizer que o filho  à esquerda de
+tal nó  a ser desafixado  tomará seu lugar,  sendo este filho  nulo ou
+não. Isso faz com que não  percamos uma sub-árvore nesse processo, mas
+implica em uma necessidade de balanceamento.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #9d81ba;">typename</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #62D2DB;">node_t</span>*
+<span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">_detach_rightmost</span>(<span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span>*&amp; <span style="color: #7CF083;">node</span>)
+{
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>node-&gt;right) {
+        <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">tmp</span> = node;
+        node = node-&gt;left;
+        <span style="color: #9d81ba;">return</span> tmp;
+    }
+
+    <span style="color: #0D9C94;">AVLTree</span>::<span style="color: #62D2DB;">node_t</span> *<span style="color: #7CF083;">rightmost</span> = _detach_rightmost(node-&gt;right);
+    _balance(node);
+    <span style="color: #9d81ba;">return</span> rightmost;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5307cad" class="outline-2">
+<h2 id="org5307cad">Elementos públicos</h2>
+<div class="outline-text-2" id="text-org5307cad">
+</div>
+<div id="outline-container-org3271fa6" class="outline-3">
+<h3 id="org3271fa6">Construtores</h3>
+<div class="outline-text-3" id="text-org3271fa6">
+<p>
+A classe <code>AVLTree</code> possui dois construtores, onde ambos definem o
+ponteiro para a raiz da árvore como um valor <i>nulo</i>.
+</p>
+
+<p>
+O primeiro construtor realiza apenas esta atribuição padrão.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">AVLTree</span>() : _root(<span style="color: #0D9C94;">nullptr</span>) {}
+</pre>
+</div>
+
+<p>
+O segundo construtor espera por um <i>vetor</i> de valores do tipo <code>T</code>
+informado via <i>template</i>. Após a inicialização do ponteiro para a raiz
+da árvore, o construtor insere os valores informados pelo <i>vetor</i> na
+mesma, um a um.
+</p>
+
+<p>
+É interessante notar que, pos tratar-se de um <code>std::vector</code>, o parâmetro
+dos valores também pode ser fornecido como uma literal de um <i>vetor</i>
+comum.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">AVLTree</span>(<span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">vector</span>&lt;<span style="color: #62D2DB;">T</span>&gt; <span style="color: #7CF083;">vals</span>) : _root(<span style="color: #0D9C94;">nullptr</span>)
+{
+    <span style="color: #9d81ba;">for</span>(<span style="color: #62D2DB;">T</span> <span style="color: #7CF083;">val</span> : vals)
+        _insert(val, _root);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1606eff" class="outline-3">
+<h3 id="org1606eff">Destrutor</h3>
+<div class="outline-text-3" id="text-org1606eff">
+<p>
+O destrutor da classe <code>AVLTree</code> invoca o método interno de limpeza para
+a sub-árvore. Como o destrutor é invocado como finalizador da classe,
+não é necessário atribuir nulidade à raiz da mesma.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::~<span style="color: #0bc9cf;">AVLTree</span>()
+{
+    _clear(_root);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org44e597e" class="outline-3">
+<h3 id="org44e597e">Métodos externos</h3>
+<div class="outline-text-3" id="text-org44e597e">
+<p>
+Os métodos a seguir constituem <i>invólucros</i> para métodos internos da
+árvore.
+</p>
+</div>
+
+<div id="outline-container-orgc8c8869" class="outline-4">
+<h4 id="orgc8c8869">Inserção</h4>
+<div class="outline-text-4" id="text-orgc8c8869">
+<p>
+Insere uma certa informação na árvore. Retorna um valor booleano
+indicando o <i>status</i> da inserção de tal informação.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">bool</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">insert</span>(<span style="color: #62D2DB;">T</span> <span style="color: #7CF083;">info</span>)
+{
+    <span style="color: #9d81ba;">return</span> _insert(info, _root);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6ebca2c" class="outline-4">
+<h4 id="org6ebca2c">Impressão</h4>
+<div class="outline-text-4" id="text-org6ebca2c">
+<p>
+Imprime a árvore por inteiro, de acordo com o estilo de impressão
+fornecido, segundo a enumeração demonstrada na Seção
+<a href="#org4143111">No description for this link</a>.
+</p>
+
+<p>
+Caso o programador opte por não informar o estilo de impressão, uma
+impressão <i>em ordem</i> será feita por padrão.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">void</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">print</span>(<span style="color: #62D2DB;">TreePrintStyle</span> <span style="color: #7CF083;">style</span>) <span style="color: #9d81ba;">const</span>
+{
+    <span style="color: #9d81ba;">switch</span>(style) {
+    <span style="color: #9d81ba;">case</span> TREEPRINT_INORDER:
+        _print_inorder(_root);
+        <span style="color: #9d81ba;">break</span>;
+    <span style="color: #9d81ba;">case</span> TREEPRINT_PREORDER:
+        _print_preorder(_root);
+        <span style="color: #9d81ba;">break</span>;
+    <span style="color: #9d81ba;">case</span> TREEPRINT_POSTORDER:
+        _print_postorder(_root);
+        <span style="color: #9d81ba;">break</span>;
+    <span style="color: #9d81ba;">case</span> TREEPRINT_LEVEL:
+        _print_bylevel(_root);
+        <span style="color: #9d81ba;">break</span>;
+    <span style="color: #9d81ba;">case</span> TREEPRINT_TRIANGLE:
+        _print_triangle(_root);
+        <span style="color: #9d81ba;">break</span>;
+    <span style="color: #9d81ba;">default</span>: <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"Unimplemented"</span>; <span style="color: #9d81ba;">break</span>;
+    }
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2b8ae67" class="outline-4">
+<h4 id="org2b8ae67">Limpeza</h4>
+<div class="outline-text-4" id="text-org2b8ae67">
+<p>
+Limpa todos os elementos da árvore.
+</p>
+
+<p>
+Este método atribui apropriadamente o valor de nulidade à raiz da
+árvore, ao contrário do destrutor, pois pode ser invocado antes da
+inserção de mais elementos.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">void</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">clear</span>(<span style="color: #62D2DB;">void</span>)
+{
+    _clear(_root);
+    _root = <span style="color: #0D9C94;">nullptr</span>;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2083155" class="outline-4">
+<h4 id="org2083155">Pesquisa</h4>
+<div class="outline-text-4" id="text-org2083155">
+<p>
+Pesquisa por um elemento na árvore, que será passado <i>por valor</i> para
+este método.
+</p>
+
+<p>
+Retorna um valor booleano representando a existência do elemento na
+árvore.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">bool</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">search</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">T</span> <span style="color: #7CF083;">info</span>) <span style="color: #9d81ba;">const</span>
+{
+    <span style="color: #9d81ba;">return</span> _search(_root, info);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5565dbf" class="outline-4">
+<h4 id="org5565dbf">Remoção</h4>
+<div class="outline-text-4" id="text-org5565dbf">
+<p>
+Remove um elemento na árvore, que será passado <i>por valor</i> para este
+método.
+</p>
+
+<p>
+Retorna um valor booleano representando o <i>status</i> de remoção do
+elemento na árvore.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #62D2DB;">bool</span> <span style="color: #0D9C94;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;::<span style="color: #0bc9cf;">remove</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">T</span> <span style="color: #7CF083;">info</span>)
+{
+    <span style="color: #9d81ba;">return</span> _remove(_root, info);
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6937bd2" class="outline-2">
+<h2 id="org6937bd2">Testes</h2>
+<div class="outline-text-2" id="text-org6937bd2">
+<p>
+As funções a seguir determinam testes para o instanciamento e a
+manipulação de elementos na árvore AVL.
+</p>
+</div>
+
+<div id="outline-container-org32722da" class="outline-3">
+<h3 id="org32722da">Impressão de elementos na tela</h3>
+<div class="outline-text-3" id="text-org32722da">
+<p>
+Esta função generaliza a impressão dos elementos em uma árvore passada
+<i>por referência</i> como parâmetro. Normalmente, ela é invocada ao final de
+cada teste.
+</p>
+
+<p>
+Esta é uma função <i>inline</i>, portanto, no momento de compilação, seu uso
+envolve uma "substituição direta" de seu conteúdo no corpo da função
+que a invoca.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">template</span>&lt;<span style="color: #9d81ba;">typename</span> <span style="color: #62D2DB;">T</span>&gt;
+<span style="color: #9d81ba;">inline</span> <span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">test_debrief</span>(<span style="color: #62D2DB;">AVLTree</span>&lt;<span style="color: #62D2DB;">T</span>&gt;&amp; <span style="color: #7CF083;">tree</span>)
+{
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"Final tree:"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+    tree.print(TREEPRINT_TRIANGLE);
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"In order:   "</span>;
+    tree.print(TREEPRINT_INORDER);
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"Preorder:   "</span>;
+    tree.print(TREEPRINT_PREORDER);
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"Post-order: "</span>;
+    tree.print(TREEPRINT_POSTORDER);
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org06b7ab3" class="outline-3">
+<h3 id="org06b7ab3">Teste de inserção</h3>
+<div class="outline-text-3" id="text-org06b7ab3">
+<p>
+Este teste insere certos elementos, um a um, em uma <code>AVLTree</code> de números
+inteiros, mostrando impressões <i>em ordem</i> e <i>por nível</i> após cada
+inserção.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">test_raw</span>(<span style="color: #62D2DB;">void</span>)
+{
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"## Insercao de elementos, um a um"</span>
+              &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+    <span style="color: #62D2DB;">AVLTree</span>&lt;<span style="color: #62D2DB;">int</span>&gt; <span style="color: #7CF083;">tree</span>;
+    <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">num</span> : {<span style="color: #f5c791;">0</span>, <span style="color: #f5c791;">3</span>, <span style="color: #f5c791;">6</span>, <span style="color: #f5c791;">2</span>, <span style="color: #f5c791;">1</span>, <span style="color: #f5c791;">4</span>, <span style="color: #f5c791;">90</span>, <span style="color: #f5c791;">36</span>, <span style="color: #f5c791;">49</span>}) {
+        tree.insert(num);
+        <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"In order: "</span>;
+        tree.print();
+        <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"By level: "</span>;
+        tree.print(TREEPRINT_LEVEL);
+        <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+    }
+
+    test_debrief&lt;<span style="color: #62D2DB;">int</span>&gt;(tree);
+
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"Clearing tree"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+    tree.clear();
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0300305" class="outline-3">
+<h3 id="org0300305">Teste de construtor</h3>
+<div class="outline-text-3" id="text-org0300305">
+<p>
+Esta função testa o uso do construtor alternativo da classe <code>AVLTree</code>
+para números inteiros, através da passagem de uma literal de vetor
+numérico.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">test_ctor</span>(<span style="color: #62D2DB;">void</span>)
+{
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"## Insercao de elementos via ctor"</span>
+              &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+    <span style="color: #62D2DB;">AVLTree</span>&lt;<span style="color: #62D2DB;">int</span>&gt; <span style="color: #7CF083;">tree</span>({<span style="color: #f5c791;">35</span>, <span style="color: #f5c791;">39</span>, <span style="color: #f5c791;">51</span>, <span style="color: #f5c791;">20</span>, <span style="color: #f5c791;">13</span>, <span style="color: #f5c791;">28</span>, <span style="color: #f5c791;">22</span>, <span style="color: #f5c791;">32</span>, <span style="color: #f5c791;">25</span>, <span style="color: #f5c791;">33</span>});
+
+    test_debrief&lt;<span style="color: #62D2DB;">int</span>&gt;(tree);
+
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"Limpando arvore"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+    tree.clear();
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4204221" class="outline-3">
+<h3 id="org4204221">Teste de caracteres</h3>
+<div class="outline-text-3" id="text-org4204221">
+<p>
+Esta função usa o construtor alternativo da classe <code>AVLTree</code> para
+construir uma árvore AVL de <i>caracteres</i>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">test_char</span>(<span style="color: #62D2DB;">void</span>)
+{
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"## Arvore de caracteres"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+    <span style="color: #62D2DB;">AVLTree</span>&lt;<span style="color: #62D2DB;">char</span>&gt; <span style="color: #7CF083;">tree</span>({<span style="color: #f5c791;">'M'</span>, <span style="color: #f5c791;">'G'</span>, <span style="color: #f5c791;">'B'</span>, <span style="color: #f5c791;">'H'</span>, <span style="color: #f5c791;">'S'</span>, <span style="color: #f5c791;">'P'</span>, <span style="color: #f5c791;">'F'</span>, <span style="color: #f5c791;">'C'</span>});
+
+    test_debrief&lt;<span style="color: #62D2DB;">char</span>&gt;(tree);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org93fbaee" class="outline-3">
+<h3 id="org93fbaee">Teste de pesquisa</h3>
+<div class="outline-text-3" id="text-org93fbaee">
+<p>
+Esta função testa a pesquisa de alguns elementos em uma <code>AVLTree</code> de
+números inteiros.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">test_search</span>(<span style="color: #62D2DB;">void</span>)
+{
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"## Teste de pesquisa"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+    <span style="color: #62D2DB;">AVLTree</span>&lt;<span style="color: #62D2DB;">int</span>&gt; <span style="color: #7CF083;">tree</span>({<span style="color: #f5c791;">5</span>, <span style="color: #f5c791;">9</span>, <span style="color: #f5c791;">30</span>, <span style="color: #f5c791;">2</span>, <span style="color: #f5c791;">20</span>, <span style="color: #f5c791;">32</span>});
+
+    test_debrief&lt;<span style="color: #62D2DB;">int</span>&gt;(tree);
+
+    <span style="color: #9d81ba;">for</span>(<span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">num</span> : {<span style="color: #f5c791;">2</span>, <span style="color: #f5c791;">5</span>, <span style="color: #f5c791;">31</span>, <span style="color: #f5c791;">44</span>}) {
+        <span style="color: #0D9C94;">std</span>::cout &lt;&lt; num &lt;&lt; <span style="color: #f5c791;">" esta na arvore? "</span>
+                  &lt;&lt; (tree.search(num) ? <span style="color: #f5c791;">'T'</span> : <span style="color: #f5c791;">'F'</span>)
+                  &lt;&lt; <span style="color: #0D9C94;">std</span>::endl &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org790aa01" class="outline-3">
+<h3 id="org790aa01">Teste de remoção</h3>
+<div class="outline-text-3" id="text-org790aa01">
+<p>
+Esta função  testa a  remoção de  alguns elementos  de uma  <code>AVLTree</code> de
+números inteiros.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">test_removal</span>(<span style="color: #62D2DB;">void</span>)
+{
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"## Remocao de elementos"</span>
+              &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+    <span style="color: #62D2DB;">AVLTree</span>&lt;<span style="color: #62D2DB;">int</span>&gt; <span style="color: #7CF083;">tree</span>({<span style="color: #f5c791;">35</span>, <span style="color: #f5c791;">39</span>, <span style="color: #f5c791;">51</span>, <span style="color: #f5c791;">20</span>, <span style="color: #f5c791;">13</span>, <span style="color: #f5c791;">28</span>, <span style="color: #f5c791;">22</span>, <span style="color: #f5c791;">32</span>, <span style="color: #f5c791;">25</span>, <span style="color: #f5c791;">33</span>});
+
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"# Inicial:\n"</span>;
+    tree.print(TREEPRINT_TRIANGLE);
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+
+    <span style="color: #9d81ba;">for</span>(<span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">num</span> : {<span style="color: #f5c791;">13</span>, <span style="color: #f5c791;">39</span>, <span style="color: #f5c791;">42</span>, <span style="color: #f5c791;">25</span>, <span style="color: #f5c791;">59</span>, <span style="color: #f5c791;">28</span>}) {
+        <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"# Removendo "</span> &lt;&lt; num &lt;&lt; <span style="color: #f5c791;">"...\n"</span>;
+        <span style="color: #62D2DB;">bool</span> <span style="color: #7CF083;">ret</span> = tree.remove(num);
+        <span style="color: #0D9C94;">std</span>::cout &lt;&lt; <span style="color: #f5c791;">"Removido? "</span> &lt;&lt; (ret ? <span style="color: #f5c791;">'Y'</span> : <span style="color: #f5c791;">'N'</span>)
+                  &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+        test_debrief&lt;<span style="color: #62D2DB;">int</span>&gt;(tree);
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org09b2c0a" class="outline-2">
+<h2 id="org09b2c0a">Ponto de entrada</h2>
+<div class="outline-text-2" id="text-org09b2c0a">
+<p>
+Esta é a função principal da aplicação, constituindo o ponto de
+entrada da mesma. Utilizamos este ponto de entrada para executar testes.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">int</span>
+<span style="color: #0bc9cf;">main</span>(<span style="color: #62D2DB;">void</span>)
+{
+    test_raw();
+    test_ctor();
+    test_char();
+    test_search();
+    test_removal();
+
+    <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">0</span>;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge503f05" class="outline-2">
+<h2 id="orge503f05">Compilação</h2>
+<div class="outline-text-2" id="text-orge503f05">
+<p>
+O código a seguir constitui um arquivo <i>Makefile</i> para a compilação do
+arquivo em questão.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-makefile"><span style="color: #7CF083;">CXX</span>      := clang++ --std=c++14
+<span style="color: #7CF083;">CXXFLAGS</span> := -Wall -pedantic -g
+<span style="color: #7CF083;">OUTFLAG</span>  := -o
+<span style="color: #7CF083;">BINARY</span>   := avltree
+<span style="color: #7CF083;">SRC</span>      := avltree.cpp
+
+<span style="color: #0bc9cf;">all</span>: $(<span style="color: #7CF083;">BINARY</span>)
+
+<span style="color: #0bc9cf;">$(</span><span style="color: #0bc9cf;">BINARY</span><span style="color: #0bc9cf;">)</span>: $(<span style="color: #7CF083;">SRC</span>)
+        $(<span style="color: #7CF083;">CXX</span>) $(<span style="color: #7CF083;">CXXFLAGS</span>) $<span style="color: #0D9C94;">^</span> $(<span style="color: #7CF083;">OUTFLAG</span>) <span style="color: #0bc9cf;">$</span><span style="color: #0D9C94;">@</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Notas de Rodap&eacute;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+Ou seja, o tipo dado a <code>T</code> deverá ser comparável através da
+utilização de operadores aritméticos de comparação. 
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<h3><a href="../">De volta à página anterior</a></h3>
+</div>
+</body>
+</html>

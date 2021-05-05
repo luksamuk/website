@@ -1,0 +1,1010 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Majestic Lisp: Implementando <code>let</code> em termos de clausuras</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Lucas S. Vieira" />
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-164062058-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'UA-164062058-1');
+</script>
+<link rel="stylesheet" type="text/css" href="../css/main.css" />
+<link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="../css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="../img/cat-i-mage.jpg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:image" content="../img/cat-i-mage.jpg">
+<meta name="theme-color" content="#14171e">
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="preamble" class="status">
+<h1 class="title">Majestic Lisp: Implementando <code>let</code> em termos de clausuras</h1><p><i>Escrito em Nov 18, 2020 por Lucas S. Vieira<br/><a href="mailto:lucasvieira@protonmail.com">lucasvieira@protonmail.com</a></i></p>
+</div>
+<div id="content">
+
+<div id="org88ffe73" class="figure">
+<p><img src="img/majestic-repl-1.png" alt="majestic-repl-1.png" />
+</p>
+<p><span class="figure-number">Figura 1: </span>REPL de Majestic Lisp, em pleno funcionamento.</p>
+</div>
+
+<p>
+Estamos em mais uma  reta final de um ano que vai  deixar sua marca na
+história.  E  certamente esse  ano  vai  também  deixar sua  marca  em
+mim. Sinto  isso quando  medito sobre  tudo o  que fiz  e sobre  o que
+deixei de fazer nele.
+</p>
+
+<p>
+Dentre  as coisas  boas  que vigoram  como  produto do  distanciamento
+social  e do  período  conturbado  de aulas  via  Internet, fulgura  o
+desenvolvimento da linguagem que venho  criando: Majestic Lisp. Já fiz
+alguns posts  sobre <a href="./apresentando-majestic-lisp.html">alguns de  seus conceitos iniciais</a> e  também sobre
+<a href="./majestic-lisp-pt2.html">conceitos que  possam ser considerados mais  avançados</a>, principalmente
+entre aqueles que não estão acostumados a dialetos de Lisp.
+</p>
+
+<p>
+Majestic está de vento em popa. Atualmente em sua versão 0.3.0, com um
+<i>parser</i>  de  testes desde  a  versão  0.2.5,  já possui  argumentos  de
+console,  interpreta tanto  entradas escritas  no REPL  quanto carrega
+arquivos de  código, e é  capaz de realizar computações  mais robustas
+&#x2013; sobretudo  aritmética básica, que  me deu um trabalho  dos infernos
+por conta dos  quatro subtipos numéricos (inteiros,  floats, frações e
+complexos, que não são nada triviais).
+</p>
+
+<p>
+Hoje, pretendo fazer algo  ligeiramente diferente. Vou falar novamente
+da ideia do bootstrap do macro  <code>let</code> através de aplicação de uma função
+anônima.   Adicionalmente,   discuto   também  como   tornar   o   <code>let</code>
+implementável  em  um  macro  independente,  o  que  nos  leva  a  uma
+implicação  inesperada que,  na verdade,  tornou-se uma  pedra no  meu
+sapato e algo digno de pesquisa aprofundada&#x2026;
+</p>
+
+<div id="outline-container-org63132b3" class="outline-2">
+<h2 id="org63132b3">Recapitulando: Contexto léxico</h2>
+<div class="outline-text-2" id="text-org63132b3">
+<p>
+Como dito no post anterior,  uma declaração <i>local</i> de variáveis envolve
+a  criação de  um contexto  léxico onde  uma variável  seja válida  e,
+portanto, tenha  também um  "tempo de vida".  Na prática,  em Majestic
+Lisp, apenas funções poderiam realizar tal façanha.
+</p>
+
+<pre class="example" id="org85d487d">
+&gt; ((fn (y x) (+ x y))
+   3 2)
+5
+</pre>
+
+<p>
+É  importante lembrar  que aqui  estamos  lidando com  um contexto  de
+<i>interpretação</i>. Em  outras palavras, estamos  deliberadamente ignorando
+qualquer consideração a  respeito de compilação de  uma expressão como
+essa, ou mesmo do <code>let</code>, que pretendemos implementar<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>.
+</p>
+
+<p>
+Na situação acima, a operação <code>(+ x y)</code> é executada em um contexto onde
+<code>x</code> e  <code>y</code> são bem-definidos. Assim  como na lógica de  primeira-ordem, <code>fn</code>
+(em outros Lisps,  geralmente representado como <code>lambda</code>,  ou pela letra
+grega homônima)  é um <i>quantificador</i> para  <code>y</code> e <code>x</code>.  Em  outras palavras,
+<code>fn</code> garante que <code>y</code> e <code>x</code> tenham  valores atribuídos a si quando o corpo da
+função anônima for executado.
+</p>
+
+<p>
+Em um breve  paralelo com a lógica de primeira-ordem,  podemos tomar o
+quantificador  existencial como  exemplo. Veja  que possíveis  valores
+para \(x\) passam a ser bem-definidos quando qualificamos que procuramos
+\(x\)  no conjunto  dos números  naturais; a  semântica é  completamente
+diferente, todavia, o princípio de tornar \(x\) bem-definido é o mesmo.
+</p>
+
+<p>
+\[
+\exists x \in \mathbb{N}\,:\,(x < 2)
+\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2ee35b7" class="outline-2">
+<h2 id="org2ee35b7"><code>let</code> it be <code>fn</code>'bda</h2>
+<div class="outline-text-2" id="text-org2ee35b7">
+<p>
+Para que  a definição de  um contexto  léxico seja mais  palatável que
+declarar uma  função anônima,  criamos um  <i>macro</i>: uma  regra sintática
+que,    antes    da     interpretação,    transforma-se    em    outra
+expressão. Vejamos:
+</p>
+
+<pre class="example" id="orgabd2c22">
+&gt; (let ((x 2)
+        (y 3))
+    (+ x y))
+5
+</pre>
+
+<p>
+A expressão  acima expande-se  perfeitamente para o  exemplo anterior,
+que  envolvia uma  função  anônima.  O algoritmo  de  expansão de  <code>let</code>
+envolve alguns passos, que enumero e exemplifico a seguir.
+</p>
+
+<p>
+<b>1.</b> Separe os pares de definições de variáveis do <code>let</code> em duas listas de
+símbolos e de valores.
+</p>
+
+<p>
+A expressão
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #47ba99;">(</span>x <span style="color: #f5c791;">2</span><span style="color: #47ba99;">)</span> <span style="color: #47ba99;">(</span>y <span style="color: #f5c791;">3</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+torna-se:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #47ba99;">(</span>y x<span style="color: #47ba99;">)</span> <span style="color: #47ba99;">(</span><span style="color: #f5c791;">3</span> <span style="color: #f5c791;">2</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+O fato de as listas  estarem "invertidas" é algo meramente arbitrário,
+e  não  influencia  no  resultado  final.   Essa  inversão,  porém,  é
+conveniente, dado que a natureza de  construção de uma lista envolve o
+uso da  operação <code>cons</code> que,  na prática,  adiciona um novo  elemento ao
+início de uma lista<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>.
+</p>
+
+<p>
+<b>2.</b> Construa uma  função anônima, tal que sua  <i>lambda-list<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup></i> seja a
+lista  de  símbolos anteriormente  gerada,  e  o  corpo seja  o  corpo
+apresentado em <code>let</code>.
+</p>
+
+<p>
+Assim, teremos a função anônima:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span>fn <span style="color: #47ba99;">(</span>y x<span style="color: #47ba99;">)</span> <span style="color: #47ba99;">(</span>+ x y<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+<b>3.</b> Crie  uma lista  que, sintaticamente,  demonstre a  aplicação dessa
+função anônima  à lista de  valores anteriormente criada.
+</p>
+
+<p>
+Aqui, temos duas opções. Podemos usar a forma especial <code>apply</code>&#x2026;
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span>apply <span style="color: #47ba99;">(</span>fn <span style="color: #62D2DB;">(</span>y x<span style="color: #62D2DB;">)</span> <span style="color: #62D2DB;">(</span>+ x y<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+       <span style="color: #47ba99;">(</span>list <span style="color: #f5c791;">2</span> <span style="color: #f5c791;">3</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+&#x2026;ou,  já que  vamos  emitir diretamente  uma  sintaxe de  aplicação,
+podemos  cortar caminho  e falar  diretamente na  aplicação da  função
+sobre  <i>apenas os  elementos</i> da  lista de  valores. Com  as excusas  da
+má-indentação em prol do didatismo, teremos:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span>
+  <span style="color: #47ba99;">(</span>fn <span style="color: #62D2DB;">(</span>y x<span style="color: #62D2DB;">)</span> <span style="color: #62D2DB;">(</span>+ x y<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span> <span style="color: #454459;">; fun&#231;&#227;o aplicada</span>
+  <span style="color: #f5c791;">3</span> <span style="color: #f5c791;">2</span>                <span style="color: #454459;">; argumentos passados</span>
+  <span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+Inserir <i>apenas os elementos</i> de uma  lista em outra lista envolve o uso
+de uma operação  comumente chamada <i>splicing</i>, que pode  ser efetuada em
+um <i>quasiquote</i> através de um <code>unquote-splice</code> (que erroneamente chamei no
+post anterior de <code>unquote-list</code>, mas  que já corrigi na especificação de
+Majestic). <code>unquote-splice</code> geralmente é sinalizado pelo token <code>,@</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">`<span style="color: #0D9C94;">(</span><span style="color: #47ba99;">(</span>fn ,symbol-list ,body<span style="color: #47ba99;">)</span> ,@values-list<span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org7288ec7" class="outline-3">
+<h3 id="org7288ec7">Escrevendo o macro</h3>
+<div class="outline-text-3" id="text-org7288ec7">
+<p>
+Se considerarmos  uma função <code>sep-let-pairs</code>  que realize o  trabalho de
+separar as listas anteriormente citadas, é simples declararmos o macro
+<code>let</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span>defmac let <span style="color: #47ba99;">(</span>args body<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">let</span> <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span>lists <span style="color: #35BF88;">(</span>sep-let-pairs args nil nil<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">let</span> <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span>symbol-list <span style="color: #687184;">(</span>first lists<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span>
+          <span style="color: #35BF88;">(</span>values-list <span style="color: #687184;">(</span>second lists<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+      `<span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span>fn ,symbol-list ,body<span style="color: #35BF88;">)</span> ,@values-list<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+Só tem  um probleminha: <b>nesse ponto,  nossa linguagem ainda não  tem o
+macro <code>let</code></b>!  Isso significa  que estamos tentando  declarar variáveis
+locais, com um vocabulário que nem ao menos temos ainda!
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0b0610b" class="outline-3">
+<h3 id="org0b0610b">Driblando o uso recursivo de <code>let</code></h3>
+<div class="outline-text-3" id="text-org0b0610b">
+<p>
+Podemos driblar esse  problema através do próprio  recurso que estamos
+explorando:  uma aplicação  de função.  Para coletarmos  o retorno  de
+<code>sep-let-pairs</code>  e   armazenarmos  em   <code>lists</code>,  usamos  um   <code>let</code>;  basta
+então expandirmos manualmente esse <code>let</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span>defmac let <span style="color: #47ba99;">(</span>args body<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #62D2DB;">(</span>fn <span style="color: #9d81ba;">(</span>lists<span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #9d81ba;">let</span> <span style="color: #35BF88;">(</span><span style="color: #687184;">(</span>symbol-list <span style="color: #d7af87;">(</span>first lists<span style="color: #d7af87;">)</span><span style="color: #687184;">)</span>
+           <span style="color: #687184;">(</span>values-list <span style="color: #d7af87;">(</span>second lists<span style="color: #d7af87;">)</span><span style="color: #687184;">)</span><span style="color: #35BF88;">)</span>
+       `<span style="color: #35BF88;">(</span><span style="color: #687184;">(</span>fn ,symbol-list ,body<span style="color: #687184;">)</span> ,@values-list<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+   <span style="color: #62D2DB;">(</span>sep-let-pairs args nil nil<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+Acima,  explicitamente  criamos uma  função  que  recebe um  parâmetro
+<code>lists</code>, e  englobamos o  restante do  macro usando  essa função  (o <code>let</code>
+remanescente pode ser removido com um truque que logo veremos).
+</p>
+
+<p>
+A função é  então aplicada ao retorno do uso  da função <code>sep-let-pairs</code>,
+como esperado.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc47a4fc" class="outline-3">
+<h3 id="orgc47a4fc">Trocando <code>let</code> por desestruturação de listas</h3>
+<div class="outline-text-3" id="text-orgc47a4fc">
+<p>
+Nosso problema foi parcialmente resolvido, exceto pelo segundo <code>let</code> que
+é responsável por desestruturar <code>lists</code> em dois elementos independentes.
+</p>
+
+<p>
+Aqui, temos um  recurso exclusivo de Majestic que  pode ser explorado:
+listas  podem ser  desestruturadas logo  na aplicação  da função.  Por
+exemplo, em uma aplicação como essa:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #47ba99;">(</span>fn <span style="color: #62D2DB;">(</span>nums<span style="color: #62D2DB;">)</span>
+   <span style="color: #62D2DB;">(</span>+ <span style="color: #9d81ba;">(</span>first nums<span style="color: #9d81ba;">)</span>
+      <span style="color: #9d81ba;">(</span>second nums<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+ '<span style="color: #47ba99;">(</span><span style="color: #f5c791;">2</span> <span style="color: #f5c791;">3</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+&#x2026;como  a variável  <code>nums</code>  não será  reutilizada,  podemos utilizar  a
+própria <i>lambda-list</i>  da função para  determinar que esperamos  por uma
+lista  de  dois elementos  como  argumento,  e estes  elementos  serão
+nomeados separadamente:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #47ba99;">(</span>fn <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span>fst snd<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+   <span style="color: #62D2DB;">(</span>+ fst snd<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+ '<span style="color: #47ba99;">(</span><span style="color: #f5c791;">2</span> <span style="color: #f5c791;">3</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+Aplicando  essa   ideia  à  definição   do  <code>let</code>,  podemos   delegar  a
+desestruturação  à própria  função  que recebe  <code>lists</code> como  parâmetro,
+substituindo essa  variável pela sintaxe de  desestruturação de listas
+esperada:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span>defmac let <span style="color: #47ba99;">(</span>args body<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #62D2DB;">(</span>fn <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span>symbol-list values-list<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+     `<span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span>fn ,symbol-list ,body<span style="color: #35BF88;">)</span> ,@values-list<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+   <span style="color: #62D2DB;">(</span>sep-let-pairs args nil nil<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+Assim, temos uma  implementação do macro <code>let</code> que  independe do próprio
+uso de <code>let</code>.
+</p>
+</div>
+
+<div id="outline-container-org79e08e0" class="outline-4">
+<h4 id="org79e08e0">Abusando da desestruturação</h4>
+<div class="outline-text-4" id="text-org79e08e0">
+<p>
+Como uma  nota avulsa, o fato  de <code>let</code> usar uma  função anônima implica
+que o  próprio <code>let</code>  pode ser usado  para desestruturar  funções.  Isso
+pode ser particularmente útil para evitar abusos de sintaxe concreta.
+</p>
+
+<p>
+Se considerarmos o exemplo anterior,  escrito através do próprio macro
+<code>let</code> que estamos definindo:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">let</span> <span style="color: #47ba99;">(</span><span style="color: #62D2DB;">(</span>nums '<span style="color: #9d81ba;">(</span><span style="color: #f5c791;">2</span> <span style="color: #f5c791;">3</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>+ <span style="color: #62D2DB;">(</span>first nums<span style="color: #62D2DB;">)</span> <span style="color: #62D2DB;">(</span>second nums<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+&#x2026;poderemos    simplificar   essa    expressão   através    de   mera
+desestruturação:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">let</span> <span style="color: #47ba99;">(</span><span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span>fst snd<span style="color: #9d81ba;">)</span> '<span style="color: #9d81ba;">(</span><span style="color: #f5c791;">2</span> <span style="color: #f5c791;">3</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>+ fst snd<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+Nesse caso,  ainda que o  uso excessivo  de parênteses comece  a ficar
+confuso, veja que o  uso de sintaxe concreta (<code>car</code> / <code>cdr</code>  / <code>cadr</code> e seus
+aliases <code>first</code> / <code>rest</code> / <code>second</code>) acaba se reduzindo consideravelmente.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9282369" class="outline-2">
+<h2 id="org9282369"><code>let</code>, o auto-contido</h2>
+<div class="outline-text-2" id="text-org9282369">
+<p>
+Nosso macro já possui muita utilidade  e, de fato, foi a implementação
+que utilizei por um bom tempo em Majestic Lisp.
+</p>
+
+<p>
+Só temos um problema: <code>sep-let-pairs</code>  precisaria ser definido antes que
+<code>let</code> seja. Todavia, <code>sep-let-pairs</code> não  é uma função-padrão da linguagem
+Majestic Lisp. Vejamos uma de suas possíveis implementações a seguir.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span>defn sep-let-pairs <span style="color: #47ba99;">(</span>pairs syms vals<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">if</span> <span style="color: #62D2DB;">(</span>nilp pairs<span style="color: #62D2DB;">)</span>
+      <span style="color: #62D2DB;">(</span>list syms vals<span style="color: #62D2DB;">)</span>
+      <span style="color: #62D2DB;">(</span>sep-let-pairs
+       <span style="color: #9d81ba;">(</span>cdr pairs<span style="color: #9d81ba;">)</span>
+       <span style="color: #9d81ba;">(</span>cons <span style="color: #35BF88;">(</span>caar pairs<span style="color: #35BF88;">)</span> syms<span style="color: #9d81ba;">)</span>
+       <span style="color: #9d81ba;">(</span>cons <span style="color: #35BF88;">(</span>car <span style="color: #687184;">(</span>cdar pairs<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span>
+             vals<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+Ainda  que eu  pudesse forçar  essa função  na especificação  (ou pelo
+menos, na  implementação da linguagem), pareceria  que estamos lidando
+com uma  "ponta solta", um  utilitário que "precisa" existir,  mas que
+nunca foi especificado &#x2013; ainda que a especificação nada tivesse a ver
+com a implementação.
+</p>
+
+<p>
+Eu  precisava  de  uma   solução  auto-contida,  portátil;  uma  única
+expressão que  pudesse ser copiada e  colada, e que definisse  <code>let</code> sem
+nenhuma dependência extra.
+</p>
+</div>
+
+<div id="outline-container-orgaad88a0" class="outline-3">
+<h3 id="orgaad88a0"><code>sep-let-pairs</code>, a função local</h3>
+<div class="outline-text-3" id="text-orgaad88a0">
+<p>
+Felizmente, nosso problema pode ser resolvido através da mesma técnica
+que nos permitiu receber o retorno de <code>sep-let-pairs</code>, e desestruturá-lo
+em <code>syms</code> e  <code>vals</code>: criar uma aplicação de função  <i>ad-hoc</i> para definir um
+valor  local.
+</p>
+
+<p>
+Vale lembrar  que funções anônimas  são valores como  quaisquer outros
+aqui, e  que podem  ser repassados  a qualquer  função. Nesse  caso, o
+valor  local seria  a  própria função  discutida,  que chamaremos  nos
+argumentos de <code>sepfn</code> por comodidade.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span>defmac let <span style="color: #47ba99;">(</span>args body<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #62D2DB;">(</span>fn <span style="color: #9d81ba;">(</span>sepfn<span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span>fn <span style="color: #687184;">(</span><span style="color: #d7af87;">(</span>syms vals<span style="color: #d7af87;">)</span><span style="color: #687184;">)</span>
+        `<span style="color: #687184;">(</span><span style="color: #d7af87;">(</span>fn ,syms ,body<span style="color: #d7af87;">)</span>
+          ,@vals<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span>
+      <span style="color: #35BF88;">(</span>sepfn args nil nil<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+   <span style="color: #62D2DB;">(</span>fn <span style="color: #9d81ba;">(</span>pairs syms vals<span style="color: #9d81ba;">)</span>
+       <span style="color: #9d81ba;">(</span><span style="color: #9d81ba;">if</span> <span style="color: #35BF88;">(</span>nilp pairs<span style="color: #35BF88;">)</span>
+           <span style="color: #35BF88;">(</span>list syms vals<span style="color: #35BF88;">)</span>
+           <span style="color: #35BF88;">(</span>sepfn <span style="color: #687184;">(</span>cdr pairs<span style="color: #687184;">)</span>
+                  <span style="color: #687184;">(</span>cons <span style="color: #d7af87;">(</span>caar pairs<span style="color: #d7af87;">)</span> syms<span style="color: #687184;">)</span>
+                  <span style="color: #687184;">(</span>cons <span style="color: #d7af87;">(</span>car <span style="color: #845A84;">(</span>cdar pairs<span style="color: #845A84;">)</span><span style="color: #d7af87;">)</span> vals<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+Até aqui,  tudo bem; o  interpretador de Majestic, que  atualmente não
+realiza  checagens até  o momento  de expansão  do macro,  aceita essa
+definição normalmente.
+</p>
+
+<p>
+Vejamos o que acontece agora quando tentamos usar o macro <code>let</code>&#x2026;
+</p>
+
+<pre class="example" id="org79c6b51">
+&gt; (let ((a 1)
+        (b 2))
+    (+ a b))
+Error: sepfn is unbound
+</pre>
+
+<p>
+Ops! Alguma das chamadas a <code>sepfn</code> está incorreta.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org205e79f" class="outline-3">
+<h3 id="org205e79f">O problema do contexto léxico</h3>
+<div class="outline-text-3" id="text-org205e79f">
+<p>
+Se analisarmos  bem o código,  veremos que o  problema não pode  ser a
+chamada que resulta  na desestruturação da lista em <code>syms</code>  e <code>vals</code>: ali,
+<code>sepfn</code>  é  bem-definida,  sendo  a função  recebida  por  parâmetro  &#x2013;
+portanto, quantificada por <code>fn</code>.
+</p>
+
+<p>
+O  único lugar  em  que <code>sepfn</code>  não  é conhecida&#x2026;  é  na sua  própria
+definição!  Isso pode  não ser  tão trivial,  mas analisemos  portanto
+apenas  a  definição da  função  anônima  ao  qual  o nome  <code>sepfn</code>  foi
+atribuído.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span>fn <span style="color: #47ba99;">(</span>pairs syms vals<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">if</span> <span style="color: #62D2DB;">(</span>nilp pairs<span style="color: #62D2DB;">)</span>
+      <span style="color: #62D2DB;">(</span>list syms vals<span style="color: #62D2DB;">)</span>
+      <span style="color: #62D2DB;">(</span>sepfn <span style="color: #9d81ba;">(</span>cdr pairs<span style="color: #9d81ba;">)</span>
+             <span style="color: #9d81ba;">(</span>cons <span style="color: #35BF88;">(</span>caar pairs<span style="color: #35BF88;">)</span> syms<span style="color: #9d81ba;">)</span>
+             <span style="color: #9d81ba;">(</span>cons <span style="color: #35BF88;">(</span>car <span style="color: #687184;">(</span>cdar pairs<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span> vals<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+Aqui,   temos   uma   chamada   explícita  a   <code>sepfn</code>   no   corpo   da
+função.  Todavia, por  causa da  forma  como as  funções funcionam  em
+Majestic Lisp, não se sabe aqui o que é <code>sepfn</code>.
+</p>
+
+<p>
+O primeiro  motivo para tal  é óbvio: na  definição da função,  não há
+nada  que delimite  o que  é <code>sepfn</code>.  Todavia, se  <code>sepfn</code> houvesse  sido
+definida <i>antes de existir</i> (paradoxal, não?), em um contexto léxico que
+a englobasse, tal  contexto seria capturado pela função  anônima, e aí
+sim ela saberia quem é.
+</p>
+
+<p>
+<i>"Mas Lucas,  quando eu invoco  <code>sepfn</code> no  macro logo acima,  a execução
+dessa função não deveria compreender que trata-se dela mesma?"</i>
+</p>
+
+<p>
+Bem&#x2026; infelizmente,  não. O  corpo de uma  função é  sempre executado
+levando em  consideração <b>o  contexto léxico que  captura</b> e  o contexto
+global, nessa  ordem. Quando  uma função  é definida  globalmente (via
+<code>defn</code>), o contexto global é  modificado, portanto ela acaba sendo capaz
+de  encontrar  a si  mesma.  Todavia,  quando  a função  foi  definida
+localmente, ela  é incapaz de  encontrar a  si mesma, pois  só realiza
+consultas em seu  próprio escopo léxico capturado, e não  no escopo em
+que foi invocada<sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>.
+</p>
+
+<p>
+Isso implica em uma conclusão muito importante&#x2026;
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6c19a13" class="outline-3">
+<h3 id="org6c19a13">Recursão em funções locais?</h3>
+<div class="outline-text-3" id="text-org6c19a13">
+<p>
+A conclusão é esta: levando em consideração apenas o escopo léxico e o
+global de Majestic Lisp, torna-se claro que <b>funções anônimas não podem
+ser recursivas</b>. Isso pode ser problemático ou aceitável, dependendo do
+programador. De  qualquer forma, nos  atrasa um pouco na  definição do
+<code>let</code> auto-contido.
+</p>
+
+<p>
+Por  sorte, ainda  podemos  driblar  esse problema.  Se  a função  não
+conhece a si  mesma, basta que a recebamos como  parâmetro. Assim, uma
+chamada a <code>sepfn</code> também fica responsável  por repassar <code>sepfn</code> a si mesma
+como parâmetro.
+</p>
+
+<p>
+A implementação final do <code>let</code> auto-contido termina dessa forma:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span>defmac let <span style="color: #47ba99;">(</span>args body<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #62D2DB;">(</span>fn <span style="color: #9d81ba;">(</span>sepfn<span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span>fn <span style="color: #687184;">(</span><span style="color: #d7af87;">(</span>syms vals<span style="color: #d7af87;">)</span><span style="color: #687184;">)</span>
+        `<span style="color: #687184;">(</span><span style="color: #d7af87;">(</span>fn ,syms ,body<span style="color: #d7af87;">)</span>
+          ,@vals<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span>
+      <span style="color: #35BF88;">(</span>sepfn args nil nil sepfn<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+   <span style="color: #62D2DB;">(</span>fn <span style="color: #9d81ba;">(</span>pairs syms vals recur<span style="color: #9d81ba;">)</span>
+       <span style="color: #9d81ba;">(</span><span style="color: #9d81ba;">if</span> <span style="color: #35BF88;">(</span>nilp pairs<span style="color: #35BF88;">)</span>
+           <span style="color: #35BF88;">(</span>list syms vals<span style="color: #35BF88;">)</span>
+           <span style="color: #35BF88;">(</span>recur <span style="color: #687184;">(</span>cdr pairs<span style="color: #687184;">)</span>
+                  <span style="color: #687184;">(</span>cons <span style="color: #d7af87;">(</span>caar pairs<span style="color: #d7af87;">)</span> syms<span style="color: #687184;">)</span>
+                  <span style="color: #687184;">(</span>cons <span style="color: #d7af87;">(</span>car <span style="color: #845A84;">(</span>cdar pairs<span style="color: #845A84;">)</span><span style="color: #d7af87;">)</span> vals<span style="color: #687184;">)</span>
+                  recur<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+Repare  que  a  única  chamada  a  <code>sepfn</code>  repassa  <code>sepfn</code>  como  último
+parâmetro. Adicionalmente,  a definição  da função anônima  recebe uma
+referência a  si mesma sob o  nome <code>recur</code>, que é  reutilizado dentro de
+si.
+</p>
+
+<p>
+O  uso do  símbolo <code>recur</code>  aqui é  algo proposital;  algumas linguagens
+possuem  esse  símbolo  como palavra-chave  para  resolver  justamente
+situações  desse tipo.  Este é  o caso  em linguagens  como Clojure  e
+também nos MLs (OCaml, Standard ML&#x2026;).
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org69c75c5" class="outline-2">
+<h2 id="org69c75c5">Conclusão e possíveis soluções</h2>
+<div class="outline-text-2" id="text-org69c75c5">
+<p>
+Esse foi  o post  de hoje,  que termina  com uma  solução e,  ao mesmo
+tempo, com uma indagação; esse problema não é de resolução trivial, ao
+menos não em uma linguagem  que possui apenas escopos global e léxico.
+</p>
+
+<p>
+Existem  soluções  plausíveis  para  esse  problema.  A  primeira  das
+soluções  é  ter  algum  tipo  de  mutabilidade  nos  escopos  léxicos
+capturados pelas funções,  de forma que pudéssemos  extender um escopo
+com uma referência à própria função,  e então reinserir esse escopo na
+própria definição da função.
+</p>
+
+<p>
+Mas  isso pressupõe  algum tipo  de mutabilidade  nas células  <i>cons</i> da
+linguagem, algo que pretendo adiar por enquanto, já que Majestic ainda
+não  tem   mutabilidade  explícita.   Ademais,  isso   envolveria  uma
+mutabilidade "por baixo  dos panos" que só resolveria  o problema para
+um contexto  léxico apenas,  fazendo com  que a  função não  possa ter
+chamada  recursiva caso  seu nome  fosse  "trocado" &#x2013;  o que  poderia
+invocar  a  necessidade  de  tornar   <code>recur</code>  um  símbolo  especial  na
+linguagem, etc&#x2026;
+</p>
+
+<p>
+Uma ideia  um pouco  mais amigável é  introduzir <i>contexto  dinâmico</i> na
+linguagem,  algo que  não me  agrada muito,  mas que  poderia ser  uma
+solução. Após  consultar o contexto  léxico por <code>sepfn</code> e  não encontrar
+correspondência, e antes de passar  a uma consulta ao contexto global,
+Majestic poderia realizar uma consulta  a um contexto dinâmico, quando
+existente. Assim, trocaríamos a função que define <code>sepfn</code> localmente por
+uma estrutura que definisse <code>sepfn</code> dinamicamente; nesse caso, durante a
+execução de  <code>sepfn</code>, esta  função conseguiria encontrar  a si  mesma no
+contexto onde fora invocada, estando portanto definida dinamicamente.
+</p>
+
+<p>
+Ambas as opções  são válidas, mas demandam certo  cuidado. Common Lisp
+possui a  estrutura <code>flet</code> que  pode ser utilizada para  definir funções
+locais (similar a <code>letfn</code> de  Majestic Lisp, que comentarei outra hora),
+mas que sofre  do mesmo problema com recursividade; por  isso, caso as
+funções  precisem  ser recursivas,  recomenda-se  o  uso da  estrutura
+<code>labels</code>.  Pela  forma  como  as  coisas  estão,  acredito  que  revisar
+implementações dessas construções seja um bom ponto de partida.
+</p>
+
+<hr>
+</div>
+</div>
+
+<div id="outline-container-org443addb" class="outline-2">
+<h2 id="org443addb"><i>Post-scriptum</i>: <code>letrec</code></h2>
+<div class="outline-text-2" id="text-org443addb">
+<p>
+Após trocar  algumas ideias  com alguns  amigos, acabei  chegando hoje
+(19/11/2020) a uma solução prática  para o problema: <code>letrec</code>, uma forma
+especial capaz de definir funções que não apenas podem ser recursivas,
+mas que também podem chamar-se em recursão mútua.
+</p>
+
+<p>
+<code>letrec</code> toma  seu nome emprestado de  dialetos como Scheme e  Racket, e
+funciona como <code>letrec</code> nessas linguagens,  ou similar a <code>labels</code> em Common
+Lisp.
+</p>
+
+<p>
+<code>letrec</code>  é um  <i>special form</i>  porque, diferente  de <code>let</code>,  <code>let*</code>, <code>letfn</code>  e
+<code>letfn*</code>,   esta  precisa   <i>modificar  a   forma  como   expressões  são
+interpretadas</i>, mais especificamente modificando  o que cada função ali
+declarada compreende como sendo seu próprio contexto capturado.
+</p>
+
+<p>
+Não expliquei  aqui nada  sobre <code>letfn</code> e  <code>letfn*</code> mas,  basicamente, são
+sintaxes especiais  de <code>let</code>  e <code>let*</code> para  que possamos  definir funções
+locais de um jeito mais confortável.
+</p>
+
+<p>
+Em  termos de  implementação, <code>letrec</code>  gera  cada uma  das funções  ali
+descritas, com  a captura  de escopo esperada.  Em seguida,  <i>injeta</i> um
+contexto  léxico  nas  respectivas  funções,  onde  todas  elas  sejam
+conhecidas,   mantendo   ainda   o  contexto   capturado   durante   a
+interpretação das mesmas.
+</p>
+
+<p>
+Compartilho na  íntegra a  descrição dessas  funções nos  apêndices do
+livro de Majestic Lisp, atualmente em escrita:
+</p>
+
+<blockquote>
+<ul class="org-ul">
+<li><code>(letrec bindings body)</code></li>
+</ul>
+
+<p>
+Define uma lista de funções que serão bem-definidas durante a execução
+da expressão <code>body</code>.
+</p>
+
+<p>
+<code>bindings</code>  é uma  lista  de  definições de  funções  similares a  <code>defn</code>,
+todavia  sem o  símbolo <code>defn</code>  em seu  início. <code>letrec</code>  segue as  mesmas
+regras sintáticas de <code>letfn</code> e <code>letfn*</code>.
+</p>
+
+<p>
+O funcionamento de <code>letrec</code> aproxima-se muito  do uso prático de <code>letfn</code> e
+<code>letfn*</code>.  Todavia, <code>letrec</code>  permite a  declaração de  <i>funções mutuamente
+recursivas</i>. Para tanto, cada função ali declarada não apenas captura o
+contexto  em que  <code>letrec</code>  é  utilizado, como  também  deve capturar  o
+próprio contexto criado  por <code>letrec</code> <i>após a definição de  todas as suas
+funções</i>.
+</p>
+
+<p>
+Como esse  tipo de operação exige  modificar a forma como  funções são
+declaradas  &#x2013; mais  precisamente,  modificar a  forma  como ocorre  a
+captura  de  contexto  &#x2013;,  <code>letrec</code> precisa  ser  uma  forma  especial,
+diferente de <code>letfn</code> e <code>let</code>, que podem ser declarados como macros.
+</p>
+</blockquote>
+
+<pre class="example" id="orgc340289">
+&gt; (letrec ((foo ()
+             (do (print "Calling foo")
+                 (bar)))
+           (bar ()
+             (do (print "Calling bar")
+                 (baz)))
+           (baz ()
+             (print "Calling baz")))
+    (foo))
+Calling foo
+Calling bar
+Calling baz
+nil
+
+&gt; (letrec ((iter (x)
+             (if (&gt; x 0)
+                 (do (print "Recursion #{}" x)
+                     (iter (- x 1)))
+                 (print "Finished"))))
+    (iter 5))
+Recursion #5
+Recursion #4
+Recursion #3
+Recursion #2
+Recursion #1
+Finished
+nil
+</pre>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Notas de Rodap&eacute;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+Para maiores  informações, veja  o livro  <a href="https://letoverlambda.com/index.cl/guest/chap2.html">Let Over  Lambda</a>, de
+Hoyte, C. (2008).
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+Ou: cria  um par de elementos,  tal que o segundo  elemento é a
+lista original, e o primeiro, o que se quer colocar na mesma.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+Lista de argumentos da  função anônima. Convenciona-se falar de
+<i>lambda-list</i> devido ao quantificador <code>lambda</code> anteriormente citado.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">
+Para que isso fosse possível, o escopo de chamada teria que ser
+um  <i>escopo  dinâmico</i>, isto  é,  um  escopo  que delimite  um  contexto
+dinâmico.  Mas   não  abordaremos   isso  aqui  em   profundidade,  só
+mencionarei como isso soluciona o problema ao final do artigo.
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<h3><a href="../">De volta à página anterior</a></h3>
+</div>
+</body>
+</html>

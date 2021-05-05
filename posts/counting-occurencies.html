@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Contando Ocorrências de Números em C, C++ e Common Lisp</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Lucas Vieira" />
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-164062058-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'UA-164062058-1');
+</script>
+<link rel="stylesheet" type="text/css" href="../css/main.css" />
+<link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="../css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="../img/cat-i-mage.jpg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:image" content="../img/cat-i-mage.jpg">
+<meta name="theme-color" content="#14171e">
+</head>
+<body>
+<div id="preamble" class="status">
+<h1 class="title">Contando Ocorrências de Números em C, C++ e Common Lisp</h1><p><i>Escrito em Dec 18, 2018 por Lucas Vieira<br/><a href="mailto:lucasvieira@lisp.com.br">lucasvieira@lisp.com.br</a></i></p>
+</div>
+<div id="content">
+
+<div id="outline-container-org329240b" class="outline-2">
+<h2 id="org329240b">Introdução</h2>
+<div class="outline-text-2" id="text-org329240b">
+<p>
+Mais uma vez, deparei-me com mais uma situação em que precisei explicar para
+colegas a respeito de algum conceito de programação que não era muito
+trivial. Desta vez, trata-se de um exercício de programação onde, dada uma
+entrada de <code>n</code> números, que podem ser diferentes ou não, precisamos contar as
+ocorrências de cada uma e imprimi-las na tela.
+</p>
+
+<p>
+Existem várias formas de resolver este problema, provavelmente até mesmo sem
+armazenar absolutamente nada extra memória. Um dos meus colegas, inclusive,
+encontrou uma maneira bem interessante, envolvendo ordenar os números; o fato de
+estarem agrupados sinalizaria apenas a necessidade de contá-los e exibir o
+resultado na tela, a cada grupo.
+</p>
+
+<p>
+Mas por que vamos facilitar, se podemos complicar? <code>:D</code>
+</p>
+
+<p>
+Neste artigo, pretendo explorar três formas diferentes de resolver o problema: a
+primeira em <code>C</code>, muito parecida com o que fiz no momento de resolução do
+exercício; a segunda, em <code>C++</code>, tirando o máximo proveito da <code>STL</code>; e a terceira, em
+<code>Common Lisp</code>, para efeitos comparativos.
+</p>
+</div>
+
+<div id="outline-container-orgb5f4a2c" class="outline-4">
+<h4 id="orgb5f4a2c"><b>ACHTUNG!</b></h4>
+<div class="outline-text-4" id="text-orgb5f4a2c">
+<p>
+Por motivos didáticos, omitirei a função <code>main</code> em <code>C</code> e <code>C++</code>, mas deixarei
+explícitos os cabeçalhos utilizados. Ciente disto, adapte o código à sua
+necessidade, caso queira executá-lo. No caso de <code>Common Lisp</code>, copiar o código
+apresentado, na sequência mostrada, em um arquivo <code>.lisp</code>, será o suficiente para
+executá-lo.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9edd533" class="outline-2">
+<h2 id="org9edd533">Solução em <code>C</code></h2>
+<div class="outline-text-2" id="text-org9edd533">
+<p>
+A ideia principal para resolver este problema em <code>C</code> é criar uma estrutura de
+dados capaz de armazenar repetições para cada número; ou seja, uma forma de
+<b>mapear</b> cada número, como uma <i>chave</i>, para seu respectivo número de
+repetições.
+</p>
+
+<p>
+Primeiramente, precisamos de um <code>struct</code> que represente este mapeamento <code>número =&gt;
+repetição</code>. Digamos, também, que vamos receber dez números, que iremos armazenar
+em um vetor simples.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;stdio.h&gt;</span>
+
+<span style="color: #454459;">// </span><span style="color: #454459;">Estrutura representando as repeti&#231;&#245;es para um n&#250;mero</span>
+<span style="color: #9d81ba;">typedef</span> <span style="color: #9d81ba;">struct</span> {
+    <span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">num</span>;
+    <span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">rep</span>;
+} <span style="color: #62D2DB;">repetition_t</span>;
+
+<span style="color: #454459;">// </span><span style="color: #454459;">Vetor de n&#250;meros a serem recebidos</span>
+<span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">numbers</span>[<span style="color: #f5c791;">10</span>];
+
+<span style="color: #454459;">// </span><span style="color: #454459;">Entradas</span>
+{
+    <span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">i</span>;
+    <span style="color: #9d81ba;">for</span>(i = <span style="color: #f5c791;">0</span>; i &lt; <span style="color: #f5c791;">10</span>; i++) {
+        scanf(<span style="color: #f5c791;">"%d"</span>, &amp;numbers[i]);
+    }
+}
+</pre>
+</div>
+
+<p>
+Agora, vamos analisar o que faremos a seguir. Sabemos que temos que contar
+números repetidos. No pior dos casos, pode ocorrer de <b>os dez números serem
+diferentes</b>. Nesta situação, teremos dez entradas de repetições diferentes.
+</p>
+
+<p>
+Sendo assim, podemos nomear um vetor baseado no máximo de repetições possíveis,
+e um contador para as repetições já registradas:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #62D2DB;">int</span>          <span style="color: #7CF083;">num_repetitions</span> = <span style="color: #f5c791;">0</span>;
+<span style="color: #62D2DB;">repetition_t</span> <span style="color: #7CF083;">repetitions</span>[<span style="color: #f5c791;">10</span>];
+</pre>
+</div>
+
+<p>
+Podemos, agora, percorrer o vetor de números. Para cada número no vetor,
+verificamos se já há uma entrada registrada para ele no nosso vetor de
+repetições.
+</p>
+
+<p>
+Se há uma repetição registrada, apenas incrementamo-na. Se não, incrementamos o
+número de repetições registradas, e criamos uma nova entrada, começando a contar
+o número de repetições a partir de <code>1</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">i</span>, <span style="color: #7CF083;">j</span>;
+<span style="color: #9d81ba;">for</span>(i = <span style="color: #f5c791;">0</span>; i &lt; <span style="color: #f5c791;">10</span>; i++) {
+    <span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">entry_found</span> = <span style="color: #f5c791;">0</span>;
+    <span style="color: #9d81ba;">for</span>(j = <span style="color: #f5c791;">0</span>; j &lt; num_repetitions; j++) {
+        <span style="color: #9d81ba;">if</span>(numbers[i] == repetitions[j].num) {
+            entry_found = <span style="color: #f5c791;">1</span>;
+            repetitions[j].rep++;
+            <span style="color: #9d81ba;">break</span>;
+        }
+    }
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>entry_found) {
+        repetitions[num_repetitions].num = numbers[i];
+        repetitions[num_repetitions].rep = <span style="color: #f5c791;">1</span>;
+        num_repetitions++;
+    }
+}
+</pre>
+</div>
+
+<p>
+Depois disso, tudo o que nos resta é iterar sobre as repetições registradas,
+imprimindo o número e a quantidade de repetições registradas para ele.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #9d81ba;">for</span>(i = <span style="color: #f5c791;">0</span>; i &lt; num_repetitions; i++) {
+    printf(<span style="color: #f5c791;">"%d =&gt; %d\n"</span>,
+           repetitions[i].num, repetitions[i].rep);
+}
+</pre>
+</div>
+
+<p>
+Teremos a seguinte interação no console:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">% g++ find_numbers.c 
+% ./a.out 
+<span style="color: #f5c791;">1</span> <span style="color: #f5c791;">1</span> <span style="color: #f5c791;">1</span> <span style="color: #f5c791;">3</span> <span style="color: #f5c791;">5</span> <span style="color: #f5c791;">5</span> <span style="color: #f5c791;">7</span> <span style="color: #f5c791;">8</span> <span style="color: #f5c791;">9</span> <span style="color: #f5c791;">9</span>
+<span style="color: #f5c791;">1</span> =&gt; <span style="color: #f5c791;">3</span>
+<span style="color: #f5c791;">3</span> =&gt; <span style="color: #f5c791;">1</span>
+<span style="color: #f5c791;">5</span> =&gt; <span style="color: #f5c791;">2</span>
+<span style="color: #f5c791;">7</span> =&gt; <span style="color: #f5c791;">1</span>
+<span style="color: #f5c791;">8</span> =&gt; <span style="color: #f5c791;">1</span>
+<span style="color: #f5c791;">9</span> =&gt; <span style="color: #f5c791;">2</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org434d11a" class="outline-2">
+<h2 id="org434d11a">Solução em <code>C++</code></h2>
+<div class="outline-text-2" id="text-org434d11a">
+<p>
+Vamos ser honestos. Tudo o que fiz em <code>C</code> foi emular, de forma ineficiente (para
+um caso com mais números), uma estrutura que conhecemos bem em <code>C++</code>: um
+<code>std::map</code>. E é exatamente por isso que, ao invés de tentarmos emulá-la novamente,
+usaremos o que a linguagem tem a nos oferecer como algo pré-implementado.
+</p>
+
+<p>
+Vamos começar da mesma forma: declarando o que é necessário para registrar as
+repetições. Teremos nosso vetor de dez números, e um <code>std::map</code> registrando as
+repetições.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;iostream&gt;</span>
+<span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;map&gt;</span>
+
+<span style="color: #454459;">// </span><span style="color: #454459;">Declara&#231;&#245;es</span>
+<span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">numbers</span>[<span style="color: #f5c791;">10</span>];
+<span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">map</span>&lt;<span style="color: #62D2DB;">int</span>, <span style="color: #62D2DB;">int</span>&gt; <span style="color: #7CF083;">repetitions</span>;
+
+<span style="color: #454459;">// </span><span style="color: #454459;">Entrada</span>
+<span style="color: #9d81ba;">for</span>(<span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">i</span> = <span style="color: #f5c791;">0</span>; i &lt; <span style="color: #f5c791;">10</span>; i++) {
+    <span style="color: #0D9C94;">std</span>::cin &gt;&gt; numbers[i];
+}
+</pre>
+</div>
+
+<p>
+Agora, iteramos sobre os números. Da mesma forma, verificamos se já os
+registramos; se sim, é só uma questão de incrementá-los. Se não, basta criarmos
+a chave e realizarmos a primeira atribuição para aquele número.
+</p>
+
+<p>
+<b>ERRATA:</b> Na realidade, não é necessário verificar se a chave já está registrada,
+em um <code>std::map</code>! Basta realizar a incrementação, uma vez que <code>C++</code> inicializa as
+chaves com o valor nulo do tipo, ou seja, neste caso, com <code>0</code>. Obrigado ao Paulo
+Alvarenga por apontar isso para mim via Facebook.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #9d81ba;">for</span>(<span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">i</span> = <span style="color: #f5c791;">0</span>; i &lt; <span style="color: #f5c791;">10</span>; i++) {
+    repetitions[numbers[i]]++;
+}
+</pre>
+</div>
+
+<p>
+Por fim, iteramos sobre o mapa e imprimimos a mesma relação de chave para
+repetição. Mas faremos isto com uma sintaxe limpa, baseada em <code>C++11</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span>&amp; <span style="color: #7CF083;">pair</span> : repetitions) {
+    <span style="color: #0D9C94;">std</span>::cout &lt;&lt; pair.first &lt;&lt; <span style="color: #f5c791;">" =&gt; "</span> &lt;&lt; pair.second &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+}
+</pre>
+</div>
+
+<p>
+Eis a interação no console.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">% g++ --std=c++11 find_numbers.cpp 
+% ./a.out 
+<span style="color: #f5c791;">1</span> <span style="color: #f5c791;">1</span> <span style="color: #f5c791;">1</span> <span style="color: #f5c791;">3</span> <span style="color: #f5c791;">5</span> <span style="color: #f5c791;">5</span> <span style="color: #f5c791;">7</span> <span style="color: #f5c791;">8</span> <span style="color: #f5c791;">9</span> <span style="color: #f5c791;">9</span>
+<span style="color: #f5c791;">1</span> =&gt; <span style="color: #f5c791;">3</span>
+<span style="color: #f5c791;">3</span> =&gt; <span style="color: #f5c791;">1</span>
+<span style="color: #f5c791;">5</span> =&gt; <span style="color: #f5c791;">2</span>
+<span style="color: #f5c791;">7</span> =&gt; <span style="color: #f5c791;">1</span>
+<span style="color: #f5c791;">8</span> =&gt; <span style="color: #f5c791;">1</span>
+<span style="color: #f5c791;">9</span> =&gt; <span style="color: #f5c791;">2</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6311df4" class="outline-2">
+<h2 id="org6311df4">Solução em <code>Common Lisp</code></h2>
+<div class="outline-text-2" id="text-org6311df4">
+<p>
+<code>Common Lisp</code> é uma linguagem madura. Em termos de recursos esperados por um
+programador, digamos, no caso de contêineres, ela não decepciona. Assim como em
+<code>C</code> e <code>C++</code>, há um enorme número de maneiras para resolver nosso
+problema. Ao invés de escolher uma maneira mais "esperta", vou adequar a solução
+em <code>CL</code> às outras soluções: armazenar os números, criar um mapa e estabelecer uma
+relação entre chave e número de repetições.
+</p>
+
+<p>
+Começaremos criando uma lista de números &#x2013; que equivale a um átomo de nulidade
+&#x2013;, e também criando a nossa estrutura que armazenará a relação
+chave/repetições: Uma <code>Hash Table</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defparameter</span> <span style="color: #7CF083;">*numbers*</span> nil<span style="color: #0D9C94;">)</span>
+<span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defparameter</span> <span style="color: #7CF083;">*repetitions*</span> <span style="color: #47ba99;">(</span>make-hash-table<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+
+<span style="color: #454459;">;; </span><span style="color: #454459;">Entrada</span>
+<span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">dotimes</span> <span style="color: #47ba99;">(</span>i <span style="color: #f5c791;">10</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>push <span style="color: #62D2DB;">(</span>read<span style="color: #62D2DB;">)</span> *numbers*<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+Uma coisa interessante a notar é que os números serão lidos na ordem inversa aos
+casos anteriores: como estamos utilizando uma lista para armazenar nossos
+números, a função <code>push</code> modificará <code>*numbers*</code>, colocando o número diretamente na
+frente da lista.
+</p>
+
+<p>
+Nosso próximo passo é iterar sobre cada um dos elementos e verificar se eles
+são chaves da <code>hash table</code>, como fizemos nos outros exemplos. Se sim,
+incrementamos o elemento; se não, definimo-no pela primeira vez com um valor <code>1</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">loop</span> for x in *numbers*
+   if <span style="color: #47ba99;">(</span>gethash x *repetitions*<span style="color: #47ba99;">)</span>
+   do <span style="color: #47ba99;">(</span>incf <span style="color: #62D2DB;">(</span>gethash x *repetitions*<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+   else do <span style="color: #47ba99;">(</span>setf <span style="color: #62D2DB;">(</span>gethash x *repetitions*<span style="color: #62D2DB;">)</span> <span style="color: #f5c791;">1</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+Este comando pode parecer um complicado à primeira vista, então vou me esforçar
+para explicá-lo mais um pouco.
+</p>
+
+<p>
+Este é o famigerado macro <code>loop</code>. Alguns lispeiros não gostam muito dele porque,
+muitas vezes, utilizar este macro também implica utilizar praticamente uma
+linguagem diferente de <code>Common Lisp</code>, própria para ser usada dentro deste
+macro. Estou utilizando ele exatamente para evitar um uso extra de estruturas de
+controle de fluxo.
+</p>
+
+<p>
+A instrução <code>(gethash chave hash-table)</code>, assim como em <code>C++</code>, funciona como uma
+forma tanto de recuperar quanto atribuir um valor a uma chave qualquer. Se a
+chave não existir na <code>Hash Table</code>, esta instrução retorna <code>nil</code>, equivalente a
+falso; se existir, ela retorna o valor associado, tratado como verdadeiro. <code>(incf
+variável)</code> é uma instrução que incrementa diretamente o valor associado à chave,
+quando aplicado a <code>(gethash ...)</code>. Já <code>(setf variável valor)</code>, independente de a
+chave já existir no <code>Hash Table</code> ou não, realiza uma atribuição de um valor a uma
+chave.
+</p>
+
+<p>
+Como você pode ver pela minha descrição, isto em nada difere do que fizemos em
+<code>C++</code>; a única diferença é a sintaxe e a estrutura em si, que funcionam
+praticamente da mesma forma.
+</p>
+
+<p>
+Para finalizar, iteramos sobre nosso <code>Hash Table</code>, imprimindo as relações. Para
+tanto, não utilizaremos um <code>loop</code> explícito, mas sim a função <code>maphash</code>: ela é
+responsável por chamar uma função que indicarmos para cada par <code>(chave, valor)</code> no
+mapa:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span>maphash <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">lambda</span> <span style="color: #62D2DB;">(</span>key value<span style="color: #62D2DB;">)</span>
+           <span style="color: #62D2DB;">(</span>format t <span style="color: #f5c791;">"~a =&gt; ~a~%"</span> key value<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+         *repetitions*<span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+
+<p>
+Podemos executar o código como script, utilizando o <code>Steel Bank Common Lisp</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">% sbcl --script find-numbers.lisp --no-linedit
+<span style="color: #f5c791;">1</span> <span style="color: #f5c791;">1</span> <span style="color: #f5c791;">1</span> <span style="color: #f5c791;">3</span> <span style="color: #f5c791;">5</span> <span style="color: #f5c791;">5</span> <span style="color: #f5c791;">7</span> <span style="color: #f5c791;">8</span> <span style="color: #f5c791;">9</span> <span style="color: #f5c791;">9</span>
+<span style="color: #f5c791;">9</span> =&gt; <span style="color: #f5c791;">2</span>
+<span style="color: #f5c791;">8</span> =&gt; <span style="color: #f5c791;">1</span>
+<span style="color: #f5c791;">7</span> =&gt; <span style="color: #f5c791;">1</span>
+<span style="color: #f5c791;">5</span> =&gt; <span style="color: #f5c791;">2</span>
+<span style="color: #f5c791;">3</span> =&gt; <span style="color: #f5c791;">1</span>
+<span style="color: #f5c791;">1</span> =&gt; <span style="color: #f5c791;">3</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7d923de" class="outline-2">
+<h2 id="org7d923de">Conclusão</h2>
+<div class="outline-text-2" id="text-org7d923de">
+<p>
+Como você pode ver, não importa a linguagem que você venha a utilizar; você será
+capaz de resolver problemas simples como este. Mas acredito que seja
+interessante observar o problema sendo resolvido da mesma forma, em várias
+linguagens. Esta aproximação cria uma espécie de <i>pedra-de-roseta</i>, algo que
+poderia servir para o aprendizado de várias linguagens, ainda que não
+representem a forma de resolver o problema com a melhor performance.
+</p>
+
+<p>
+Como dica para você, deixo a seu cargo reimplementar este ou outro problema que
+tenha resolvido, em uma linguagem diferente da inicial, ou até mesmo com outra
+estratégia diferente da mais óbvia. Uma mudança de perspectiva pode significar
+uma nova forma de explorar seu próprio raciocínio lógico.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<h3><a href="../">De volta à página anterior</a></h3>
+</div>
+</body>
+</html>

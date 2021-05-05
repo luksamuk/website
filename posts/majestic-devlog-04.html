@@ -1,0 +1,1244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Majestic Lisp: Interpretando Majestic com Majestic</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Lucas S. Vieira" />
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-164062058-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'UA-164062058-1');
+</script>
+<link rel="stylesheet" type="text/css" href="../css/main.css" />
+<link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="../css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="../img/cat-i-mage.jpg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:image" content="../img/cat-i-mage.jpg">
+<meta name="theme-color" content="#14171e">
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="preamble" class="status">
+<h1 class="title">Majestic Lisp: Interpretando Majestic com Majestic</h1><p><i>Escrito em Mar 14, 2021 por Lucas S. Vieira<br/><a href="mailto:lucasvieira@protonmail.com">lucasvieira@protonmail.com</a></i></p>
+</div>
+<div id="content">
+<div id="table-of-contents">
+<h2>&Iacute;ndice</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org2ffe993">Alguns conceitos antes de começarmos</a>
+<ul>
+<li><a href="#org728e83e">Notação auxiliar</a></li>
+</ul>
+</li>
+<li><a href="#orga169110">Funções principais do interpretador</a>
+<ul>
+<li><a href="#org89be637">Eval</a>
+<ul>
+<li><a href="#org77e0a06">Iniciando a função</a></li>
+<li><a href="#org5fc510a">Expressões auto-interpretáveis</a></li>
+<li><a href="#orgd607ce6">Símbolos</a></li>
+<li><a href="#org8152ed5">Quoting</a></li>
+<li><a href="#orgc25e637">Clausuras</a></li>
+<li><a href="#org7c287a7">Condicionais</a></li>
+<li><a href="#org5db4b07">Definições de valores</a></li>
+<li><a href="#org48a725a">Aplicação de funções</a></li>
+</ul>
+</li>
+<li><a href="#org964c528">Apply</a>
+<ul>
+<li><a href="#org1f9c674">Iniciando a função</a></li>
+<li><a href="#org5ae5470">Aplicação de primitivas</a></li>
+<li><a href="#org569ff54">Aplicação de clausuras</a></li>
+<li><a href="#org93b1cd6">Outras disposições</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgf426bbf">Funções auxiliares</a>
+<ul>
+<li><a href="#org3c4b680">Evlist</a></li>
+<li><a href="#org5d70272">Evcond</a></li>
+<li><a href="#orgf3754cf">Contextos</a>
+<ul>
+<li><a href="#orgefc7d0f">Ligação entre símbolos e valores</a></li>
+<li><a href="#org9eb095e">Consulta</a></li>
+<li><a href="#orgf9691a0">Definição de variáveis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org7a1abb5">Testando o interpretador</a>
+<ul>
+<li><a href="#orgde4881d">Contexto global</a></li>
+<li><a href="#org57354ad">Testes</a></li>
+</ul>
+</li>
+<li><a href="#orgf640a50">Conclusão</a></li>
+</ul>
+</div>
+</div>
+<p>
+Majestic continua  em desenvolvimento.  Os últimos  meses têm  sido de
+malabarismo em vários aspectos da minha vida pessoal e profissional, e
+Majestic  Lisp  tem recebido  uma  refatoração  total de  seus  testes
+unitários,  o que  significa que  a  linguagem, por  enquanto, só  tem
+recebido bugfixes.
+</p>
+
+<p>
+Hoje,  vou falar  um  pouco  sobre a  construção  de um  interpretador
+metacircular em Majestic  Lisp. A ideia de  construir um interpretador
+de (um  subconjunto de) Majestic,  na própria linguagem, tem  também a
+ver com a ideia de testá-la.
+</p>
+
+
+<div id="orgd63e4ad" class="figure">
+<p><object type="image/svg+xml" data="./img/metacircular_sicp.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+<p><span class="figure-number">Figura 1: </span>Representação visual de um interpretador metacircular.<br/>Fonte: <a href="https://sarabander.github.io/sicp/html/4_002e1.xhtml">Structure and Interpretation of Computer Programs</a> (editado).</p>
+</div>
+
+<div id="outline-container-org2ffe993" class="outline-2">
+<h2 id="org2ffe993">Alguns conceitos antes de começarmos</h2>
+<div class="outline-text-2" id="text-org2ffe993">
+<p>
+De acordo com  a Wiki Wiki Web<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>, um  interpretador metacircular é
+um  interpretador  escrito na  mesma  linguagem  que interpreta.  Para
+sê-lo,  é  necessário que  esta  definição  de interpretador  crie  um
+"atalho", tornando possível não especificar uma semântica precisa para
+a linguagem.
+</p>
+
+<p>
+O motivo  para este "atalho" reside  no fato de que  as construções da
+linguagem são  implementadas em termos  de si mesmas. Por  exemplo, um
+interpretador de  Lisp feito  em Lisp  não precisaria  definir células
+<i>cons</i> ou a ideia de <i>listas</i> diretamente, uma vez que a linguagem na qual
+o interpretador está sendo feito já implementa estas estruturas.
+</p>
+
+<p>
+Portanto, um  interpretador metacircular não é  meramente uma operação
+de <i>bootstrapping</i>, que envolve uma especificação rígida da linguagem do
+zero, mas sim uma  abstração em alto nível de uma  linguagem (ou de um
+<i>subset</i> dela), feita nela mesma.
+</p>
+</div>
+
+<div id="outline-container-org728e83e" class="outline-3">
+<h3 id="org728e83e">Notação auxiliar</h3>
+<div class="outline-text-3" id="text-org728e83e">
+<p>
+O interpretador metacircular nada mais é  que testes feitos em cima de
+expressões  de  Lisp, no  nosso  caso  S-expressions, que  na  verdade
+compreendem listas  aninhadas, sendo  similares a árvores  binárias na
+memória.
+</p>
+
+<p>
+Vou usar uma notação um pouco diferente para compreendermos a intenção
+de cada parte do interpretador, que normalmente vai ser na forma
+</p>
+
+\begin{equation*}
+v[\texttt{x}] = \texttt{y}
+\end{equation*}
+
+<p>
+onde <code>x</code> é uma S-expression, e <code>y</code> é o resultado de sua interpretação.
+</p>
+
+<p>
+A  interpretação (operação  \(v\)) de  uma S-expression  envolve algumas
+cláusulas.  Para  especificá-las  separadamente,  instruiremos  alguns
+mapeamentos de valores de entrada para valores de saída, desse jeito:
+</p>
+
+\begin{equation*}
+\texttt{x} \mapsto \texttt{y}
+\end{equation*}
+
+<p>
+Esta notação exemplifica uma especificação de uma das possíveis regras
+para \(v\): quando a S-expression de entrada é \(\texttt{x}\), o resultado
+será a S-expression \(\texttt{y}\).
+</p>
+
+<p>
+Alguns  desses mapeamentos  podem,  inclusive,  serem recursivos.  Por
+exemplo, um mapeamento como
+</p>
+
+\begin{equation*}
+\texttt{x} \mapsto v[\texttt{y}]
+\end{equation*}
+
+<p>
+indicará  que,  para  que  obtenhamos  o  resultado  da  avaliação  da
+S-expression  \(\texttt{x}\), é  necessário  que  façamos uma  avaliação
+subsequente  da S-expression  \(\texttt{y}\). Isto  pode ser  necessário
+principalmente quando  estivermos delegando um resultado  à chamada de
+uma função auxiliar do interpretador, por exemplo.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga169110" class="outline-2">
+<h2 id="orga169110">Funções principais do interpretador</h2>
+<div class="outline-text-2" id="text-orga169110">
+<p>
+O  nosso  interpretador  é,  na verdade,  uma  aplicação  extremamente
+simples:  vamos definir  duas  funções, chamadas  <code>eval.</code>  e <code>apply.</code>  (os
+pontos  diferenciam-nas para  que  não sobreponham  certas funções  em
+Majestic).
+</p>
+
+<p>
+Nos próximos passos, nós vamos programar ambas essas funções, cláusula
+por cláusula.
+</p>
+</div>
+
+<div id="outline-container-org89be637" class="outline-3">
+<h3 id="org89be637">Eval</h3>
+<div class="outline-text-3" id="text-org89be637">
+<p>
+A  função <code>eval.</code>  nada  mais é  que  uma análise  de  casos; em  outras
+palavras, um encadeamento de verificações de condições e despachos com
+base nestas condições.
+</p>
+
+<p>
+A função completa é extremamente sucinta:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> eval.
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">fn</span> <span style="color: #62D2DB;">(</span>exp env<span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">cond</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">numberp</span> exp<span style="color: #35BF88;">)</span> exp<span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">stringp</span> exp<span style="color: #35BF88;">)</span> exp<span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">primitivep</span> exp<span style="color: #35BF88;">)</span> exp<span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">symbolp</span> exp<span style="color: #35BF88;">)</span>
+      <span style="color: #35BF88;">(</span>lookup. exp env<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">eq</span> <span style="color: #687184;">(</span><span style="color: #0bc9cf;">first</span> exp<span style="color: #687184;">)</span> '<span style="color: #9d81ba;">quote</span><span style="color: #35BF88;">)</span>
+      <span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">second</span> exp<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">eq</span> <span style="color: #687184;">(</span><span style="color: #0bc9cf;">first</span> exp<span style="color: #687184;">)</span> '<span style="color: #9d81ba;">fn</span><span style="color: #35BF88;">)</span>
+      <span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">list</span> 'closure <span style="color: #687184;">(</span><span style="color: #0bc9cf;">rest</span> exp<span style="color: #687184;">)</span> env<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">eq</span> <span style="color: #687184;">(</span><span style="color: #0bc9cf;">first</span> exp<span style="color: #687184;">)</span> '<span style="color: #9d81ba;">cond</span><span style="color: #35BF88;">)</span>
+      <span style="color: #35BF88;">(</span>evcond. <span style="color: #687184;">(</span><span style="color: #0bc9cf;">rest</span> exp<span style="color: #687184;">)</span> env<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">eq</span> <span style="color: #687184;">(</span><span style="color: #0bc9cf;">first</span> exp<span style="color: #687184;">)</span> '<span style="color: #9d81ba;">def</span><span style="color: #35BF88;">)</span>
+      <span style="color: #35BF88;">(</span>defglobal. <span style="color: #687184;">(</span><span style="color: #0bc9cf;">second</span> exp<span style="color: #687184;">)</span> <span style="color: #687184;">(</span><span style="color: #0bc9cf;">third</span> exp<span style="color: #687184;">)</span> env<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span>t <span style="color: #35BF88;">(</span>apply. <span style="color: #687184;">(</span>eval. <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">first</span> exp<span style="color: #d7af87;">)</span> env<span style="color: #687184;">)</span>
+                <span style="color: #687184;">(</span>evlist. <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">rest</span> exp<span style="color: #d7af87;">)</span> env<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+Vamos esmiuçar a sua programação.
+</p>
+</div>
+
+<div id="outline-container-org77e0a06" class="outline-4">
+<h4 id="org77e0a06">Iniciando a função</h4>
+<div class="outline-text-4" id="text-org77e0a06">
+<p>
+Aqui, realizaremos a avaliação da expressão  <code>exp</code> sob o contexto <code>env</code>. O
+contexto  é  algo  como  uma tabela  de  relações  \(\textrm{símbolo}\,
+\times\, \textrm{valor}\). Logo mais veremos  como esta tabela pode ser
+criada usando apenas S-expressions.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> eval.
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">fn</span> <span style="color: #62D2DB;">(</span>exp env<span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">cond</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5fc510a" class="outline-4">
+<h4 id="org5fc510a">Expressões auto-interpretáveis</h4>
+<div class="outline-text-4" id="text-org5fc510a">
+<p>
+Alguns tipos  de S-expressions,  quando interpretadas, resultam  em si
+mesmas.      Chamamos     estas    S-expressions     de     expressões
+<i>auto-interpretáveis</i>.
+</p>
+
+\begin{align*}
+1 &\mapsto 1\\
+\texttt{"Hello"} &\mapsto \texttt{"Hello"}\\
+\texttt{#[primitive ...]} &\mapsto \texttt{#[primitive ...]}
+\end{align*}
+
+<p>
+As principais  expressões auto-interpretáveis  são números,  strings e
+funções primitivas.  Propositalmente, utilizaremos  as noções  de como
+estes elementos são programados  no próprio interpretador de Majestic,
+e não tocaremos em suas definições.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">numberp</span> exp<span style="color: #47ba99;">)</span> exp<span style="color: #0D9C94;">)</span>
+<span style="color: #0D9C94;">(</span><span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">stringp</span> exp<span style="color: #47ba99;">)</span> exp<span style="color: #0D9C94;">)</span>
+<span style="color: #0D9C94;">(</span><span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">primitivep</span> exp<span style="color: #47ba99;">)</span> exp<span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd607ce6" class="outline-4">
+<h4 id="orgd607ce6">Símbolos</h4>
+<div class="outline-text-4" id="text-orgd607ce6">
+<p>
+Se a expressão  em questão for um símbolo, então  retornaremos o valor
+que estiver associado ao símbolo. Não  vamos nos preocupar agora com o
+local onde este símbolo poderia estar  definido; este é um problema da
+função <code>lookup.</code>, a ser vista posteriormente.
+</p>
+
+\begin{align*}
+x &\mapsto v[x]\\
+\therefore\qquad \texttt{a} &\mapsto 7\qquad \textrm{quando } v[\texttt{a}] = 7
+\end{align*}
+
+<p>
+Há  também a  possibilidade de  um símbolo  estar <i>indefinido</i>.  Veremos
+melhor esta possibilidade mais tarde.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">symbolp</span> exp<span style="color: #47ba99;">)</span>
+ <span style="color: #47ba99;">(</span>lookup. exp env<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8152ed5" class="outline-4">
+<h4 id="org8152ed5">Quoting</h4>
+<div class="outline-text-4" id="text-org8152ed5">
+<p>
+Se a  expressão for uma lista  adequada cujo primeiro elemento  seja o
+símbolo  <code>quote</code>, então  sua  interpretação é  o  segundo símbolo.  Isto
+introduz   a  ideia   de   <i>quoting</i>,  crucial   para   a  maioria   dos
+Lisps. Utilizando-a,  podemos garantir que certas  S-expressions sejam
+tratadas como dados que não serão interpretados imediatamente.
+</p>
+
+\begin{align*}
+\texttt{'}x\, \equiv\, (\texttt{quote } x) &\mapsto x\\
+\therefore\qquad \texttt{'a}\, \equiv\, (\texttt{quote } \texttt{a}) &\mapsto \texttt{a}\\
+\end{align*}
+
+<p>
+Veja que,  geralmente, denota-se uma  expressão quotada como  <code>'x</code>. Esta
+notação é algo que tem muito mais  a ver com o leitor de expressões da
+linguagem  que  com  a  forma   como  a  função  <code>eval.</code>  processa  essa
+expressão.   Portanto,  para   nossa   conveniência,   é  muito   mais
+interessante  pensar  que  o  leitor transformará  essa  expressão  em
+<code>(quote x)</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">eq</span> <span style="color: #62D2DB;">(</span><span style="color: #0bc9cf;">first</span> exp<span style="color: #62D2DB;">)</span> '<span style="color: #9d81ba;">quote</span><span style="color: #47ba99;">)</span>
+ <span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">second</span> exp<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc25e637" class="outline-4">
+<h4 id="orgc25e637">Clausuras</h4>
+<div class="outline-text-4" id="text-orgc25e637">
+<p>
+A  próxima   possibilidade  é  uma   forma  que  indique   uma  função
+anônima. Precisamos criar algum tipo  de objeto que descreva a função,
+que trata-se basicamente  de tomar a <i>lista de parâmetros</i>  e o <i>corpo</i> da
+mesma,  bem  como  capturar  o  <i>contexto</i>  onde  a  função  está  sendo
+interpretada.
+</p>
+
+\begin{align*}
+(\texttt{fn } \texttt{L } \texttt{B}) &\mapsto (\texttt{closure}\,\, (\texttt{L }\, \texttt{B})\,\, \texttt{#[env]})\\
+\therefore\qquad
+(\texttt{fn } (\texttt{x})\, (\texttt{* } \texttt{x } \texttt{x})) &\mapsto (\texttt{closure}\,\, ((\texttt{x})\, (\texttt{* } \texttt{x } \texttt{x}))\,\, \texttt{#[env]})
+\end{align*}
+
+<p>
+Para nossa  conveniência, criaremos aqui uma  representação interna em
+lista, começada com o símbolo  <code>closure</code>. O segundo elemento dessa lista
+será uma sublista contendo <i>parâmetros</i> e  <i>corpo</i> da função, e o terceiro
+será o  <i>contexto</i> no qual  esta função  está sendo interpretada  &#x2013; que
+aqui, está contido na variável <code>env</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">eq</span> <span style="color: #62D2DB;">(</span><span style="color: #0bc9cf;">first</span> exp<span style="color: #62D2DB;">)</span> '<span style="color: #9d81ba;">fn</span><span style="color: #47ba99;">)</span>
+ <span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">list</span> 'closure <span style="color: #62D2DB;">(</span><span style="color: #0bc9cf;">rest</span> exp<span style="color: #62D2DB;">)</span> env<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7c287a7" class="outline-4">
+<h4 id="org7c287a7">Condicionais</h4>
+<div class="outline-text-4" id="text-org7c287a7">
+<p>
+Outra  possibilidade é  a  condicional  <code>cond</code>. Originalmente,  Majestic
+implementa <code>cond</code> como um <i>macro</i> que utiliza <code>if</code> por baixo dos panos. Aqui
+faremos o contrário e priorizaremos <code>cond</code>.
+</p>
+
+<p>
+<code>cond</code> avalia consecutivamente  pares de cláusulas em  formato de lista.
+Cada   par  é   composto  de   um   predicado  e   uma  expressão   de
+consequência.  Se  a  avaliação  do predicado  resultar  em  um  valor
+diferente do  símbolo <code>nil</code>, será  retornada a avaliação da  expressão a
+ele  associada.  Se  nenhum  predicado obedecer  a  essa  regra,  será
+retornado o símbolo <code>nil</code> em si.
+</p>
+
+<p>
+Para  que  tenhamos  o  efeito desejado,  considere  que  as  fórmulas
+envolvendo   \(\lor\)    abaixo   representadas    sejam   interpretadas
+sequencialmente, e não paralelamente.
+</p>
+
+\begin{equation*}
+(\texttt{cond }\, (p_{1}\,\, e_{1})\,\, (p_{2}\,\, e_{2})\,\, \dots\,\, (p_{n}\,\, e_{n})) \mapsto
+\begin{cases}
+&v[e_{1}]\qquad \textrm{quando } v[p_{1}] \neq \texttt{nil}\\
+\lor\, &v[e_{2}]\qquad \textrm{quando } v[p_{2}] \neq \texttt{nil}\\
+\lor\, &\dots\\
+\lor\, &v[e_{n}]\qquad \textrm{quando } v[p_{n}] \neq \texttt{nil}\\
+\lor\, &\texttt{nil}
+\end{cases}
+\end{equation*}
+
+<p>
+Para simplificar o processo, vamos fazer  com que o corpo de <code>cond</code> seja
+despachado  para  a  função  <code>evcond</code>,  que  realizará  a  interpretação
+adequada dele sob o <i>contexto</i> <code>env</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">eq</span> <span style="color: #62D2DB;">(</span><span style="color: #0bc9cf;">first</span> exp<span style="color: #62D2DB;">)</span> '<span style="color: #9d81ba;">cond</span><span style="color: #47ba99;">)</span>
+ <span style="color: #47ba99;">(</span>evcond. <span style="color: #62D2DB;">(</span><span style="color: #0bc9cf;">rest</span> exp<span style="color: #62D2DB;">)</span> env<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5db4b07" class="outline-4">
+<h4 id="org5db4b07">Definições de valores</h4>
+<div class="outline-text-4" id="text-org5db4b07">
+<p>
+Quando estamos lidando  com uma expressão iniciada por  <code>def</code>, esta será
+uma forma de  definir, globalmente, um valor \(y\) associado  a um certo
+símbolo \(x\).
+</p>
+
+<p>
+Nesse caso,  <code>def</code> realiza uma  alteração em um <i>contexto</i>  global, que
+estará  acessível em  qualquer  situação do  programa,  com uma  única
+ressalva:  caso estejamos  no  escopo  de uma  função,  e esta  função
+possuir o símbolo \(x\) previamente definido como um de seus parâmetros,
+então uma consulta a este mesmo  símbolo \(x\) retornará o valor passado
+por parâmetro à  função em questão, e não o  valor definido através de
+<code>def</code>.
+</p>
+
+\begin{align*}
+(\texttt{def}\,\, x\,\, y) &\mapsto x\qquad \textrm{e também } v[x] \leftarrow y\\
+\therefore\qquad (\texttt{def}\,\, \texttt{x}\,\, \texttt{7}) &\mapsto \texttt{7}\qquad \textrm{e também } v[\texttt{x}] \leftarrow \texttt{7}\\
+\therefore\qquad \texttt{x} &\mapsto \texttt{7}\qquad \textrm{após a interpretação acima}
+\end{align*}
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">eq</span> <span style="color: #62D2DB;">(</span><span style="color: #0bc9cf;">first</span> exp<span style="color: #62D2DB;">)</span> '<span style="color: #9d81ba;">def</span><span style="color: #47ba99;">)</span>
+ <span style="color: #47ba99;">(</span>defglobal. <span style="color: #62D2DB;">(</span><span style="color: #0bc9cf;">second</span> exp<span style="color: #62D2DB;">)</span> <span style="color: #62D2DB;">(</span><span style="color: #0bc9cf;">third</span> exp<span style="color: #62D2DB;">)</span> env<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org48a725a" class="outline-4">
+<h4 id="org48a725a">Aplicação de funções</h4>
+<div class="outline-text-4" id="text-org48a725a">
+<p>
+Até agora, tudo o que foi apresentado está relacionado ao que chamamos
+de  <i>formas   especiais</i>.  Estas   formas  são  formas   específicas  de
+interpretar  certas  S-expressions,  que  não  estão  relacionadas  ao
+processo comum de interpretação.
+</p>
+
+<p>
+É  possível adicionar  mais formas  especiais que  seriam mais  regras
+alternativas de  interpretação de  expressões, porém  precisamos tomar
+cuidado para que essas regras extras não sejam excessivas.
+</p>
+
+<p>
+Caso nenhuma  das <i>formas  especiais</i> se  enquadre, entramos  neste caso
+comum  de interpretação,  que  chamo livremente  de <i>interpretação  por
+ordem aplicativa</i>.
+</p>
+
+\begin{equation*}
+(f\, x\, y\, \dots) \mapsto v[(\texttt{apply } (\texttt{eval } f\,\, \texttt{#[env]})\,\, (\texttt{evlist } x\, y\, \dots\,\, \texttt{#[env]}))]
+\end{equation*}
+
+<p>
+A ideia é extremamente simples:  primeiro, interpretamos a função <code>f</code> em
+relação ao <i>contexto</i> <code>env</code>, o que  nos renderá uma função primitiva ou
+uma <code>closure</code>. Em seguida, interpretamos a lista de argumentos da função
+em  relação  ao  mesmo  <i>contexto</i>. Finalmente,  aplicamos  a  função
+interpretada aos argumentos interpretados.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span>t <span style="color: #47ba99;">(</span>apply. <span style="color: #62D2DB;">(</span>eval. <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">first</span> exp<span style="color: #9d81ba;">)</span> env<span style="color: #62D2DB;">)</span>
+           <span style="color: #62D2DB;">(</span>evlist. <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">rest</span> exp<span style="color: #9d81ba;">)</span> env<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span><span style="color: #e55c7a; background-color: #832729;">)))</span>
+
+</pre>
+</div>
+
+<p>
+Note que temos aí um processo  <i>recursivo</i> e que não deixamos claro como
+se dá o  processo de <i>aplicação</i>. Neste último caso,  isso é proposital,
+pois delegaremos  a ideia de aplicação  de uma função à  função <code>apply</code>,
+que abordaremos agora.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org964c528" class="outline-3">
+<h3 id="org964c528">Apply</h3>
+<div class="outline-text-3" id="text-org964c528">
+<p>
+A função <code>apply.</code> é bem mais simples. Trata-se da mesma ideia de análise
+de  casos.  Porém,  aqui  vamos  tratar apenas  de  três situações  em
+específico.
+</p>
+
+<p>
+<code>apply.</code> é ainda mais sucinta que <code>eval.</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> apply.
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">fn</span> <span style="color: #62D2DB;">(</span>proc args<span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">cond</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">primitivep</span> proc<span style="color: #35BF88;">)</span> <span style="color: #35BF88;">(</span><span style="color: #9d81ba;">apply</span> proc args<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">eq</span> <span style="color: #687184;">(</span><span style="color: #0bc9cf;">first</span> proc<span style="color: #687184;">)</span> 'closure<span style="color: #35BF88;">)</span>
+      <span style="color: #35BF88;">(</span>eval. <span style="color: #687184;">(</span><span style="color: #0bc9cf;">second</span> <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">second</span> proc<span style="color: #d7af87;">)</span><span style="color: #687184;">)</span>
+             <span style="color: #687184;">(</span>bind. <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">first</span> <span style="color: #845A84;">(</span><span style="color: #0bc9cf;">second</span> proc<span style="color: #845A84;">)</span><span style="color: #d7af87;">)</span>
+                    args
+                    <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">third</span> proc<span style="color: #d7af87;">)</span><span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span>t <span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">err</span> <span style="color: #f5c791;">"Undefined procedure: {}"</span> proc<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+Veremos agora sua construção passo-a-passo.
+</p>
+</div>
+
+<div id="outline-container-org1f9c674" class="outline-4">
+<h4 id="org1f9c674">Iniciando a função</h4>
+<div class="outline-text-4" id="text-org1f9c674">
+<p>
+<code>apply.</code> recebe  uma certa função  <code>proc</code> e  uma lista de  argumentos <code>args</code>
+como parâmetro.   Vamos assumir  que os  argumentos já  tenham passado
+pelo  processo  de interpretação  do  passo  anterior, não  precisando
+portanto de serem interpretados novamente antes de seu uso.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> apply.
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">fn</span> <span style="color: #62D2DB;">(</span>proc args<span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">cond</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5ae5470" class="outline-4">
+<h4 id="org5ae5470">Aplicação de primitivas</h4>
+<div class="outline-text-4" id="text-org5ae5470">
+<p>
+O primeiro passo  é avaliar se o procedimento em  questão é uma função
+primitiva. Em  Majestic, isso possui um  significado muito específico,
+mas aqui  poderíamos ter, por  exemplo, uma verificação para  saber se
+<code>proc</code> é código de máquina, por exemplo.
+</p>
+
+<p>
+O interpretador  metacircular não  lida com este  tipo de  caso, então
+delegamo-no  para outros  lugares. Em  especial, utilizaremos  a forma
+especial <code>apply</code> de Majestic para aplicar a função primitiva.
+</p>
+
+<p>
+Note que essa forma  especial <code>apply</code> não é a função  <code>apply.</code>, e sim algo
+externo  ao qual  estamos recorrendo,  algo embutido  no interpretador
+original  de  Majestic   Lisp.   Isso  deixa  bem  claro   o  teor  da
+especificação semântica no interpretador metacircular, pois escolhemos
+deliberadamente não esclarecer o que acontece aqui, e sim delegar a um
+recurso subjacente da linguagem utilizada na programação.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">primitivep</span> proc<span style="color: #47ba99;">)</span> <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">apply</span> proc args<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org569ff54" class="outline-4">
+<h4 id="org569ff54">Aplicação de clausuras</h4>
+<div class="outline-text-4" id="text-org569ff54">
+<p>
+Caso o procedimento  em questão seja uma função  definida pelo usuário
+&#x2013; uma <i>clausura</i> &#x2013;, então teremos uma forma bem explícita de lidar com
+isso.
+</p>
+
+<p>
+Aplicar uma função nada mais será que:
+</p>
+
+<ol class="org-ol">
+<li>Ligar os  símbolos dos  argumentos  da função  a seus  respectivos
+parâmetros;</li>
+<li>Estender  temporariamente o contexto capturado  durante a definição
+da função, de forma que contenham as ligações feitas no passo 1;</li>
+<li>Interpretar o corpo da função sob este contexto gerado.</li>
+</ol>
+
+\begin{align*}
+&(\texttt{apply }\, (\texttt{closure}\,\, (\texttt{L }\, \texttt{B})\,\, \texttt{#[env]})\,\, \texttt{args})
+\mapsto
+e[B,\,\, extend[\texttt{#[env]},\, \texttt{L},\,\,\texttt{args}]]\\
+\textrm{onde}&\\
+&e[\texttt{E}, \texttt{N}]\,\,\textrm{é a interpretação da expressão E no contexto N;}\\
+&extend[\texttt{N},\,\,\texttt{L},\,\,\texttt{A}]\,\, \textrm{estende o contexto N ligando recursivamente L a A}.
+\end{align*}
+
+<p>
+Fica  claro, inclusive,  que a  operação \(v\)  é, na  verdade, um  caso
+especial da operação  \(e\) definida acima. Em  outras palavras, \(v[\texttt{E}]  = e[\texttt{E},
+\texttt{nil}]\)<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">eq</span> <span style="color: #62D2DB;">(</span><span style="color: #0bc9cf;">first</span> proc<span style="color: #62D2DB;">)</span> 'closure<span style="color: #47ba99;">)</span>
+ <span style="color: #47ba99;">(</span>eval. <span style="color: #62D2DB;">(</span><span style="color: #0bc9cf;">second</span> <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">second</span> proc<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+        <span style="color: #62D2DB;">(</span>bind. <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">first</span> <span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">second</span> proc<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+               args
+               <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">third</span> proc<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org93b1cd6" class="outline-4">
+<h4 id="org93b1cd6">Outras disposições</h4>
+<div class="outline-text-4" id="text-org93b1cd6">
+<p>
+Poderiam ocorrer outros casos  de aplicação no interpretador. Todavia,
+isto não ocorre aqui.
+</p>
+
+<p>
+Uma situação anômala será  considerada um erro; portanto, utilizaremos
+a primitiva <code>err</code> de Majestic para propagar tal erro quando ocorrer.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span>t <span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">err</span> <span style="color: #f5c791;">"Undefined procedure: {}"</span> proc<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span><span style="color: #e55c7a; background-color: #832729;">)))</span>
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf426bbf" class="outline-2">
+<h2 id="orgf426bbf">Funções auxiliares</h2>
+<div class="outline-text-2" id="text-orgf426bbf">
+<p>
+As funções  que descrevo a  seguir são auxiliares, portanto  não serei
+muito rigoroso, só explicarei por alto o que fazem.
+</p>
+</div>
+
+<div id="outline-container-org3c4b680" class="outline-3">
+<h3 id="org3c4b680">Evlist</h3>
+<div class="outline-text-3" id="text-org3c4b680">
+<p>
+Interpreta  uma  lista de  expressões,  retornando  uma lista  com  os
+resultados das interpretações. Simples assim.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> evlist.
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">fn</span> <span style="color: #62D2DB;">(</span>L env<span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">cond</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">nilp</span> L<span style="color: #35BF88;">)</span> nil<span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span>t <span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">cons</span> <span style="color: #687184;">(</span>eval. <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">first</span> L<span style="color: #d7af87;">)</span> env<span style="color: #687184;">)</span>
+              <span style="color: #687184;">(</span>evlist. <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">rest</span> L<span style="color: #d7af87;">)</span> env<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5d70272" class="outline-3">
+<h3 id="org5d70272">Evcond</h3>
+<div class="outline-text-3" id="text-org5d70272">
+<p>
+A ideia é  simples: O corpo de  <code>cond</code> é composto de \(n\)  listas de dois
+elementos.  Os  elementos  são,  respectivamente, um  <i>predicado</i>  e  um
+<i>consequente</i> para aquele predicado.
+</p>
+
+<p>
+<code>evcond.</code> percorre  essas listas  de dois elementos,  interpretando cada
+predicado.  Quando a  interpretação do  predicado não  for <code>nil</code>,  então
+retorna-se  a interpretação  do consequente.  Caso contrário,  <code>evcond.</code>
+passa para a próxima lista de dois elementos.
+</p>
+
+<p>
+Se não houver mais listas a serem varridas, <code>nil</code> é retornado.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> evcond.
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">fn</span> <span style="color: #62D2DB;">(</span>clauses env<span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">cond</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">nilp</span> clauses<span style="color: #35BF88;">)</span> nil<span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">eq</span> <span style="color: #687184;">(</span><span style="color: #0bc9cf;">first-of-first</span> clauses<span style="color: #687184;">)</span> t<span style="color: #35BF88;">)</span>
+      <span style="color: #35BF88;">(</span>eval. <span style="color: #687184;">(</span><span style="color: #0bc9cf;">second</span> <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">first</span> clauses<span style="color: #d7af87;">)</span><span style="color: #687184;">)</span> env<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">nilp</span> <span style="color: #687184;">(</span>eval. <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">first-of-first</span> clauses<span style="color: #d7af87;">)</span> env<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span>
+      <span style="color: #35BF88;">(</span>evcond. <span style="color: #687184;">(</span><span style="color: #0bc9cf;">rest</span> clauses<span style="color: #687184;">)</span> env<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span>t <span style="color: #35BF88;">(</span>eval. <span style="color: #687184;">(</span><span style="color: #0bc9cf;">second</span> <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">first</span> clauses<span style="color: #d7af87;">)</span><span style="color: #687184;">)</span> env<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf3754cf" class="outline-3">
+<h3 id="orgf3754cf">Contextos</h3>
+<div class="outline-text-3" id="text-orgf3754cf">
+<p>
+O  próximo  tópico   auxiliar  é  o  gerenciamento   de  contextos  de
+interpretação,   relacionados  à   notação  \(e[...]\)   que  utilizamos
+anteriormente.
+</p>
+
+<p>
+Toda  expressão é  interpretada em  um  contexto, mesmo  que ele  seja
+vazio.  E  geralmente,  esses  contextos  são  criados  ou  estendidos
+temporariamente durante a aplicação de clausuras, funções do usuário.
+</p>
+</div>
+
+<div id="outline-container-orgefc7d0f" class="outline-4">
+<h4 id="orgefc7d0f">Ligação entre símbolos e valores</h4>
+<div class="outline-text-4" id="text-orgefc7d0f">
+<p>
+As funções auxiliares  <code>bind.</code> e <code>pair-up.</code> são responsáveis  por ligar um
+conjunto de  variáveis a  seus respectivos valores,  e então  criar um
+novo  contexto  com  esses  pareamentos,  reaproveitando  um  contexto
+antigo.
+</p>
+
+<p>
+Cada conjunto de novos pareamentos é  conhecido como sendo um <i>frame</i> no
+contexto. <code>pair-up.</code>  cria um novo  <i>frame</i>, <code>bind.</code> adiciona este  <i>frame</i> ao
+contexto antigo (sem modificá-lo).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> bind.
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">fn</span> <span style="color: #62D2DB;">(</span>vars vals env<span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #0bc9cf;">cons</span> <span style="color: #9d81ba;">(</span>pair-up. vars vals<span style="color: #9d81ba;">)</span>
+          env<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+
+<span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> pair-up.
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">fn</span> <span style="color: #62D2DB;">(</span>vars vals<span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">cond</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">nilp</span> vars<span style="color: #35BF88;">)</span>
+      <span style="color: #35BF88;">(</span><span style="color: #9d81ba;">cond</span> <span style="color: #687184;">(</span><span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">nilp</span> vals<span style="color: #d7af87;">)</span> nil<span style="color: #687184;">)</span>
+            <span style="color: #687184;">(</span>t <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">err</span> <span style="color: #f5c791;">"Too many arguments"</span><span style="color: #d7af87;">)</span><span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">nilp</span> vals<span style="color: #35BF88;">)</span>
+      <span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">err</span> <span style="color: #f5c791;">"Too few arguments"</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span>t <span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">cons</span> <span style="color: #687184;">(</span><span style="color: #0bc9cf;">cons</span> <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">first</span> vars<span style="color: #d7af87;">)</span>
+                    <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">first</span> vals<span style="color: #d7af87;">)</span><span style="color: #687184;">)</span>
+              <span style="color: #687184;">(</span>pair-up. <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">rest</span> vars<span style="color: #d7af87;">)</span>
+                        <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">rest</span> vals<span style="color: #d7af87;">)</span><span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9eb095e" class="outline-4">
+<h4 id="org9eb095e">Consulta</h4>
+<div class="outline-text-4" id="text-org9eb095e">
+<p>
+A consulta de um símbolo em um contexto nada mais é que varrer cada um
+de seus <i>frames</i> e, nestes <i>frames</i>, procurar nos pares de variáveis se há
+uma correspondência entre aquele determinado símbolo e algum valor.
+</p>
+
+<p>
+Se houver, o valor é retornado;  se não, um erro é levantado indicando
+que a variável não foi definida.
+</p>
+
+<p>
+<code>lookup.</code> é responsável por varrer o contexto atrás de <i>frames</i>. <code>assq.</code> é a
+função auxiliar que varre um <i>frame</i> à procura do símbolo e de seu valor
+correspondente.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> lookup.
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">fn</span> <span style="color: #62D2DB;">(</span>sym env<span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">cond</span>
+     <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">nilp</span> env<span style="color: #35BF88;">)</span>
+      <span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">err</span> <span style="color: #f5c791;">"Unbound variable {}"</span> sym<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+     <span style="color: #9d81ba;">(</span>t <span style="color: #35BF88;">(</span><span style="color: #687184;">(</span><span style="color: #9d81ba;">fn</span> <span style="color: #d7af87;">(</span>vcell<span style="color: #d7af87;">)</span>
+                 <span style="color: #d7af87;">(</span><span style="color: #9d81ba;">cond</span> <span style="color: #845A84;">(</span><span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">nilp</span> vcell<span style="color: #47ba99;">)</span>
+                        <span style="color: #47ba99;">(</span>lookup. sym <span style="color: #0D9C94;">(</span><span style="color: #0bc9cf;">rest</span> env<span style="color: #0D9C94;">)</span><span style="color: #47ba99;">)</span><span style="color: #845A84;">)</span>
+                       <span style="color: #845A84;">(</span>t <span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">rest</span> vcell<span style="color: #47ba99;">)</span><span style="color: #845A84;">)</span><span style="color: #d7af87;">)</span><span style="color: #687184;">)</span>
+               <span style="color: #687184;">(</span>assq. sym <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">first</span> env<span style="color: #d7af87;">)</span><span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+
+<span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> assq.
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">fn</span> <span style="color: #62D2DB;">(</span>sym alist<span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">cond</span> <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">nilp</span> alist<span style="color: #35BF88;">)</span> nil<span style="color: #9d81ba;">)</span>
+          <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">eq</span> sym <span style="color: #687184;">(</span><span style="color: #0bc9cf;">first</span> <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">first</span> alist<span style="color: #d7af87;">)</span><span style="color: #687184;">)</span><span style="color: #35BF88;">)</span>
+           <span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">first</span> alist<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+          <span style="color: #9d81ba;">(</span>t <span style="color: #35BF88;">(</span>assq. sym <span style="color: #687184;">(</span><span style="color: #0bc9cf;">rest</span> alist<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf9691a0" class="outline-4">
+<h4 id="orgf9691a0">Definição de variáveis</h4>
+<div class="outline-text-4" id="text-orgf9691a0">
+<p>
+Durante o  uso da  forma especial  <code>def</code>, o  que se  faz é  modificar um
+contexto inicial, que aqui armazenaremos na variável <code>*env*</code>, sendo esta
+diretamente inacessível  para o  usuário do interpretador  que estamos
+construindo.
+</p>
+
+<p>
+Quando um novo valor é definido através de <code>def</code>, um novo <i>frame</i> é criado
+e  incluído  em  <code>*env*</code>.  Essa  operação  cria  um  novo  contexto  que
+referencia o valor anterior de  <code>*env*</code>. Subsequentemente, <code>*env*</code> passa a
+apontar para esse novo contexto, sendo, portanto, <b>modificado</b>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> defglobal.
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">fn</span> <span style="color: #62D2DB;">(</span>sym val env<span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">cond</span> <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">symbolp</span> sym<span style="color: #35BF88;">)</span>
+                 <span style="color: #35BF88;">(</span><span style="color: #9d81ba;">set</span> *env*
+                      <span style="color: #687184;">(</span>bind. <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">list</span> sym<span style="color: #d7af87;">)</span>
+                             <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">list</span> <span style="color: #845A84;">(</span>eval. val env<span style="color: #845A84;">)</span><span style="color: #d7af87;">)</span>
+                             env<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span>
+           sym<span style="color: #9d81ba;">)</span>
+                <span style="color: #9d81ba;">(</span>t <span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">err</span> <span style="color: #f5c791;">"Not a symbol: {}"</span> sym<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7a1abb5" class="outline-2">
+<h2 id="org7a1abb5">Testando o interpretador</h2>
+<div class="outline-text-2" id="text-org7a1abb5">
+<p>
+Agora que  temos todas as  partes do interpretador,  basta realizarmos
+testes com ele.
+</p>
+</div>
+
+<div id="outline-container-orgde4881d" class="outline-3">
+<h3 id="orgde4881d">Contexto global</h3>
+<div class="outline-text-3" id="text-orgde4881d">
+<p>
+Vamos começar  definindo o  contexto global, <code>*env*</code>.  Definimos algumas
+funções essenciais.
+</p>
+
+<p>
+Veja que as funções essenciais  são, na verdade, funções primitivas de
+Majestic Lisp. Aqui temos, mais uma  vez, um exemplo claro de abuso da
+semântica   da   linguagem-base   para  definição   do   interpretador
+metacircular.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> *env*
+  <span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">list</span>
+   <span style="color: #62D2DB;">(</span><span style="color: #0bc9cf;">list</span> <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">+</span>              <span style="color: #0bc9cf;">+</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">-</span>              <span style="color: #0bc9cf;">-</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">*</span>              <span style="color: #0bc9cf;">*</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">/</span>              <span style="color: #0bc9cf;">/</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">=</span>              <span style="color: #0bc9cf;">=</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">print</span>          <span style="color: #0bc9cf;">print</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">numberp</span>        <span style="color: #0bc9cf;">numberp</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">symbolp</span>        <span style="color: #0bc9cf;">symbolp</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">stringp</span>        <span style="color: #0bc9cf;">stringp</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">first</span>          <span style="color: #0bc9cf;">first</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">second</span>         <span style="color: #0bc9cf;">second</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">rest</span>           <span style="color: #0bc9cf;">rest</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">third</span>          <span style="color: #0bc9cf;">third</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">err</span>            <span style="color: #0bc9cf;">err</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">first-of-first</span> <span style="color: #0bc9cf;">first-of-first</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">primitivep</span>     <span style="color: #0bc9cf;">primitivep</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">cons</span>           <span style="color: #0bc9cf;">cons</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">last</span>           <span style="color: #0bc9cf;">last</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">eq</span>             <span style="color: #0bc9cf;">eq</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">nilp</span>           <span style="color: #0bc9cf;">nilp</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">cons</span> '<span style="color: #0bc9cf;">list</span>           <span style="color: #0bc9cf;">list</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org57354ad" class="outline-3">
+<h3 id="org57354ad">Testes</h3>
+<div class="outline-text-3" id="text-org57354ad">
+<p>
+Os testes em si podem ser  feitos diretamente através do uso da função
+<code>eval.</code>,   bastando  fornecer   o  contexto   <code>*env*</code>  como   contexto  de
+interpretação.
+</p>
+
+<p>
+Passamos a <code>eval.</code> uma expressão quotada (exceto quando se trata de algo
+auto-interpretável), e <code>*env*</code>.  Coletamos a saída da  interpretação e a
+imprimimos na tela.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-majestic"><span style="color: #0D9C94;">(</span><span style="color: #0bc9cf;">print</span> <span style="color: #f5c791;">"v[1] = {}"</span>
+       <span style="color: #47ba99;">(</span>eval. <span style="color: #f5c791;">1</span> *env*<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+<span style="color: #0D9C94;">(</span><span style="color: #0bc9cf;">print</span> <span style="color: #f5c791;">"v[(quote foo)] = {}"</span>
+       <span style="color: #47ba99;">(</span>eval. '<span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">quote</span> foo<span style="color: #62D2DB;">)</span> *env*<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+<span style="color: #0D9C94;">(</span><span style="color: #0bc9cf;">print</span> <span style="color: #f5c791;">"v[(def num 7)] = {}"</span>
+       <span style="color: #47ba99;">(</span>eval. '<span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">def</span> num <span style="color: #f5c791;">7</span><span style="color: #62D2DB;">)</span> *env*<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+<span style="color: #0D9C94;">(</span><span style="color: #0bc9cf;">print</span> <span style="color: #f5c791;">"v[(def square (fn (x) (* x x)))] = {}"</span>
+       <span style="color: #47ba99;">(</span>eval. '<span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">def</span> square <span style="color: #9d81ba;">(</span><span style="color: #9d81ba;">fn</span> <span style="color: #35BF88;">(</span>x<span style="color: #35BF88;">)</span> <span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">*</span> x x<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span> *env*<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+<span style="color: #0D9C94;">(</span><span style="color: #0bc9cf;">print</span> <span style="color: #f5c791;">"v[num] = {}"</span>
+       <span style="color: #47ba99;">(</span>eval. 'num *env*<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+<span style="color: #0D9C94;">(</span><span style="color: #0bc9cf;">print</span> <span style="color: #f5c791;">"v[(square num)] = {}"</span>
+       <span style="color: #47ba99;">(</span>eval. '<span style="color: #62D2DB;">(</span>square num<span style="color: #62D2DB;">)</span> *env*<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+<span style="color: #0D9C94;">(</span><span style="color: #0bc9cf;">print</span> <span style="color: #f5c791;">"v[(((fn (x) (fn (y) (+ x y))) 3) 4)] = {}"</span>
+       <span style="color: #47ba99;">(</span>eval. '<span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span><span style="color: #9d81ba;">fn</span> <span style="color: #687184;">(</span>x<span style="color: #687184;">)</span>
+                   <span style="color: #687184;">(</span><span style="color: #9d81ba;">fn</span> <span style="color: #d7af87;">(</span>y<span style="color: #d7af87;">)</span> <span style="color: #d7af87;">(</span><span style="color: #0bc9cf;">+</span> x y<span style="color: #d7af87;">)</span><span style="color: #687184;">)</span><span style="color: #35BF88;">)</span>
+                 <span style="color: #f5c791;">3</span><span style="color: #9d81ba;">)</span>
+                <span style="color: #f5c791;">4</span><span style="color: #62D2DB;">)</span>
+              *env*<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+O resultado pode ser visto a seguir.
+</p>
+
+<pre class="example">
+v[1] = 1
+v[(quote foo)] = foo
+v[(def num 7)] = num
+v[(def square (fn (x) (* x x)))] = square
+v[num] = 7
+v[(square num)] = 49
+v[(((fn (x) (fn (y) (+ x y))) 3) 4)] = 7
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf640a50" class="outline-2">
+<h2 id="orgf640a50">Conclusão</h2>
+<div class="outline-text-2" id="text-orgf640a50">
+<p>
+O interpretador metacircular aqui produzido é uma versão modificada do
+interpretador construído  no <a href="https://sarabander.github.io/sicp/html/4_002e1.xhtml#g_t4_002e1">Structure and Interpretation  of Computer
+Programs</a>,  o  lendário  livro  que, acredito  eu,  todo  desenvolvedor
+deveria ler, mesmo sem fazer os exercícios.
+</p>
+
+<p>
+O interpretador que fizemos tem  alguns problemas.  Por exemplo, ainda
+é necessário fornecer <code>*env*</code> como contexto de interpretação inicial, o
+que  poderia  ser problemático,  caso  seu  conteúdo fosse  modificado
+durante uma  expressão, para então  ser utilizado (imagine usar  <code>def</code> e
+consultar seu valor na mesma interpretação).
+</p>
+
+<p>
+Também faltam várias  formas especiais de Majestic que  aqui não foram
+definidas.  A maioria  delas não  é necessária  para um  interpretador
+metacircular. Mas algumas formas, como <code>set</code>, seriam muito bem-vindas.
+</p>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Notas de Rodap&eacute;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+Veja <a href="http://wiki.c2.com/?MetaCircularEvaluator">http://wiki.c2.com/?MetaCircularEvaluator</a>.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+Bem&#x2026;  isso não é  inteiramente verdade aqui. Nesta  versão do
+interpretador metacircular, precisamos de um contexto inicial em todas
+as situações.  No interpretador de  Majestic feito em Rust,  porém, um
+contexto nulo  força o  interpretador a consultar  a tabela  global de
+símbolos. Esta também é a  forma canônica de armazenar valores globais
+em LISPs mais antigos.
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<h3><a href="../">De volta à página anterior</a></h3>
+</div>
+</body>
+</html>
