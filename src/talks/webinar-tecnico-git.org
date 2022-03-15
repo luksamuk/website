@@ -1,0 +1,226 @@
+#+TITLE: Git
+#+SUBTITLE: Webinar Técnico
+#+author: Lucas S. Vieira
+#+date: 21 de março de 2022
+#+email: lucas.vieira@atsinformatica.com.br
+#+startup: latexpreview showall inlineimages
+
+#+reveal_margin: 0.2
+# #+reveal_transition: none
+#+reveal_theme: league
+#+reveal_plugins: (print-pdf zoom)
+#+options: num:nil timestamp:nil toc:nil
+# #+reveal_init_options: transition:"none", slideNumber:true
+#+reveal_init_options: slideNumber:true
+
+#+reveal_title_slide: <h3>%t<br/></h3><p>%s<br/><br/>%a</h3><br/><p>%e<br/>%d<br/>ATS Informática</p>
+
+:CUSTOM_CSS:
+#+html: <style type="text/css">
+#+html: .reveal pre {
+#+html:     box-shadow: 0px 0px 0px rgba(0, 0, 0, 0) !important;
+#+html: }
+#+html: </style>
+
+#+html: <style>
+#+html: .container{
+#+html:     display: flex;
+#+html: }
+#+html: .col{
+#+html:     flex: 1;
+#+html: }
+#+html: </style>
+:END:
+
+* O que é Git?
+
+#+attr_html: :width 500px
+#+attr_org: :width 50px
+[[./git_img/git-logo.png]]
+
+** Surgimento do Git
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+attr_html: :style font-size:0.7em;text-align:left;
+
+Criado por Linus Torvalds.
+
+Feito para o Linux.
+
+Ao contrário de  outros SCMs (como SVN), Git não  armazena /deltas/, e
+sim /snapshots/.
+
+#+html: </div>
+#+html: <div class="col">
+
+#+attr_html: :width 500px
+#+attr_org: :width 20px
+[[./git_img/linus.jpg]]
+
+#+html: </div>
+#+html: </div>
+
+** Git vs. GitHub
+
+#+attr_html: :height 200px
+#+attr_org: :width 50px
+[[./git_img/Octocat.png]]
+
+Git = Controle de versão.
+
+GitHub = /Git forge/ e rede social.
+
+*** Qual a importância de uma Git Forge?
+
+- Portfolio;
+- Compartilhamento de código aberto;
+- Hospedagem de sites estáticos (GitHub Pages);
+- Integração com outros serviços (ex. Heroku);
+- *Comunidade!*
+
+** Uso de linha de comando
+
+#+begin_src bash
+$ git status  # Status do seu branch
+$ git --help  # Leia a ajuda!
+#+end_src
+
+* Git Básico
+
+** Git Clone e Git Init
+
+** Git Pull e Git Push
+
+** Git Checkout e Git Branch
+
+** Git Remote e Git Fetch
+
+# Falar do que é o upstream
+
+* Boas práticas de Git
+
+** Arquivos binários
+
+Tudo aquilo que não for comparável a  um arquivo de texto, para o Git,
+é um arquivo binário.
+
+#+ATTR_REVEAL: :frag (appear)
+*JAMAIS* suba um arquivo binário para o Git.
+
+#+ATTR_REVEAL: :frag (appear)
+Como toda boa regra, há exceções.
+
+*** Arquivo .gitignore
+
+Arquivos gerados dentro do repositório podem ser desconsiderados.
+
+O  ~.gitignore~ opera  verticalmente  ignorando  arquivos via  caminho
+absoluto ou /wildcard/.
+
+#+begin_src text
+,*.pdf     # Ignora arquivos PDF
+,*.exe     # Ignora executáveis do Windows
+target/   # Ignora todo o diretório "target" nesta pasta
+src/*.dcu # Ignora todos os .dcu na pasta src/
+#+end_src
+
+*** Git LFS
+
+Git suporta extensões! Uma das mais conhecidas é o /Large File Support
+(LFS)/.
+
+O  LFS  existe para  ajudar  com  armazenamento de  arquivos  binários
+grandes que sejam necessários para o projeto.
+
+Cada  /forge/  que suporta  LFS  armazena  os  objetos em  um  /store/
+especial.
+
+#+begin_src bash
+$ git lfs track "*.mp3"
+$ git lfs track "*.bin"
+$ git lfs track "*.res"
+#+end_src
+
+[[https://www.atlassian.com/git/tutorials/git-lfs][Fonte]]
+
+** Git Submodules e Git Subtrees
+
+Submódulos operam como links para outros repositórios.
+
+#+begin_src text
+[submodule "meu_submodulo"]
+path = "meu_submodulo"
+url = https://github.com/luksamuk/meu_submodulo
+#+end_src
+
+#+begin_src bash
+$ git submodule init
+$ git submodule update
+#+end_src
+
+#+reveal: split
+
+Subárvores  incluem   o  código   inteiro  de  outro   repositório  no
+repositório atual.
+
+#+begin_src bash
+$ git remote add meu_submodulo \
+  https://github.com/luksamuk/meu_submodulo
+
+$ git subtree add --squash \
+  --prefix=meu_submodulo/ \
+  meu_submodulo master
+#+end_src
+
+[[https://andrey.nering.com.br/2016/git-submodules-vs-subtrees/][Fonte]]
+
+* Branches e Forks
+
+** Branch
+
+# Falar a respeito da parte não-óbvia de branches
+
+*** Git Flow
+
+** Forks
+
+* Merge vs. Rebase
+
+** O que é Git Merge?
+
+** O que é Git Rebase?
+
+*** Regra de ouro do uso de Rebase
+
+** Nomenclatura
+
+** Exemplo: Recuperar alterações da ~develop~
+
+** Exemplo: Trabalhando em conjunto na mesma branch
+
+** Outros usos para merge
+
+# Cherry-pick
+# Squash
+
+* Produtividade com Git
+
+** Reflog
+
+** Git Restore
+
+** Git Bisect
+
+# Situação: Funcionalidade  funcionava na  versão X, mas  não funciona
+# mais
+
+** Integração contínua (CI) e Entrega contínua (CD)
+
+*** Github Actions
+
+# Falar  que é  possível  chamar  as pipelines  do  Azure pelo  Github
+# Actions
+
+* Referências
+
