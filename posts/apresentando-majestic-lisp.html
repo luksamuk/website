@@ -6,12 +6,11 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Apresentando Lisps e Majestic Lisp</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="Lucas S. Vieira" />
-<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -32,8 +31,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -42,21 +42,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,7 +192,6 @@
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   .org-svg { width: 90%; }
-  /*]]>*/-->
 </style>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164062058-1"></script>
@@ -230,16 +229,15 @@ gtag('config', 'UA-164062058-1');
              }
 });
 </script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="preamble" class="status">
 <h1 class="title">Apresentando Lisps e Majestic Lisp</h1><p><i>Escrito em Ago 05, 2020 por Lucas S. Vieira<br/><a href="mailto:lucasvieira@protonmail.com">lucasvieira@protonmail.com</a></i></p>
 </div>
-<div id="content">
+<div id="content" class="content">
 
-<div id="org094c58e" class="figure">
+<div id="org38e1471" class="figure">
 <p><img src="./img/i-love-lisp.png" alt="i-love-lisp.png" />
 </p>
 </div>
@@ -276,9 +274,9 @@ preocupe,  pois  esse post  foi  feito  pensando  em você.  Nada  será
 explicado exaustivamente, mas espero que sirva para aguçar o paladar.
 </p>
 
-<div id="outline-container-org774154b" class="outline-2">
-<h2 id="org774154b">O que é Lisp, afinal de contas?</h2>
-<div class="outline-text-2" id="text-org774154b">
+<div id="outline-container-org80323a8" class="outline-2">
+<h2 id="org80323a8">O que é Lisp, afinal de contas?</h2>
+<div class="outline-text-2" id="text-org80323a8">
 <p>
 Se você  caiu de paraquedas  nesse post, talvez não  saiba o que  é um
 dialeto  de  Lisp.   Vou  dar  uma  explicação   resumida:  Lisps  são
@@ -310,9 +308,9 @@ de 1960.
 </div>
 </div>
 
-<div id="outline-container-org8a85707" class="outline-2">
-<h2 id="org8a85707">Por que fazer uma linguagem?</h2>
-<div class="outline-text-2" id="text-org8a85707">
+<div id="outline-container-orgde1ef56" class="outline-2">
+<h2 id="orgde1ef56">Por que fazer uma linguagem?</h2>
+<div class="outline-text-2" id="text-orgde1ef56">
 <p>
 Fazer  a sua  própria linguagem  de  programação é  um processo  muito
 interessante   porque   te   induz   a  trabalhar   com   um   projeto
@@ -356,9 +354,9 @@ Sem mais delongas, vamos descrever a linguagem!
 </div>
 </div>
 
-<div id="outline-container-org0edfe77" class="outline-2">
-<h2 id="org0edfe77">REPL</h2>
-<div class="outline-text-2" id="text-org0edfe77">
+<div id="outline-container-orgd374b78" class="outline-2">
+<h2 id="orgd374b78">REPL</h2>
+<div class="outline-text-2" id="text-orgd374b78">
 <p>
 Antes de mais nada, a notação  para exemplos que utilizarei aqui é uma
 notação que  simula um REPL. Sem  entrar muito em detalhes,  a ideia é
@@ -371,7 +369,7 @@ A  expressão  digitada será  sempre  prefixada  pelo  símbolo <code>&gt;</cod
 resposta virá sem recuo, logo abaixo da entrada.
 </p>
 
-<pre class="example" id="orgcf252e6">
+<pre class="example" id="org8b7ed86">
 &gt; entrada do usuário
 resposta do interpretador
 </pre>
@@ -382,7 +380,7 @@ elas terão recuo para conservarem  a indentação da linha prefixada com
 <code>&gt;</code>.
 </p>
 
-<pre class="example" id="org5ac5e77">
+<pre class="example" id="org54ce977">
 &gt; entrada do usuário
   com múltiplas linhas
 resposta do interpretador
@@ -390,9 +388,9 @@ resposta do interpretador
 </div>
 </div>
 
-<div id="outline-container-org4cc1b36" class="outline-2">
-<h2 id="org4cc1b36">Tipos básicos</h2>
-<div class="outline-text-2" id="text-org4cc1b36">
+<div id="outline-container-org6ddc0d4" class="outline-2">
+<h2 id="org6ddc0d4">Tipos básicos</h2>
+<div class="outline-text-2" id="text-org6ddc0d4">
 <p>
 Majestic Lisp é uma linguagem que começa pelos seus tipos mais básicos
 de dados, tanto na sua construção quanto na sua descrição.
@@ -406,9 +404,9 @@ totalmente finalizada, então não vou dizer muito sobre eles.
 </p>
 </div>
 
-<div id="outline-container-org0699e25" class="outline-3">
-<h3 id="org0699e25">Símbolos</h3>
-<div class="outline-text-3" id="text-org0699e25">
+<div id="outline-container-org702eac2" class="outline-3">
+<h3 id="org702eac2">Símbolos</h3>
+<div class="outline-text-3" id="text-org702eac2">
 <p>
 <i>Símbolos</i> são como palavras na  linguagem, e podem ser utilizados tanto
 como valores quanto para nomear as coisas, algo que veremos logo mais.
@@ -419,7 +417,7 @@ Para usarmos  <i>símbolos</i> como valores, precisamos  <i>quotá-los</i>.  Iss
 ser feito com um apóstrofo antes do símbolo:
 </p>
 
-<pre class="example" id="org65fdccb">
+<pre class="example" id="orgf0c6a78">
 &gt; 'foo
 foo
 
@@ -440,7 +438,7 @@ Alguns símbolos especiais são <i>axiomas</i> da linguagem, e não precisam ser
 <i>quotados</i>, pois eles <i>são interpretados como eles mesmos</i>:
 </p>
 
-<pre class="example" id="orgd02dbad">
+<pre class="example" id="orgcf28344">
 &gt; t
 t
 
@@ -456,16 +454,16 @@ exploraremos a seguir.
 </div>
 </div>
 
-<div id="outline-container-org28377fc" class="outline-3">
-<h3 id="org28377fc">Números</h3>
-<div class="outline-text-3" id="text-org28377fc">
+<div id="outline-container-org930a310" class="outline-3">
+<h3 id="org930a310">Números</h3>
+<div class="outline-text-3" id="text-org930a310">
 <p>
 Números  funcionam sintaticamente  como símbolos,  mas são  um tipo  à
 parte  dos mesmos  por  conveniência.  Podemos representar  facilmente
 números <i>inteiros</i>:
 </p>
 
-<pre class="example" id="org2121fbe">
+<pre class="example" id="orga4f4f54">
 &gt; -1
 -1
 
@@ -486,7 +484,7 @@ zero à  direita da vírgula,  quando as partes inteiras  e fracionárias
 são nulas, respectivamente.
 </p>
 
-<pre class="example" id="org5e89f9d">
+<pre class="example" id="orge46e14f">
 &gt; 4/6
 2/3
 
@@ -504,7 +502,7 @@ outros subtipos  de números para  representarem essas partes  à medida
 que for necessário:
 </p>
 
-<pre class="example" id="orgdcafa3c">
+<pre class="example" id="orgdaf3d7f">
 &gt; 2J5
 2J5
 
@@ -523,16 +521,16 @@ representamos os números \(2+5i\), \(-3+\frac{6}{4}i\) e \(0+1i\) (ou seja, \(i
 </div>
 </div>
 
-<div id="outline-container-org4460fa4" class="outline-3">
-<h3 id="org4460fa4">Caracteres</h3>
-<div class="outline-text-3" id="text-org4460fa4">
+<div id="outline-container-orgc6408c0" class="outline-3">
+<h3 id="orgc6408c0">Caracteres</h3>
+<div class="outline-text-3" id="text-orgc6408c0">
 <p>
 Caracteres também funcionam mais ou menos como símbolos, sendo valores
 que   são  interpretados   para  si   mesmos.  Quando   sozinhos,  são
 interpretados com <i>jogo da velha</i> e uma <i>barra invertida</i> como prefixos:
 </p>
 
-<pre class="example" id="org275765f">
+<pre class="example" id="org8982837">
 &gt; #\a
 #\a
 
@@ -545,16 +543,16 @@ Alguns  caracteres especiais  podem ser  representados com  nomes mais
 literais, por exemplo, o caractere de campainha:
 </p>
 
-<pre class="example" id="org206e3ea">
+<pre class="example" id="org6529470">
 &gt; #\bel
 #\bel
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org050e442" class="outline-3">
-<h3 id="org050e442"><i>Cons</i></h3>
-<div class="outline-text-3" id="text-org050e442">
+<div id="outline-container-orgb1410d9" class="outline-3">
+<h3 id="orgb1410d9"><i>Cons</i></h3>
+<div class="outline-text-3" id="text-orgb1410d9">
 <p>
 O <i>cons</i> é um <i>par de valores</i>, o que significa que ele é um tipo e também
 uma forma de <i>combinar</i> valores na linguagem.
@@ -565,7 +563,7 @@ uma forma de <i>combinar</i> valores na linguagem.
 sobre funções adiante.
 </p>
 
-<pre class="example" id="orgac08116">
+<pre class="example" id="orgfe77f1f">
 &gt; (cons 'a 'b)
 (a . b)
 </pre>
@@ -575,7 +573,7 @@ Podemos  também  usar  a  ideia  de <i>quoting</i>  para  construir  um  <i>con
 diretamente:
 </p>
 
-<pre class="example" id="orga648d5e">
+<pre class="example" id="org5109fbc">
 &gt; '(a . b)
 (a . b)
 </pre>
@@ -588,15 +586,15 @@ parte da esquerda de  <i>car</i> (lê-se <i>cár</i>) ou <i>first,</i> e a  da d
 </p>
 </div>
 
-<div id="outline-container-orge69da44" class="outline-4">
-<h4 id="orge69da44">Listas pontuadas</h4>
-<div class="outline-text-4" id="text-orge69da44">
+<div id="outline-container-org8875049" class="outline-4">
+<h4 id="org8875049">Listas pontuadas</h4>
+<div class="outline-text-4" id="text-org8875049">
 <p>
 Existem algumas  situações particulares quando  o <i>rest</i> de um  <i>cons</i> for
 também um <i>cons</i>, independente de o <i>first</i> ser. Observe o exemplo:
 </p>
 
-<pre class="example" id="orgd47a708">
+<pre class="example" id="org48b49b5">
 &gt; '(a . (b . c))
 (a b . c)
 </pre>
@@ -615,10 +613,10 @@ pontuada</i>.
 </div>
 </div>
 
-<div id="outline-container-orgce9f676" class="outline-4">
-<h4 id="orgce9f676">Listas adequadas</h4>
-<div class="outline-text-4" id="text-orgce9f676">
-<pre class="example" id="org1390c07">
+<div id="outline-container-orgddd67e4" class="outline-4">
+<h4 id="orgddd67e4">Listas adequadas</h4>
+<div class="outline-text-4" id="text-orgddd67e4">
+<pre class="example" id="org1286b61">
 &gt; '(a . (b . (c . nil)))
 (a b c)
 </pre>
@@ -639,16 +637,16 @@ adequada</i>, ou simplesmente <i>lista</i>.
 Podemos criar <i>listas</i> também através do processo direto de <i>quoting</i>:
 </p>
 
-<pre class="example" id="org9614516">
+<pre class="example" id="org56e43bc">
 &gt; '(1 2 3 4)
 (1 2 3 4)
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org8ab1597" class="outline-4">
-<h4 id="org8ab1597">Lista vazia</h4>
-<div class="outline-text-4" id="text-org8ab1597">
+<div id="outline-container-org94eb3d5" class="outline-4">
+<h4 id="org94eb3d5">Lista vazia</h4>
+<div class="outline-text-4" id="text-org94eb3d5">
 <p>
 O símbolo <code>nil</code> representa  a ideia de <i>falso</i> na linguagem  e também é um
 terminador para  <i>listas</i>, mas também  representa uma <i>lista  vazia</i>. Isso
@@ -656,7 +654,7 @@ pode  ser  observado  quando  tentamos  interpretar  uma  lista  vazia
 <i>quotada</i>:
 </p>
 
-<pre class="example" id="org675f1cd">
+<pre class="example" id="org7d9a058">
 &gt; '()
 nil
 </pre>
@@ -665,9 +663,9 @@ nil
 </div>
 </div>
 
-<div id="outline-container-orgafb1402" class="outline-2">
-<h2 id="orgafb1402">Listas como programas</h2>
-<div class="outline-text-2" id="text-orgafb1402">
+<div id="outline-container-orgb5ec457" class="outline-2">
+<h2 id="orgb5ec457">Listas como programas</h2>
+<div class="outline-text-2" id="text-orgb5ec457">
 <p>
 As <i>listas</i> são a parte mais  importante de um Lisp e, consequentemente,
 de Majestic Lisp. Nossos programas usam as notações de <i>listas</i> para que
@@ -680,15 +678,15 @@ interpretador, para que ele as processe diretamente.
 </p>
 </div>
 
-<div id="outline-container-orgfa5a9d3" class="outline-3">
-<h3 id="orgfa5a9d3">Definindo variáveis</h3>
-<div class="outline-text-3" id="text-orgfa5a9d3">
+<div id="outline-container-org63772f9" class="outline-3">
+<h3 id="org63772f9">Definindo variáveis</h3>
+<div class="outline-text-3" id="text-org63772f9">
 <p>
 Para definirmos variáveis, dando valores  a elas, utilizamos uma lista
 também:
 </p>
 
-<pre class="example" id="org6cc1b30">
+<pre class="example" id="orgf216a06">
 &gt; (def x 5)
 x
 </pre>
@@ -710,7 +708,7 @@ diretamente pelo programador.
 Assim, se dermos ao interpretador o símbolo <code>x</code>&#x2026;
 </p>
 
-<pre class="example" id="orge275ce3">
+<pre class="example" id="orgf0fbc55">
 &gt; x
 5
 </pre>
@@ -722,16 +720,16 @@ número <code>5</code>.
 </div>
 </div>
 
-<div id="outline-container-orgc72d42e" class="outline-3">
-<h3 id="orgc72d42e">Funções</h3>
-<div class="outline-text-3" id="text-orgc72d42e">
+<div id="outline-container-org9d80f7c" class="outline-3">
+<h3 id="org9d80f7c">Funções</h3>
+<div class="outline-text-3" id="text-org9d80f7c">
 <p>
 Majestic  Lisp  já se  inicia  com  uma  certa quantidade  de  funções
 <i>primitivas</i> que fazem bastantes coisas. Por exemplo, considere as somas
 a seguir:
 </p>
 
-<pre class="example" id="orga70d94b">
+<pre class="example" id="org2870673">
 &gt; (+ 2 3)
 5
 
@@ -760,7 +758,7 @@ definir  nossas próprias  funções.  Por exemplo,  podemos definir  uma
 função que eleva um número ao quadrado, multiplicando-o por ele mesmo:
 </p>
 
-<pre class="example" id="orgffd3db8">
+<pre class="example" id="org3a66fc4">
 &gt; (fn (x) (* x x))
 #&lt;function (fn (x)) {...}&gt;
 </pre>
@@ -776,7 +774,7 @@ funções  são valores  em  si! E  dessa forma,  elas  também podem  ser
 atribuídas a símbolos, como se definíssemos variáveis quaisquer:
 </p>
 
-<pre class="example" id="org582891c">
+<pre class="example" id="orgbd81923">
 &gt; (def quadrado (fn (x) (* x x)))
 quadrado
 
@@ -789,7 +787,7 @@ Um  atalho para  esse  tipo de  definição  de função  é  usar o  <i>macro</
 <code>defn</code>.
 </p>
 
-<pre class="example" id="orgbcf8bf0">
+<pre class="example" id="org59066c2">
 &gt; (defn quadrado (x)
     (* x x))
 quadrado
@@ -802,7 +800,7 @@ expressão iniciada por <code>defn</code> expande-se  para a anterior. Isso pode
 visto através da função primitiva <code>macroexpand-1</code>:
 </p>
 
-<pre class="example" id="orge98456c">
+<pre class="example" id="org69bb847">
 &gt; (macroexpand-1 '(defn quadrado (x)
                     (* x x)))
 (def quadrado (fn (x) (* x x)))
@@ -813,7 +811,7 @@ Finalmente,   podemos  usar   a  função   em  valores,   como  fizemos
 anteriormente com <code>cons</code> e <code>+</code>.
 </p>
 
-<pre class="example" id="org20e834b">
+<pre class="example" id="org3a75ca4">
 &gt; (quadrado 5)
 25
 </pre>
@@ -821,9 +819,9 @@ anteriormente com <code>cons</code> e <code>+</code>.
 </div>
 </div>
 
-<div id="outline-container-org81e2d28" class="outline-2">
-<h2 id="org81e2d28">Conclusão</h2>
-<div class="outline-text-2" id="text-org81e2d28">
+<div id="outline-container-orgebee311" class="outline-2">
+<h2 id="orgebee311">Conclusão</h2>
+<div class="outline-text-2" id="text-orgebee311">
 <p>
 Isso encerra  a apresentação preliminar  de Lisp e também  de Majestic
 Lisp. A linguagem  possui muitas outras características,  é claro. Uma

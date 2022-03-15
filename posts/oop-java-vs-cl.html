@@ -5,13 +5,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Orientação a Objetos: Java <i>versus</i> Common Lisp</title>
-<meta name="generator" content="Org mode" />
+<title>Orientação a Objetos: Java /versus/ Common Lisp</title>
 <meta name="author" content="Lucas Vieira" />
-<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -32,8 +31,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -42,21 +42,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,7 +192,6 @@
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   .org-svg { width: 90%; }
-  /*]]>*/-->
 </style>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164062058-1"></script>
@@ -215,70 +214,70 @@ gtag('config', 'UA-164062058-1');
 <div id="preamble" class="status">
 <h1 class="title">Orientação a Objetos: Java <i>versus</i> Common Lisp</h1><p><i>Escrito em Jan 08, 2019 por Lucas Vieira<br/><a href="mailto:lucasvieira@lisp.com.br">lucasvieira@lisp.com.br</a></i></p>
 </div>
-<div id="content">
-<div id="table-of-contents">
+<div id="content" class="content">
+<div id="table-of-contents" role="doc-toc">
 <h2>&Iacute;ndice</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org4185a8b">Introdução</a>
+<li><a href="#orgeec43fa">Introdução</a>
 <ul>
-<li><a href="#org157cc13">História da concepção da <i>orientação a objetos</i></a></li>
-<li><a href="#org2557b99">O que será feito?</a>
+<li><a href="#orgdfef33f">História da concepção da <i>orientação a objetos</i></a></li>
+<li><a href="#org6174d55">O que será feito?</a>
 <ul>
-<li><a href="#org4c51ed6">ACHTUNG!</a></li>
+<li><a href="#org4bdb0c9">ACHTUNG!</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orge50eb98">OO do "jeito Java"</a>
+<li><a href="#org70f5c9b">OO do "jeito Java"</a>
 <ul>
-<li><a href="#org2b98439">Inicialização</a></li>
-<li><a href="#org29b6c0f">Interface para as formas</a></li>
-<li><a href="#orgce39d48">Implementação das formas</a>
+<li><a href="#org91f72b1">Inicialização</a></li>
+<li><a href="#org0a8b98d">Interface para as formas</a></li>
+<li><a href="#org3ca532c">Implementação das formas</a>
 <ul>
-<li><a href="#orgacb1551">Círculo</a></li>
-<li><a href="#org23b09b4">Quadrado</a></li>
-<li><a href="#org1679271">Pentágono</a></li>
+<li><a href="#org79817fc">Círculo</a></li>
+<li><a href="#orgea70c2c">Quadrado</a></li>
+<li><a href="#org0d0ac37">Pentágono</a></li>
 </ul>
 </li>
-<li><a href="#org5756305">Utilitários</a></li>
-<li><a href="#orga722a02">Ponto de entrada do programa</a></li>
+<li><a href="#orgf095ac6">Utilitários</a></li>
+<li><a href="#orgc9b5dfb">Ponto de entrada do programa</a></li>
 </ul>
 </li>
-<li><a href="#org32bb90c">OO do "jeito Common Lisp"</a>
+<li><a href="#orgd16768a">OO do "jeito Common Lisp"</a>
 <ul>
-<li><a href="#org61d628e">Inicialização</a></li>
-<li><a href="#org0d1f9e0">Operações genéricas</a></li>
-<li><a href="#orga83237c">Classes</a></li>
-<li><a href="#orgc70ccdf">Métodos</a>
+<li><a href="#org9955433">Inicialização</a></li>
+<li><a href="#orgf85689c">Operações genéricas</a></li>
+<li><a href="#org36eef13">Classes</a></li>
+<li><a href="#org6ad89fd">Métodos</a>
 <ul>
-<li><a href="#org90d554a">Perímetro</a></li>
-<li><a href="#orgccbbeeb">Área</a></li>
-<li><a href="#orga6f7b27">Quadrado do lado</a></li>
+<li><a href="#org4e072e0">Perímetro</a></li>
+<li><a href="#org40d5041">Área</a></li>
+<li><a href="#org8dd1c8d">Quadrado do lado</a></li>
 </ul>
 </li>
-<li><a href="#org94be794">Utilitários</a>
+<li><a href="#org8e8fb94">Utilitários</a>
 <ul>
-<li><a href="#org2c0bdee">Soma dos quadrados dos lados</a></li>
+<li><a href="#orga23c651">Soma dos quadrados dos lados</a></li>
 </ul>
 </li>
-<li><a href="#org621aa59">Função principal para testes</a></li>
+<li><a href="#org92cb074">Função principal para testes</a></li>
 </ul>
 </li>
-<li><a href="#orgdf3f282">Conclusão</a>
+<li><a href="#org84b797f">Conclusão</a>
 <ul>
-<li><a href="#org5188c7d">Comparação</a></li>
-<li><a href="#org788120b"><i>Tangling</i> dos arquivos</a></li>
-<li><a href="#orgc03a363">Licenciamento</a></li>
+<li><a href="#org3d06dcb">Comparação</a></li>
+<li><a href="#orgd6842d4"><i>Tangling</i> dos arquivos</a></li>
+<li><a href="#orgdf080e7">Licenciamento</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org4185a8b" class="outline-2">
-<h2 id="org4185a8b">Introdução</h2>
-<div class="outline-text-2" id="text-org4185a8b">
+<div id="outline-container-orgeec43fa" class="outline-2">
+<h2 id="orgeec43fa">Introdução</h2>
+<div class="outline-text-2" id="text-orgeec43fa">
 <p>
 Este é mais um post envolvendo programação literada no meu blog &#x2013; desta vez, em
 Português mesmo.
@@ -287,10 +286,10 @@ Português mesmo.
 <p>
 Neste texto, pretendo falar a respeito de <i>programação orientada a objetos</i>,
 apresentando um paralelo entre a forma como este paradigma foi adotado pela
-indústria e a forma como foi originalmente concebido por Alan Kay<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>.
+indústria e a forma como foi originalmente concebido por Alan Kay<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>.
 </p>
 
-<div class="NOTES" id="org514d65b">
+<div class="NOTES" id="orgb655a81">
 <p>
 <b>NOTA:</b> Este post foi escrito para meu blog utilizando <code>org-mode</code> no Emacs, o que
  possibilita a extração do código, na ordem apresentada, e salvamento do mesmo
@@ -302,9 +301,9 @@ indústria e a forma como foi originalmente concebido por Alan Kay<sup><a id="fn
 </div>
 </div>
 
-<div id="outline-container-org157cc13" class="outline-3">
-<h3 id="org157cc13">História da concepção da <i>orientação a objetos</i></h3>
-<div class="outline-text-3" id="text-org157cc13">
+<div id="outline-container-orgdfef33f" class="outline-3">
+<h3 id="orgdfef33f">História da concepção da <i>orientação a objetos</i></h3>
+<div class="outline-text-3" id="text-orgdfef33f">
 <p>
 Segundo Alan Kay, o paradigma de orientação a objetos foi inspirado pela antiga
 linguagem <i>Simula</i>, que realizava certas operações (definidas por procedimentos)
@@ -357,9 +356,9 @@ tornando-se um assunto controverso entre os puristas e estudiosos do assunto.
 </div>
 </div>
 
-<div id="outline-container-org2557b99" class="outline-3">
-<h3 id="org2557b99">O que será feito?</h3>
-<div class="outline-text-3" id="text-org2557b99">
+<div id="outline-container-org6174d55" class="outline-3">
+<h3 id="org6174d55">O que será feito?</h3>
+<div class="outline-text-3" id="text-org6174d55">
 <p>
 Neste post, pretendo mostrar implementações em Java e Common Lisp,
 respectivamente, como representantes de dois modos de pensar a respeito de
@@ -380,9 +379,9 @@ cada forma, caso seja possível.
 </blockquote>
 </div>
 
-<div id="outline-container-org4c51ed6" class="outline-4">
-<h4 id="org4c51ed6">ACHTUNG!</h4>
-<div class="outline-text-4" id="text-org4c51ed6">
+<div id="outline-container-org4bdb0c9" class="outline-4">
+<h4 id="org4bdb0c9">ACHTUNG!</h4>
+<div class="outline-text-4" id="text-org4bdb0c9">
 <p>
 O objetivo deste exercício não é destacar uma linguagem ou uma visão do
 paradigma como melhor que o outro, mas sim demonstrar a diferença no raciocínio
@@ -410,9 +409,9 @@ texto e notas de rodapé, e vice-versa.
 </div>
 </div>
 
-<div id="outline-container-orge50eb98" class="outline-2">
-<h2 id="orge50eb98">OO do "jeito Java"</h2>
-<div class="outline-text-2" id="text-orge50eb98">
+<div id="outline-container-org70f5c9b" class="outline-2">
+<h2 id="org70f5c9b">OO do "jeito Java"</h2>
+<div class="outline-text-2" id="text-org70f5c9b">
 <p>
 O "jeito Java" consiste na declaração de uma abstração-mor, e então
 na criação de sub-abstrações, para a resolução do problema.
@@ -431,9 +430,9 @@ calcular as três operações requisitadas pelo enunciado.
 </p>
 </div>
 
-<div id="outline-container-org2b98439" class="outline-3">
-<h3 id="org2b98439">Inicialização</h3>
-<div class="outline-text-3" id="text-org2b98439">
+<div id="outline-container-org91f72b1" class="outline-3">
+<h3 id="org91f72b1">Inicialização</h3>
+<div class="outline-text-3" id="text-org91f72b1">
 <p>
 Um programa Java é inicializado com a declaração do pacote que conterá as
 estruturas a serem utilizadas. Logo em seguida, importamos outros pacotes (ou
@@ -450,7 +449,7 @@ programa.
 </pre>
 </div>
 
-<div class="NOTES" id="orgfd9ab9b">
+<div class="NOTES" id="org6d3b97c">
 <p>
 <b>NOTA:</b> Nenhuma das estruturas a seguir será declarada com acesso público, uma vez
 que o objetivo do programa é criar uma aplicação auto-contida e simples, não um
@@ -462,9 +461,9 @@ seus próprios arquivos.
 </div>
 </div>
 
-<div id="outline-container-org29b6c0f" class="outline-3">
-<h3 id="org29b6c0f">Interface para as formas</h3>
-<div class="outline-text-3" id="text-org29b6c0f">
+<div id="outline-container-org0a8b98d" class="outline-3">
+<h3 id="org0a8b98d">Interface para as formas</h3>
+<div class="outline-text-3" id="text-org0a8b98d">
 <p>
 Implementamos uma interface chamada <code>IShape</code>, que descreve valores básicos, que
 podem ser obtidos proceduralmente para uma forma qualquer: <i>perímetro</i>, <i>área</i> e
@@ -482,23 +481,23 @@ podem ser obtidos proceduralmente para uma forma qualquer: <i>perímetro</i>, <i
 </div>
 </div>
 
-<div id="outline-container-orgce39d48" class="outline-3">
-<h3 id="orgce39d48">Implementação das formas</h3>
-<div class="outline-text-3" id="text-orgce39d48">
+<div id="outline-container-org3ca532c" class="outline-3">
+<h3 id="org3ca532c">Implementação das formas</h3>
+<div class="outline-text-3" id="text-org3ca532c">
 <p>
 Uma vez declarada a interface a ser implementada por cada forma, podemos
 declarar as classes para as formas em si.
 </p>
 </div>
 
-<div id="outline-container-orgacb1551" class="outline-4">
-<h4 id="orgacb1551">Círculo</h4>
-<div class="outline-text-4" id="text-orgacb1551">
+<div id="outline-container-org79817fc" class="outline-4">
+<h4 id="org79817fc">Círculo</h4>
+<div class="outline-text-4" id="text-org79817fc">
 <p>
 A classe <code>Circle</code> implementa a forma de um círculo. Como atributos próprios da
 classe, temos um valor decimal especificando o raio do círculo, chamado <code>radius</code>,
 e também temos um construtor para a classe, que explicita a necessidade de um
-valor para o raio, ao criarmos uma instância da mesma<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>.
+valor para o raio, ao criarmos uma instância da mesma<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>.
 </p>
 
 <div class="org-src-container">
@@ -531,7 +530,7 @@ mesmo, mas este seria seu perímetro; ao invés disso, vamos assumir que esta
 operação é impossível, uma vez que um círculo, tecnicamente, não possui lados.
 </p>
 
-<div class="NOTES" id="org9d201c6">
+<div class="NOTES" id="org37c806f">
 <p>
 <b>NOTA:</b> Veja que o método que implementa o quadrado do lado de um círculo levanta
  uma exceção do tipo <code>UnsupportedOperationException</code>, com uma mensagem específica
@@ -544,9 +543,9 @@ operação é impossível, uma vez que um círculo, tecnicamente, não possui la
 </div>
 </div>
 
-<div id="outline-container-org23b09b4" class="outline-4">
-<h4 id="org23b09b4">Quadrado</h4>
-<div class="outline-text-4" id="text-org23b09b4">
+<div id="outline-container-orgea70c2c" class="outline-4">
+<h4 id="orgea70c2c">Quadrado</h4>
+<div class="outline-text-4" id="text-orgea70c2c">
 <p>
 O quadrado é, provavelmente, a classe de mais simples implementação: todas as
 suas operações são triviais, e o quadrado do seu lado é idêntico à sua área.
@@ -583,9 +582,9 @@ adequadamente a classe.
 </div>
 </div>
 
-<div id="outline-container-org1679271" class="outline-4">
-<h4 id="org1679271">Pentágono</h4>
-<div class="outline-text-4" id="text-org1679271">
+<div id="outline-container-org0d0ac37" class="outline-4">
+<h4 id="org0d0ac37">Pentágono</h4>
+<div class="outline-text-4" id="text-org0d0ac37">
 <p>
 O pentágono possui as mesmas características do quadrado com relação ao seu
 construtor, seu perímetro, e o quadrado do seu lado. Mas o cálculo da área do
@@ -621,7 +620,7 @@ pentágono é um pouco diferente.
 
 <p>
 Como você pode perceber, temos um método a mais, com acesso <i>privado</i>, que calcula
-o comprimento do <i>apótema</i><sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup> do pentágono. Baseado neste método, que só pode
+o comprimento do <i>apótema</i><sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup> do pentágono. Baseado neste método, que só pode
 ser acessado internamente pela classe, podemos calcular a área do pentágono,
 baseada no comprimento do apótema e no seu perímetro.
 </p>
@@ -629,9 +628,9 @@ baseada no comprimento do apótema e no seu perímetro.
 </div>
 </div>
 
-<div id="outline-container-org5756305" class="outline-3">
-<h3 id="org5756305">Utilitários</h3>
-<div class="outline-text-3" id="text-org5756305">
+<div id="outline-container-orgf095ac6" class="outline-3">
+<h3 id="orgf095ac6">Utilitários</h3>
+<div class="outline-text-3" id="text-orgf095ac6">
 <p>
 A geração de uma quantidade arbitrária de formas e o cálculo das operações (soma
 dos perímetros, soma das áreas, soma dos quadrados dos lados) são encapsulados
@@ -710,9 +709,9 @@ quadrado do lado para a forma atual será apenas ignorada.
 </div>
 </div>
 
-<div id="outline-container-orga722a02" class="outline-3">
-<h3 id="orga722a02">Ponto de entrada do programa</h3>
-<div class="outline-text-3" id="text-orga722a02">
+<div id="outline-container-orgc9b5dfb" class="outline-3">
+<h3 id="orgc9b5dfb">Ponto de entrada do programa</h3>
+<div class="outline-text-3" id="text-orgc9b5dfb">
 <p>
 Enfim, podemos executar nosso programa. Para tanto, precisamos de mais uma
 classe, que aqui chamamos <code>Program</code>, com um método estático chamado <code>main</code>. Aqui,
@@ -737,9 +736,9 @@ conjunto de dez formas que criamos arbitrariamente.
 </div>
 </div>
 
-<div id="outline-container-org32bb90c" class="outline-2">
-<h2 id="org32bb90c">OO do "jeito Common Lisp"</h2>
-<div class="outline-text-2" id="text-org32bb90c">
+<div id="outline-container-orgd16768a" class="outline-2">
+<h2 id="orgd16768a">OO do "jeito Common Lisp"</h2>
+<div class="outline-text-2" id="text-orgd16768a">
 <p>
 O "jeito Common Lisp" consiste no uso da forma "original" de orientação a
 objetos, mencionada anteriormente.
@@ -748,23 +747,23 @@ objetos, mencionada anteriormente.
 <p>
 Esta forma de orientação a objetos lembra o funcionamento de Smalltalk, e é
 tratada, por alguns autores, como uma boa interpretação da orientação a objetos,
-ao ser implementada em uma linguagem de programação<sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>.
+ao ser implementada em uma linguagem de programação<sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>.
 </p>
 
 <p>
 O <i>Common Lisp Object System</i> foi criado muito depois da concepção da linguagem
 Lisp original, sendo originalmente uma extensão de Common Lisp, que
-posteriormente viria a ser incluída na especificação da linguagem<sup><a id="fnr.5" class="footref" href="#fn.5">5</a></sup>.
+posteriormente viria a ser incluída na especificação da linguagem<sup><a id="fnr.5" class="footref" href="#fn.5" role="doc-backlink">5</a></sup>.
 </p>
 </div>
 
-<div id="outline-container-org61d628e" class="outline-3">
-<h3 id="org61d628e">Inicialização</h3>
-<div class="outline-text-3" id="text-org61d628e">
+<div id="outline-container-org9955433" class="outline-3">
+<h3 id="org9955433">Inicialização</h3>
+<div class="outline-text-3" id="text-org9955433">
 <p>
 Primeiramente, vamos iniciar nosso projeto através da criação de um pacote em
 Common Lisp. Aqui estarei utilizando, também, o <i>system</i> <code>iterate</code>, que substitui o
-uso do macro <code>loop</code> na linguagem<sup><a id="fnr.6" class="footref" href="#fn.6">6</a></sup>.
+uso do macro <code>loop</code> na linguagem<sup><a id="fnr.6" class="footref" href="#fn.6" role="doc-backlink">6</a></sup>.
 </p>
 
 <div class="org-src-container">
@@ -787,7 +786,7 @@ adentrar o pacote e definir símbolos logo dentro dele.
 </pre>
 </div>
 
-<div class="NOTES" id="org8f99e71">
+<div class="NOTES" id="org9dc518f">
 <p>
 <b>NOTA:</b> Caso você já possua o arquivo de código deste programa e esteja
 simplesmente tentando revisitar o que foi feito neste pacote, basta executar a
@@ -801,9 +800,9 @@ que posso vir a fazer no futuro.
 </div>
 </div>
 
-<div id="outline-container-org0d1f9e0" class="outline-3">
-<h3 id="org0d1f9e0">Operações genéricas</h3>
-<div class="outline-text-3" id="text-org0d1f9e0">
+<div id="outline-container-orgf85689c" class="outline-3">
+<h3 id="orgf85689c">Operações genéricas</h3>
+<div class="outline-text-3" id="text-orgf85689c">
 <p>
 Baseado no que foi dito na introdução, precisamos de um vocabulário inicial
 de mensagens que podemos passar para alguns objetos, como uma espécie de lista
@@ -838,9 +837,9 @@ para "marcar lugares" de argumentos em métodos &#x2013; isto será entendido lo
 </div>
 </div>
 
-<div id="outline-container-orga83237c" class="outline-3">
-<h3 id="orga83237c">Classes</h3>
-<div class="outline-text-3" id="text-orga83237c">
+<div id="outline-container-org36eef13" class="outline-3">
+<h3 id="org36eef13">Classes</h3>
+<div class="outline-text-3" id="text-org36eef13">
 <p>
 Em CLOS, classes são definidas a partir de duas coisas: uma lista de
 superclasses das quais derivam, e uma lista de <i>slots</i>, cada qual com suas
@@ -877,7 +876,7 @@ lado destas formas.
 Veja que definimos duas propriedades extras para cada <i>slot</i>. A primeira é o
 <code>initarg</code>; a segunda, um <code>reader</code>. O <code>initarg</code> representa o átomo que simboliza a
 chave para definir o valor para aquele <i>slot</i>, durante o instanciamento da
-classe<sup><a id="fnr.7" class="footref" href="#fn.7">7</a></sup>.
+classe<sup><a id="fnr.7" class="footref" href="#fn.7" role="doc-backlink">7</a></sup>.
 </p>
 
 <p>
@@ -886,17 +885,17 @@ Já o <code>reader</code> é a definição rápida de uma forma de realizar a le
 efetivamente, recuperar os dados da instância. No caso de <code>circle</code>, o raio
 de um círculo poderá ser recuperado de uma instância com <code>(radius
 instancia)</code>. Situações similares ocorrerão para os lados de <code>square</code> e
-<code>pentagon</code><sup><a id="fnr.8" class="footref" href="#fn.8">8</a></sup>.
+<code>pentagon</code><sup><a id="fnr.8" class="footref" href="#fn.8" role="doc-backlink">8</a></sup>.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgc70ccdf" class="outline-3">
-<h3 id="orgc70ccdf">Métodos</h3>
-<div class="outline-text-3" id="text-orgc70ccdf">
+<div id="outline-container-org6ad89fd" class="outline-3">
+<h3 id="org6ad89fd">Métodos</h3>
+<div class="outline-text-3" id="text-org6ad89fd">
 <p>
 <i>Métodos</i>, em Common Lisp, nada mais são que especificações das <i>operações
-genéricas</i>.<sup><a id="fnr.9" class="footref" href="#fn.9">9</a></sup> Ao definirmos o método, normalmente teremos um ou mais
+genéricas</i>.<sup><a id="fnr.9" class="footref" href="#fn.9" role="doc-backlink">9</a></sup> Ao definirmos o método, normalmente teremos um ou mais
 parâmetros na lista de parâmetros que determinam a forma como a operação será
 despachada, de acordo com o objeto passado por parâmetro.
 </p>
@@ -905,7 +904,7 @@ despachada, de acordo com o objeto passado por parâmetro.
 Por exemplo, um argumento de assinatura <code>(variavel nome-da-classe)</code> implica que
 aquele método possui implementação para a classe <code>nome-da-classe</code> e, portanto,
 <code>variavel</code> terá uma mensagem a retornar mediante a invocação do método em
-questão<sup><a id="fnr.10" class="footref" href="#fn.10">10</a></sup>.
+questão<sup><a id="fnr.10" class="footref" href="#fn.10" role="doc-backlink">10</a></sup>.
 </p>
 
 <p>
@@ -914,9 +913,9 @@ implementarmos todos os métodos para cada classe, por vez.
 </p>
 </div>
 
-<div id="outline-container-org90d554a" class="outline-4">
-<h4 id="org90d554a">Perímetro</h4>
-<div class="outline-text-4" id="text-org90d554a">
+<div id="outline-container-org4e072e0" class="outline-4">
+<h4 id="org4e072e0">Perímetro</h4>
+<div class="outline-text-4" id="text-org4e072e0">
 <p>
 A implementação das operações de perímetro são simples. A passagem da mensagem
 <code>perimeter</code> para cada uma das instâncias das três classes realizará o despacho
@@ -939,9 +938,9 @@ para o método relativo ao tipo da classe.
 </div>
 </div>
 
-<div id="outline-container-orgccbbeeb" class="outline-4">
-<h4 id="orgccbbeeb">Área</h4>
-<div class="outline-text-4" id="text-orgccbbeeb">
+<div id="outline-container-org40d5041" class="outline-4">
+<h4 id="org40d5041">Área</h4>
+<div class="outline-text-4" id="text-org40d5041">
 <p>
 O cálculo da área para um círculo e um quadrado também não é diferente, nem
 envolve complexidade extra alguma.
@@ -959,7 +958,7 @@ envolve complexidade extra alguma.
 
 <p>
 Todavia, sabemos que teremos complexidade extra ao calcular a área de um
-pentágono. Vamos nos preparar para isto, definindo um <i>macro</i><sup><a id="fnr.11" class="footref" href="#fn.11">11</a></sup> que converte
+pentágono. Vamos nos preparar para isto, definindo um <i>macro</i><sup><a id="fnr.11" class="footref" href="#fn.11" role="doc-backlink">11</a></sup> que converte
 um ângulo em graus para radianos.
 </p>
 
@@ -971,7 +970,7 @@ um ângulo em graus para radianos.
 
 <p>
 Podemos, agora, definir a forma de se calcular a área de um pentágono. Começamos
-definindo uma função aninhada ao método<sup><a id="fnr.12" class="footref" href="#fn.12">12</a></sup>, que calcula o
+definindo uma função aninhada ao método<sup><a id="fnr.12" class="footref" href="#fn.12" role="doc-backlink">12</a></sup>, que calcula o
 apótema. Utilizando esta função aninhada, e baseando-nos no cálculo do apótema e
 do perímetro do pentágono, calculamos a área.
 </p>
@@ -989,9 +988,9 @@ do perímetro do pentágono, calculamos a área.
 </div>
 </div>
 
-<div id="outline-container-orga6f7b27" class="outline-4">
-<h4 id="orga6f7b27">Quadrado do lado</h4>
-<div class="outline-text-4" id="text-orga6f7b27">
+<div id="outline-container-org8dd1c8d" class="outline-4">
+<h4 id="org8dd1c8d">Quadrado do lado</h4>
+<div class="outline-text-4" id="text-org8dd1c8d">
 <p>
 Aqui, definimos o cálculo do quadrado dos lados para o quadrado e para o
 pentágono. <b>Note que, no caso do círculo, simplesmente não definimos o método</b>.
@@ -1010,9 +1009,9 @@ pentágono. <b>Note que, no caso do círculo, simplesmente não definimos o mét
 </div>
 </div>
 
-<div id="outline-container-org94be794" class="outline-3">
-<h3 id="org94be794">Utilitários</h3>
-<div class="outline-text-3" id="text-org94be794">
+<div id="outline-container-org8e8fb94" class="outline-3">
+<h3 id="org8e8fb94">Utilitários</h3>
+<div class="outline-text-3" id="text-org8e8fb94">
 <p>
 Da mesma forma como fizemos no "jeito" anterior, definiremos alguns
 procedimentos como utilitários, tanto para gerar nosso contêiner de instâncias
@@ -1045,9 +1044,9 @@ definidas nos <code>:initarg</code> dos <i>slots</i> de cada classe).
 </div>
 </div>
 
-<div id="outline-container-org2c0bdee" class="outline-4">
-<h4 id="org2c0bdee">Soma dos quadrados dos lados</h4>
-<div class="outline-text-4" id="text-org2c0bdee">
+<div id="outline-container-orga23c651" class="outline-4">
+<h4 id="orga23c651">Soma dos quadrados dos lados</h4>
+<div class="outline-text-4" id="text-orga23c651">
 <p>
 Temos um pequeno problema ao calcularmos as somas dos quadrados dos lados:
 alguns de nossos objetos (mais especificamente, aqueles que sejam instâncias de
@@ -1058,7 +1057,7 @@ alguns de nossos objetos (mais especificamente, aqueles que sejam instâncias de
 Há diversas formas de fazer isto. Podemos implementar um método a ser chamado
 para toda e qualquer mensagem enviada a <code>circle,</code> que não tenha uma resposta
 definida; mas não abordaremos isto aqui. Outra forma seria <i>tratar a condição
-sinalizada</i> quando o método não está implementado para o objeto<sup><a id="fnr.13" class="footref" href="#fn.13">13</a></sup>.
+sinalizada</i> quando o método não está implementado para o objeto<sup><a id="fnr.13" class="footref" href="#fn.13" role="doc-backlink">13</a></sup>.
 </p>
 
 <p>
@@ -1105,9 +1104,9 @@ se absolutamente nenhuma inconsistência pudesse acontecer antes.
 </div>
 
 
-<div id="outline-container-org621aa59" class="outline-3">
-<h3 id="org621aa59">Função principal para testes</h3>
-<div class="outline-text-3" id="text-org621aa59">
+<div id="outline-container-org92cb074" class="outline-3">
+<h3 id="org92cb074">Função principal para testes</h3>
+<div class="outline-text-3" id="text-org92cb074">
 <p>
 Definamos uma função qualquer, incumbida de gerar nossa sequência de dez formas,
 e então imprimir os resultados das operações na tela. O uso do nome <code>main</code> aqui é
@@ -1128,9 +1127,9 @@ arbitrário, podendo ser substituído por qualquer outra coisa.
 </div>
 </div>
 
-<div id="outline-container-orgdf3f282" class="outline-2">
-<h2 id="orgdf3f282">Conclusão</h2>
-<div class="outline-text-2" id="text-orgdf3f282">
+<div id="outline-container-org84b797f" class="outline-2">
+<h2 id="org84b797f">Conclusão</h2>
+<div class="outline-text-2" id="text-org84b797f">
 <p>
 Chegamos ao fim de ambas as implementações do mesmo problema. Possuimos duas
 formas de resolução, sob o que outrora seria o mesmo paradigma, porém estas duas
@@ -1138,9 +1137,9 @@ formas mostraram-se bem diferentes.
 </p>
 </div>
 
-<div id="outline-container-org5188c7d" class="outline-3">
-<h3 id="org5188c7d">Comparação</h3>
-<div class="outline-text-3" id="text-org5188c7d">
+<div id="outline-container-org3d06dcb" class="outline-3">
+<h3 id="org3d06dcb">Comparação</h3>
+<div class="outline-text-3" id="text-org3d06dcb">
 <p>
 Podemos montar um pequeno quadro, destacando as partes mais relevantes das
 implementações e estabelecendo um paralelo entre elas.
@@ -1215,9 +1214,9 @@ situações específicas exigem ferramentas específicas.
 </div>
 </div>
 
-<div id="outline-container-org788120b" class="outline-3">
-<h3 id="org788120b"><i>Tangling</i> dos arquivos</h3>
-<div class="outline-text-3" id="text-org788120b">
+<div id="outline-container-orgd6842d4" class="outline-3">
+<h3 id="orgd6842d4"><i>Tangling</i> dos arquivos</h3>
+<div class="outline-text-3" id="text-orgd6842d4">
 <p>
 Como este artigo foi escrito no Emacs, em <code>org-mode</code>, você poderá obter o código
 do mesmo a seguir. Os arquivos das linguagens Java e Common Lisp,
@@ -1234,9 +1233,9 @@ cursor sobre o bloco de código a seguir, e utilizando o atalho <code>C-c C-c</c
 </div>
 </div>
 
-<div id="outline-container-orgc03a363" class="outline-3">
-<h3 id="orgc03a363">Licenciamento</h3>
-<div class="outline-text-3" id="text-orgc03a363">
+<div id="outline-container-orgdf080e7" class="outline-3">
+<h3 id="orgdf080e7">Licenciamento</h3>
+<div class="outline-text-3" id="text-orgdf080e7">
 <p>
 Todo e qualquer código descrito aqui é disponibilizado sob a licença BSD
 2-Clause. Para mais informação, veja <a href="https://opensource.org/licenses/BSD-2-Clause">este link.</a>
@@ -1252,14 +1251,14 @@ Copyright (c) 2019, Lucas Vieira.
 <h2 class="footnotes">Notas de Rodap&eacute;: </h2>
 <div id="text-footnotes">
 
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 Boa parte do que levo em consideração como sendo "orientação a objetos
 como originalmente concebida" foi o que vi Alan Kay explicando, em pessoa, na
 sua <a href="https://www.youtube.com/watch?v=oKg1hTOQXoY">palestra na OOPSLA 1997</a>. Minha descrição é compacta, então uma melhor
 compreensão dos aspectos e do contexto podem ser vistos na palestra em si.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 Um círculo pode ser definido, matematicamente, como uma coordenada no
 plano, e o tamanho do seu raio. Como não lidaremos com a posição do círculo em
 nenhuma das hipóteses apresentadas, só precisamos obrigar o programador a
@@ -1268,24 +1267,24 @@ acaba se estendendo também ao quadrado e ao pentágono regulares que, aqui, sã
 determinados pelos tamanhos de seus lados.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 Para mais informações: <a href="https://pt.wikihow.com/Descobrir-a-%C3%81rea-de-um-Pent%C3%A1gono">wikiHow - Como Descobrir a Área de um Pentágono</a>.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 Vide o livro <a href="https://www.amazon.com/Art-Metaobject-Protocol-Gregor-Kiczales/dp/0262610744">The Art of the Metaobject Protocol</a>. Infelizmente ainda não
 tive a oportunidade de lê-lo, mas Alan Kay sugere que este livro é uma boa
 literatura para a compreensão de como a orientação a objetos deveria ser
 implementada.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5">5</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5" role="doc-backlink">5</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 Para saber mais sobre CLOS, você pode ler, de graça, os capítulos
 relevantes do livro Practical Common Lisp, <a href="http://www.gigamonkeys.com/book/object-reorientation-generic-functions.html">aqui</a> e <a href="http://www.gigamonkeys.com/book/object-reorientation-classes.html">aqui</a>. Ademais, recomendo a
 <a href="http://www.gigamonkeys.com/book/">leitura completa do livro</a> para maiores informações sobre a linguagem.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6">6</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6" role="doc-backlink">6</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 O motivo para esta substituição é puramente arbitrário; ando
 experimentando com o uso de um vocabulário mais "líspico", ao invés do formato
 com átomos aparentemente soltos que o macro <code>loop</code> disponibiliza, por mera questão
@@ -1293,12 +1292,12 @@ de corretude, mas isto é desnecessário. Para mais informações acerca disso, 
 <a href="https://dspace.mit.edu/bitstream/handle/1721.1/41498/AI_WP_324.pdf">este paper</a>, de Jonathan Amsterdan (também disponível <a href="https://common-lisp.net/project/iterate/doc/Don_0027t-Loop-Iterate.html">em HTML</a>).
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.7" class="footnum" href="#fnr.7">7</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.7" class="footnum" href="#fnr.7" role="doc-backlink">7</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 A real forma de utilização destas chaves será vista na seção de
 Utilitários, mais adiante.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.8" class="footnum" href="#fnr.8">8</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.8" class="footnum" href="#fnr.8" role="doc-backlink">8</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 Um <code>:reader</code> de um <i>slot</i> define apenas uma forma de recuperação dos dados,
 dada uma instância qualquer da classe. Para que o valor seja alterado, é
 necessário definir um <code>:writer</code>. Por exemplo, caso o <code>:writer</code> para o raio do
@@ -1311,7 +1310,7 @@ necessidade da utilização de funções de acesso a um <i>slot</i> de uma class
 evita a necessidade de definir genéricos e métodos para tal.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.9" class="footnum" href="#fnr.9">9</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.9" class="footnum" href="#fnr.9" role="doc-backlink">9</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 Na verdade, é possível definirmos métodos, sem a necessidade de
 especificar as operações genéricas para eles (neste caso, o compilador criará as
 operações genéricas automaticamente). Todavia, é boa prática ter genéricos
@@ -1320,14 +1319,14 @@ arquivo em <code>C/C++</code> é melhor identificado pelos protótipos nos cabe�
 <code>.h</code>, <code>.hpp</code>, <code>.hxx</code>, etc).
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.10" class="footnum" href="#fnr.10">10</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.10" class="footnum" href="#fnr.10" role="doc-backlink">10</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 Podemos ter métodos que são despachados de acordo com os tipos de um ou
 mais argumentos, ou seja, mais de um argumento pode ter o nome de sua classe
 especificado na implementação do método. Isto é mais útil que realizar
 verificações por tipos de classes para certos argumentos.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.11" class="footnum" href="#fnr.11">11</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.11" class="footnum" href="#fnr.11" role="doc-backlink">11</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 Em Lisp, <i>macros</i> são estruturas capazes de gerar partes de código em
 tempo de compilação, efetivamente sendo as estrelas da metaprogramação na
 linguagem, juntamente com a chamada homoiconicidade. Contudo, dialetos de Lisp
@@ -1336,14 +1335,14 @@ além de encorajada &#x2013; desde que, como qualquer outra <i>feature</i> de um
 não haja abusos em seu uso.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.12" class="footnum" href="#fnr.12">12</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.12" class="footnum" href="#fnr.12" role="doc-backlink">12</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 Em Common Lisp, funções aninhadas são definidas através dos "blocos"
 <code>flet</code> e <code>labels</code> (este último é capaz de definir funções aninhadas recursivas),
 sendo as funções definidas sob estes blocos válidas até o final do "bloco" em
 si. O equivalente em comportamento para <i>macros</i> é o <code>macrolet</code>.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.13" class="footnum" href="#fnr.13">13</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.13" class="footnum" href="#fnr.13" role="doc-backlink">13</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 Enquanto algumas linguagens orientadas a objetos possuem o conceito de
 exceções que são sinalizadas quando uma situação ocorre &#x2013; exceções estas que,
 quando não-tratadas, interrompem imediatamente a execução do programa &#x2013;, Common

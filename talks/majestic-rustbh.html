@@ -29,15 +29,15 @@
 <div class="slides">
 <section id="sec-title-slide"><h2>Majestic Lisp:</h2><p>do Zero ao Lisp em Rust</p><br/><h3 style="font-size:0.9em">Lucas S. Vieira</h3><br/><p style="font-size:0.7em;"><a href="mailto:lucas.vieira@ufvjm.edu.br">lucas.vieira@ufvjm.edu.br</a><br/>Universidade Federal dos Vales do Jequitinhonha e Mucuri<br/>08 de dezembro de 2020</p>
 </section>
-<section id="sec-table-of-contents"><div id="table-of-contents">
+<section id="sec-table-of-contents"><div id="table-of-contents" role="doc-toc">
 <h2>&Iacute;ndice</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#/slide-org33e1582">Introdução</a></li>
-<li><a href="#/slide-orgfd3a5bd">Características e Implementação</a></li>
-<li><a href="#/slide-org8120eb3">Comparando Majestic e outros Lisps</a></li>
-<li><a href="#/slide-org025844d">Interpretador metacircular</a></li>
-<li><a href="#/slide-org1eaa212">Referências</a></li>
+<li><a href="#/slide-org4081726">Introdução</a></li>
+<li><a href="#/slide-org6a56f92">Características e Implementação</a></li>
+<li><a href="#/slide-org5c8f65f">Comparando Majestic e outros Lisps</a></li>
+<li><a href="#/slide-orgcb9aed5">Interpretador metacircular</a></li>
+<li><a href="#/slide-org776b7d9">Referências</a></li>
 </ul>
 </div>
 </div>
@@ -52,13 +52,13 @@ flex: 1;
 </style>
 
 <section>
-<section id="slide-org33e1582">
-<h2 id="org33e1582">Introdução</h2>
-<div class="outline-text-2" id="text-org33e1582">
+<section id="slide-org4081726">
+<h2 id="org4081726">Introdução</h2>
+<div class="outline-text-2" id="text-org4081726">
 </div>
 </section>
-<section id="slide-orge59aa5e">
-<h3 id="orge59aa5e">Quem sou eu?</h3>
+<section id="slide-org9efdff5">
+<h3 id="org9efdff5">Quem sou eu?</h3>
 <div class="container">
 
 <div class="col">
@@ -83,7 +83,7 @@ programação, desenvolvimento de jogos, programação bare-metal
 <div class="col">
 
 
-<div id="org05cc5ec" class="figure">
+<div id="org0870764" class="figure">
 <p><img src="img/eu.jpg" alt="eu.jpg" width="200" />
 </p>
 </div>
@@ -99,8 +99,8 @@ programação, desenvolvimento de jogos, programação bare-metal
 </div>
 
 </section>
-<section id="slide-org1219671">
-<h3 id="org1219671">O que é Majestic Lisp?</h3>
+<section id="slide-org0cbdaa5">
+<h3 id="org0cbdaa5">O que é Majestic Lisp?</h3>
 <p>
 Dialeto da família das linguagens Lisp.
 </p>
@@ -113,8 +113,8 @@ Dialeto da família das linguagens Lisp.
 </ul>
 
 </section>
-<section id="slide-org3de98ae">
-<h3 id="org3de98ae">Um segundo. O que é Bel?</h3>
+<section id="slide-org7bee1d3">
+<h3 id="org7bee1d3">Um segundo. O que é Bel?</h3>
 <p>
 Dialeto de Lisp criado por Paul Graham em 2019.
 </p>
@@ -129,8 +129,8 @@ de LISP 1.5.</li>
 </ul>
 
 </section>
-<section id="slide-orgb418966">
-<h3 id="orgb418966">Objetivos de Majestic Lisp</h3>
+<section id="slide-org78f0852">
+<h3 id="org78f0852">Objetivos de Majestic Lisp</h3>
 <p>
 Escrito como <i>literate  program</i> na forma de livro, guia  o leitor sobre
 como construir um interpretador de Majestic passo-a-passo em Rust.
@@ -148,17 +148,17 @@ como construir um interpretador de Majestic passo-a-passo em Rust.
 </section>
 </section>
 <section>
-<section id="slide-orgfd3a5bd">
-<h2 id="orgfd3a5bd">Características e Implementação</h2>
-<div class="outline-text-2" id="text-orgfd3a5bd">
+<section id="slide-org6a56f92">
+<h2 id="org6a56f92">Características e Implementação</h2>
+<div class="outline-text-2" id="text-org6a56f92">
 </div>
 </section>
-<section id="slide-orgc9cf370">
-<h3 id="orgc9cf370">Live Demo</h3>
+<section id="slide-org4964131">
+<h3 id="org4964131">Live Demo</h3>
 
 </section>
-<section id="slide-orgd8abb51">
-<h3 id="orgd8abb51">Por que Rust?</h3>
+<section id="slide-orgd8c56db">
+<h3 id="orgd8c56db">Por que Rust?</h3>
 <p>
 A  escolha não  foi motivada  por performance,  corretude ou  <i>safety</i> /
 <i>security</i>.
@@ -172,8 +172,8 @@ A  escolha não  foi motivada  por performance,  corretude ou  <i>safety</i> /
 </ul>
 
 </section>
-<section id="slide-org5791369">
-<h4 id="org5791369">Exemplo: Objeto básico de Bel (C11)</h4>
+<section id="slide-org4ad6782">
+<h4 id="org4ad6782">Exemplo: Objeto básico de Bel (C11)</h4>
 <div class="org-src-container">
 
 <pre  class="src src-C"   ><code trim><span style="color: #9d81ba;">typedef</span> <span style="color: #9d81ba;">struct</span> <span style="color: #62D2DB;">BEL</span> <span style="color: #62D2DB;">Bel</span>;
@@ -198,8 +198,8 @@ A  escolha não  foi motivada  por performance,  corretude ou  <i>safety</i> /
 </div>
 
 </section>
-<section id="slide-orgd70bd6a">
-<h4 id="orgd70bd6a">Exemplo: Objeto básico de Majestic (Rust 2018)</h4>
+<section id="slide-org029b285">
+<h4 id="org029b285">Exemplo: Objeto básico de Majestic (Rust 2018)</h4>
 <div class="org-src-container">
 
 <pre  class="src src-rust"   ><code trim><span style="color: #e55c7a;">#[derive(Debug, Trace, Finalize, Clone)]</span>
@@ -219,13 +219,13 @@ A  escolha não  foi motivada  por performance,  corretude ou  <i>safety</i> /
 </section>
 </section>
 <section>
-<section id="slide-org8120eb3">
-<h2 id="org8120eb3">Comparando Majestic e outros Lisps</h2>
-<div class="outline-text-2" id="text-org8120eb3">
+<section id="slide-org5c8f65f">
+<h2 id="org5c8f65f">Comparando Majestic e outros Lisps</h2>
+<div class="outline-text-2" id="text-org5c8f65f">
 </div>
 </section>
-<section id="slide-orgb0286de">
-<h3 id="orgb0286de">Exemplo</h3>
+<section id="slide-org0c068d9">
+<h3 id="org0c068d9">Exemplo</h3>
 <div class="org-src-container">
 
 <pre  class="src src-majestic"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> *my-list* '<span style="color: #47ba99;">(</span>a b c d<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
@@ -233,7 +233,7 @@ A  escolha não  foi motivada  por performance,  corretude ou  <i>safety</i> /
 </code></pre>
 </div>
 
-<pre class="example" id="org5512295">
+<pre class="example" id="org497ebee">
 ((z . a) (z . b) (z . c) (z . d))
 </pre>
 
@@ -242,8 +242,8 @@ Faremos comparações com Scheme, Common Lisp, Clojure e Shen.
 </p>
 
 </section>
-<section id="slide-org19b1955">
-<h3 id="org19b1955">Scheme</h3>
+<section id="slide-org1786867">
+<h3 id="org1786867">Scheme</h3>
 <div class="org-src-container">
 
 <pre  class="src src-scheme"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">define</span> <span style="color: #0bc9cf;">*my-list*</span> '<span style="color: #47ba99;">(</span>a b c d<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
@@ -260,8 +260,8 @@ Scheme tem desgosto por mutabilidade.
 </p>
 
 </section>
-<section id="slide-orgf300450">
-<h3 id="orgf300450">Common Lisp</h3>
+<section id="slide-orgdad5590">
+<h3 id="orgdad5590">Common Lisp</h3>
 <div class="org-src-container">
 
 <pre  class="src src-lisp"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defparameter</span> <span style="color: #7CF083;">*my-list*</span> '<span style="color: #47ba99;">(</span>a b c d<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
@@ -276,7 +276,7 @@ Algumas considerações&#x2026;
 </p>
 
 </section>
-<section id="slide-orgf300450-split">
+<section id="slide-orgdad5590-split">
 
 <ul>
 <li class="fragment appear">CL  é um  Lisp-2. Funções  e variáveis  podem ter  o mesmo  nome sem
@@ -288,8 +288,8 @@ invocação em runtime).</li>
 </ul>
 
 </section>
-<section id="slide-orgea0de5f">
-<h3 id="orgea0de5f">Clojure</h3>
+<section id="slide-org1625761">
+<h3 id="org1625761">Clojure</h3>
 <div class="org-src-container">
 
 <pre  class="src src-clojure"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> <span style="color: #7CF083;">*my-list*</span> '<span style="color: #47ba99;">(</span>a b c d<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
@@ -302,7 +302,7 @@ invocação em runtime).</li>
 </p>
 
 </section>
-<section id="slide-orgea0de5f-split">
+<section id="slide-org1625761-split">
 
 <p>
 Vamos tentar de novo.
@@ -315,7 +315,7 @@ Vamos tentar de novo.
 </code></pre>
 </div>
 
-<pre class="example" id="org78039c8">
+<pre class="example" id="orgab7dd4e">
 ((z a) (z b) (z c) (z d))
 </pre>
 
@@ -324,7 +324,7 @@ Algumas considerações&#x2026;
 </p>
 
 </section>
-<section id="slide-orgea0de5f-split">
+<section id="slide-org1625761-split">
 
 <ul>
 <li class="fragment appear">Clojure tem desgosto por mutabilidade.</li>
@@ -334,8 +334,8 @@ Algumas considerações&#x2026;
 </ul>
 
 </section>
-<section id="slide-org8e49f35">
-<h3 id="org8e49f35">Shen</h3>
+<section id="slide-orgfaffd88">
+<h3 id="orgfaffd88">Shen</h3>
 <div class="org-src-container">
 
 <pre  class="src src-shen"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">set</span> *my-list* <span style="color: #47ba99;">[</span>a b c d<span style="color: #47ba99;">]</span><span style="color: #0D9C94;">)</span>
@@ -351,12 +351,11 @@ trabalha com um sistema de tipos estático e opcional.
 </section>
 </section>
 <section>
-<section id="slide-org025844d">
-<h2 id="org025844d">Interpretador metacircular</h2>
+<section id="slide-orgcb9aed5">
+<h2 id="orgcb9aed5">Interpretador metacircular</h2>
 
-<div id="org6426263" class="figure">
-<p><object type="image/svg+xml" data="img/metacircular.svg" class="org-svg" width="500">
-Sorry, your browser does not support SVG.</object>
+<div id="orgc057a45" class="figure">
+<p><img src="img/metacircular.svg" alt="metacircular.svg" class="org-svg" width="500" />
 </p>
 </div>
 
@@ -367,8 +366,8 @@ Sorry, your browser does not support SVG.</object>
 </ul>
 
 </section>
-<section id="slide-org7d503b7">
-<h3 id="org7d503b7"><code>eval</code></h3>
+<section id="slide-org0d7f807">
+<h3 id="org0d7f807"><code>eval</code></h3>
 <div class="org-src-container">
 
 <pre  class="src src-majestic"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defn</span> eval. <span style="color: #47ba99;">(</span>exp env<span style="color: #47ba99;">)</span>
@@ -390,8 +389,8 @@ Sorry, your browser does not support SVG.</object>
 </div>
 
 </section>
-<section id="slide-orga02562b">
-<h3 id="orga02562b"><code>apply</code></h3>
+<section id="slide-orgd667f7d">
+<h3 id="orgd667f7d"><code>apply</code></h3>
 <div class="org-src-container">
 
 <pre  class="src src-majestic"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defn</span> apply. <span style="color: #47ba99;">(</span>proc args<span style="color: #47ba99;">)</span>
@@ -407,8 +406,8 @@ Sorry, your browser does not support SVG.</object>
 </div>
 
 </section>
-<section id="slide-orgd1bf5c1">
-<h3 id="orgd1bf5c1">Exemplos</h3>
+<section id="slide-org9908691">
+<h3 id="org9908691">Exemplos</h3>
 <div class="container">
 <div class="col">
 
@@ -460,7 +459,7 @@ okay
 </div>
 
 </section>
-<section id="slide-orgd1bf5c1-split">
+<section id="slide-org9908691-split">
 
 <p>
 Perguntas?
@@ -469,8 +468,8 @@ Perguntas?
 </section>
 </section>
 <section>
-<section id="slide-org1eaa212">
-<h2 id="org1eaa212">Referências</h2>
+<section id="slide-org776b7d9">
+<h2 id="org776b7d9">Referências</h2>
 <p style="font-size:0.7em;text-align:left;">
 ABELSON, H.; SUSSMAN,  G. J. <b>Structure and  Interpretation of Computer
 Programs</b>. MIT Press: Cambridge, 1996. ISBN: 978-0-262-51087-5.

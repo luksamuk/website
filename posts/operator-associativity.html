@@ -6,12 +6,11 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Associatividade de Operadores em C/C++</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="Lucas Vieira" />
-<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -32,8 +31,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -42,21 +42,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,7 +192,6 @@
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   .org-svg { width: 90%; }
-  /*]]>*/-->
 </style>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164062058-1"></script>
@@ -215,7 +214,7 @@ gtag('config', 'UA-164062058-1');
 <div id="preamble" class="status">
 <h1 class="title">Associatividade de Operadores em C/C++</h1><p><i>Escrito em Dec 02, 2018 por Lucas Vieira<br/><a href="mailto:lucasvieira@lisp.com.br">lucasvieira@lisp.com.br</a></i></p>
 </div>
-<div id="content">
+<div id="content" class="content">
 <p>
 Recentemente, estive sanando algumas dúvidas de colegas e amigos a respeito de
 programação, mais especificamente a respeito de C/C++. Ao analisarmos alguns
@@ -261,9 +260,9 @@ com a forma como escrevemos o algoritmo, do contrário, situações inesperadas
 acontecem.
 </p>
 
-<div id="outline-container-org9db5deb" class="outline-2">
-<h2 id="org9db5deb">Solução Inicial</h2>
-<div class="outline-text-2" id="text-org9db5deb">
+<div id="outline-container-org380d936" class="outline-2">
+<h2 id="org380d936">Solução Inicial</h2>
+<div class="outline-text-2" id="text-org380d936">
 <p>
 Tomemos, como exemplo, um fragmento do pseudocódigo que institui a comparação
 relacionada aos três últimos pontos:
@@ -308,11 +307,11 @@ pretendido. Mas afinal, qual o motivo para isto?
 </div>
 </div>
 
-<div id="outline-container-org60b0487" class="outline-2">
-<h2 id="org60b0487">Associatividade de Operadores</h2>
-<div class="outline-text-2" id="text-org60b0487">
+<div id="outline-container-orge2701e8" class="outline-2">
+<h2 id="orge2701e8">Associatividade de Operadores</h2>
+<div class="outline-text-2" id="text-orge2701e8">
 <p>
-A Wikipedia<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup> em Inglês possui um artigo sobre o tema da <i>Associatividade de
+A Wikipedia<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup> em Inglês possui um artigo sobre o tema da <i>Associatividade de
 Operadores</i>. Um dos subtópicos deste artigo, relacionado a associatividade do
 operador de atribuição (Em C/C++, <code>=</code>), diz que
 </p>
@@ -407,9 +406,9 @@ a <code>true</code> e, portanto, se <code>x</code> é igual a <code>1</code>.
 </div>
 </div>
 
-<div id="outline-container-orgd3fd694" class="outline-2">
-<h2 id="orgd3fd694">Solução</h2>
-<div class="outline-text-2" id="text-orgd3fd694">
+<div id="outline-container-orgdd4c487" class="outline-2">
+<h2 id="orgdd4c487">Solução</h2>
+<div class="outline-text-2" id="text-orgdd4c487">
 <p>
 A solução para este problema é quebrar esta igualdade em duas, e transformá-la
 em uma relação lógica. Em C/C++, teríamos:
@@ -460,9 +459,9 @@ anteriormente, da forma como a comparação foi escrita.
 </div>
 </div>
 
-<div id="outline-container-org06ff3a4" class="outline-2">
-<h2 id="org06ff3a4">Extra: O Operador Ternário</h2>
-<div class="outline-text-2" id="text-org06ff3a4">
+<div id="outline-container-orgdd040d8" class="outline-2">
+<h2 id="orgdd040d8">Extra: O Operador Ternário</h2>
+<div class="outline-text-2" id="text-orgdd040d8">
 <p>
 Em uma nota extra, considere o operador ternário (<code>?:</code>) de C/C++. Dada a seguinte
 expressão:
@@ -494,11 +493,11 @@ assim sucessivamente. Desta forma, pode-se criar facilmente uma relação do tip
 </p>
 </div>
 
-<div id="outline-container-org63e0678" class="outline-3">
-<h3 id="org63e0678">O Ternário em PHP</h3>
-<div class="outline-text-3" id="text-org63e0678">
+<div id="outline-container-org7cd1fa4" class="outline-3">
+<h3 id="org7cd1fa4">O Ternário em PHP</h3>
+<div class="outline-text-3" id="text-org7cd1fa4">
 <p>
-Em uma nota relacionada, há uma intensa crítica<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup> sobre o operador ternário
+Em uma nota relacionada, há uma intensa crítica<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup> sobre o operador ternário
 de PHP, em especial por ele não se comportar desta forma. Considerando a
 expressão similar:
 </p>
@@ -526,9 +525,9 @@ Portanto, cuidado com o operador ternário em PHP. <code>:P</code>
 </div>
 </div>
 
-<div id="outline-container-org39a1bc2" class="outline-2">
-<h2 id="org39a1bc2">Próximos passos</h2>
-<div class="outline-text-2" id="text-org39a1bc2">
+<div id="outline-container-org4c91314" class="outline-2">
+<h2 id="org4c91314">Próximos passos</h2>
+<div class="outline-text-2" id="text-org4c91314">
 <p>
 Encerrarei por aqui minha postagem, mas esta discussão está intimamente ligada à
 existência dos <code>lvalues</code> e <code>rvalues</code> em C++. Este tópico, porém, pode ser mais
@@ -540,11 +539,11 @@ extenso e, portanto, deixarei para um momento mais específico.
 <h2 class="footnotes">Notas de Rodap&eacute;: </h2>
 <div id="text-footnotes">
 
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="https://en.wikipedia.org/wiki/Operator_associativity#Right-associativity_of_assignment_operators">Wikipedia: Operator Associativity</a>
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="http://phpsadness.com/sad/30">PHP Sadness: Ternary Operator Associativity</a>
 </p></div></div>
 
