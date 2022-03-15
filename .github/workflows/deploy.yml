@@ -10,21 +10,21 @@ name: Deploy to GitHub Pages
 jobs:
   Build:
     runs-on: ubuntu-latest
-      #    container:
-      #      image: luksamuk/emacs-export
+    container:
+      image: luksamuk/emacs-export
 
     steps:
-      - name: Install dependencies
-        run: sudo apt update && sudo apt install make && sudo apt install docker-ce docker-ce-cli containerd.io
-
-      - name: Get docker image
-        run: docker pull luksamuk/emacs-export
-
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Build stuff
-        run: make
+        run: sh ./ci-run.sh
+
+      - name: Check status
+        run: ls
+
+      - name: Check src
+        run: ls src/
 
       - name: Deploy to GH Pages
         uses: JamesIves/github-pages-deploy-action@v4.2.5

@@ -2,7 +2,7 @@
 for f in `find src/pages -name "*.org"`; do
     echo "$f";
     emacs --batch \
-	  -l "~/.emacs.d/init.el" \
+	  -l "/root/.emacs.d/init.el" \
 	  -l "./src/bindings.el" \
 	  --kill \
 	  "$f" \

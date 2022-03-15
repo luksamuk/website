@@ -2,7 +2,7 @@
 for f in `find src/talks -name "*.org"`; do
     echo "$f";
     emacs --batch \
-	  -l "~/.emacs.d/init.el" \
+	  -l "/root/.emacs.d/init.el" \
 	  --kill \
 	  "$f" \
 	  -f org-reveal-export-to-html;
