@@ -6,11 +6,12 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Contando Ocorrências de Números em C, C++ e Common Lisp</title>
+<meta name="generator" content="Org mode" />
 <meta name="author" content="Lucas Vieira" />
-<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira" />
-<meta name="generator" content="Org Mode" />
-<style>
-  #content { max-width: 60em; margin: auto; }
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -31,9 +32,8 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #e6e6e6;
-    border-radius: 3px;
-    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -42,21 +42,21 @@
   pre.src {
     position: relative;
     overflow: auto;
+    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    top: -8px;
-    right: 12px;
+    background-color: white;
+    top: -10px;
+    right: 10px;
     padding: 3px;
-    color: #555;
-    background-color: #f2f2f299;
+    border: 1px solid black;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
-  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,6 +192,7 @@
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   .org-svg { width: 90%; }
+  /*]]>*/-->
 </style>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164062058-1"></script>
@@ -214,11 +215,11 @@ gtag('config', 'UA-164062058-1');
 <div id="preamble" class="status">
 <h1 class="title">Contando Ocorrências de Números em C, C++ e Common Lisp</h1><p><i>Escrito em Dec 18, 2018 por Lucas Vieira<br/><a href="mailto:lucasvieira@lisp.com.br">lucasvieira@lisp.com.br</a></i></p>
 </div>
-<div id="content" class="content">
+<div id="content">
 
-<div id="outline-container-org3083813" class="outline-2">
-<h2 id="org3083813">Introdução</h2>
-<div class="outline-text-2" id="text-org3083813">
+<div id="outline-container-org3376054" class="outline-2">
+<h2 id="org3376054">Introdução</h2>
+<div class="outline-text-2" id="text-org3376054">
 <p>
 Mais uma vez, deparei-me com mais uma situação em que precisei explicar para
 colegas a respeito de algum conceito de programação que não era muito
@@ -247,9 +248,9 @@ exercício; a segunda, em <code>C++</code>, tirando o máximo proveito da <code>
 </p>
 </div>
 
-<div id="outline-container-org02b8153" class="outline-4">
-<h4 id="org02b8153"><b>ACHTUNG!</b></h4>
-<div class="outline-text-4" id="text-org02b8153">
+<div id="outline-container-org609f468" class="outline-4">
+<h4 id="org609f468"><b>ACHTUNG!</b></h4>
+<div class="outline-text-4" id="text-org609f468">
 <p>
 Por motivos didáticos, omitirei a função <code>main</code> em <code>C</code> e <code>C++</code>, mas deixarei
 explícitos os cabeçalhos utilizados. Ciente disto, adapte o código à sua
@@ -261,9 +262,9 @@ executá-lo.
 </div>
 </div>
 
-<div id="outline-container-org872c903" class="outline-2">
-<h2 id="org872c903">Solução em <code>C</code></h2>
-<div class="outline-text-2" id="text-org872c903">
+<div id="outline-container-org6c644e0" class="outline-2">
+<h2 id="org6c644e0">Solução em <code>C</code></h2>
+<div class="outline-text-2" id="text-org6c644e0">
 <p>
 A ideia principal para resolver este problema em <code>C</code> é criar uma estrutura de
 dados capaz de armazenar repetições para cada número; ou seja, uma forma de
@@ -380,9 +381,9 @@ Teremos a seguinte interação no console:
 </div>
 </div>
 
-<div id="outline-container-org20f73cc" class="outline-2">
-<h2 id="org20f73cc">Solução em <code>C++</code></h2>
-<div class="outline-text-2" id="text-org20f73cc">
+<div id="outline-container-org40e19da" class="outline-2">
+<h2 id="org40e19da">Solução em <code>C++</code></h2>
+<div class="outline-text-2" id="text-org40e19da">
 <p>
 Vamos ser honestos. Tudo o que fiz em <code>C</code> foi emular, de forma ineficiente (para
 um caso com mais números), uma estrutura que conhecemos bem em <code>C++</code>: um
@@ -462,9 +463,9 @@ Eis a interação no console.
 </div>
 </div>
 
-<div id="outline-container-org7d4535c" class="outline-2">
-<h2 id="org7d4535c">Solução em <code>Common Lisp</code></h2>
-<div class="outline-text-2" id="text-org7d4535c">
+<div id="outline-container-orgf8f422d" class="outline-2">
+<h2 id="orgf8f422d">Solução em <code>Common Lisp</code></h2>
+<div class="outline-text-2" id="text-orgf8f422d">
 <p>
 <code>Common Lisp</code> é uma linguagem madura. Em termos de recursos esperados por um
 programador, digamos, no caso de contêineres, ela não decepciona. Assim como em
@@ -574,9 +575,9 @@ Podemos executar o código como script, utilizando o <code>Steel Bank Common Lis
 </div>
 </div>
 
-<div id="outline-container-org1abe487" class="outline-2">
-<h2 id="org1abe487">Conclusão</h2>
-<div class="outline-text-2" id="text-org1abe487">
+<div id="outline-container-orgb689604" class="outline-2">
+<h2 id="orgb689604">Conclusão</h2>
+<div class="outline-text-2" id="text-orgb689604">
 <p>
 Como você pode ver, não importa a linguagem que você venha a utilizar; você será
 capaz de resolver problemas simples como este. Mas acredito que seja

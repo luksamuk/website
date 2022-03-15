@@ -6,11 +6,12 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Early Ideas: A Modern Lisp Machine from Scratch</title>
+<meta name="generator" content="Org mode" />
 <meta name="author" content="Alchemist" />
-<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira" />
-<meta name="generator" content="Org Mode" />
-<style>
-  #content { max-width: 60em; margin: auto; }
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -31,9 +32,8 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #e6e6e6;
-    border-radius: 3px;
-    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -42,21 +42,21 @@
   pre.src {
     position: relative;
     overflow: auto;
+    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    top: -8px;
-    right: 12px;
+    background-color: white;
+    top: -10px;
+    right: 10px;
     padding: 3px;
-    color: #555;
-    background-color: #f2f2f299;
+    border: 1px solid black;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
-  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,6 +192,7 @@
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   .org-svg { width: 90%; }
+  /*]]>*/-->
 </style>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164062058-1"></script>
@@ -214,11 +215,11 @@ gtag('config', 'UA-164062058-1');
 <div id="preamble" class="status">
 <h1 class="title">Early Ideas: A Modern Lisp Machine from Scratch</h1><p><i>Written in Sep 15, 2018 by Alchemist<br/><a href="mailto:alchemist@sdf.org">alchemist@sdf.org</a></i></p>
 </div>
-<div id="content" class="content">
+<div id="content">
 
-<div id="outline-container-org5e575b0" class="outline-2">
-<h2 id="org5e575b0">Introduction</h2>
-<div class="outline-text-2" id="text-org5e575b0">
+<div id="outline-container-org8704968" class="outline-2">
+<h2 id="org8704968">Introduction</h2>
+<div class="outline-text-2" id="text-org8704968">
 <p>
 I am often fascinated by old tech.
 </p>
@@ -252,9 +253,9 @@ efficient Unix-like system built to run Lisp on specialized, modern hardware.
 </div>
 </div>
 
-<div id="outline-container-orgfd47219" class="outline-2">
-<h2 id="orgfd47219">Lisp Machines</h2>
-<div class="outline-text-2" id="text-orgfd47219">
+<div id="outline-container-org71768cb" class="outline-2">
+<h2 id="org71768cb">Lisp Machines</h2>
+<div class="outline-text-2" id="text-org71768cb">
 <p>
 Lisp Machines were computers specially designed to run Lisp code efficiently.
 This is justified by the way the language works: Lisp stands for
@@ -298,9 +299,9 @@ system which is the true spiritual successor to the original Unix.
 </p>
 </div>
 
-<div id="outline-container-orge1ca14b" class="outline-3">
-<h3 id="orge1ca14b">Hardware optimizations</h3>
-<div class="outline-text-3" id="text-orge1ca14b">
+<div id="outline-container-org22fcee8" class="outline-3">
+<h3 id="org22fcee8">Hardware optimizations</h3>
+<div class="outline-text-3" id="text-org22fcee8">
 <p>
 My main concern is about the kind of hardware-level optimizations that
 such an operational system, built using Lisp, might require. Therefore, I have
@@ -317,9 +318,9 @@ mess with.
 </div>
 </div>
 
-<div id="outline-container-org4b7c634" class="outline-2">
-<h2 id="org4b7c634">System architecture</h2>
-<div class="outline-text-2" id="text-org4b7c634">
+<div id="outline-container-orgaac40f7" class="outline-2">
+<h2 id="orgaac40f7">System architecture</h2>
+<div class="outline-text-2" id="text-orgaac40f7">
 <p>
 For the user experience, my intention is to create a Unix-like
 environment, though I do not intend to follow POSIX, not even remotely. The user
@@ -377,9 +378,9 @@ as much as it can, according to its number of cores.
 </div>
 </div>
 
-<div id="outline-container-orga90c4f4" class="outline-2">
-<h2 id="orga90c4f4">Extensibility and hackability</h2>
-<div class="outline-text-2" id="text-orga90c4f4">
+<div id="outline-container-org7e29a1c" class="outline-2">
+<h2 id="org7e29a1c">Extensibility and hackability</h2>
+<div class="outline-text-2" id="text-org7e29a1c">
 <p>
 Another interesting thing which I'm giving a lot of thought is the ability to
 change dialects and paradigms in a per-app basis. Of course there would be a
@@ -401,9 +402,9 @@ using the idea from the last paragraph.
 </div>
 </div>
 
-<div id="outline-container-orgd22dda6" class="outline-2">
-<h2 id="orgd22dda6">Graphical interface</h2>
-<div class="outline-text-2" id="text-orgd22dda6">
+<div id="outline-container-org4b682d4" class="outline-2">
+<h2 id="org4b682d4">Graphical interface</h2>
+<div class="outline-text-2" id="text-org4b682d4">
 <p>
 Finally, as for GUI applications, Common Lisp has the fantastic <a href="https://en.wikipedia.org/wiki/Common_Lisp_Interface_Manager">CLIM</a>, which is
 very underrated and has a lot of good principles. CLIM could be implemented
@@ -413,9 +414,9 @@ much like someone would do with Qt on any platform, for example.
 </div>
 </div>
 
-<div id="outline-container-org3f59749" class="outline-2">
-<h2 id="org3f59749">Internet</h2>
-<div class="outline-text-2" id="text-org3f59749">
+<div id="outline-container-org5d3850a" class="outline-2">
+<h2 id="org5d3850a">Internet</h2>
+<div class="outline-text-2" id="text-org5d3850a">
 <p>
 I've been discussing a lot with friends about the possibility of
 "web" pages built using S-expressions instead of HTML itself. This would
@@ -440,9 +441,9 @@ performance.
 </div>
 </div>
 
-<div id="outline-container-org036c7c5" class="outline-2">
-<h2 id="org036c7c5">Conclusion</h2>
-<div class="outline-text-2" id="text-org036c7c5">
+<div id="outline-container-orgb912867" class="outline-2">
+<h2 id="orgb912867">Conclusion</h2>
+<div class="outline-text-2" id="text-orgb912867">
 <p>
 Those are ideas for something that has proven difficult to do,
 specially given the fact that I lack a lot of experience and knowledge in most

@@ -5,12 +5,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Desenvolvimento em C no /Plan 9 From Bell Labs/</title>
+<title>Desenvolvimento em C no <i>Plan 9 From Bell Labs</i></title>
+<meta name="generator" content="Org mode" />
 <meta name="author" content="Lucas Vieira" />
-<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira" />
-<meta name="generator" content="Org Mode" />
-<style>
-  #content { max-width: 60em; margin: auto; }
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -31,9 +32,8 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #e6e6e6;
-    border-radius: 3px;
-    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -42,21 +42,21 @@
   pre.src {
     position: relative;
     overflow: auto;
+    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    top: -8px;
-    right: 12px;
+    background-color: white;
+    top: -10px;
+    right: 10px;
     padding: 3px;
-    color: #555;
-    background-color: #f2f2f299;
+    border: 1px solid black;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
-  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,6 +192,7 @@
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   .org-svg { width: 90%; }
+  /*]]>*/-->
 </style>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164062058-1"></script>
@@ -214,62 +215,62 @@ gtag('config', 'UA-164062058-1');
 <div id="preamble" class="status">
 <h1 class="title">Desenvolvimento em C no <i>Plan 9 From Bell Labs</i></h1><p><i>Escrito em Mar 24, 2019 por Lucas Vieira<br/><a href="mailto:lucasvieira@lisp.com.br">lucasvieira@lisp.com.br</a></i></p>
 </div>
-<div id="content" class="content">
-<div id="table-of-contents" role="doc-toc">
+<div id="content">
+<div id="table-of-contents">
 <h2>&Iacute;ndice</h2>
-<div id="text-table-of-contents" role="doc-toc">
+<div id="text-table-of-contents">
 <ul>
-<li><a href="#orgbecf845">Introdução</a>
+<li><a href="#org225c17e">Introdução</a>
 <ul>
-<li><a href="#org7a37fcb">O que é Plan 9?</a></li>
-<li><a href="#orgfcc1d28">Forks do Plan 9</a></li>
-<li><a href="#org1b5d129">Uso e escolha do 9front</a></li>
+<li><a href="#orgf065035">O que é Plan 9?</a></li>
+<li><a href="#org2c48ef7">Forks do Plan 9</a></li>
+<li><a href="#org1a41d14">Uso e escolha do 9front</a></li>
 </ul>
 </li>
-<li><a href="#org94ffd96">Ferramentas de desenvolvimento</a>
+<li><a href="#orgdb1cd4b">Ferramentas de desenvolvimento</a>
 <ul>
-<li><a href="#org79bd5ad">Desenvolvimento no Linux</a></li>
-<li><a href="#org94d87da">Desenvolvimento no <i>9front</i></a></li>
+<li><a href="#org9afc694">Desenvolvimento no Linux</a></li>
+<li><a href="#orgabde833">Desenvolvimento no <i>9front</i></a></li>
 </ul>
 </li>
-<li><a href="#org8d4ceab">Estrutura do projeto</a>
+<li><a href="#orgcd89221">Estrutura do projeto</a>
 <ul>
-<li><a href="#orgb3b080e">Arquivos</a></li>
-<li><a href="#orgfbc2945">Método de compilação</a>
+<li><a href="#org5b31c27">Arquivos</a></li>
+<li><a href="#org3c39933">Método de compilação</a>
 <ul>
-<li><a href="#orga13c4fd"><code>make</code></a></li>
-<li><a href="#org1ea0a4b"><code>mk</code></a></li>
+<li><a href="#org64c1d45"><code>make</code></a></li>
+<li><a href="#orgda08301"><code>mk</code></a></li>
 </ul>
 </li>
-<li><a href="#orgd0320c4">Controle de versão e manutenção de patches do sistema</a></li>
+<li><a href="#org311428b">Controle de versão e manutenção de patches do sistema</a></li>
 </ul>
 </li>
-<li><a href="#org3909c87">Diferenças cruciais ao programar</a>
+<li><a href="#orga6886b1">Diferenças cruciais ao programar</a>
 <ul>
-<li><a href="#org7f1c270">Anatomia básica de um programa em C</a></li>
-<li><a href="#orgdae51a7">Entrada via console</a></li>
-<li><a href="#org18493e1"><i>Parsing</i> de argumentos de linha de comando</a></li>
+<li><a href="#org55685ed">Anatomia básica de um programa em C</a></li>
+<li><a href="#orgda985e8">Entrada via console</a></li>
+<li><a href="#orgabf192e"><i>Parsing</i> de argumentos de linha de comando</a></li>
 </ul>
 </li>
-<li><a href="#org2504c2c">Processo de compilação</a>
+<li><a href="#org00768b5">Processo de compilação</a>
 <ul>
-<li><a href="#orgb8be601">O arquivo <code>mkfile</code></a></li>
+<li><a href="#orgfabd351">O arquivo <code>mkfile</code></a></li>
 </ul>
 </li>
-<li><a href="#org7a16cf9">Conclusão</a></li>
+<li><a href="#org74001f7">Conclusão</a></li>
 </ul>
 </div>
 </div>
 
-<div id="orgef7c034" class="figure">
+<div id="orgea7608f" class="figure">
 <p><img src="./img/space-glenda.png" alt="space-glenda.png" />
 </p>
 <p><span class="figure-number">Figura 1: </span>Glenda, mascote do Plan 9, em seu traje espacial para navegar na web.</p>
 </div>
 
-<div id="outline-container-orgbecf845" class="outline-2">
-<h2 id="orgbecf845">Introdução</h2>
-<div class="outline-text-2" id="text-orgbecf845">
+<div id="outline-container-org225c17e" class="outline-2">
+<h2 id="org225c17e">Introdução</h2>
+<div class="outline-text-2" id="text-org225c17e">
 <p>
 Olá. Neste post, pretendo explorar os aspectos e as dificuldades que obtive ao
 programar um pequeno jogo na linguagem C; todavia, este post diz pouco respeito
@@ -307,11 +308,11 @@ verdadeira pioneira com este projeto.
 </p>
 </div>
 
-<div id="outline-container-org7a37fcb" class="outline-3">
-<h3 id="org7a37fcb">O que é Plan 9?</h3>
-<div class="outline-text-3" id="text-org7a37fcb">
+<div id="outline-container-orgf065035" class="outline-3">
+<h3 id="orgf065035">O que é Plan 9?</h3>
+<div class="outline-text-3" id="text-orgf065035">
 
-<div id="org52bfd1f" class="figure">
+<div id="org9bcf4de" class="figure">
 <p><img src="./img/plan9.png" alt="plan9.png" />
 </p>
 <p><span class="figure-number">Figura 2: </span>Screenshot do sistema em operação.</p>
@@ -319,7 +320,7 @@ verdadeira pioneira com este projeto.
 
 <p>
 <i>Plan 9 From Bell Labs</i> é um sistema operacional, fruto de pesquisa do mesmo grupo
-que criou o sistema operacional UNIX<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup> e a linguagem C. O sistema emergiu no
+que criou o sistema operacional UNIX<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup> e a linguagem C. O sistema emergiu no
 final dos anos 80, e pode ser visto como uma tentativa de evoluir os conceitos
 do UNIX, em uma era onde gráficos e rede passaram a ser utilizados mais
 ostensivamente.
@@ -336,7 +337,7 @@ habilitar suporte completo à web contemporânea.
 </p>
 
 <p>
-O sistema é descrito por seus criadores<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup> como um "argumento" em prol de
+O sistema é descrito por seus criadores<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup> como um "argumento" em prol de
 simplicidade e claridade, sendo um UNIX levado ao extremo. Dentre suas
 características marcantes, pode-se citar o <i>Plan 9</i> como um sistema para a criação
 e o gerenciamento de um ambiente de computação distribuída, onde máquinas
@@ -355,9 +356,9 @@ a design de sistemas operacionais.
 </div>
 </div>
 
-<div id="outline-container-orgfcc1d28" class="outline-3">
-<h3 id="orgfcc1d28">Forks do Plan 9</h3>
-<div class="outline-text-3" id="text-orgfcc1d28">
+<div id="outline-container-org2c48ef7" class="outline-3">
+<h3 id="org2c48ef7">Forks do Plan 9</h3>
+<div class="outline-text-3" id="text-org2c48ef7">
 <p>
 O <i>Plan 9</i> ainda possui alguns <i>forks</i> (ou distribuições) notórios em
 funcionamento. Como exemplo, temos:
@@ -376,7 +377,7 @@ de promover uma linguagem de programação específica, para tentar simplificar 
 manter a segurança de aplicações: a linguagem <a href="http://www.vitanuova.com/inferno/limbo.html">Limbo</a>;</li>
 <li><a href="https://harvey-os.org/">Harvey</a>, um sistema operacional de 64-bit que visa trazer o Plan 9 para um
 universo que se adeque aos padrões ANSI e POSIX, e pode ser compilado
-utilizando compiladores modernos, como <code>gcc</code> ou <code>clang</code><sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>;</li>
+utilizando compiladores modernos, como <code>gcc</code> ou <code>clang</code><sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>;</li>
 <li><a href="http://jehanne.io/">Jehanne</a>, um <i>fork</i> feito sob a premissa de dar continuidade ao princípio de
 simplicidade do Plan 9, e também de simplicidade no design de sistemas
 operacionais modernos. Distribuído como software livre, possui bastante
@@ -391,9 +392,9 @@ da atualidade.
 </div>
 </div>
 
-<div id="outline-container-org1b5d129" class="outline-3">
-<h3 id="org1b5d129">Uso e escolha do 9front</h3>
-<div class="outline-text-3" id="text-org1b5d129">
+<div id="outline-container-org1a41d14" class="outline-3">
+<h3 id="org1a41d14">Uso e escolha do 9front</h3>
+<div class="outline-text-3" id="text-org1a41d14">
 <p>
 Neste projeto, como apontado anteriormente, utilizei o <i>9front</i> para testes,
 porque também tenho-o instalado em uma partição extra na minha máquina. A beleza
@@ -401,9 +402,9 @@ de ter este tipo de sistema instalado é perceber a facilidade na localização 
 recursos do mesmo. Por ser algo tão "oldschool", encontrar material a respeito
 do seu uso e do seu funcionamento envolve ler os diversos artigos no diretório
 <code>/sys/doc</code> (todos os artigos distribuídos em PostScript, podendo ser compilados
-"na hora" e vistos no visualizador de documentos<sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>). Para outras situações,
+"na hora" e vistos no visualizador de documentos<sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>). Para outras situações,
 basta utilizar as páginas de manual, as famosas <i>manpages</i>, que funcionam da exata
-mesma forma como no Linux<sup><a id="fnr.5" class="footref" href="#fn.5" role="doc-backlink">5</a></sup>.
+mesma forma como no Linux<sup><a id="fnr.5" class="footref" href="#fn.5">5</a></sup>.
 </p>
 
 <p>
@@ -421,13 +422,13 @@ proverá, imediatamente, um sistema completo e pronto para o funcionamento.
 </div>
 </div>
 
-<div id="outline-container-org94ffd96" class="outline-2">
-<h2 id="org94ffd96">Ferramentas de desenvolvimento</h2>
-<div class="outline-text-2" id="text-org94ffd96">
+<div id="outline-container-orgdb1cd4b" class="outline-2">
+<h2 id="orgdb1cd4b">Ferramentas de desenvolvimento</h2>
+<div class="outline-text-2" id="text-orgdb1cd4b">
 </div>
-<div id="outline-container-org79bd5ad" class="outline-3">
-<h3 id="org79bd5ad">Desenvolvimento no Linux</h3>
-<div class="outline-text-3" id="text-org79bd5ad">
+<div id="outline-container-org9afc694" class="outline-3">
+<h3 id="org9afc694">Desenvolvimento no Linux</h3>
+<div class="outline-text-3" id="text-org9afc694">
 <p>
 A maior parte do desenvolvimento foi feita em meu sistema Void Linux x86<sub>64</sub>, sob
 o editor de texto Emacs; afinal, ninguém precisa de algum editor de texto
@@ -452,12 +453,12 @@ adiante.
 </div>
 </div>
 
-<div id="outline-container-org94d87da" class="outline-3">
-<h3 id="org94d87da">Desenvolvimento no <i>9front</i></h3>
-<div class="outline-text-3" id="text-org94d87da">
+<div id="outline-container-orgabde833" class="outline-3">
+<h3 id="orgabde833">Desenvolvimento no <i>9front</i></h3>
+<div class="outline-text-3" id="text-orgabde833">
 <p>
 Tenho o <i>9front</i> instalado tanto de forma nativa quanto em um drive virtual,
-bootável via QEMU dentro do Void Linux<sup><a id="fnr.6" class="footref" href="#fn.6" role="doc-backlink">6</a></sup>. Após o final do desenvolvimento
+bootável via QEMU dentro do Void Linux<sup><a id="fnr.6" class="footref" href="#fn.6">6</a></sup>. Após o final do desenvolvimento
 usando <code>plan9port</code> no Linux, bastou trazer o código para o QEMU e, em seguida,
 para o 9front nativo, e o projeto funcionou com mudanças mínimas que não
 afetaram o build para Linux com <code>plan9port</code>. O restante do trabalho baseou-se
@@ -468,25 +469,25 @@ este arquivo será dito a seguir).
 </div>
 </div>
 
-<div id="outline-container-org8d4ceab" class="outline-2">
-<h2 id="org8d4ceab">Estrutura do projeto</h2>
-<div class="outline-text-2" id="text-org8d4ceab">
+<div id="outline-container-orgcd89221" class="outline-2">
+<h2 id="orgcd89221">Estrutura do projeto</h2>
+<div class="outline-text-2" id="text-orgcd89221">
 <p>
 Neste momento, destacarei alguns pontos com relação aos arquivos de projeto
 criados, e também da organização em termos de hierarquia e uso dos mesmos.
 </p>
 
 
-<div id="orgd736399" class="figure">
+<div id="org3ee7575" class="figure">
 <p><img src="./img/9mine.gif" alt="9mine.gif" />
 </p>
 <p><span class="figure-number">Figura 3: </span>O jogo em funcionamento, no Linux, sob o plan9port.</p>
 </div>
 </div>
 
-<div id="outline-container-orgb3b080e" class="outline-3">
-<h3 id="orgb3b080e">Arquivos</h3>
-<div class="outline-text-3" id="text-orgb3b080e">
+<div id="outline-container-org5b31c27" class="outline-3">
+<h3 id="org5b31c27">Arquivos</h3>
+<div class="outline-text-3" id="text-org5b31c27">
 <p>
 O projeto possui apenas três arquivos relevantes:
 </p>
@@ -504,18 +505,18 @@ Onde <code>9mine.c</code> é o arquivo de código em C, <code>mkfile</code> é o
 </div>
 </div>
 
-<div id="outline-container-orgfbc2945" class="outline-3">
-<h3 id="orgfbc2945">Método de compilação</h3>
-<div class="outline-text-3" id="text-orgfbc2945">
+<div id="outline-container-org3c39933" class="outline-3">
+<h3 id="org3c39933">Método de compilação</h3>
+<div class="outline-text-3" id="text-org3c39933">
 <p>
 Para compilar o projeto, foram utilizados tanto <code>make</code> (Linux/plan9port) quanto
 <code>mk</code> (Plan 9).
 </p>
 </div>
 
-<div id="outline-container-orga13c4fd" class="outline-4">
-<h4 id="orga13c4fd"><code>make</code></h4>
-<div class="outline-text-4" id="text-orga13c4fd">
+<div id="outline-container-org64c1d45" class="outline-4">
+<h4 id="org64c1d45"><code>make</code></h4>
+<div class="outline-text-4" id="text-org64c1d45">
 <p>
 Inicialmente, meu objetivo era utilizar apenas ferramentas do <code>plan9port</code> no
 Linux, de forma a emular completamente um ambiente de compilação para o
@@ -535,13 +536,13 @@ para build padrão do Linux, o programa <code>make</code>.
 </div>
 </div>
 
-<div id="outline-container-org1ea0a4b" class="outline-4">
-<h4 id="org1ea0a4b"><code>mk</code></h4>
-<div class="outline-text-4" id="text-org1ea0a4b">
+<div id="outline-container-orgda08301" class="outline-4">
+<h4 id="orgda08301"><code>mk</code></h4>
+<div class="outline-text-4" id="text-orgda08301">
 <p>
 Esta é a ferramenta padrão para facilitação de builds no Plan 9, e também é
 ostensivamente utilizada na manutenção de arquivos e na hierarquia do
-sistema<sup><a id="fnr.7" class="footref" href="#fn.7" role="doc-backlink">7</a></sup>. Segundo a documentação oficial, <code>mk</code> foi criado para interagir
+sistema<sup><a id="fnr.7" class="footref" href="#fn.7">7</a></sup>. Segundo a documentação oficial, <code>mk</code> foi criado para interagir
 diretamente com o shell oficial do Plan 9, o <code>rc</code>, possibilitando a execução de
 tarefas como manutenção, e até mesmo execução de ações em paralelo, ao explorar
 um ambiente com múltiplos processadores, o que é respaldado pela ideia de um
@@ -557,13 +558,13 @@ compilar quanto instalar o jogo aqui discutido.
 </div>
 </div>
 
-<div id="outline-container-orgd0320c4" class="outline-3">
-<h3 id="orgd0320c4">Controle de versão e manutenção de patches do sistema</h3>
-<div class="outline-text-3" id="text-orgd0320c4">
+<div id="outline-container-org311428b" class="outline-3">
+<h3 id="org311428b">Controle de versão e manutenção de patches do sistema</h3>
+<div class="outline-text-3" id="text-org311428b">
 <p>
 Na realidade, nenhum fork do <i>Plan 9</i> possui um bom sistema de controle de
 versão. Há um script comunitário que funciona de forma similar ao <code>git</code> mas que,
-primariamente, não passa de um wrapper para o <code>hget</code> (similar ao <code>wget</code>)<sup><a id="fnr.8" class="footref" href="#fn.8" role="doc-backlink">8</a></sup>.
+primariamente, não passa de um wrapper para o <code>hget</code> (similar ao <code>wget</code>)<sup><a id="fnr.8" class="footref" href="#fn.8">8</a></sup>.
 </p>
 
 <p>
@@ -590,15 +591,15 @@ Caso você esteja curioso com relação à forma como o sistema é, normalmente,
 "atualizado", o procedimento passa pela montagem de um diretório remoto,
 conectado aos servidores dos mantenedores do fork utilizado, através do
 protocolo <code>9p</code>, que também é uma das características-estrela do Plan 9, na qual,
-infelizmente, não vou me aprofundar aqui<sup><a id="fnr.9" class="footref" href="#fn.9" role="doc-backlink">9</a></sup>.
+infelizmente, não vou me aprofundar aqui<sup><a id="fnr.9" class="footref" href="#fn.9">9</a></sup>.
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org3909c87" class="outline-2">
-<h2 id="org3909c87">Diferenças cruciais ao programar</h2>
-<div class="outline-text-2" id="text-org3909c87">
+<div id="outline-container-orga6886b1" class="outline-2">
+<h2 id="orga6886b1">Diferenças cruciais ao programar</h2>
+<div class="outline-text-2" id="text-orga6886b1">
 <p>
 O sistema é radicalmente diferente na forma como sugere a interação do
 programador com a biblioteca-padrão de C. Nesta seção, mostrarei alguns
@@ -606,9 +607,9 @@ programas básicos com algumas <i>features</i> que julguei serem relevantes.
 </p>
 </div>
 
-<div id="outline-container-org7f1c270" class="outline-3">
-<h3 id="org7f1c270">Anatomia básica de um programa em C</h3>
-<div class="outline-text-3" id="text-org7f1c270">
+<div id="outline-container-org55685ed" class="outline-3">
+<h3 id="org55685ed">Anatomia básica de um programa em C</h3>
+<div class="outline-text-3" id="text-org55685ed">
 <p>
 Como antes dito, um programa básico em C para o <i>Plan 9</i> pode ser dramaticamente
 diferente do que vemos hoje para Windows, Linux e OS X. Abaixo, temos um "Hello,
@@ -632,7 +633,7 @@ world!" bem simples.
 Leitores acostumados com ANSI C poderão assustar um pouco com o exemplo. Como
 pode ser visto, apesar de estarmos imprimindo algo na tela, não há sequer uma
 sombra remota de <code>stdio.h</code> ou de <code>printf</code>, pois estas são funções que não existem no
-<i>Plan 9</i><sup><a id="fnr.10" class="footref" href="#fn.10" role="doc-backlink">10</a></sup>. Mas engana-se quem acha que não são suficientes: ao invés da
+<i>Plan 9</i><sup><a id="fnr.10" class="footref" href="#fn.10">10</a></sup>. Mas engana-se quem acha que não são suficientes: ao invés da
 implementação de um padrão enorme, o foco está em deixar as coisas o mais
 simples possível para o programador.
 </p>
@@ -644,13 +645,13 @@ exata ordem para evitar problemas de <i>linking</i>.
 </p>
 
 <p>
-A função <code>print(3)</code><sup><a id="fnr.11" class="footref" href="#fn.11" role="doc-backlink">11</a></sup> funciona da exata mesma maneira que <code>printf</code>, porém com
+A função <code>print(3)</code><sup><a id="fnr.11" class="footref" href="#fn.11">11</a></sup> funciona da exata mesma maneira que <code>printf</code>, porém com
 algumas diferenças: <i>Plan 9</i> suporta unicode <i>out-of-the-box</i>, então há flags para o
 tipo <i>Rune</i>, por exemplo, que simboliza um caractere UTF-8.
 </p>
 
 <p>
-<code>exits(3)</code><sup><a id="fnr.12" class="footref" href="#fn.12" role="doc-backlink">12</a></sup> é a função comum para encerramento de um processo qualquer,
+<code>exits(3)</code><sup><a id="fnr.12" class="footref" href="#fn.12">12</a></sup> é a função comum para encerramento de um processo qualquer,
 recebendo, como parâmetro, uma constante de caracteres (de tamanho máximo
 <code>ERRLEN</code>), especificando brevemente o motivo para a saída do processo. Veja,
 porém, que, ao contrário de sistemas Unix-like convencionais, a função de ponto
@@ -662,16 +663,16 @@ normalmente.
 </div>
 </div>
 
-<div id="outline-container-orgdae51a7" class="outline-3">
-<h3 id="orgdae51a7">Entrada via console</h3>
-<div class="outline-text-3" id="text-orgdae51a7">
+<div id="outline-container-orgda985e8" class="outline-3">
+<h3 id="orgda985e8">Entrada via console</h3>
+<div class="outline-text-3" id="text-orgda985e8">
 <p>
-<i>Plan 9</i> não possui um equivalente direto a <code>scanf(3)</code><sup><a id="fnr.13" class="footref" href="#fn.13" role="doc-backlink">13</a></sup>. Ao invés disso,
+<i>Plan 9</i> não possui um equivalente direto a <code>scanf(3)</code><sup><a id="fnr.13" class="footref" href="#fn.13">13</a></sup>. Ao invés disso,
 entrada a partir do console é uma atividade delegada à biblioteca
 <code>libbio</code>. Enquanto isto parece algo não-usual, é uma prática que compactua com a
 filosofia do sistema, que envolve levar a filosofia UNIX ao extremo: se tudo é
 um arquivo, e arquivos são lidos como <i>streams</i>, então a entrada do console também
-poderá ser tratada como um <i>stream<sup><a id="fnr.14" class="footref" href="#fn.14" role="doc-backlink">14</a></sup></i>.
+poderá ser tratada como um <i>stream<sup><a id="fnr.14" class="footref" href="#fn.14">14</a></sup></i>.
 </p>
 
 <p>
@@ -721,9 +722,9 @@ alocado na estrutura <code>Biobuf</code>. Basta abrir o <i>buffer</i> para leitu
 </div>
 </div>
 
-<div id="outline-container-org18493e1" class="outline-3">
-<h3 id="org18493e1"><i>Parsing</i> de argumentos de linha de comando</h3>
-<div class="outline-text-3" id="text-org18493e1">
+<div id="outline-container-orgabf192e" class="outline-3">
+<h3 id="orgabf192e"><i>Parsing</i> de argumentos de linha de comando</h3>
+<div class="outline-text-3" id="text-orgabf192e">
 <p>
 Normalmente, quando escrevemos uma aplicação em C/C++, sabemos que podemos
 utilizar <code>argc</code> e <code>argv</code>, passáveis como parâmetro para <code>main</code>, para recuperar os
@@ -789,11 +790,11 @@ lidar com este problema. Deixo a interpretação para o leitor:
 </div>
 </div>
 
-<div id="outline-container-org2504c2c" class="outline-2">
-<h2 id="org2504c2c">Processo de compilação</h2>
-<div class="outline-text-2" id="text-org2504c2c">
+<div id="outline-container-org00768b5" class="outline-2">
+<h2 id="org00768b5">Processo de compilação</h2>
+<div class="outline-text-2" id="text-org00768b5">
 
-<div id="orgd1312f6" class="figure">
+<div id="org585d64c" class="figure">
 <p><img src="./img/9front-qemu.png" alt="9front-qemu.png" />
 </p>
 <p><span class="figure-number">Figura 4: </span>9front sob o QEMU, executando o projeto 9mine no console.</p>
@@ -811,18 +812,18 @@ No <i>9front</i>, provido que você já tenha o diretório do projeto clonado em
 máquina (vide a seção de controle de versão), basta ir ao diretório <code>src/</code> e
 digitar <code>mk</code> para gerar o binário. Em seguida, digitar <code>mk install</code> instalará o
 binário sob o diretório <code>/bin/games</code> da sua arquitetura. O jogo, em si, será
-invocável no console, com o comando <code>games/9mine</code><sup><a id="fnr.15" class="footref" href="#fn.15" role="doc-backlink">15</a></sup>.
+invocável no console, com o comando <code>games/9mine</code><sup><a id="fnr.15" class="footref" href="#fn.15">15</a></sup>.
 </p>
 </div>
 
-<div id="outline-container-orgb8be601" class="outline-3">
-<h3 id="orgb8be601">O arquivo <code>mkfile</code></h3>
-<div class="outline-text-3" id="text-orgb8be601">
+<div id="outline-container-orgfabd351" class="outline-3">
+<h3 id="orgfabd351">O arquivo <code>mkfile</code></h3>
+<div class="outline-text-3" id="text-orgfabd351">
 <p>
 O arquivo <code>mkfile</code> não é particularmente complicado ou muito diferente de um
 arquivo <code>Makefile</code> como conhecemos; porém, seu design foi feito sob uma premissa
 de maior integração com o sistema operacional, o que ocasiona alguns pequenos
-truques pré-preparados e muito interessantes<sup><a id="fnr.16" class="footref" href="#fn.16" role="doc-backlink">16</a></sup>.
+truques pré-preparados e muito interessantes<sup><a id="fnr.16" class="footref" href="#fn.16">16</a></sup>.
 </p>
 
 <p>
@@ -860,13 +861,13 @@ binário de nome <code>9mine</code>.
 O interessante deste método é que, como ele depende de uma variável de ambiente,
 o mero ato de modificá-la já habilita suporte a compilação <i>cross-platform</i>. Plan
 9 tem compiladores de C extremamente compactos e que funcionam para diversas
-arquiteturas, o que torna esta uma operação fácil<sup><a id="fnr.17" class="footref" href="#fn.17" role="doc-backlink">17</a></sup>.
+arquiteturas, o que torna esta uma operação fácil<sup><a id="fnr.17" class="footref" href="#fn.17">17</a></sup>.
 </p>
 
 <p>
 Por exemplo, suponhamos que estamos compilando uma aplicação em C para ser
 executada em um Raspberry Pi 2 ou 3. A arquitetura destes dispositivos é ARM;
-além disso, é possível compilar o sistema Plan 9 para ARM<sup><a id="fnr.18" class="footref" href="#fn.18" role="doc-backlink">18</a></sup>. Dito isto, a
+além disso, é possível compilar o sistema Plan 9 para ARM<sup><a id="fnr.18" class="footref" href="#fn.18">18</a></sup>. Dito isto, a
 partir do seu computador pessoal de qualquer arquitetura, que esteja executando
 o Plan 9, é possível produzir um binário compatível com a arquitetura ARM,
 utilizando o seguinte comando:
@@ -881,20 +882,20 @@ utilizando o seguinte comando:
 Isto fará override da variável <code>$objtype</code> para o próximo comando, que é <code>mk</code>, e
 utilizará variáveis e compiladores apropriados para a arquitetura-alvo. Sendo
 assim, o script criará um objeto sob o nome <code>9mine.5</code>, onde o número após o ponto
-diz respeito à arquitetura-alvo<sup><a id="fnr.19" class="footref" href="#fn.19" role="doc-backlink">19</a></sup>.
+diz respeito à arquitetura-alvo<sup><a id="fnr.19" class="footref" href="#fn.19">19</a></sup>.
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org7a16cf9" class="outline-2">
-<h2 id="org7a16cf9">Conclusão</h2>
-<div class="outline-text-2" id="text-org7a16cf9">
+<div id="outline-container-org74001f7" class="outline-2">
+<h2 id="org74001f7">Conclusão</h2>
+<div class="outline-text-2" id="text-org74001f7">
 <p>
 Certa vez, um contato me disse que seria interessante, ao longo da minha vida,
 absorver conhecimento sobre diversos sistemas UNIX-like, sempre procurando saber
 mais sobre eles, para que não houvesse surpresa ao migrar de um sistema para
-outro. Ainda que o Plan 9 não possua uso expressivo na indústria<sup><a id="fnr.20" class="footref" href="#fn.20" role="doc-backlink">20</a></sup>, fica
+outro. Ainda que o Plan 9 não possua uso expressivo na indústria<sup><a id="fnr.20" class="footref" href="#fn.20">20</a></sup>, fica
 evidente a preocupação com arquitetura e clareza no desenvolvimento deste
 sistema operacional, o que vejo como um exemplo valioso para mim.
 </p>
@@ -920,7 +921,7 @@ da mesma forma como o <i>Plan 9 From Bell Labs</i> procurou ser.
 <h2 class="footnotes">Notas de Rodap&eacute;: </h2>
 <div id="text-footnotes">
 
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
 O <a href="https://en.wikipedia.org/wiki/Unix">sistema operacional UNIX</a> foi um sistema originalmente projetado como
 uma plataforma conveniente para programadores, de forma a facilitar o
 desenvolvimento de software. A arquitetura baseia-se na famosa filosofia
@@ -931,18 +932,18 @@ arquitetura de sistemas operacionais, apadrinhando sistemas modernos em sua
 arquitetura (os famosos sistemas UNIX-like, como Linux, BSD ou OS X).
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
 Mais informações sobre os objetivos do Plan 9 podem ser vistas na página
 de manual apropriada de introdução, em <a href="http://man.9front.org/1/intro"><code>intro(1)</code></a>.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
 Se você estiver procurando um bom projeto de software livre para
 contribuir ou estudar o código, recomendo dar uma olhada no Harvey. Você pode
 acessar o código-fonte <a href="https://github.com/Harvey-OS/harvey">aqui</a>.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">
 Esta é uma feature interessante que acredito poder elaborar. Os artigos
 encontram-se, em maioria, em arquivos com a extensão <code>.ps</code>. É necessário navegar
 até o diretório <code>/sys/doc</code> no terminal, e então listar os arquivos no
@@ -954,7 +955,7 @@ arquivos poderiam ser abertos em seus programas adequados, talvez até mesmo
 compilados automaticamente, utilizando apenas esta feature. 
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5" role="doc-backlink">5</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5">5</a></sup> <div class="footpara"><p class="footpara">
 Não posso negar, estas não foram minhas únicas fontes de
 informação. Anteriormente, citei que o Ricardo Lanziano me ajudou em muitas
 coisas com relação ao funcionamento e à operação do sistema, mas também foi de
@@ -963,19 +964,19 @@ Nota: esta página leva a sério o ato de ser humorística e politicamente
 incorreta, mas não deixa de conter informação útil.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6" role="doc-backlink">6</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6">6</a></sup> <div class="footpara"><p class="footpara">
 Caso o leitor queira realizar uma instalação do 9front no QEMU como fiz,
 poderá consultar a <a href="http://fqa.9front.org/fqa3.html#3.3.1">página de dúvidas do 9front</a>, que possui instruções explícitas
 de como fazê-lo. Nesta mesma seção, também há instruções para instalação do
 9front em hardware "real".
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.7" class="footnum" href="#fnr.7" role="doc-backlink">7</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.7" class="footnum" href="#fnr.7">7</a></sup> <div class="footpara"><p class="footpara">
 Para saber mais a respeito desta ferramenta, recomendo ler
 <a href="http://www.vitanuova.com/inferno/papers/mk.pdf">o artigo do <code>mk</code></a>, que já vem incluso no diretório <code>/sys/doc</code> do sistema.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.8" class="footnum" href="#fnr.8" role="doc-backlink">8</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.8" class="footnum" href="#fnr.8">8</a></sup> <div class="footpara"><p class="footpara">
 Acredito que não seja muito adequado colocar isto aqui como nota de
 rodapé, mas, na falta de um lugar mais adequado, deixarei aqui para futura
 consulta. O método de instalação envolve montar localmente a máquina remota dos
@@ -983,14 +984,14 @@ servidores do <i>9front</i>, e então copiar o script de <code>git</code> localm
 dois comandos: <code>9fs 9front; cp /n/extra/rc/git $home/bin/rc/</code>. 
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.9" class="footnum" href="#fnr.9" role="doc-backlink">9</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.9" class="footnum" href="#fnr.9">9</a></sup> <div class="footpara"><p class="footpara">
 As instruções completas de como compilar o <i>9front</i> a partir do
 código-fonte <a href="http://fqa.9front.org/fqa5.html">encontram-se aqui</a>. Caso você queira saber mais sobre o <code>9p</code> (ou o
 <code>9fs</code>), encontrará informações relevantes <a href="https://plan9.io/sys/doc/net/net.pdf">neste paper</a>, que visa endereçar a
 organização das redes no Plan 9.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.10" class="footnum" href="#fnr.10" role="doc-backlink">10</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.10" class="footnum" href="#fnr.10">10</a></sup> <div class="footpara"><p class="footpara">
 Na realidade, o Plan 9 possui, sim, implementações para estas funções
 mais triviais, mas elas não são normalmente utilizadas no design original do
 sistema, e também não são preferidas pelos desenvolvedores ativos do
@@ -998,24 +999,24 @@ mesmo. Sendo assim, optei por manter o uso da linguagem C no Plan 9 de forma
 "pura", ao invés de forçar a compatibilidade entre o Plan 9 e outros sistemas.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.11" class="footnum" href="#fnr.11" role="doc-backlink">11</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.11" class="footnum" href="#fnr.11">11</a></sup> <div class="footpara"><p class="footpara">
 Veja <a href="http://man.9front.org/2/print">print(2) nos manuais online</a> do 9front.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.12" class="footnum" href="#fnr.12" role="doc-backlink">12</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.12" class="footnum" href="#fnr.12">12</a></sup> <div class="footpara"><p class="footpara">
 Veja <a href="http://man.9front.org/2/exits">exits(2) nos manuais online</a> do 9front.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.13" class="footnum" href="#fnr.13" role="doc-backlink">13</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.13" class="footnum" href="#fnr.13">13</a></sup> <div class="footpara"><p class="footpara">
 Veja <a href="https://linux.die.net/man/3/scanf">scanf(3) nos manuais online</a> do Linux.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.14" class="footnum" href="#fnr.14" role="doc-backlink">14</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.14" class="footnum" href="#fnr.14">14</a></sup> <div class="footpara"><p class="footpara">
 Caso você desconheça o conceito de <i>streams</i> do UNIX, poderá achar o artigo
 do Dennis Ritchie sobre <i>streams</i> <a href="https://doi.org/10.1002/j.1538-7305.1984.tb00071.x">aqui</a>.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.15" class="footnum" href="#fnr.15" role="doc-backlink">15</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.15" class="footnum" href="#fnr.15">15</a></sup> <div class="footpara"><p class="footpara">
 Note a mudança evidente na forma como binários se comportam no Plan 9. O
 fato de um binário chamado <code>9mine</code> estar em um subdiretório de <code>bin</code> significa que
 este continuará sendo invocável, mediante a informação de em qual subdiretório
@@ -1025,27 +1026,27 @@ dos desenvolvedores originais do sistema, que explicita a forma como a
 hierarquia dos <i>namespaces</i> funciona, bem como seus usos.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.16" class="footnum" href="#fnr.16" role="doc-backlink">16</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.16" class="footnum" href="#fnr.16">16</a></sup> <div class="footpara"><p class="footpara">
 Recomendo, também, a leitura do artigo <a href="https://plan9.io/sys/doc/mkfiles.pdf">Plan 9 Mkfiles</a>, igualmente
 incluído no sistema, que possui um material completo para uso de <code>mkfile</code>.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.17" class="footnum" href="#fnr.17" role="doc-backlink">17</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.17" class="footnum" href="#fnr.17">17</a></sup> <div class="footpara"><p class="footpara">
 Para uma explicação completa das arquiteturas suportadas pelos
 compiladores do Plan 9, veja a <a href="http://man.cat-v.org/plan_9/1/2c">manpage relacionada</a>.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.18" class="footnum" href="#fnr.18" role="doc-backlink">18</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.18" class="footnum" href="#fnr.18">18</a></sup> <div class="footpara"><p class="footpara">
 As instruções de compilação do <i>9front</i> para Raspberry Pi <a href="http://fqa.9front.org/appendixj.html">estão aqui</a>.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.19" class="footnum" href="#fnr.19" role="doc-backlink">19</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.19" class="footnum" href="#fnr.19">19</a></sup> <div class="footpara"><p class="footpara">
 Uma descrição mais aprofundada dos compiladores de C do Plan 9 pode ser
 vista <a href="https://9p.io/sys/doc/compiler.html">neste artigo</a>, e descrições aprofundadas do uso destes compiladores podem
 ser vistas <a href="https://plan9.io/sys/doc/comp.pdf">neste outro artigo</a>.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.20" class="footnum" href="#fnr.20" role="doc-backlink">20</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<div class="footdef"><sup><a id="fn.20" class="footnum" href="#fnr.20">20</a></sup> <div class="footpara"><p class="footpara">
 Bom&#x2026; não é bem assim, não é? Recentemente, a Microsoft realizou um
 patch que <a href="https://devblogs.microsoft.com/commandline/whats-new-for-wsl-in-windows-10-version-1903/">adiciona a funcionalidade</a> de abrir o Windows Explorer em um subsistema
 Linux que esteja rodando no Windows 10. A magia toda ocorre sob a utilização de
