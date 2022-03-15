@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
 <head>
-<!-- 2021-05-05 Wed 12:27 -->
+<!-- 2022-03-15 Tue 18:56 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>"Learn APL" Notes</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="Lucas Vieira" />
-<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -193,7 +193,6 @@
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   .org-svg { width: 90%; }
-  /*]]>*/-->
 </style>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164062058-1"></script>
@@ -213,7 +212,7 @@ gtag('config', 'UA-164062058-1');
 <meta name="theme-color" content="#14171e">
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 
 <center><h1><i>Learn APL</i> Notes</h1></center>
 
@@ -244,192 +243,192 @@ Also see the <a href="https://www.gnu.org/software/apl/apl.html">GNU APL Manual<
 
 <h3><a href=\"..">Back to last page</a></h3>
 
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgc46e6b9">Getting Started</a>
+<li><a href="#org58b4459">Getting Started</a>
 <ul>
-<li><a href="#orgb6a5e64">Startup</a></li>
-<li><a href="#org5e44a33">Simple arithmetic</a>
+<li><a href="#orgdabd8dc">Startup</a></li>
+<li><a href="#orgbf64654">Simple arithmetic</a>
 <ul>
-<li><a href="#org754978c">Arithmetic functions</a></li>
-<li><a href="#org7e16ca2">Arithmetic on lists of numbers</a></li>
-<li><a href="#org787e16a">Order of execution</a></li>
-<li><a href="#org0cf14fb">Dual-purpose functions</a></li>
-<li><a href="#org5b015a7">Ceiling and floor</a></li>
-<li><a href="#orge82da61">Ending a session</a></li>
-<li><a href="#org472defe">Exercises</a></li>
+<li><a href="#org9b07f7a">Arithmetic functions</a></li>
+<li><a href="#org056d04c">Arithmetic on lists of numbers</a></li>
+<li><a href="#org915c9ad">Order of execution</a></li>
+<li><a href="#org10ffec3">Dual-purpose functions</a></li>
+<li><a href="#org98c1c5e">Ceiling and floor</a></li>
+<li><a href="#org603a7e3">Ending a session</a></li>
+<li><a href="#org121b460">Exercises</a></li>
 </ul>
 </li>
-<li><a href="#org5408b6d">Variables</a>
+<li><a href="#org37df721">Variables</a>
 <ul>
-<li><a href="#org1a1722e">Assignments</a></li>
-<li><a href="#orga810996">Variable names</a></li>
-<li><a href="#orgcfe5995">Assigning lists to variables</a></li>
-<li><a href="#org97b8fdb">System commands</a></li>
-<li><a href="#org7c41a82">Character assignments</a></li>
-<li><a href="#org6a21ae3">Multiple assignments</a></li>
-<li><a href="#orgbdf2d1d">Displaying variables together</a></li>
-<li><a href="#org156ddf8">Joining lists</a></li>
-<li><a href="#org3c79a29">Joining and merging variables</a></li>
-<li><a href="#org4f2b7b6">Simple and nested variables</a></li>
-<li><a href="#org8df5e12">Mixed variables</a></li>
-<li><a href="#org5902847">Exercises</a></li>
-<li><a href="#orgf538ca9">Cleanup</a></li>
+<li><a href="#orgbf14527">Assignments</a></li>
+<li><a href="#orgd61c864">Variable names</a></li>
+<li><a href="#orgd471685">Assigning lists to variables</a></li>
+<li><a href="#orgab0901c">System commands</a></li>
+<li><a href="#org6f39f27">Character assignments</a></li>
+<li><a href="#orgdd5774f">Multiple assignments</a></li>
+<li><a href="#org5ba2ae8">Displaying variables together</a></li>
+<li><a href="#org4c80cbe">Joining lists</a></li>
+<li><a href="#orgba1006c">Joining and merging variables</a></li>
+<li><a href="#org08a40d4">Simple and nested variables</a></li>
+<li><a href="#orgffe157d">Mixed variables</a></li>
+<li><a href="#orgbe32d1e">Exercises</a></li>
+<li><a href="#org8f17df0">Cleanup</a></li>
 </ul>
 </li>
-<li><a href="#orge5ac81f">Tables</a>
+<li><a href="#orgdcf73ee">Tables</a>
 <ul>
-<li><a href="#orgcff4932">The Roll function</a></li>
-<li><a href="#org15a6f4f">The Iota function</a></li>
-<li><a href="#org72c2c9e">Setting up tables</a></li>
-<li><a href="#org906886a">Arithmetic on tables</a></li>
-<li><a href="#org16c0da1">Catenating tables</a></li>
-<li><a href="#org6fa77bc">Selecting elements</a></li>
-<li><a href="#org7a9409d">Dimensions</a></li>
-<li><a href="#org18e18b9">Enquiring about the size of data</a></li>
-<li><a href="#orge5a52b1">Tables of characters</a></li>
-<li><a href="#org86a012b">Mixed tables</a></li>
-<li><a href="#org0825949">Nested tables</a></li>
-<li><a href="#orgf64257c">Depth</a></li>
-<li><a href="#org14aa258">Practice</a></li>
-<li><a href="#org6c98807">Exercises</a></li>
-<li><a href="#orgc861a08">Cleanup</a></li>
+<li><a href="#org1eae061">The Roll function</a></li>
+<li><a href="#org91fd5fa">The Iota function</a></li>
+<li><a href="#org129a54b">Setting up tables</a></li>
+<li><a href="#org97ce221">Arithmetic on tables</a></li>
+<li><a href="#orgb0b1ae4">Catenating tables</a></li>
+<li><a href="#org5b34cae">Selecting elements</a></li>
+<li><a href="#org87c8200">Dimensions</a></li>
+<li><a href="#org0b7f294">Enquiring about the size of data</a></li>
+<li><a href="#org1f32164">Tables of characters</a></li>
+<li><a href="#orge03a8aa">Mixed tables</a></li>
+<li><a href="#orgbf3db64">Nested tables</a></li>
+<li><a href="#org2479912">Depth</a></li>
+<li><a href="#orga02d745">Practice</a></li>
+<li><a href="#org468d7e8">Exercises</a></li>
+<li><a href="#orge08ca4b">Cleanup</a></li>
 </ul>
 </li>
-<li><a href="#orge1edeb1">Writing a function</a>
+<li><a href="#orgc002804">Writing a function</a>
 <ul>
-<li><a href="#org50f9135">Precondition: the Slash operator</a></li>
-<li><a href="#org4c78fd6">User functions</a></li>
-<li><a href="#orga40e088">Saving a workspace</a></li>
-<li><a href="#org50ca26c">User functions with arguments</a></li>
-<li><a href="#orgcb110c7">Using function results in other expressions</a></li>
-<li><a href="#org074e144">Cleanup</a></li>
+<li><a href="#org9b7d855">Precondition: the Slash operator</a></li>
+<li><a href="#org63a4525">User functions</a></li>
+<li><a href="#orgd9d7a14">Saving a workspace</a></li>
+<li><a href="#org1240b68">User functions with arguments</a></li>
+<li><a href="#orge77fae0">Using function results in other expressions</a></li>
+<li><a href="#org14d25d1">Cleanup</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org11397f5">APL Concepts</a>
+<li><a href="#orgf979d64">APL Concepts</a>
 <ul>
-<li><a href="#orgc39bb5e">Overview of the APL System</a>
+<li><a href="#org1b3b599">Overview of the APL System</a>
 <ul>
-<li><a href="#org287b929">Data</a></li>
-<li><a href="#orgd0244ad">Modes</a></li>
-<li><a href="#org19f67ee">Built-in functions and operators</a></li>
-<li><a href="#org7e85888">System functions and variables</a></li>
-<li><a href="#org7dba61e">System commands</a></li>
-<li><a href="#orga596177">User-defined functions and operators</a></li>
-<li><a href="#org8103099">Files</a></li>
-<li><a href="#orgd698f37">Error handling</a></li>
+<li><a href="#orgd704f32">Data</a></li>
+<li><a href="#orgfdfca39">Modes</a></li>
+<li><a href="#org41c25b1">Built-in functions and operators</a></li>
+<li><a href="#org577220c">System functions and variables</a></li>
+<li><a href="#orgb03d301">System commands</a></li>
+<li><a href="#org086a4ca">User-defined functions and operators</a></li>
+<li><a href="#org07556e8">Files</a></li>
+<li><a href="#orgc78c8de">Error handling</a></li>
 </ul>
 </li>
-<li><a href="#org343a9b4">The Workspace</a>
+<li><a href="#org18182f9">The Workspace</a>
 <ul>
-<li><a href="#org30b2b2d">Functions, operators, classes</a></li>
-<li><a href="#orgdef059c">Workspace size</a></li>
-<li><a href="#orgc35d4e6">Managing the workspace</a></li>
-<li><a href="#orgf4dc172">System variables</a></li>
-<li><a href="#org8aa248b">System functions</a></li>
+<li><a href="#org3ef6a48">Functions, operators, classes</a></li>
+<li><a href="#org888206d">Workspace size</a></li>
+<li><a href="#orgb706722">Managing the workspace</a></li>
+<li><a href="#orgf542cb5">System variables</a></li>
+<li><a href="#orgc11949b">System functions</a></li>
 </ul>
 </li>
-<li><a href="#orgc120ee9">Data</a>
+<li><a href="#org8dddd7b">Data</a>
 <ul>
-<li><a href="#org34de938">Variables</a></li>
-<li><a href="#org84f4636">Names</a></li>
-<li><a href="#org0fadb13">Types of data</a></li>
-<li><a href="#org21db29c">Size, shape and depth</a></li>
-<li><a href="#orgc64fcc8">Setting up data structures</a></li>
-<li><a href="#org70e3206">Data structure <i>versus</i> data value</a></li>
-<li><a href="#org0c1b0ab">Empty data structures</a></li>
-<li><a href="#org79d5096">Dimension ordering</a></li>
-<li><a href="#org8688025">Indexing</a></li>
+<li><a href="#org62cdf40">Variables</a></li>
+<li><a href="#orgf328574">Names</a></li>
+<li><a href="#org9fc9d85">Types of data</a></li>
+<li><a href="#org1d75c5c">Size, shape and depth</a></li>
+<li><a href="#org349f979">Setting up data structures</a></li>
+<li><a href="#orge75bfec">Data structure <i>versus</i> data value</a></li>
+<li><a href="#orgc6de40c">Empty data structures</a></li>
+<li><a href="#orgdc31878">Dimension ordering</a></li>
+<li><a href="#org0cc81d2">Indexing</a></li>
 </ul>
 </li>
-<li><a href="#org6da3f0e">Built-in functions</a>
+<li><a href="#orgfd168c6">Built-in functions</a>
 <ul>
-<li><a href="#org9dae352">Arguments</a></li>
-<li><a href="#org15f71ca">Execution order</a></li>
-<li><a href="#org5c36568">Numbers or text</a></li>
-<li><a href="#org29bbbdb">Shape and size of data</a></li>
-<li><a href="#org150eed1">Groups of functions</a></li>
-<li><a href="#org0fe376f">System functions</a></li>
+<li><a href="#org03afcf1">Arguments</a></li>
+<li><a href="#orgfee44ab">Execution order</a></li>
+<li><a href="#org873b0bd">Numbers or text</a></li>
+<li><a href="#org49d8a0c">Shape and size of data</a></li>
+<li><a href="#orgee00b6a">Groups of functions</a></li>
+<li><a href="#org140955e">System functions</a></li>
 </ul>
 </li>
-<li><a href="#org82fde60">Built-in operators</a>
+<li><a href="#org3f575e1">Built-in operators</a>
 <ul>
-<li><a href="#org8f895a5">Reduce and scan</a></li>
-<li><a href="#org3bfdce2">Compress and expand</a></li>
-<li><a href="#org226794d">Outer and inner products</a></li>
-<li><a href="#orgece3abe">Each</a></li>
-<li><a href="#org427642f">Axis</a></li>
+<li><a href="#org45dd570">Reduce and scan</a></li>
+<li><a href="#org5308ff7">Compress and expand</a></li>
+<li><a href="#org5671b65">Outer and inner products</a></li>
+<li><a href="#orga58b948">Each</a></li>
+<li><a href="#org726c5e0">Axis</a></li>
 </ul>
 </li>
-<li><a href="#org0f6ab21">User-defined Functions</a>
+<li><a href="#orgaed326d">User-defined Functions</a>
 <ul>
-<li><a href="#orgca121df">Arguments and results</a></li>
-<li><a href="#org6296455">User-defined operators</a></li>
-<li><a href="#orge8cd40f">Editing functions</a></li>
-<li><a href="#orgf9a505f">The function header</a></li>
-<li><a href="#orgca96bd1">The operator header</a></li>
-<li><a href="#orgb5d9b82">Local and global variables</a></li>
-<li><a href="#org2de93a5">Branching</a></li>
-<li><a href="#org5a8fa7e">Extra: Lambdas</a></li>
+<li><a href="#orgbf60f8f">Arguments and results</a></li>
+<li><a href="#orge1bb5fa">User-defined operators</a></li>
+<li><a href="#org673b300">Editing functions</a></li>
+<li><a href="#org7b1a66d">The function header</a></li>
+<li><a href="#org9c8b74a">The operator header</a></li>
+<li><a href="#org6ef438e">Local and global variables</a></li>
+<li><a href="#org2079d03">Branching</a></li>
+<li><a href="#orga567a1b">Extra: Lambdas</a></li>
 </ul>
 </li>
-<li><a href="#org8128b3d">Error Handling</a>
+<li><a href="#org81d8aa9">Error Handling</a>
 <ul>
-<li><a href="#org86ded22">Errors in calculator mode</a></li>
-<li><a href="#org4f81949">Errors in user-defined functions or operators</a></li>
-<li><a href="#org9921240">The state indicator</a></li>
-<li><a href="#orgb634fb6">Action after suspended execution</a></li>
-<li><a href="#orgb8a8f74">Error trapping and tracing</a></li>
+<li><a href="#org5941848">Errors in calculator mode</a></li>
+<li><a href="#orgf3c74fc">Errors in user-defined functions or operators</a></li>
+<li><a href="#org0c1d1c4">The state indicator</a></li>
+<li><a href="#orgabce5de">Action after suspended execution</a></li>
+<li><a href="#org55a7e28">Error trapping and tracing</a></li>
 </ul>
 </li>
-<li><a href="#orgd415d66">Formatting</a>
+<li><a href="#org1452b58">Formatting</a>
 <ul>
-<li><a href="#org5e4f34d">The "Format" primitive</a></li>
-<li><a href="#org60cc3f6">The system function <code>⎕FMT</code></a></li>
+<li><a href="#org8d21552">The "Format" primitive</a></li>
+<li><a href="#org34cbe84">The system function <code>⎕FMT</code></a></li>
 </ul>
 </li>
-<li><a href="#orga48c716">End of Tutorial</a></li>
+<li><a href="#orgc7fde1f">End of Tutorial</a></li>
 </ul>
 </li>
-<li><a href="#org814fe05">Further Topics in APL</a>
+<li><a href="#orgfa6fe31">Further Topics in APL</a>
 <ul>
-<li><a href="#org8cf389d">Displaying the Shape of an Array</a></li>
-<li><a href="#orgfd2c838">Array Type and Prototype</a>
+<li><a href="#orgfb40860">Displaying the Shape of an Array</a></li>
+<li><a href="#org1485a78">Array Type and Prototype</a>
 <ul>
-<li><a href="#org24b1bb3">Array Type and Prototype</a></li>
-<li><a href="#orgc81805e">Prototypes of nested arrays</a></li>
-<li><a href="#org6e9c7ff">The prototype as a fill element</a></li>
+<li><a href="#org8b9a36a">Array Type and Prototype</a></li>
+<li><a href="#orgca286bc">Prototypes of nested arrays</a></li>
+<li><a href="#org41c7f88">The prototype as a fill element</a></li>
 </ul>
 </li>
-<li><a href="#org73dbb40">Vector Notation</a></li>
-<li><a href="#orgc5a7d35">Variables and Indexing</a>
+<li><a href="#org541c714">Vector Notation</a></li>
+<li><a href="#org8f1ce5d">Variables and Indexing</a>
 <ul>
-<li><a href="#org5845001">The Index (<code>⌷</code>) function</a></li>
+<li><a href="#org43f3ea4">The Index (<code>⌷</code>) function</a></li>
 </ul>
 </li>
-<li><a href="#org87910ae">Multiple Specification</a></li>
-<li><a href="#org4b0781c">Selective Specification</a></li>
-<li><a href="#org46a8108">Binding Strengths</a></li>
-<li><a href="#org5e9c32d">Pervasive Functions</a></li>
-<li><a href="#org195f714">OO, Classes and Inheritance</a></li>
+<li><a href="#orga1b08c9">Multiple Specification</a></li>
+<li><a href="#org02aef1c">Selective Specification</a></li>
+<li><a href="#org45c9090">Binding Strengths</a></li>
+<li><a href="#org5188dce">Pervasive Functions</a></li>
+<li><a href="#org4ee0040">OO, Classes and Inheritance</a></li>
 </ul>
 </li>
-<li><a href="#org388cb30">Finishing</a></li>
+<li><a href="#orgf962f39">Finishing</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc46e6b9" class="outline-2">
-<h2 id="orgc46e6b9">Getting Started</h2>
-<div class="outline-text-2" id="text-orgc46e6b9">
+<div id="outline-container-org58b4459" class="outline-2">
+<h2 id="org58b4459">Getting Started</h2>
+<div class="outline-text-2" id="text-org58b4459">
 </div>
-<div id="outline-container-orgb6a5e64" class="outline-3">
-<h3 id="orgb6a5e64">Startup</h3>
-<div class="outline-text-3" id="text-orgb6a5e64">
+<div id="outline-container-orgdabd8dc" class="outline-3">
+<h3 id="orgdabd8dc">Startup</h3>
+<div class="outline-text-3" id="text-orgdabd8dc">
 <p>
 Let's make sure our file executes. Executing the tangled file will run
 everything done in the tutorial.
@@ -450,9 +449,9 @@ Oh, and just so you know, use a unicode font which supports this stuff.
 </div>
 </div>
 
-<div id="outline-container-org5e44a33" class="outline-3">
-<h3 id="org5e44a33">Simple arithmetic</h3>
-<div class="outline-text-3" id="text-org5e44a33">
+<div id="outline-container-orgbf64654" class="outline-3">
+<h3 id="orgbf64654">Simple arithmetic</h3>
+<div class="outline-text-3" id="text-orgbf64654">
 <p>
 Use <code>⍝</code> at the beginning of any comment.
 </p>
@@ -469,9 +468,9 @@ Use <code>⍝</code> at the beginning of any comment.
 </div>
 </div>
 
-<div id="outline-container-org754978c" class="outline-4">
-<h4 id="org754978c">Arithmetic functions</h4>
-<div class="outline-text-4" id="text-org754978c">
+<div id="outline-container-org9b07f7a" class="outline-4">
+<h4 id="org9b07f7a">Arithmetic functions</h4>
+<div class="outline-text-4" id="text-org9b07f7a">
 <div class="org-src-container">
 <pre class="src src-gnu-apl"><span style="color: #f5c791;">5+12</span>
 
@@ -495,9 +494,9 @@ Use <code>-</code> for subtraction, and <code>¯</code> for negative signal.
 </div>
 </div>
 
-<div id="outline-container-org7e16ca2" class="outline-4">
-<h4 id="org7e16ca2">Arithmetic on lists of numbers</h4>
-<div class="outline-text-4" id="text-org7e16ca2">
+<div id="outline-container-org056d04c" class="outline-4">
+<h4 id="org056d04c">Arithmetic on lists of numbers</h4>
+<div class="outline-text-4" id="text-org056d04c">
 <div class="org-src-container">
 <pre class="src src-gnu-apl"><span style="color: #f5c791;">3+2</span> <span style="color: #f5c791;">4</span> <span style="color: #f5c791;">11</span> <span style="color: #f5c791;">7</span> <span style="color: #f5c791;">5</span>
 </pre>
@@ -537,9 +536,9 @@ per-element basis, but only if their length matches.
 </div>
 </div>
 
-<div id="outline-container-org787e16a" class="outline-4">
-<h4 id="org787e16a">Order of execution</h4>
-<div class="outline-text-4" id="text-org787e16a">
+<div id="outline-container-org915c9ad" class="outline-4">
+<h4 id="org915c9ad">Order of execution</h4>
+<div class="outline-text-4" id="text-org915c9ad">
 <p>
 APL runs stuff from right to left, since there are so many functions
 on the language.
@@ -583,9 +582,9 @@ Remember again the difference between <code>-</code> and <code>¯</code>!
 </div>
 </div>
 
-<div id="outline-container-org0cf14fb" class="outline-4">
-<h4 id="org0cf14fb">Dual-purpose functions</h4>
-<div class="outline-text-4" id="text-org0cf14fb">
+<div id="outline-container-org10ffec3" class="outline-4">
+<h4 id="org10ffec3">Dual-purpose functions</h4>
+<div class="outline-text-4" id="text-org10ffec3">
 <p>
 Some functions can be used for more than one purpose.
 </p>
@@ -651,9 +650,9 @@ error.
 </div>
 </div>
 
-<div id="outline-container-org5b015a7" class="outline-4">
-<h4 id="org5b015a7">Ceiling and floor</h4>
-<div class="outline-text-4" id="text-org5b015a7">
+<div id="outline-container-org98c1c5e" class="outline-4">
+<h4 id="org98c1c5e">Ceiling and floor</h4>
+<div class="outline-text-4" id="text-org98c1c5e">
 <ul class="org-ul">
 <li><code>⌈</code> rounds a number up;</li>
 <li><code>⌊</code> rounds a number down.</li>
@@ -694,9 +693,9 @@ lists of numbers.
 </div>
 </div>
 
-<div id="outline-container-orge82da61" class="outline-4">
-<h4 id="orge82da61">Ending a session</h4>
-<div class="outline-text-4" id="text-orge82da61">
+<div id="outline-container-org603a7e3" class="outline-4">
+<h4 id="org603a7e3">Ending a session</h4>
+<div class="outline-text-4" id="text-org603a7e3">
 <p>
 If you want to end a session, use
 </p>
@@ -712,9 +711,9 @@ This will not be tangled.
 </div>
 </div>
 
-<div id="outline-container-org472defe" class="outline-4">
-<h4 id="org472defe">Exercises</h4>
-<div class="outline-text-4" id="text-org472defe">
+<div id="outline-container-org121b460" class="outline-4">
+<h4 id="org121b460">Exercises</h4>
+<div class="outline-text-4" id="text-org121b460">
 <div class="org-src-container">
 <pre class="src src-gnu-apl"><span style="color: #454459;">&#9053; Exercises</span>
 </pre>
@@ -722,8 +721,8 @@ This will not be tangled.
 </div>
 
 <ul class="org-ul">
-<li><a id="org5dc318a"></a>Q1<br />
-<div class="outline-text-5" id="text-org5dc318a">
+<li><a id="orgd2608c6"></a>Q1<br />
+<div class="outline-text-5" id="text-orgd2608c6">
 <p>
 Enter statements to:
 </p>
@@ -795,8 +794,8 @@ comparision:
 </div>
 </li>
 
-<li><a id="org9d79be6"></a>Q2<br />
-<div class="outline-text-5" id="text-org9d79be6">
+<li><a id="orge55474a"></a>Q2<br />
+<div class="outline-text-5" id="text-orge55474a">
 <p>
 Which of these statements cause error messages? Why?
 </p>
@@ -811,8 +810,8 @@ lists of different lengths.</li>
 </div>
 </li>
 
-<li><a id="orgc5e5f8a"></a>Q3<br />
-<div class="outline-text-5" id="text-orgc5e5f8a">
+<li><a id="org9bee4e3"></a>Q3<br />
+<div class="outline-text-5" id="text-org9bee4e3">
 <p>
 You're getting <code>£200</code> worth of dollars for yourself and <code>£180</code> and <code>£230</code>
 worth respectively for two friends. Enter a statement which calculates
@@ -826,8 +825,8 @@ how many dollars each of you will get at <code>1.96</code> dollars to the pound.
 </div>
 </li>
 
-<li><a id="org218941f"></a>Q4<br />
-<div class="outline-text-5" id="text-org218941f">
+<li><a id="org06fb870"></a>Q4<br />
+<div class="outline-text-5" id="text-org06fb870">
 <p>
 Highest recorded temperatures for a week in August were:
 </p>
@@ -851,8 +850,8 @@ the result.
 </div>
 </li>
 
-<li><a id="org0ce97e6"></a>Q5<br />
-<div class="outline-text-5" id="text-org0ce97e6">
+<li><a id="orgebdf0d4"></a>Q5<br />
+<div class="outline-text-5" id="text-orgebdf0d4">
 <p>
 Enter a statement to find the difference in metres between 1500 metres
 and a mile. (1 yard = 0.9144m and 1760 yards in a mile)
@@ -868,18 +867,18 @@ and a mile. (1 yard = 0.9144m and 1760 yards in a mile)
 </div>
 </div>
 
-<div id="outline-container-org5408b6d" class="outline-3">
-<h3 id="org5408b6d">Variables</h3>
-<div class="outline-text-3" id="text-org5408b6d">
+<div id="outline-container-org37df721" class="outline-3">
+<h3 id="org37df721">Variables</h3>
+<div class="outline-text-3" id="text-org37df721">
 <div class="org-src-container">
 <pre class="src src-gnu-apl"><span style="color: #454459;">&#9053; Variables</span>
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org1a1722e" class="outline-4">
-<h4 id="org1a1722e">Assignments</h4>
-<div class="outline-text-4" id="text-org1a1722e">
+<div id="outline-container-orgbf14527" class="outline-4">
+<h4 id="orgbf14527">Assignments</h4>
+<div class="outline-text-4" id="text-orgbf14527">
 <p>
 An assignment can be done with a variable name and a <code>←</code> symbol.
 </p>
@@ -923,9 +922,9 @@ To keep a calculation, we then use variables.
 </div>
 </div>
 
-<div id="outline-container-orga810996" class="outline-4">
-<h4 id="orga810996">Variable names</h4>
-<div class="outline-text-4" id="text-orga810996">
+<div id="outline-container-orgd61c864" class="outline-4">
+<h4 id="orgd61c864">Variable names</h4>
+<div class="outline-text-4" id="text-orgd61c864">
 <p>
 Valid statements:
 </p>
@@ -975,9 +974,9 @@ name that follows:
 </div>
 </div>
 
-<div id="outline-container-orgcfe5995" class="outline-4">
-<h4 id="orgcfe5995">Assigning lists to variables</h4>
-<div class="outline-text-4" id="text-orgcfe5995">
+<div id="outline-container-orgd471685" class="outline-4">
+<h4 id="orgd471685">Assigning lists to variables</h4>
+<div class="outline-text-4" id="text-orgd471685">
 <div class="org-src-container">
 <pre class="src src-gnu-apl">PRICE &#8592; <span style="color: #f5c791;">12</span>.<span style="color: #f5c791;">45</span> <span style="color: #f5c791;">5</span>.<span style="color: #f5c791;">60</span> <span style="color: #f5c791;">5</span>.<span style="color: #f5c791;">99</span> <span style="color: #f5c791;">7</span>.<span style="color: #f5c791;">75</span>
 +VAT   &#8592; PRICE &#215; A <span style="color: #454459;">&#9053; A was assigned earlier</span>
@@ -996,9 +995,9 @@ Using an unassigned variable causes a <code>VALUE ERROR</code>.
 </div>
 </div>
 
-<div id="outline-container-org97b8fdb" class="outline-4">
-<h4 id="org97b8fdb">System commands</h4>
-<div class="outline-text-4" id="text-org97b8fdb">
+<div id="outline-container-orgab0901c" class="outline-4">
+<h4 id="orgab0901c">System commands</h4>
+<div class="outline-text-4" id="text-orgab0901c">
 <p>
 The <code>)OFF</code> command has already been presented earlier.
 </p>
@@ -1044,9 +1043,9 @@ To remove the variables (and the name), we can use <code>)CLEAR</code>.
 </div>
 </div>
 
-<div id="outline-container-org7c41a82" class="outline-4">
-<h4 id="org7c41a82">Character assignments</h4>
-<div class="outline-text-4" id="text-org7c41a82">
+<div id="outline-container-org6f39f27" class="outline-4">
+<h4 id="org6f39f27">Character assignments</h4>
+<div class="outline-text-4" id="text-org6f39f27">
 <p>
 APL doesn't only deals with numbers, it can also deal with text. Just
 apply quotes.
@@ -1098,9 +1097,9 @@ QTY+5
 </div>
 </div>
 
-<div id="outline-container-org6a21ae3" class="outline-4">
-<h4 id="org6a21ae3">Multiple assignments</h4>
-<div class="outline-text-4" id="text-org6a21ae3">
+<div id="outline-container-orgdd5774f" class="outline-4">
+<h4 id="orgdd5774f">Multiple assignments</h4>
+<div class="outline-text-4" id="text-orgdd5774f">
 <p>
 One can assign one value to multiple variables at the same time:
 </p>
@@ -1121,9 +1120,9 @@ Or assign many values to many variables at the same time too:
 </div>
 </div>
 
-<div id="outline-container-orgbdf2d1d" class="outline-4">
-<h4 id="orgbdf2d1d">Displaying variables together</h4>
-<div class="outline-text-4" id="text-orgbdf2d1d">
+<div id="outline-container-org5ba2ae8" class="outline-4">
+<h4 id="org5ba2ae8">Displaying variables together</h4>
+<div class="outline-text-4" id="text-org5ba2ae8">
 <p>
 This part is straightforward.
 </p>
@@ -1144,9 +1143,9 @@ NAME X C
 </div>
 </div>
 
-<div id="outline-container-org156ddf8" class="outline-4">
-<h4 id="org156ddf8">Joining lists</h4>
-<div class="outline-text-4" id="text-org156ddf8">
+<div id="outline-container-org4c80cbe" class="outline-4">
+<h4 id="org4c80cbe">Joining lists</h4>
+<div class="outline-text-4" id="text-org4c80cbe">
 <p>
 When writing <code>X Y</code>, these values were joined in a list of two
 elements. The first element was the number in <code>X</code>, the second was the
@@ -1190,8 +1189,8 @@ of characters; this is called a <i>nested variable</i>.
 </div>
 
 <ul class="org-ul">
-<li><a id="orgca0181e"></a>Extra stuff<br />
-<div class="outline-text-5" id="text-orgca0181e">
+<li><a id="org51b2864"></a>Extra stuff<br />
+<div class="outline-text-5" id="text-org51b2864">
 <p>
 This was learned from experimentation:
 </p>
@@ -1216,9 +1215,9 @@ variable (right).
 </ul>
 </div>
 
-<div id="outline-container-org3c79a29" class="outline-4">
-<h4 id="org3c79a29">Joining and merging variables</h4>
-<div class="outline-text-4" id="text-org3c79a29">
+<div id="outline-container-orgba1006c" class="outline-4">
+<h4 id="orgba1006c">Joining and merging variables</h4>
+<div class="outline-text-4" id="text-orgba1006c">
 <p>
 The comma (<code>,</code>) allows APL to catenate lists.
 </p>
@@ -1240,9 +1239,9 @@ characters.
 </div>
 </div>
 
-<div id="outline-container-org4f2b7b6" class="outline-4">
-<h4 id="org4f2b7b6">Simple and nested variables</h4>
-<div class="outline-text-4" id="text-org4f2b7b6">
+<div id="outline-container-org08a40d4" class="outline-4">
+<h4 id="org08a40d4">Simple and nested variables</h4>
+<div class="outline-text-4" id="text-org08a40d4">
 <p>
 Single numbers (separated by spaces) and characters make up lists.
 </p>
@@ -1276,9 +1275,9 @@ everyone under the same quotes anyway):
 </div>
 </div>
 
-<div id="outline-container-org8df5e12" class="outline-4">
-<h4 id="org8df5e12">Mixed variables</h4>
-<div class="outline-text-4" id="text-org8df5e12">
+<div id="outline-container-orgffe157d" class="outline-4">
+<h4 id="orgffe157d">Mixed variables</h4>
+<div class="outline-text-4" id="text-orgffe157d">
 <p>
 This is not good for arithmetic, but it's useful to store characters
 and numbers together.
@@ -1291,9 +1290,9 @@ and numbers together.
 </div>
 </div>
 
-<div id="outline-container-org5902847" class="outline-4">
-<h4 id="org5902847">Exercises</h4>
-<div class="outline-text-4" id="text-org5902847">
+<div id="outline-container-orgbe32d1e" class="outline-4">
+<h4 id="orgbe32d1e">Exercises</h4>
+<div class="outline-text-4" id="text-orgbe32d1e">
 <p>
 Let's start with a clean workspace.
 </p>
@@ -1305,8 +1304,8 @@ Let's start with a clean workspace.
 </div>
 
 <ul class="org-ul">
-<li><a id="org12a1c9e"></a>Q1<br />
-<div class="outline-text-5" id="text-org12a1c9e">
+<li><a id="org3aa5aa1"></a>Q1<br />
+<div class="outline-text-5" id="text-org3aa5aa1">
 <p>
 Enter statements which:
 </p>
@@ -1341,8 +1340,8 @@ Enter statements which:
 </div>
 </li>
 
-<li><a id="orgf4ca510"></a>Q2<br />
-<div class="outline-text-5" id="text-orgf4ca510">
+<li><a id="orgd708083"></a>Q2<br />
+<div class="outline-text-5" id="text-orgd708083">
 <p>
 Set up a variable <code>CONV</code> which contains a constant for converting pounds
 to kilos. (1lb = 0.454Kg and 14lb = 1 stone). Use <code>CONV</code> to convert your
@@ -1362,8 +1361,8 @@ MYWEIGHT
 </div>
 </li>
 
-<li><a id="org625a24f"></a>Q3<br />
-<div class="outline-text-5" id="text-org625a24f">
+<li><a id="org0ada607"></a>Q3<br />
+<div class="outline-text-5" id="text-org0ada607">
 <p>
 The cost prices of four items of stock are £8, 6, 12, 4
 respectively. The markup on these items is 100%. Three other items
@@ -1382,8 +1381,8 @@ ITEMS   &#8592; &#8968;<span style="color: #f5c791;">1</span>.<span style="color
 </div>
 </li>
 
-<li><a id="org3b8bd5e"></a>Q4<br />
-<div class="outline-text-5" id="text-org3b8bd5e">
+<li><a id="orge8d6ff2"></a>Q4<br />
+<div class="outline-text-5" id="text-orge8d6ff2">
 <p>
 <code>TEST1</code> contains a student's exam marks for each of seven subjects (65
 72 54 80 67 60 59). <code>TEST2</code> contains his marks for the same subjects
@@ -1400,8 +1399,8 @@ TEST1 &#8968; TEST2
 </div>
 </li>
 
-<li><a id="org1d21fef"></a>Q5<br />
-<div class="outline-text-5" id="text-org1d21fef">
+<li><a id="org9b20e97"></a>Q5<br />
+<div class="outline-text-5" id="text-org9b20e97">
 <p>
 Which of the following will produce error messages? Why?
 </p>
@@ -1427,9 +1426,9 @@ operations.</li>
 </ul>
 </div>
 
-<div id="outline-container-orgf538ca9" class="outline-4">
-<h4 id="orgf538ca9">Cleanup</h4>
-<div class="outline-text-4" id="text-orgf538ca9">
+<div id="outline-container-org8f17df0" class="outline-4">
+<h4 id="org8f17df0">Cleanup</h4>
+<div class="outline-text-4" id="text-org8f17df0">
 <p>
 From now on, we clear the variables and the workspace across chapters.
 </p>
@@ -1442,9 +1441,9 @@ From now on, we clear the variables and the workspace across chapters.
 </div>
 </div>
 
-<div id="outline-container-orge5ac81f" class="outline-3">
-<h3 id="orge5ac81f">Tables</h3>
-<div class="outline-text-3" id="text-orge5ac81f">
+<div id="outline-container-orgdcf73ee" class="outline-3">
+<h3 id="orgdcf73ee">Tables</h3>
+<div class="outline-text-3" id="text-orgdcf73ee">
 <p>
 We won't be typing a lot of things here, that is insane! Let's see how
 to generate our tables.
@@ -1456,9 +1455,9 @@ to generate our tables.
 </div>
 </div>
 
-<div id="outline-container-orgcff4932" class="outline-4">
-<h4 id="orgcff4932">The Roll function</h4>
-<div class="outline-text-4" id="text-orgcff4932">
+<div id="outline-container-org1eae061" class="outline-4">
+<h4 id="org1eae061">The Roll function</h4>
+<div class="outline-text-4" id="text-org1eae061">
 <p>
 <code>?</code> is the Roll function, also called Random or Deal.
 </p>
@@ -1493,9 +1492,9 @@ Both <code>n</code> and <code>m</code> can be replaced by variables as well.
 </div>
 </div>
 
-<div id="outline-container-org15a6f4f" class="outline-4">
-<h4 id="org15a6f4f">The Iota function</h4>
-<div class="outline-text-4" id="text-org15a6f4f">
+<div id="outline-container-org91fd5fa" class="outline-4">
+<h4 id="org91fd5fa">The Iota function</h4>
+<div class="outline-text-4" id="text-org91fd5fa">
 <p>
 Iota, or Index, generates a sequence of numbers from 1 to <code>m</code> in its
 one-argument form.
@@ -1508,9 +1507,9 @@ one-argument form.
 </div>
 </div>
 
-<div id="outline-container-org72c2c9e" class="outline-4">
-<h4 id="org72c2c9e">Setting up tables</h4>
-<div class="outline-text-4" id="text-org72c2c9e">
+<div id="outline-container-org129a54b" class="outline-4">
+<h4 id="org129a54b">Setting up tables</h4>
+<div class="outline-text-4" id="text-org129a54b">
 <p>
 When entering tables, we use dyadic for of the rho (<code>⍴</code>) function, also
 called Shape or Reshape. The list before <code>⍴</code> states the order of the
@@ -1555,8 +1554,8 @@ And so follows that supplying one number fills the whole table:
 </div>
 
 <ul class="org-ul">
-<li><a id="org10edf47"></a>Extra bit<br />
-<div class="outline-text-5" id="text-org10edf47">
+<li><a id="org1dfc68b"></a>Extra bit<br />
+<div class="outline-text-5" id="text-org1dfc68b">
 <p>
 I wonder about identity matrices! Let's take a 3×3 matrix. If we type
 a <code>1</code>, and then a number <code>n</code> of zeroes (corresponding to the matrix
@@ -1589,9 +1588,9 @@ in ⍴-notation too.
 </ul>
 </div>
 
-<div id="outline-container-org906886a" class="outline-4">
-<h4 id="org906886a">Arithmetic on tables</h4>
-<div class="outline-text-4" id="text-org906886a">
+<div id="outline-container-org97ce221" class="outline-4">
+<h4 id="org97ce221">Arithmetic on tables</h4>
+<div class="outline-text-4" id="text-org97ce221">
 <p>
 Let's begin.
 </p>
@@ -1663,8 +1662,8 @@ SALES-PRICES
 </div>
 
 <ul class="org-ul">
-<li><a id="org61a400c"></a>Extra bits<br />
-<div class="outline-text-5" id="text-org61a400c">
+<li><a id="org50d91b5"></a>Extra bits<br />
+<div class="outline-text-5" id="text-org50d91b5">
 <p>
 Let's build a nice table.
 </p>
@@ -1707,9 +1706,9 @@ ceiling.</li>
 </ul>
 </div>
 
-<div id="outline-container-org16c0da1" class="outline-4">
-<h4 id="org16c0da1">Catenating tables</h4>
-<div class="outline-text-4" id="text-org16c0da1">
+<div id="outline-container-orgb0b1ae4" class="outline-4">
+<h4 id="orgb0b1ae4">Catenating tables</h4>
+<div class="outline-text-4" id="text-orgb0b1ae4">
 <p>
 Catenating tables produce a big table. Each row is catenated like a
 list. Therefore, catenated tables must have the same number of rows.
@@ -1761,9 +1760,9 @@ doesn't do arithmetic on data of unequal size.
 </div>
 </div>
 
-<div id="outline-container-org6fa77bc" class="outline-4">
-<h4 id="org6fa77bc">Selecting elements</h4>
-<div class="outline-text-4" id="text-org6fa77bc">
+<div id="outline-container-org5b34cae" class="outline-4">
+<h4 id="org5b34cae">Selecting elements</h4>
+<div class="outline-text-4" id="text-org5b34cae">
 <p>
 Let's set up a <code>4×3</code> table for the next example.
 </p>
@@ -1834,9 +1833,9 @@ LIST[<span style="color: #f5c791;">2</span>]
 </div>
 </div>
 
-<div id="outline-container-org7a9409d" class="outline-4">
-<h4 id="org7a9409d">Dimensions</h4>
-<div class="outline-text-4" id="text-org7a9409d">
+<div id="outline-container-org87c8200" class="outline-4">
+<h4 id="org87c8200">Dimensions</h4>
+<div class="outline-text-4" id="text-org87c8200">
 <p>
 In APL, data has dimensions.
 </p>
@@ -1870,9 +1869,9 @@ SALES[<span style="color: #f5c791;">2</span>;;]             <span style="color: 
 </div>
 </div>
 
-<div id="outline-container-org18e18b9" class="outline-4">
-<h4 id="org18e18b9">Enquiring about the size of data</h4>
-<div class="outline-text-4" id="text-org18e18b9">
+<div id="outline-container-org0b7f294" class="outline-4">
+<h4 id="org0b7f294">Enquiring about the size of data</h4>
+<div class="outline-text-4" id="text-org0b7f294">
 <p>
 While the dyadic usage of <code>⍴</code> involves creating arrays, the monadic
 usage of <code>⍴</code> allows one to enquire about the size (or shape) of existing
@@ -1924,9 +1923,9 @@ directly to literals.
 </div>
 </div>
 
-<div id="outline-container-orge5a52b1" class="outline-4">
-<h4 id="orge5a52b1">Tables of characters</h4>
-<div class="outline-text-4" id="text-orge5a52b1">
+<div id="outline-container-org1f32164" class="outline-4">
+<h4 id="org1f32164">Tables of characters</h4>
+<div class="outline-text-4" id="text-org1f32164">
 <p>
 This is also straightforward; characters are stored as a list of
 characters. Let's do some experiments.
@@ -1962,9 +1961,9 @@ Solution for the given example.
 </div>
 </div>
 
-<div id="outline-container-org86a012b" class="outline-4">
-<h4 id="org86a012b">Mixed tables</h4>
-<div class="outline-text-4" id="text-org86a012b">
+<div id="outline-container-orge03a8aa" class="outline-4">
+<h4 id="orge03a8aa">Mixed tables</h4>
+<div class="outline-text-4" id="text-orge03a8aa">
 <p>
 We can build tables containing characters and numbers, just like the
 lists.
@@ -1977,8 +1976,8 @@ lists.
 </div>
 
 <ul class="org-ul">
-<li><a id="org4e5568f"></a>Extra bits<br />
-<div class="outline-text-5" id="text-org4e5568f">
+<li><a id="orgb59308a"></a>Extra bits<br />
+<div class="outline-text-5" id="text-orgb59308a">
 <p>
 You can't perform arithmetic in such a table, but you can of course
 reshape it to do so. I built an example for that by myself:
@@ -1993,9 +1992,9 @@ reshape it to do so. I built an example for that by myself:
 </ul>
 </div>
 
-<div id="outline-container-org0825949" class="outline-4">
-<h4 id="org0825949">Nested tables</h4>
-<div class="outline-text-4" id="text-org0825949">
+<div id="outline-container-orgbf3db64" class="outline-4">
+<h4 id="orgbf3db64">Nested tables</h4>
+<div class="outline-text-4" id="text-orgbf3db64">
 <p>
 Tables can contain other tables or lists.
 </p>
@@ -2008,9 +2007,9 @@ Tables can contain other tables or lists.
 </div>
 </div>
 
-<div id="outline-container-orgf64257c" class="outline-4">
-<h4 id="orgf64257c">Depth</h4>
-<div class="outline-text-4" id="text-orgf64257c">
+<div id="outline-container-org2479912" class="outline-4">
+<h4 id="org2479912">Depth</h4>
+<div class="outline-text-4" id="text-org2479912">
 <p>
 The depth (<code>≡</code>) function shows the degree of nesting in a variable.
 </p>
@@ -2051,9 +2050,9 @@ one more layer of depth.
 </div>
 </div>
 
-<div id="outline-container-org14aa258" class="outline-4">
-<h4 id="org14aa258">Practice</h4>
-<div class="outline-text-4" id="text-org14aa258">
+<div id="outline-container-orga02d745" class="outline-4">
+<h4 id="orga02d745">Practice</h4>
+<div class="outline-text-4" id="text-orga02d745">
 <p>
 Some interesting snippets showcasing the strength of APL: combining
 functions.
@@ -2071,9 +2070,9 @@ TABLE[<span style="color: #f5c791;">1</span>;&#9075;<span style="color: #f5c791;
 </div>
 </div>
 
-<div id="outline-container-org6c98807" class="outline-4">
-<h4 id="org6c98807">Exercises</h4>
-<div class="outline-text-4" id="text-org6c98807">
+<div id="outline-container-org468d7e8" class="outline-4">
+<h4 id="org468d7e8">Exercises</h4>
+<div class="outline-text-4" id="text-org468d7e8">
 <div class="org-src-container">
 <pre class="src src-gnu-apl">)CLEAR
 </pre>
@@ -2081,8 +2080,8 @@ TABLE[<span style="color: #f5c791;">1</span>;&#9075;<span style="color: #f5c791;
 </div>
 
 <ul class="org-ul">
-<li><a id="org37a00e6"></a>Q1<br />
-<div class="outline-text-5" id="text-org37a00e6">
+<li><a id="orge03298a"></a>Q1<br />
+<div class="outline-text-5" id="text-orge03298a">
 <p>
 Set up a four-row one-column table called <code>MILES</code> containing <code>300 42 25
 140</code>.
@@ -2115,8 +2114,8 @@ table called <code>EXPENSES</code>.
 </div>
 </li>
 
-<li><a id="orgdb8230c"></a>Q2<br />
-<div class="outline-text-5" id="text-orgdb8230c">
+<li><a id="org9af2202"></a>Q2<br />
+<div class="outline-text-5" id="text-org9af2202">
 <p>
 Change the number in column 1 row 3 of <code>MILES</code> from <code>25</code> to <code>250</code>. Again,
 multiply <code>RATES</code> by <code>MILES</code> and the result by <code>0.01</code> to give <code>EXPENSES</code>, then
@@ -2141,8 +2140,8 @@ immediately use a variable.
 </div>
 </li>
 
-<li><a id="org5c3be61"></a>Q3<br />
-<div class="outline-text-5" id="text-org5c3be61">
+<li><a id="org379184b"></a>Q3<br />
+<div class="outline-text-5" id="text-org379184b">
 <p>
 Define <code>X</code> as a three-row ten-column table containing random numbers,
 and <code>Y</code> as a three-row four-column table also containing random
@@ -2173,8 +2172,8 @@ alternative which catenates the zeroes to the left of <code>Y</code>:
 </div>
 </li>
 
-<li><a id="org4a7599c"></a>Q4<br />
-<div class="outline-text-5" id="text-org4a7599c">
+<li><a id="org67132e7"></a>Q4<br />
+<div class="outline-text-5" id="text-org67132e7">
 <p>
 Using table <code>X</code>, add the first and second rows and replace the third row
 with the result of the addition.
@@ -2187,8 +2186,8 @@ with the result of the addition.
 </div>
 </li>
 
-<li><a id="org19fc481"></a>Q5<br />
-<div class="outline-text-5" id="text-org19fc481">
+<li><a id="org4dcaede"></a>Q5<br />
+<div class="outline-text-5" id="text-org4dcaede">
 <p>
 Create a table which [displays <code>APL ROCKS</code> in vertical orientation]:
 </p>
@@ -2200,8 +2199,8 @@ Create a table which [displays <code>APL ROCKS</code> in vertical orientation]:
 </div>
 </li>
 
-<li><a id="org49e1869"></a>Q6<br />
-<div class="outline-text-5" id="text-org49e1869">
+<li><a id="orgac5ecb2"></a>Q6<br />
+<div class="outline-text-5" id="text-orgac5ecb2">
 <p>
 What will be the result of each of these <code>⍴</code> statements? Predict each
 result before you press ENTER.
@@ -2233,9 +2232,9 @@ equivalent to a point, which has no size/dimension/shape.
 </ul>
 </div>
 
-<div id="outline-container-orgc861a08" class="outline-4">
-<h4 id="orgc861a08">Cleanup</h4>
-<div class="outline-text-4" id="text-orgc861a08">
+<div id="outline-container-orge08ca4b" class="outline-4">
+<h4 id="orge08ca4b">Cleanup</h4>
+<div class="outline-text-4" id="text-orge08ca4b">
 <div class="org-src-container">
 <pre class="src src-gnu-apl">)CLEAR
 </pre>
@@ -2244,18 +2243,18 @@ equivalent to a point, which has no size/dimension/shape.
 </div>
 </div>
 
-<div id="outline-container-orge1edeb1" class="outline-3">
-<h3 id="orge1edeb1">Writing a function</h3>
-<div class="outline-text-3" id="text-orge1edeb1">
+<div id="outline-container-orgc002804" class="outline-3">
+<h3 id="orgc002804">Writing a function</h3>
+<div class="outline-text-3" id="text-orgc002804">
 <div class="org-src-container">
 <pre class="src src-gnu-apl"><span style="color: #454459;">&#9053; Writing a function</span>
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org50f9135" class="outline-4">
-<h4 id="org50f9135">Precondition: the Slash operator</h4>
-<div class="outline-text-4" id="text-org50f9135">
+<div id="outline-container-org9b7d855" class="outline-4">
+<h4 id="org9b7d855">Precondition: the Slash operator</h4>
+<div class="outline-text-4" id="text-org9b7d855">
 <p>
 The Slash (<code>/</code>) or Reduce operator is not a function; it modifies or
 extends the operation of the functions it is used with.
@@ -2323,8 +2322,8 @@ of a number.
 </div>
 
 <ul class="org-ul">
-<li><a id="orgd5f42ff"></a>Axis arguments<br />
-<div class="outline-text-5" id="text-orgd5f42ff">
+<li><a id="orgaaca0e2"></a>Axis arguments<br />
+<div class="outline-text-5" id="text-orgaaca0e2">
 <p>
 You can apply the Reduce operator on a per-column basis using axis
 arguments. For example, these two are equivalent, since they take the
@@ -2351,9 +2350,9 @@ one:
 </ul>
 </div>
 
-<div id="outline-container-org4c78fd6" class="outline-4">
-<h4 id="org4c78fd6">User functions</h4>
-<div class="outline-text-4" id="text-org4c78fd6">
+<div id="outline-container-org63a4525" class="outline-4">
+<h4 id="org63a4525">User functions</h4>
+<div class="outline-text-4" id="text-org63a4525">
 <p>
 Now we'll preserve statements.
 </p>
@@ -2452,9 +2451,9 @@ One more definition.
 </div>
 </div>
 
-<div id="outline-container-orga40e088" class="outline-4">
-<h4 id="orga40e088">Saving a workspace</h4>
-<div class="outline-text-4" id="text-orga40e088">
+<div id="outline-container-orgd9d7a14" class="outline-4">
+<h4 id="orgd9d7a14">Saving a workspace</h4>
+<div class="outline-text-4" id="text-orgd9d7a14">
 <p>
 You can check out the user-defined functions in your workspace with
 this command:
@@ -2512,7 +2511,7 @@ Now we use the command to save.
 My result was:
 </p>
 
-<pre class="example" id="orgcab9356">
+<pre class="example" id="orgd02ba5b">
 2019-08-06  12:56:35 (GMT-3) ./MyFirstWS.xml
 </pre>
 
@@ -2540,17 +2539,17 @@ To load the workspace again, use the load command with the file name.
 </div>
 </div>
 
-<div id="outline-container-org50ca26c" class="outline-4">
-<h4 id="org50ca26c">User functions with arguments</h4>
-<div class="outline-text-4" id="text-org50ca26c">
+<div id="outline-container-org1240b68" class="outline-4">
+<h4 id="org1240b68">User functions with arguments</h4>
+<div class="outline-text-4" id="text-org1240b68">
 <p>
 User functions can have no arguments, one argument or two arguments.
 </p>
 </div>
 
 <ul class="org-ul">
-<li><a id="orgd779292"></a>Monadic<br />
-<div class="outline-text-5" id="text-orgd779292">
+<li><a id="orga979298"></a>Monadic<br />
+<div class="outline-text-5" id="text-orga979298">
 <p>
 We intent to build a function which averages the numbers in a list.
 So let's define it.
@@ -2579,8 +2578,8 @@ AV NUM
 </div>
 </li>
 
-<li><a id="orgb4f0460"></a>Dyadic<br />
-<div class="outline-text-5" id="text-orgb4f0460">
+<li><a id="org0f351fc"></a>Dyadic<br />
+<div class="outline-text-5" id="text-org0f351fc">
 <p>
 A dyadic function should be declared with arguments to its left and
 its right:
@@ -2597,9 +2596,9 @@ its right:
 </ul>
 </div>
 
-<div id="outline-container-orgcb110c7" class="outline-4">
-<h4 id="orgcb110c7">Using function results in other expressions</h4>
-<div class="outline-text-4" id="text-orgcb110c7">
+<div id="outline-container-orge77fae0" class="outline-4">
+<h4 id="orge77fae0">Using function results in other expressions</h4>
+<div class="outline-text-4" id="text-orge77fae0">
 <p>
 To do so, we need to rewrite the function to enable that. See this
 rewriting of <code>AV</code>.
@@ -2634,9 +2633,9 @@ The same can be done to dyadic functions.
 </div>
 </div>
 
-<div id="outline-container-org074e144" class="outline-4">
-<h4 id="org074e144">Cleanup</h4>
-<div class="outline-text-4" id="text-org074e144">
+<div id="outline-container-org14d25d1" class="outline-4">
+<h4 id="org14d25d1">Cleanup</h4>
+<div class="outline-text-4" id="text-org14d25d1">
 <div class="org-src-container">
 <pre class="src src-gnu-apl">)ERASE NUM
 )SAVE
@@ -2648,13 +2647,13 @@ The same can be done to dyadic functions.
 </div>
 </div>
 
-<div id="outline-container-org11397f5" class="outline-2">
-<h2 id="org11397f5">APL Concepts</h2>
-<div class="outline-text-2" id="text-org11397f5">
+<div id="outline-container-orgf979d64" class="outline-2">
+<h2 id="orgf979d64">APL Concepts</h2>
+<div class="outline-text-2" id="text-orgf979d64">
 </div>
-<div id="outline-container-orgc39bb5e" class="outline-3">
-<h3 id="orgc39bb5e">Overview of the APL System</h3>
-<div class="outline-text-3" id="text-orgc39bb5e">
+<div id="outline-container-org1b3b599" class="outline-3">
+<h3 id="org1b3b599">Overview of the APL System</h3>
+<div class="outline-text-3" id="text-org1b3b599">
 <p>
 APL is an interpreted language.
 </p>
@@ -2666,9 +2665,9 @@ for calculation and processing.
 </p>
 </div>
 
-<div id="outline-container-org287b929" class="outline-4">
-<h4 id="org287b929">Data</h4>
-<div class="outline-text-4" id="text-org287b929">
+<div id="outline-container-orgd704f32" class="outline-4">
+<h4 id="orgd704f32">Data</h4>
+<div class="outline-text-4" id="text-orgd704f32">
 <p>
 Data is acquired by typing or from files. All data is held in arrays
 or scalars.
@@ -2684,9 +2683,9 @@ Formal names will be used from now on.
 </div>
 </div>
 
-<div id="outline-container-orgd0244ad" class="outline-4">
-<h4 id="orgd0244ad">Modes</h4>
-<div class="outline-text-4" id="text-orgd0244ad">
+<div id="outline-container-orgfdfca39" class="outline-4">
+<h4 id="orgfdfca39">Modes</h4>
+<div class="outline-text-4" id="text-orgfdfca39">
 <p>
 APL uses a modal interpreter. <i>Calculator mode</i> executes statements as
 entered. <i>Definition mode</i> does not execute immediately, and stores
@@ -2696,9 +2695,9 @@ mode</i> happens when you run a user-defined function or operator.
 </div>
 </div>
 
-<div id="outline-container-org19f67ee" class="outline-4">
-<h4 id="org19f67ee">Built-in functions and operators</h4>
-<div class="outline-text-4" id="text-org19f67ee">
+<div id="outline-container-org41c25b1" class="outline-4">
+<h4 id="org41c25b1">Built-in functions and operators</h4>
+<div class="outline-text-4" id="text-org41c25b1">
 <p>
 APL has about 50 built-in <i>functions</i> which can be invoked by a single
 symbol.
@@ -2716,9 +2715,9 @@ operands creates a <i>derived function</i>.
 </div>
 </div>
 
-<div id="outline-container-org7e85888" class="outline-4">
-<h4 id="org7e85888">System functions and variables</h4>
-<div class="outline-text-4" id="text-org7e85888">
+<div id="outline-container-org577220c" class="outline-4">
+<h4 id="org577220c">System functions and variables</h4>
+<div class="outline-text-4" id="text-org577220c">
 <p>
 Part of APL system, yet not part of APL language. Used to extend
 facilities provided by original APL, they vary from one vendor to
@@ -2733,9 +2732,9 @@ the rest by their starting character.
 </div>
 </div>
 
-<div id="outline-container-org7dba61e" class="outline-4">
-<h4 id="org7dba61e">System commands</h4>
-<div class="outline-text-4" id="text-org7dba61e">
+<div id="outline-container-orgb03d301" class="outline-4">
+<h4 id="orgb03d301">System commands</h4>
+<div class="outline-text-4" id="text-orgb03d301">
 <p>
 They are also not part of the APL language itself, but are crucial to
 managing the workspace. They always start with a <code>)</code>.
@@ -2743,9 +2742,9 @@ managing the workspace. They always start with a <code>)</code>.
 </div>
 </div>
 
-<div id="outline-container-orga596177" class="outline-4">
-<h4 id="orga596177">User-defined functions and operators</h4>
-<div class="outline-text-4" id="text-orga596177">
+<div id="outline-container-org086a4ca" class="outline-4">
+<h4 id="org086a4ca">User-defined functions and operators</h4>
+<div class="outline-text-4" id="text-org086a4ca">
 <p>
 Functions or operators which can be written by the user. Consists of
 APL statements that have a name. Functions are edited through the
@@ -2754,9 +2753,9 @@ function editor, which can also be used to tweak a function.
 </div>
 </div>
 
-<div id="outline-container-org8103099" class="outline-4">
-<h4 id="org8103099">Files</h4>
-<div class="outline-text-4" id="text-org8103099">
+<div id="outline-container-org07556e8" class="outline-4">
+<h4 id="org07556e8">Files</h4>
+<div class="outline-text-4" id="text-org07556e8">
 <p>
 Files are usually not necessary on APL, given the convenience of
 workspaces, being only really required when dealing with big
@@ -2766,9 +2765,9 @@ workspaces can be shared between users.
 </div>
 </div>
 
-<div id="outline-container-orgd698f37" class="outline-4">
-<h4 id="orgd698f37">Error handling</h4>
-<div class="outline-text-4" id="text-orgd698f37">
+<div id="outline-container-orgc78c8de" class="outline-4">
+<h4 id="orgc78c8de">Error handling</h4>
+<div class="outline-text-4" id="text-orgc78c8de">
 <p>
 APL provides facilities for error trapping and diagnostics.
 </p>
@@ -2776,9 +2775,9 @@ APL provides facilities for error trapping and diagnostics.
 </div>
 </div>
 
-<div id="outline-container-org343a9b4" class="outline-3">
-<h3 id="org343a9b4">The Workspace</h3>
-<div class="outline-text-3" id="text-org343a9b4">
+<div id="outline-container-org18182f9" class="outline-3">
+<h3 id="org18182f9">The Workspace</h3>
+<div class="outline-text-3" id="text-org18182f9">
 <p>
 Workspaces are containers for functions and data, and can be saved on
 disk by using commands.
@@ -2791,9 +2790,9 @@ prototyping can be done so quickly, APL is sometimes referred to as a
 </p>
 </div>
 
-<div id="outline-container-org30b2b2d" class="outline-4">
-<h4 id="org30b2b2d">Functions, operators, classes</h4>
-<div class="outline-text-4" id="text-org30b2b2d">
+<div id="outline-container-org3ef6a48" class="outline-4">
+<h4 id="org3ef6a48">Functions, operators, classes</h4>
+<div class="outline-text-4" id="text-org3ef6a48">
 <p>
 <i>Functions</i> can take 0, 1 or 2 arguments; arguments to functions are
 always arrays.
@@ -2813,9 +2812,9 @@ supported in Dyalog, but not in GNU APL.
 </div>
 </div>
 
-<div id="outline-container-orgdef059c" class="outline-4">
-<h4 id="orgdef059c">Workspace size</h4>
-<div class="outline-text-4" id="text-orgdef059c">
+<div id="outline-container-org888206d" class="outline-4">
+<h4 id="org888206d">Workspace size</h4>
+<div class="outline-text-4" id="text-org888206d">
 <p>
 Some APLS allow changing the size of your workspace with <code>)CLEAR 50MB</code>,
 for example.
@@ -2833,13 +2832,13 @@ function Workspace Available:
 </div>
 </div>
 
-<div id="outline-container-orgc35d4e6" class="outline-4">
-<h4 id="orgc35d4e6">Managing the workspace</h4>
-<div class="outline-text-4" id="text-orgc35d4e6">
+<div id="outline-container-orgb706722" class="outline-4">
+<h4 id="orgb706722">Managing the workspace</h4>
+<div class="outline-text-4" id="text-orgb706722">
 </div>
 <ul class="org-ul">
-<li><a id="org4868bb3"></a>Internal workspace commands<br />
-<div class="outline-text-5" id="text-org4868bb3">
+<li><a id="org31bcff6"></a>Internal workspace commands<br />
+<div class="outline-text-5" id="text-org31bcff6">
 <p>
 These have already been discussed.
 </p>
@@ -2857,8 +2856,8 @@ used in Dyalog.</li>
 </div>
 </li>
 
-<li><a id="org179c6da"></a>External workspace commands<br />
-<div class="outline-text-5" id="text-org179c6da">
+<li><a id="org1d05725"></a>External workspace commands<br />
+<div class="outline-text-5" id="text-org1d05725">
 <p>
 Some of these have already been discussed.
 </p>
@@ -2882,9 +2881,9 @@ Save locations vary due to APL implementations.
 </ul>
 </div>
 
-<div id="outline-container-orgf4dc172" class="outline-4">
-<h4 id="orgf4dc172">System variables</h4>
-<div class="outline-text-4" id="text-orgf4dc172">
+<div id="outline-container-orgf542cb5" class="outline-4">
+<h4 id="orgf542cb5">System variables</h4>
+<div class="outline-text-4" id="text-orgf542cb5">
 <p>
 Here are some useful system variables which you may use.
 </p>
@@ -2904,9 +2903,9 @@ starts at 1, but can be changed to 0.</li>
 </div>
 </div>
 
-<div id="outline-container-org8aa248b" class="outline-4">
-<h4 id="org8aa248b">System functions</h4>
-<div class="outline-text-4" id="text-org8aa248b">
+<div id="outline-container-orgc11949b" class="outline-4">
+<h4 id="orgc11949b">System functions</h4>
+<div class="outline-text-4" id="text-orgc11949b">
 <p>
 These vary from vendor to vendor, so there is no guarantee that these
 will work in your APL. For example:
@@ -2926,9 +2925,9 @@ whereas system commands are designed for direct usage.
 </div>
 </div>
 
-<div id="outline-container-orgc120ee9" class="outline-3">
-<h3 id="orgc120ee9">Data</h3>
-<div class="outline-text-3" id="text-orgc120ee9">
+<div id="outline-container-org8dddd7b" class="outline-3">
+<h3 id="org8dddd7b">Data</h3>
+<div class="outline-text-3" id="text-org8dddd7b">
 <div class="org-src-container">
 <pre class="src src-gnu-apl"><span style="color: #454459;">&#9053;&#9053;&#9053; APL Concepts</span>
 
@@ -2937,9 +2936,9 @@ whereas system commands are designed for direct usage.
 </div>
 </div>
 
-<div id="outline-container-org34de938" class="outline-4">
-<h4 id="org34de938">Variables</h4>
-<div class="outline-text-4" id="text-org34de938">
+<div id="outline-container-org62cdf40" class="outline-4">
+<h4 id="org62cdf40">Variables</h4>
+<div class="outline-text-4" id="text-org62cdf40">
 <p>
 Data can be directly quoted&#x2026;
 </p>
@@ -2960,9 +2959,9 @@ Data can be directly quoted&#x2026;
 </div>
 </div>
 
-<div id="outline-container-org84f4636" class="outline-4">
-<h4 id="org84f4636">Names</h4>
-<div class="outline-text-4" id="text-org84f4636">
+<div id="outline-container-orgf328574" class="outline-4">
+<h4 id="orgf328574">Names</h4>
+<div class="outline-text-4" id="text-orgf328574">
 <p>
 APL allows uppercase and lowercase characters, some APLs also allows
 symbols too.
@@ -2970,9 +2969,9 @@ symbols too.
 </div>
 </div>
 
-<div id="outline-container-org0fadb13" class="outline-4">
-<h4 id="org0fadb13">Types of data</h4>
-<div class="outline-text-4" id="text-org0fadb13">
+<div id="outline-container-org9fc9d85" class="outline-4">
+<h4 id="org9fc9d85">Types of data</h4>
+<div class="outline-text-4" id="text-org9fc9d85">
 <p>
 Data can be numbers, characters or a mixture of those. GNU APL in
 particular also allows complex numbers; Dyalog allows classes.
@@ -2980,9 +2979,9 @@ particular also allows complex numbers; Dyalog allows classes.
 </div>
 </div>
 
-<div id="outline-container-org21db29c" class="outline-4">
-<h4 id="org21db29c">Size, shape and depth</h4>
-<div class="outline-text-4" id="text-org21db29c">
+<div id="outline-container-org1d75c5c" class="outline-4">
+<h4 id="org1d75c5c">Size, shape and depth</h4>
+<div class="outline-text-4" id="text-org1d75c5c">
 <p>
 From now on, unless there is something new, only some examples will be
 typed.
@@ -3015,9 +3014,9 @@ not apply.
 </div>
 </div>
 
-<div id="outline-container-orgc64fcc8" class="outline-4">
-<h4 id="orgc64fcc8">Setting up data structures</h4>
-<div class="outline-text-4" id="text-orgc64fcc8">
+<div id="outline-container-org349f979" class="outline-4">
+<h4 id="org349f979">Setting up data structures</h4>
+<div class="outline-text-4" id="text-org349f979">
 <div class="org-src-container">
 <pre class="src src-gnu-apl">X1 &#8592; <span style="color: #f5c791;">23</span> <span style="color: #f5c791;">9</span> <span style="color: #f5c791;">144</span> <span style="color: #f5c791;">12</span> <span style="color: #f5c791;">5</span> <span style="color: #f5c791;">0</span>
 X2 &#8592; <span style="color: #f5c791;">1</span> <span style="color: #f5c791;">2</span> <span style="color: #f5c791;">'A'</span> <span style="color: #f5c791;">'B'</span> <span style="color: #f5c791;">3</span> <span style="color: #f5c791;">4</span>
@@ -3035,9 +3034,9 @@ VAR &#8592; (<span style="color: #f5c791;">2</span> <span style="color: #f5c791;
 </div>
 </div>
 
-<div id="outline-container-org70e3206" class="outline-4">
-<h4 id="org70e3206">Data structure <i>versus</i> data value</h4>
-<div class="outline-text-4" id="text-org70e3206">
+<div id="outline-container-orge75bfec" class="outline-4">
+<h4 id="orge75bfec">Data structure <i>versus</i> data value</h4>
+<div class="outline-text-4" id="text-orge75bfec">
 <div class="org-src-container">
 <pre class="src src-gnu-apl">X &#8592; <span style="color: #f5c791;">1</span>&#9076;<span style="color: #f5c791;">22</span>
 Y &#8592; <span style="color: #f5c791;">22</span>
@@ -3054,9 +3053,9 @@ Z &#8592; <span style="color: #f5c791;">1</span> <span style="color: #f5c791;">5
 </div>
 </div>
 
-<div id="outline-container-org0c1b0ab" class="outline-4">
-<h4 id="org0c1b0ab">Empty data structures</h4>
-<div class="outline-text-4" id="text-org0c1b0ab">
+<div id="outline-container-orgc6de40c" class="outline-4">
+<h4 id="orgc6de40c">Empty data structures</h4>
+<div class="outline-text-4" id="text-orgc6de40c">
 <p>
 Useful for some things, for example flor predefined storage areas,
 where elements can be added.
@@ -3093,9 +3092,9 @@ TAB
 </div>
 </div>
 
-<div id="outline-container-org79d5096" class="outline-4">
-<h4 id="org79d5096">Dimension ordering</h4>
-<div class="outline-text-4" id="text-org79d5096">
+<div id="outline-container-orgdc31878" class="outline-4">
+<h4 id="orgdc31878">Dimension ordering</h4>
+<div class="outline-text-4" id="text-orgdc31878">
 <p>
 General rule when applying an operation to data (e.g. a reduce <code>/</code>):
 </p>
@@ -3152,9 +3151,9 @@ Now each result is the sum of all <b>rows</b> belonging to that column.
 </div>
 </div>
 
-<div id="outline-container-org8688025" class="outline-4">
-<h4 id="org8688025">Indexing</h4>
-<div class="outline-text-4" id="text-org8688025">
+<div id="outline-container-org0cc81d2" class="outline-4">
+<h4 id="org0cc81d2">Indexing</h4>
+<div class="outline-text-4" id="text-org0cc81d2">
 <p>
 There is something that remains to be discussed. Last section talked
 about the rows in index 1. This seems to mean that in APL indexes
@@ -3252,9 +3251,9 @@ is different from the quad <code>⎕</code>, since it is narrower):
 </div>
 </div>
 
-<div id="outline-container-org6da3f0e" class="outline-3">
-<h3 id="org6da3f0e">Built-in functions</h3>
-<div class="outline-text-3" id="text-org6da3f0e">
+<div id="outline-container-orgfd168c6" class="outline-3">
+<h3 id="orgfd168c6">Built-in functions</h3>
+<div class="outline-text-3" id="text-orgfd168c6">
 <p>
 APL has 50 useful built-in functions in general, and 5 operators to
 modify and extend how functions work.
@@ -3266,9 +3265,9 @@ modify and extend how functions work.
 </div>
 </div>
 
-<div id="outline-container-org9dae352" class="outline-4">
-<h4 id="org9dae352">Arguments</h4>
-<div class="outline-text-4" id="text-org9dae352">
+<div id="outline-container-org03afcf1" class="outline-4">
+<h4 id="org03afcf1">Arguments</h4>
+<div class="outline-text-4" id="text-org03afcf1">
 <p>
 Most functions have two behaviours depending on how you place their
 arguments. For example:
@@ -3285,9 +3284,9 @@ arguments. For example:
 </div>
 </div>
 
-<div id="outline-container-org15f71ca" class="outline-4">
-<h4 id="org15f71ca">Execution order</h4>
-<div class="outline-text-4" id="text-org15f71ca">
+<div id="outline-container-orgfee44ab" class="outline-4">
+<h4 id="orgfee44ab">Execution order</h4>
+<div class="outline-text-4" id="text-orgfee44ab">
 <p>
 Expressions are evaluated from right to left. The results of one
 function become the argument of the next function.
@@ -3295,9 +3294,9 @@ function become the argument of the next function.
 </div>
 </div>
 
-<div id="outline-container-org5c36568" class="outline-4">
-<h4 id="org5c36568">Numbers or text</h4>
-<div class="outline-text-4" id="text-org5c36568">
+<div id="outline-container-org873b0bd" class="outline-4">
+<h4 id="org873b0bd">Numbers or text</h4>
+<div class="outline-text-4" id="text-org873b0bd">
 <p>
 Some functions work on numbers only. Some work on either numbers or
 text data. Using a function which does not work on a data type yields
@@ -3312,9 +3311,9 @@ the states of TRUTH (<code>1</code>) and FALSITY (<code>0</code>).
 </div>
 </div>
 
-<div id="outline-container-org29bbbdb" class="outline-4">
-<h4 id="org29bbbdb">Shape and size of data</h4>
-<div class="outline-text-4" id="text-org29bbbdb">
+<div id="outline-container-org49d8a0c" class="outline-4">
+<h4 id="org49d8a0c">Shape and size of data</h4>
+<div class="outline-text-4" id="text-org49d8a0c">
 <p>
 Some functions can be used only on data of a certain shape. The
 following example (not tangled) yields a <code>LENGTH ERROR</code>, because data on
@@ -3328,9 +3327,9 @@ both sides do not have the same shape:
 </div>
 </div>
 
-<div id="outline-container-org150eed1" class="outline-4">
-<h4 id="org150eed1">Groups of functions</h4>
-<div class="outline-text-4" id="text-org150eed1">
+<div id="outline-container-orgee00b6a" class="outline-4">
+<h4 id="orgee00b6a">Groups of functions</h4>
+<div class="outline-text-4" id="text-orgee00b6a">
 <p>
 Following there will be some examples of functions, which I'll store
 in tables as given in the tutorial, for further consulting.
@@ -3343,8 +3342,8 @@ some examples.
 </div>
 
 <ul class="org-ul">
-<li><a id="org5f603d0"></a>Arithmetic functions<br />
-<div class="outline-text-5" id="text-org5f603d0">
+<li><a id="org7120ab4"></a>Arithmetic functions<br />
+<div class="outline-text-5" id="text-org7120ab4">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -3409,8 +3408,8 @@ some examples.
 </div>
 </li>
 
-<li><a id="orga150de0"></a>Algebraic functions<br />
-<div class="outline-text-5" id="text-orga150de0">
+<li><a id="org487c145"></a>Algebraic functions<br />
+<div class="outline-text-5" id="text-org487c145">
 <p>
 Functions for advanced arithmetic.
 </p>
@@ -3479,8 +3478,8 @@ Functions for advanced arithmetic.
 </div>
 
 <ul class="org-ul">
-<li><a id="org2340b48"></a>Circle operator<br />
-<div class="outline-text-6" id="text-org2340b48">
+<li><a id="org3f42329"></a>Circle operator<br />
+<div class="outline-text-6" id="text-org3f42329">
 <p>
 The circle operator (<code>○</code>) does not have an obvious operation on its
 dyadic form. Here is a table of values of &alpha; on the case &alpha; ○
@@ -3608,8 +3607,8 @@ part <code>1</code>.
 </div>
 </li>
 
-<li><a id="orga30b56d"></a>Domino operator<br />
-<div class="outline-text-6" id="text-orga30b56d">
+<li><a id="orgb1f3d9f"></a>Domino operator<br />
+<div class="outline-text-6" id="text-orgb1f3d9f">
 <p>
 The Domino operator (<code>⌹</code>) generates the inverse of a matrix in its
 monadic form, and divides a matrix by another in its dyadic form:
@@ -3626,8 +3625,8 @@ monadic form, and divides a matrix by another in its dyadic form:
 </ul>
 </li>
 
-<li><a id="org36d5799"></a>Comparative functions<br />
-<div class="outline-text-5" id="text-org36d5799">
+<li><a id="org44ac5e8"></a>Comparative functions<br />
+<div class="outline-text-5" id="text-org44ac5e8">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -3728,8 +3727,8 @@ TABLE &lt; <span style="color: #f5c791;">0</span>
 </div>
 
 <ul class="org-ul">
-<li><a id="orgc9c3b0c"></a>Equal underbar<br />
-<div class="outline-text-6" id="text-orgc9c3b0c">
+<li><a id="orgfd46db0"></a>Equal underbar<br />
+<div class="outline-text-6" id="text-orgfd46db0">
 <p>
 The Equal underbar (<code>≡</code>) serves two purposes. In its monadic form, it
 shows the depth of a specific structure.
@@ -3752,8 +3751,8 @@ they are equal in shape, order and values:
 </div>
 </li>
 
-<li><a id="org8910792"></a>Equal underbar slash<br />
-<div class="outline-text-6" id="text-org8910792">
+<li><a id="orgaaae86e"></a>Equal underbar slash<br />
+<div class="outline-text-6" id="text-orgaaae86e">
 <p>
 The Equal underbar slash (<code>≢</code>) does the exact opposite of <code>≡</code>. In its
 monadic form, it shows the tally (shallowest depth) of a specific
@@ -3776,8 +3775,8 @@ In its dyadic form, it checks if both parameters <b>do not match</b>:
 </div>
 </li>
 
-<li><a id="org3f5c4f6"></a>Epsilon<br />
-<div class="outline-text-6" id="text-org3f5c4f6">
+<li><a id="orgf3f1309"></a>Epsilon<br />
+<div class="outline-text-6" id="text-orgf3f1309">
 <p>
 The Epsilon (<code>∊</code>), in its dyadic form, checks whether the first
 parameter is enclosed in the second parameter, thus testing for
@@ -3802,8 +3801,8 @@ matrix, rows will be put one after the other to form a single list.
 </div>
 </li>
 
-<li><a id="org5327a20"></a>Epsilon underbar<br />
-<div class="outline-text-6" id="text-org5327a20">
+<li><a id="org6561a6c"></a>Epsilon underbar<br />
+<div class="outline-text-6" id="text-org6561a6c">
 <p>
 The Epsilon underbar (<code>⍷</code>) is only dyadic, and attempts to find the
 first argument (which should be a pattern) inside the second
@@ -3818,8 +3817,8 @@ occurence starts for each occurence found.
 </div>
 </li>
 
-<li><a id="orgd1501f7"></a>Iota<br />
-<div class="outline-text-6" id="text-orgd1501f7">
+<li><a id="org5858466"></a>Iota<br />
+<div class="outline-text-6" id="text-org5858466">
 <p>
 The Iota (<code>⍳</code>) in its monadic form generates a list from <code>0</code> to <code>n</code>.
 </p>
@@ -3846,8 +3845,8 @@ X[(<span style="color: #f5c791;">0</span>&#8800;<span style="color: #f5c791;">0<
 </ul>
 </li>
 
-<li><a id="org179ec6b"></a>Logical functions<br />
-<div class="outline-text-5" id="text-org179ec6b">
+<li><a id="org966d7ca"></a>Logical functions<br />
+<div class="outline-text-5" id="text-org966d7ca">
 <p>
 These functions work only with yielding <code>0</code> or <code>1</code> by default, but they
 are also used for <i>branching</i>.
@@ -3920,8 +3919,8 @@ comparisions.
 </div>
 </li>
 
-<li><a id="orgdca8315"></a>Manipulative functions<br />
-<div class="outline-text-5" id="text-orgdca8315">
+<li><a id="org4a4e2d6"></a>Manipulative functions<br />
+<div class="outline-text-5" id="text-org4a4e2d6">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -4022,8 +4021,8 @@ comparisions.
 </div>
 
 <ul class="org-ul">
-<li><a id="org395871a"></a>Comma<br />
-<div class="outline-text-6" id="text-org395871a">
+<li><a id="orgdafd939"></a>Comma<br />
+<div class="outline-text-6" id="text-orgdafd939">
 <p>
 The Ravel (<code>,</code>) operator, in its monadic form, turns a matrix into a
 list.
@@ -4056,8 +4055,8 @@ determined by shape.
 </div>
 </li>
 
-<li><a id="orgf36594b"></a>Circle Stile<br />
-<div class="outline-text-6" id="text-orgf36594b">
+<li><a id="org615131b"></a>Circle Stile<br />
+<div class="outline-text-6" id="text-org615131b">
 <p>
 The Reverse (<code>⌽</code>), in its monadic form, reverses the elements along the
 last axis.
@@ -4083,8 +4082,8 @@ shape. Number of rotated elements' sign provides the direction.
 </div>
 </li>
 
-<li><a id="orge146406"></a>Transpose<br />
-<div class="outline-text-6" id="text-orge146406">
+<li><a id="org1812e29"></a>Transpose<br />
+<div class="outline-text-6" id="text-org1812e29">
 <p>
 The Transpose (<code>⍉</code>), in its monadic form, reverses the axes of the given
 matrix.
@@ -4107,8 +4106,8 @@ and how:
 </div>
 </li>
 
-<li><a id="org8dcbed2"></a>Up Arrow<br />
-<div class="outline-text-6" id="text-org8dcbed2">
+<li><a id="org8344741"></a>Up Arrow<br />
+<div class="outline-text-6" id="text-org8344741">
 <p>
 The Take function (<code>↑</code>), in its monadic form, gets the first element of
 an array.
@@ -4134,8 +4133,8 @@ number is negative, it is taken from last element.
 </div>
 </li>
 
-<li><a id="org41df57e"></a>Down Arrow<br />
-<div class="outline-text-6" id="text-org41df57e">
+<li><a id="orge697bf5"></a>Down Arrow<br />
+<div class="outline-text-6" id="text-orge697bf5">
 <p>
 The Drop function (<code>↓</code>) has only a dyadic form, and drops the number of
 elements in the first parameter from the second parameter list. If the
@@ -4145,8 +4144,8 @@ number exceeds the length, an empty response is returned.
 </div>
 </li>
 
-<li><a id="org3f7d8fb"></a>Left Shoe<br />
-<div class="outline-text-6" id="text-org3f7d8fb">
+<li><a id="orgc68d20f"></a>Left Shoe<br />
+<div class="outline-text-6" id="text-orgc68d20f">
 <p>
 The Enclose (<code>⊂</code>) function, in its monadic form, encloses the given
 object into a nested scalar.
@@ -4170,8 +4169,8 @@ enclosed objects:
 </div>
 </li>
 
-<li><a id="org982733e"></a>Right Shoe<br />
-<div class="outline-text-6" id="text-org982733e">
+<li><a id="org84ade7d"></a>Right Shoe<br />
+<div class="outline-text-6" id="text-org84ade7d">
 <p>
 The Disclose (<code>⊃</code>) function, in its monadic form, discloses the single
 elements of an object, zero-filling the missing elements so that all
@@ -4196,8 +4195,8 @@ nested structure.
 </div>
 </li>
 
-<li><a id="orgbcfe607"></a>Right Tack<br />
-<div class="outline-text-6" id="text-orgbcfe607">
+<li><a id="org682b55b"></a>Right Tack<br />
+<div class="outline-text-6" id="text-org682b55b">
 <p>
 The Right (<code>⊢</code>) function does nothing in its monadic form, giving back
 the untouched data. Its dyadic form, however, selects the left
@@ -4213,8 +4212,8 @@ rightmost element when mapped over a structure:
 </div>
 </li>
 
-<li><a id="org3be9cd5"></a>Left Tack<br />
-<div class="outline-text-6" id="text-org3be9cd5">
+<li><a id="org05b635c"></a>Left Tack<br />
+<div class="outline-text-6" id="text-org05b635c">
 <p>
 The Left (<code>⊣</code>) function works much like Right, except that it selects
 the left element, or the leftmost element on a mapping:
@@ -4230,8 +4229,8 @@ the left element, or the leftmost element on a mapping:
 </ul>
 </li>
 
-<li><a id="org49b8c02"></a>Sorting and coding functions<br />
-<div class="outline-text-5" id="text-org49b8c02">
+<li><a id="org48560ce"></a>Sorting and coding functions<br />
+<div class="outline-text-5" id="text-org48560ce">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -4278,8 +4277,8 @@ the left element, or the leftmost element on a mapping:
 </div>
 
 <ul class="org-ul">
-<li><a id="org715e2dc"></a>Grade Up<br />
-<div class="outline-text-6" id="text-org715e2dc">
+<li><a id="orgfcadeac"></a>Grade Up<br />
+<div class="outline-text-6" id="text-orgfcadeac">
 <p>
 The Grade Up (<code>⍋</code>) function, in its monadic form, returns the indexes of
 elements in ascending order.
@@ -4305,8 +4304,8 @@ TEXT[<span style="color: #f5c791;">'an'</span>&#9035;TEXT]
 </div>
 </li>
 
-<li><a id="org30c4910"></a>Grade Down<br />
-<div class="outline-text-6" id="text-org30c4910">
+<li><a id="orgbc75d5e"></a>Grade Down<br />
+<div class="outline-text-6" id="text-orgbc75d5e">
 <p>
 The Grade Down (<code>⍒</code>) function works just like Grade Up, except that it
 returns indexes of elements in descending order.
@@ -4329,8 +4328,8 @@ TEXT[<span style="color: #f5c791;">'an'</span>&#9042;TEXT]
 </div>
 </li>
 
-<li><a id="orge296455"></a>Decode<br />
-<div class="outline-text-6" id="text-orge296455">
+<li><a id="org112a287"></a>Decode<br />
+<div class="outline-text-6" id="text-org112a287">
 <p>
 The Decode (<code>⊥</code>) function converts a number (expressed as a list) on the
 second argument to the base shown in the first argument.
@@ -4345,8 +4344,8 @@ second argument to the base shown in the first argument.
 </div>
 </li>
 
-<li><a id="orge6e5b66"></a>Encode<br />
-<div class="outline-text-6" id="text-orge6e5b66">
+<li><a id="orga0f4a9b"></a>Encode<br />
+<div class="outline-text-6" id="text-orga0f4a9b">
 <p>
 The Encode (<code>⊤</code>) function does the opposite of Decode.
 </p>
@@ -4361,8 +4360,8 @@ The Encode (<code>⊤</code>) function does the opposite of Decode.
 </ul>
 </li>
 
-<li><a id="orgd6b58f4"></a>Miscellaneous functions and other symbols<br />
-<div class="outline-text-5" id="text-orgd6b58f4">
+<li><a id="orgb5d8fe0"></a>Miscellaneous functions and other symbols<br />
+<div class="outline-text-5" id="text-orgb5d8fe0">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -4422,8 +4421,8 @@ The Encode (<code>⊤</code>) function does the opposite of Decode.
 </div>
 
 <ul class="org-ul">
-<li><a id="org304c396"></a>Diamond<br />
-<div class="outline-text-6" id="text-org304c396">
+<li><a id="orgf569595"></a>Diamond<br />
+<div class="outline-text-6" id="text-orgf569595">
 <p>
 The statement separator (<code>◊</code>) allows for inputting more than one
 statement in a single line.
@@ -4436,8 +4435,8 @@ statement in a single line.
 </div>
 </li>
 
-<li><a id="org4a6453c"></a>Hydrant<br />
-<div class="outline-text-6" id="text-org4a6453c">
+<li><a id="org681fc55"></a>Hydrant<br />
+<div class="outline-text-6" id="text-org681fc55">
 <p>
 The Execute operator (<code>⍎</code>) evaluates a textual expression as an APL
 statement.
@@ -4450,8 +4449,8 @@ statement.
 </div>
 </li>
 
-<li><a id="org91afbf1"></a>Thorn<br />
-<div class="outline-text-6" id="text-org91afbf1">
+<li><a id="org3186b79"></a>Thorn<br />
+<div class="outline-text-6" id="text-org3186b79">
 <p>
 The Format operator (<code>⍕</code>) in its monadic form, transforms values into a
 character list, suited to display onscreen.
@@ -4477,8 +4476,8 @@ gives a <code>DOMAIN ERROR</code>.
 </div>
 </li>
 
-<li><a id="org811b493"></a>Squad<br />
-<div class="outline-text-6" id="text-org811b493">
+<li><a id="org40097c6"></a>Squad<br />
+<div class="outline-text-6" id="text-org40097c6">
 <p>
 The Index operator (<code>⌷</code>) has only a dyadic form, where one can pick
 elements at something. It also supports axis parameters.
@@ -4495,8 +4494,8 @@ elements at something. It also supports axis parameters.
 </div>
 </li>
 
-<li><a id="orgd700962"></a>Zilde<br />
-<div class="outline-text-6" id="text-orgd700962">
+<li><a id="org1f1aabb"></a>Zilde<br />
+<div class="outline-text-6" id="text-org1f1aabb">
 <p>
 The Empty Numeric Vector (<code>⍬</code>) is a vector of zero elements.
 </p>
@@ -4518,9 +4517,9 @@ The Empty Numeric Vector (<code>⍬</code>) is a vector of zero elements.
 </ul>
 </div>
 
-<div id="outline-container-org0fe376f" class="outline-4">
-<h4 id="org0fe376f">System functions</h4>
-<div class="outline-text-4" id="text-org0fe376f">
+<div id="outline-container-org140955e" class="outline-4">
+<h4 id="org140955e">System functions</h4>
+<div class="outline-text-4" id="text-org140955e">
 <p>
 System functions exist to extend the power of APL, improving the
 usable tasks.
@@ -4533,9 +4532,9 @@ See the implementation documentation for that.
 </div>
 </div>
 
-<div id="outline-container-org82fde60" class="outline-3">
-<h3 id="org82fde60">Built-in operators</h3>
-<div class="outline-text-3" id="text-org82fde60">
+<div id="outline-container-org3f575e1" class="outline-3">
+<h3 id="org3f575e1">Built-in operators</h3>
+<div class="outline-text-3" id="text-org3f575e1">
 <div class="org-src-container">
 <pre class="src src-gnu-apl"><span style="color: #454459;">&#9053; Built-in Operators</span>
 </pre>
@@ -4614,9 +4613,9 @@ are applied to data. For example: repeatedly, cumulatively, etc.
 </table>
 </div>
 
-<div id="outline-container-org8f895a5" class="outline-4">
-<h4 id="org8f895a5">Reduce and scan</h4>
-<div class="outline-text-4" id="text-org8f895a5">
+<div id="outline-container-org45dd570" class="outline-4">
+<h4 id="org45dd570">Reduce and scan</h4>
+<div class="outline-text-4" id="text-org45dd570">
 <p>
 When used with functions as their operands, Slash and Backslash become
 Reduce (<code>/</code>) and Scan (<code>\</code>), which apply a single function to all elements
@@ -4645,8 +4644,8 @@ last element of such vector would be the last result.
 </div>
 
 <ul class="org-ul">
-<li><a id="org1958335"></a>Reduce First and Scan First<br />
-<div class="outline-text-5" id="text-org1958335">
+<li><a id="orgcdea218"></a>Reduce First and Scan First<br />
+<div class="outline-text-5" id="text-orgcdea218">
 <p>
 Using a Slash bar with a function means using the Reduce First (<code>⌿</code>)
 operator. This will apply a reduction on the first dimension of the
@@ -4674,9 +4673,9 @@ in a matrix row (first dimension).
 </ul>
 </div>
 
-<div id="outline-container-org3bfdce2" class="outline-4">
-<h4 id="org3bfdce2">Compress and expand</h4>
-<div class="outline-text-4" id="text-org3bfdce2">
+<div id="outline-container-org5308ff7" class="outline-4">
+<h4 id="org5308ff7">Compress and expand</h4>
+<div class="outline-text-4" id="text-org5308ff7">
 <p>
 When used with one or more <b>numbers</b>, Slash and Backslash become
 Compression (<code>/</code>) and Expansion (<code>\</code>).
@@ -4705,8 +4704,8 @@ Expand inserts fill data into objects:
 </div>
 
 <ul class="org-ul">
-<li><a id="org2de5893"></a>Compress First and Expand First<br />
-<div class="outline-text-5" id="text-org2de5893">
+<li><a id="orgb8a3c79"></a>Compress First and Expand First<br />
+<div class="outline-text-5" id="text-orgb8a3c79">
 <p>
 The Compress First (<code>⌿</code>) operator, also known as Replicate First, is the
 dyadic form of the Slash Bar, and can be used in a matrix to remove
@@ -4734,9 +4733,9 @@ bar, and also works by adding new rows (first dimension) to a matrix.
 </ul>
 </div>
 
-<div id="outline-container-org226794d" class="outline-4">
-<h4 id="org226794d">Outer and inner products</h4>
-<div class="outline-text-4" id="text-org226794d">
+<div id="outline-container-org5671b65" class="outline-4">
+<h4 id="org5671b65">Outer and inner products</h4>
+<div class="outline-text-4" id="text-org5671b65">
 <p>
 Product operators distribute the application of a function between
 each element of one argument and all elements in another; this removes
@@ -4746,8 +4745,8 @@ shape.
 </div>
 
 <ul class="org-ul">
-<li><a id="org1c5dded"></a>Outer Product<br />
-<div class="outline-text-5" id="text-org1c5dded">
+<li><a id="org26a31c5"></a>Outer Product<br />
+<div class="outline-text-5" id="text-org26a31c5">
 <p>
 The outer product (<code>∘.</code>)gives the result of applying the function to all
 combinations of elements in both arguments:
@@ -4776,8 +4775,8 @@ Another example: a matrix of powers.
 </div>
 </li>
 
-<li><a id="org1ad7b9a"></a>Inner Product<br />
-<div class="outline-text-5" id="text-org1ad7b9a">
+<li><a id="org2ff8ba6"></a>Inner Product<br />
+<div class="outline-text-5" id="text-org2ff8ba6">
 <p>
 The inner product (<code>.</code>) allows two functions to be applied to arguments;
 operations happen between the <b>last</b> dimension of the <b>left</b> argument, and
@@ -4820,9 +4819,9 @@ There are up to 400 possible inner products. Some uses are:
 </ul>
 </div>
 
-<div id="outline-container-orgece3abe" class="outline-4">
-<h4 id="orgece3abe">Each</h4>
-<div class="outline-text-4" id="text-orgece3abe">
+<div id="outline-container-orga58b948" class="outline-4">
+<h4 id="orga58b948">Each</h4>
+<div class="outline-text-4" id="text-orga58b948">
 <p>
 The Each operator (<code>¨</code>) allows applying a certain function (on the left)
 to each elements of an array or vector (on the right).
@@ -4835,9 +4834,9 @@ to each elements of an array or vector (on the right).
 </div>
 </div>
 
-<div id="outline-container-org427642f" class="outline-4">
-<h4 id="org427642f">Axis</h4>
-<div class="outline-text-4" id="text-org427642f">
+<div id="outline-container-org726c5e0" class="outline-4">
+<h4 id="org726c5e0">Axis</h4>
+<div class="outline-text-4" id="text-org726c5e0">
 <p>
 Some functions operate in data which has more than one dimension. One
 can change the axis in which they operate by using the axis operator.
@@ -4866,8 +4865,8 @@ order of dimensions is the one show when you apply <code>⍴</code> to the data.
 </div>
 
 <ul class="org-ul">
-<li><a id="orga213880"></a>Functions that accept axis specifications<br />
-<div class="outline-text-5" id="text-orga213880">
+<li><a id="org5cf3b7f"></a>Functions that accept axis specifications<br />
+<div class="outline-text-5" id="text-org5cf3b7f">
 <p>
 here are some built-in functions and operators that accept specifying
 axes:
@@ -4898,18 +4897,18 @@ axes:
 </div>
 </div>
 
-<div id="outline-container-org0f6ab21" class="outline-3">
-<h3 id="org0f6ab21">User-defined Functions</h3>
-<div class="outline-text-3" id="text-org0f6ab21">
+<div id="outline-container-orgaed326d" class="outline-3">
+<h3 id="orgaed326d">User-defined Functions</h3>
+<div class="outline-text-3" id="text-orgaed326d">
 <div class="org-src-container">
 <pre class="src src-gnu-apl"><span style="color: #454459;">&#9053; User-defined functions</span>
 </pre>
 </div>
 </div>
 
-<div id="outline-container-orgca121df" class="outline-4">
-<h4 id="orgca121df">Arguments and results</h4>
-<div class="outline-text-4" id="text-orgca121df">
+<div id="outline-container-orgbf60f8f" class="outline-4">
+<h4 id="orgbf60f8f">Arguments and results</h4>
+<div class="outline-text-4" id="text-orgbf60f8f">
 <p>
 Functions can be thought of as external programs which are run. They
 can be:
@@ -4939,9 +4938,9 @@ the result field.
 </div>
 </div>
 
-<div id="outline-container-org6296455" class="outline-4">
-<h4 id="org6296455">User-defined operators</h4>
-<div class="outline-text-4" id="text-org6296455">
+<div id="outline-container-orge1bb5fa" class="outline-4">
+<h4 id="orge1bb5fa">User-defined operators</h4>
+<div class="outline-text-4" id="text-orge1bb5fa">
 <p>
 Operators must have one or two <b>operands</b>, which are functions; not more
 nor less, since operators are used to modify the behaviour of
@@ -4950,9 +4949,9 @@ functions.
 </div>
 </div>
 
-<div id="outline-container-orge8cd40f" class="outline-4">
-<h4 id="orge8cd40f">Editing functions</h4>
-<div class="outline-text-4" id="text-orge8cd40f">
+<div id="outline-container-org673b300" class="outline-4">
+<h4 id="org673b300">Editing functions</h4>
+<div class="outline-text-4" id="text-org673b300">
 <p>
 Some APLs allow you to edit a function by using the <code>)EDIT</code> command or
 the <code>⎕EDIT</code> system function. This is the case for Dyalog, for example &#x2013;
@@ -4996,9 +4995,9 @@ different e.g. line numbers will not be used here.
 </div>
 </div>
 
-<div id="outline-container-orgf9a505f" class="outline-4">
-<h4 id="orgf9a505f">The function header</h4>
-<div class="outline-text-4" id="text-orgf9a505f">
+<div id="outline-container-org7b1a66d" class="outline-4">
+<h4 id="org7b1a66d">The function header</h4>
+<div class="outline-text-4" id="text-org7b1a66d">
 <p>
 When typing the function, one must type a suitable function header,
 for example:
@@ -5067,9 +5066,9 @@ execution.
 </div>
 </div>
 
-<div id="outline-container-orgca96bd1" class="outline-4">
-<h4 id="orgca96bd1">The operator header</h4>
-<div class="outline-text-4" id="text-orgca96bd1">
+<div id="outline-container-org9c8b74a" class="outline-4">
+<h4 id="org9c8b74a">The operator header</h4>
+<div class="outline-text-4" id="text-org9c8b74a">
 <p>
 Operator bodies are defined just like functions'; what changes is the
 header, which must specify an operator.
@@ -5105,9 +5104,9 @@ change the behaviour of.</li>
 </div>
 </div>
 
-<div id="outline-container-orgb5d9b82" class="outline-4">
-<h4 id="orgb5d9b82">Local and global variables</h4>
-<div class="outline-text-4" id="text-orgb5d9b82">
+<div id="outline-container-org6ef438e" class="outline-4">
+<h4 id="org6ef438e">Local and global variables</h4>
+<div class="outline-text-4" id="text-org6ef438e">
 <p>
 One can quote variables in the header to make sure they are <b>local</b> to
 the function; by not doing so, they will remain <b>global</b>. Also notice
@@ -5148,9 +5147,9 @@ little more compact so we have fewer local variables.
 </div>
 </div>
 
-<div id="outline-container-org2de93a5" class="outline-4">
-<h4 id="org2de93a5">Branching</h4>
-<div class="outline-text-4" id="text-org2de93a5">
+<div id="outline-container-org2079d03" class="outline-4">
+<h4 id="org2079d03">Branching</h4>
+<div class="outline-text-4" id="text-org2079d03">
 <p>
 Inside the body of a function or operator, the symbol Goto (<code>→)</code> is used
 to determine a jump. The symbol should then be followed by some data;
@@ -5164,7 +5163,7 @@ Here is an example of that in action, with numbering on the body for
 better understanding.
 </p>
 
-<pre class="example" id="orga999bf1">
+<pre class="example" id="orgd76ee86">
     ∇R←TEST X
 [1]  →(X≥0)/4
 [2]  R←0
@@ -5193,8 +5192,8 @@ exits gracefully, as there are no more jumps.
 </div>
 
 <ul class="org-ul">
-<li><a id="org41e4d41"></a>Looping<br />
-<div class="outline-text-5" id="text-org41e4d41">
+<li><a id="org28bfc32"></a>Looping<br />
+<div class="outline-text-5" id="text-org28bfc32">
 <p>
 One can also perform loops very easily by using the Goto symbol
 (<code>→</code>). For example, consider the following function.
@@ -5221,8 +5220,8 @@ Jumping to <code>0</code> will be explained below; it ends the function.
 </div>
 </li>
 
-<li><a id="org154e439"></a>Labels<br />
-<div class="outline-text-5" id="text-org154e439">
+<li><a id="org22ea0a8"></a>Labels<br />
+<div class="outline-text-5" id="text-org22ea0a8">
 <p>
 It is not necessary to count lines on most modern APLs. We can just
 use labels. This is also useful when adding lines and whatnot.
@@ -5256,15 +5255,15 @@ Here is the factorial function, rewritten using labels:
 </div>
 </li>
 
-<li><a id="org9096903"></a>Ending execution of a function<br />
-<div class="outline-text-5" id="text-org9096903">
+<li><a id="org9cf4b54"></a>Ending execution of a function<br />
+<div class="outline-text-5" id="text-org9cf4b54">
 <p>
 A function stops naturally when the last line of its body is
 executed. However, one can go to a line number which doesn't exist to
 end the function immediately. For example:
 </p>
 
-<pre class="example" id="orgbf20d2f">
+<pre class="example" id="orgfde2f3f">
 →(X&lt;1)/0
 →0
 →7  ⍝ Suppose this line is in a function with six lines
@@ -5272,8 +5271,8 @@ end the function immediately. For example:
 </div>
 </li>
 
-<li><a id="org95635e6"></a>Structured control keywords<br />
-<div class="outline-text-5" id="text-org95635e6">
+<li><a id="orgaa87c71"></a>Structured control keywords<br />
+<div class="outline-text-5" id="text-orgaa87c71">
 <p>
 Some APLs support <i>structured-control keywords</i> for flow control. This
 makes APL more readable. (GNU APL, however, does not support them)
@@ -5338,16 +5337,16 @@ ISO, but they are supported in many implementations.
 </div>
 </li>
 
-<li><a id="org532c945"></a>Comments in functions<br />
-<div class="outline-text-5" id="text-org532c945">
+<li><a id="org45169ce"></a>Comments in functions<br />
+<div class="outline-text-5" id="text-org45169ce">
 <p>
 Just use the Lamp (<code>⍝</code>) symbol.
 </p>
 </div>
 </li>
 
-<li><a id="orga2eb395"></a>Ambivalent Functions<br />
-<div class="outline-text-5" id="text-orga2eb395">
+<li><a id="org52c4ecc"></a>Ambivalent Functions<br />
+<div class="outline-text-5" id="text-org52c4ecc">
 <p>
 In APL2, dyadic functions may be used monodically. This happens when
 the left argument is undefined. This means that its Name
@@ -5373,7 +5372,7 @@ distinguishes ambivalent and dyadic functions. See these function
 headers:
 </p>
 
-<pre class="example" id="orgc37576c">
+<pre class="example" id="org4f7ad51">
 ∇R←A NOMADIC B    ⍝ Dyadic     ∇
 ∇R←{A} NOMADIB B  ⍝ Ambivalent ∇
 </pre>
@@ -5382,9 +5381,9 @@ headers:
 </ul>
 </div>
 
-<div id="outline-container-org5a8fa7e" class="outline-4">
-<h4 id="org5a8fa7e">Extra: Lambdas</h4>
-<div class="outline-text-4" id="text-org5a8fa7e">
+<div id="outline-container-orga567a1b" class="outline-4">
+<h4 id="orga567a1b">Extra: Lambdas</h4>
+<div class="outline-text-4" id="text-orga567a1b">
 <p>
 GNU APL has limited support for lambda expressions. Those are
 functions which are defined inline, and can even be named.
@@ -5419,18 +5418,18 @@ PRIMES <span style="color: #f5c791;">100</span>
 </div>
 </div>
 
-<div id="outline-container-org8128b3d" class="outline-3">
-<h3 id="org8128b3d">Error Handling</h3>
-<div class="outline-text-3" id="text-org8128b3d">
+<div id="outline-container-org81d8aa9" class="outline-3">
+<h3 id="org81d8aa9">Error Handling</h3>
+<div class="outline-text-3" id="text-org81d8aa9">
 <div class="org-src-container">
 <pre class="src src-gnu-apl"><span style="color: #454459;">&#9053; Error handling</span>
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org86ded22" class="outline-4">
-<h4 id="org86ded22">Errors in calculator mode</h4>
-<div class="outline-text-4" id="text-org86ded22">
+<div id="outline-container-org5941848" class="outline-4">
+<h4 id="org5941848">Errors in calculator mode</h4>
+<div class="outline-text-4" id="text-org5941848">
 <p>
 APL prints errors when you type a statement containing an error in
 calculator mode. For example, this yields a <code>DOMAIN ERROR</code>:
@@ -5448,9 +5447,9 @@ correctly, or use the the implementation's line-editing facilities.
 </div>
 </div>
 
-<div id="outline-container-org4f81949" class="outline-4">
-<h4 id="org4f81949">Errors in user-defined functions or operators</h4>
-<div class="outline-text-4" id="text-org4f81949">
+<div id="outline-container-orgf3c74fc" class="outline-4">
+<h4 id="orgf3c74fc">Errors in user-defined functions or operators</h4>
+<div class="outline-text-4" id="text-orgf3c74fc">
 <p>
 When executing a user-defined function or operator, if an error
 happens, the execution stops at that point. Modern APLs have a Debug
@@ -5460,9 +5459,9 @@ operator.
 </div>
 </div>
 
-<div id="outline-container-org9921240" class="outline-4">
-<h4 id="org9921240">The state indicator</h4>
-<div class="outline-text-4" id="text-org9921240">
+<div id="outline-container-org0c1d1c4" class="outline-4">
+<h4 id="org0c1d1c4">The state indicator</h4>
+<div class="outline-text-4" id="text-org0c1d1c4">
 <p>
 When the halted function was called by other function, one can inspect
 the call stack using the State Indicator. This can be done with the
@@ -5473,7 +5472,7 @@ system function <code>)SI</code> or, in some APLs, by inspecting the variable <c
 Here is an example taken from implementation APLX (deprecated):
 </p>
 
-<pre class="example" id="org905a9ce">
+<pre class="example" id="org63ee592">
       )SI
 C[2] *
 B[8]
@@ -5492,7 +5491,7 @@ pending. If another function were executed at this point and also
 yielded an error, this would happen:
 </p>
 
-<pre class="example" id="org07e20b6">
+<pre class="example" id="org6b7f898">
 E[3] *
 D[6]
 C[2] *
@@ -5510,7 +5509,7 @@ This top level can be cleared by using the Goto symbol (<code>→</code>). Anoth
 <code>→</code>, in this case, would clear the State Indicator completely.
 </p>
 
-<pre class="example" id="org42c39ab">
+<pre class="example" id="org27fc92a">
       →
       )SI
 C[2] *
@@ -5525,9 +5524,9 @@ APL, this can be done with <code>)RESET</code>.
 </div>
 </div>
 
-<div id="outline-container-orgb634fb6" class="outline-4">
-<h4 id="orgb634fb6">Action after suspended execution</h4>
-<div class="outline-text-4" id="text-orgb634fb6">
+<div id="outline-container-orgabce5de" class="outline-4">
+<h4 id="orgabce5de">Action after suspended execution</h4>
+<div class="outline-text-4" id="text-orgabce5de">
 <p>
 One can resume the suspended execution where it stopped. To do so,
 just type Goto (<code>→</code>) followed by the line number.
@@ -5572,9 +5571,9 @@ vector:
 </div>
 </div>
 
-<div id="outline-container-orgb8a8f74" class="outline-4">
-<h4 id="orgb8a8f74">Error trapping and tracing</h4>
-<div class="outline-text-4" id="text-orgb8a8f74">
+<div id="outline-container-org55a7e28" class="outline-4">
+<h4 id="org55a7e28">Error trapping and tracing</h4>
+<div class="outline-text-4" id="text-org55a7e28">
 <p>
 It is possible to specify in advance what to do if an error occurs on
 execution; APL allows error trapping at runtime.
@@ -5600,18 +5599,18 @@ It seems like GNU APL does not have error trapping facilities.
 </div>
 </div>
 
-<div id="outline-container-orgd415d66" class="outline-3">
-<h3 id="orgd415d66">Formatting</h3>
-<div class="outline-text-3" id="text-orgd415d66">
+<div id="outline-container-org1452b58" class="outline-3">
+<h3 id="org1452b58">Formatting</h3>
+<div class="outline-text-3" id="text-org1452b58">
 <div class="org-src-container">
 <pre class="src src-gnu-apl"><span style="color: #454459;">&#9053; Formatting</span>
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org5e4f34d" class="outline-4">
-<h4 id="org5e4f34d">The "Format" primitive</h4>
-<div class="outline-text-4" id="text-org5e4f34d">
+<div id="outline-container-org8d21552" class="outline-4">
+<h4 id="org8d21552">The "Format" primitive</h4>
+<div class="outline-text-4" id="text-org8d21552">
 <p>
 Useful variable: <code>⎕PP</code> (Print Precision).
 </p>
@@ -5642,15 +5641,15 @@ Note that, before the number was truncated, it was rounded.
 </div>
 </div>
 
-<div id="outline-container-org60cc3f6" class="outline-4">
-<h4 id="org60cc3f6">The system function <code>⎕FMT</code></h4>
-<div class="outline-text-4" id="text-org60cc3f6">
+<div id="outline-container-org34cbe84" class="outline-4">
+<h4 id="org34cbe84">The system function <code>⎕FMT</code></h4>
+<div class="outline-text-4" id="text-org34cbe84">
 <p>
 Some APL implementations (except APL2 and GNU APL) have a <code>⎕FMT</code> system
 function:
 </p>
 
-<pre class="example" id="org2e67d7b">
+<pre class="example" id="org0895dd8">
     'B K2 G&lt; ZZ9 DOLLARS AND 99 CENTS&gt;' ⎕FMT 8.23 12.86 0 2.52
  8 DOLLARS AND 23 CENTS
 12 DOLLARS AND 86 CENTS
@@ -5660,9 +5659,9 @@ function:
 </div>
 </div>
 
-<div id="outline-container-orga48c716" class="outline-3">
-<h3 id="orga48c716">End of Tutorial</h3>
-<div class="outline-text-3" id="text-orga48c716">
+<div id="outline-container-orgc7fde1f" class="outline-3">
+<h3 id="orgc7fde1f">End of Tutorial</h3>
+<div class="outline-text-3" id="text-orgc7fde1f">
 <div class="org-src-container">
 <pre class="src src-gnu-apl">)CLEAR
 </pre>
@@ -5671,9 +5670,9 @@ function:
 </div>
 </div>
 
-<div id="outline-container-org814fe05" class="outline-2">
-<h2 id="org814fe05">Further Topics in APL</h2>
-<div class="outline-text-2" id="text-org814fe05">
+<div id="outline-container-orgfa6fe31" class="outline-2">
+<h2 id="orgfa6fe31">Further Topics in APL</h2>
+<div class="outline-text-2" id="text-orgfa6fe31">
 <p>
 These are very useful topics which I will only take some notes on new
 things I find interesting. <a href="https://aplwiki.com/LearnMoreApl/FurtherTopics">Here is the link</a> to the relevant contents.
@@ -5684,9 +5683,9 @@ It is also useful to check the <a href="https://www.gnu.org/software/apl/apl.htm
 </p>
 </div>
 
-<div id="outline-container-org8cf389d" class="outline-3">
-<h3 id="org8cf389d">Displaying the Shape of an Array</h3>
-<div class="outline-text-3" id="text-org8cf389d">
+<div id="outline-container-orgfb40860" class="outline-3">
+<h3 id="orgfb40860">Displaying the Shape of an Array</h3>
+<div class="outline-text-3" id="text-orgfb40860">
 <div class="org-src-container">
 <pre class="src src-gnu-apl"><span style="color: #454459;">&#9053;&#9053;&#9053; Further Topics in APL</span>
 
@@ -5712,7 +5711,7 @@ around data. GNU APL uses <code>⎕CR</code> for that. For example:
 Results are better seen with GNU FreeFont:
 </p>
 
-<pre class="example" id="org6e9b4b8">
+<pre class="example" id="org4c93554">
 ┌→──────────┐
 ↓40 26 30 24│
 │50 35 31 47│
@@ -5807,9 +5806,9 @@ Meaning of symbols used when drawing boxes:
 </div>
 </div>
 
-<div id="outline-container-orgfd2c838" class="outline-3">
-<h3 id="orgfd2c838">Array Type and Prototype</h3>
-<div class="outline-text-3" id="text-orgfd2c838">
+<div id="outline-container-org1485a78" class="outline-3">
+<h3 id="org1485a78">Array Type and Prototype</h3>
+<div class="outline-text-3" id="text-org1485a78">
 <div class="org-src-container">
 <pre class="src src-gnu-apl"><span style="color: #454459;">&#9053; Array type and prototype</span>
 </pre>
@@ -5829,9 +5828,9 @@ to Goto (<code>→</code>).
 </p>
 </div>
 
-<div id="outline-container-org24b1bb3" class="outline-4">
-<h4 id="org24b1bb3">Array Type and Prototype</h4>
-<div class="outline-text-4" id="text-org24b1bb3">
+<div id="outline-container-org8b9a36a" class="outline-4">
+<h4 id="org8b9a36a">Array Type and Prototype</h4>
+<div class="outline-text-4" id="text-org8b9a36a">
 <p>
 Arrays have a type zero for numeric elements, and blank character for
 character elements.
@@ -5846,7 +5845,7 @@ character elements.
 </pre>
 </div>
 
-<pre class="example" id="org4161b02">
+<pre class="example" id="orga310956">
 ┌⊖┐
 │0│
 └─┘
@@ -5867,7 +5866,7 @@ X&#8801;<span style="color: #f5c791;">0</span>&#9076;<span style="color: #f5c791
 </pre>
 </div>
 
-<pre class="example" id="org174c634">
+<pre class="example" id="orga537a56">
 0
 1
 ┌⊖┐
@@ -5877,9 +5876,9 @@ X&#8801;<span style="color: #f5c791;">0</span>&#9076;<span style="color: #f5c791
 </div>
 </div>
 
-<div id="outline-container-orgc81805e" class="outline-4">
-<h4 id="orgc81805e">Prototypes of nested arrays</h4>
-<div class="outline-text-4" id="text-orgc81805e">
+<div id="outline-container-orgca286bc" class="outline-4">
+<h4 id="orgca286bc">Prototypes of nested arrays</h4>
+<div class="outline-text-4" id="text-orgca286bc">
 <p>
 Complex empty arrays can be created by using a nested array to
 generate the empty array:
@@ -5894,7 +5893,7 @@ generate the empty array:
 </pre>
 </div>
 
-<pre class="example" id="org9bee46f">
+<pre class="example" id="org234c8f0">
 ┌→────────────┐
 │┌→──┐ ┌→────┐│
 ││ABC│ │1 2 3││
@@ -5917,7 +5916,7 @@ null elements.
 </pre>
 </div>
 
-<pre class="example" id="org670ce93">
+<pre class="example" id="orgc778910">
 ┌→──────────┐
 │┌→──┐ ┌→──┐│
 │↓1 2│ │ABC││
@@ -5942,7 +5941,7 @@ zeroes and empty characters.
 </pre>
 </div>
 
-<pre class="example" id="org760784b">
+<pre class="example" id="org81e21fa">
 ┌→──────────────┐
 │┌→──┐ ┌→──────┐│
 │↓1 K│ │1 2 3 4││
@@ -5967,7 +5966,7 @@ array.
 </pre>
 </div>
 
-<pre class="example" id="org27cef53">
+<pre class="example" id="org4ddc1ad">
 ┌→────────────────────┐
 │┌→──┐ ┌→──────┐ ┌→──┐│
 │↓1 A│ │┌→──┐ 7│ │ABC││
@@ -5989,7 +5988,7 @@ First (<code>↑</code>) function to remove it:
 </pre>
 </div>
 
-<pre class="example" id="orgc925de3">
+<pre class="example" id="orga157c89">
 ┌→────────────────────┐
 │┌→──┐ ┌→──────┐ ┌→──┐│
 │↓0  │ │┌→──┐ 0│ │   ││
@@ -6001,9 +6000,9 @@ First (<code>↑</code>) function to remove it:
 </div>
 </div>
 
-<div id="outline-container-org6e9c7ff" class="outline-4">
-<h4 id="org6e9c7ff">The prototype as a fill element</h4>
-<div class="outline-text-4" id="text-org6e9c7ff">
+<div id="outline-container-org41c7f88" class="outline-4">
+<h4 id="org41c7f88">The prototype as a fill element</h4>
+<div class="outline-text-4" id="text-org41c7f88">
 <p>
 Functions such as Take (<code>↑</code>), Expand (<code>\</code>) and Replicate (<code>/</code>) add elements
 to an existing array. A prototype can be used to determine the type
@@ -6064,7 +6063,7 @@ Here are some examples.
 </pre>
 </div>
 
-<pre class="example" id="orgc77e443">
+<pre class="example" id="org3d71abe">
 ┌→────────┐
 │1 2 3 0 0│
 └─────────┘
@@ -6107,9 +6106,9 @@ More info: <a href="https://aplwiki.com/EmptyArraysAndPrototypes">Empty Arrays a
 </div>
 </div>
 
-<div id="outline-container-org73dbb40" class="outline-3">
-<h3 id="org73dbb40">Vector Notation</h3>
-<div class="outline-text-3" id="text-org73dbb40">
+<div id="outline-container-org541c714" class="outline-3">
+<h3 id="org541c714">Vector Notation</h3>
+<div class="outline-text-3" id="text-org541c714">
 <p>
 Nothing new here. Just pay attention to how the vectors are
 constructed:
@@ -6129,7 +6128,7 @@ Y&#8592;<span style="color: #f5c791;">'HELLO'</span>
 </pre>
 </div>
 
-<pre class="example" id="org0e91da2">
+<pre class="example" id="org4b49787">
       8⎕CR 'ABC' 'DEF'
 ┌→──────────┐
 │┌→──┐ ┌→──┐│
@@ -6169,9 +6168,9 @@ Y&#8592;<span style="color: #f5c791;">'HELLO'</span>
 </div>
 </div>
 
-<div id="outline-container-orgc5a7d35" class="outline-3">
-<h3 id="orgc5a7d35">Variables and Indexing</h3>
-<div class="outline-text-3" id="text-orgc5a7d35">
+<div id="outline-container-org8f1ce5d" class="outline-3">
+<h3 id="org8f1ce5d">Variables and Indexing</h3>
+<div class="outline-text-3" id="text-org8f1ce5d">
 <p>
 Nothing new too.
 </p>
@@ -6198,9 +6197,9 @@ ALF[<span style="color: #f5c791;">2</span> <span style="color: #f5c791;">2</span
 </div>
 </div>
 
-<div id="outline-container-org5845001" class="outline-4">
-<h4 id="org5845001">The Index (<code>⌷</code>) function</h4>
-<div class="outline-text-4" id="text-org5845001">
+<div id="outline-container-org43f3ea4" class="outline-4">
+<h4 id="org43f3ea4">The Index (<code>⌷</code>) function</h4>
+<div class="outline-text-4" id="text-org43f3ea4">
 <div class="org-src-container">
 <pre class="src src-gnu-apl">TABLE[<span style="color: #f5c791;">1</span>;<span style="color: #f5c791;">2</span>]=<span style="color: #f5c791;">1</span> <span style="color: #f5c791;">2</span>&#9015;TABLE
 
@@ -6227,9 +6226,9 @@ TAB&#8592;<span style="color: #f5c791;">2</span> <span style="color: #f5c791;">5
 </div>
 </div>
 
-<div id="outline-container-org87910ae" class="outline-3">
-<h3 id="org87910ae">Multiple Specification</h3>
-<div class="outline-text-3" id="text-org87910ae">
+<div id="outline-container-orga1b08c9" class="outline-3">
+<h3 id="orga1b08c9">Multiple Specification</h3>
+<div class="outline-text-3" id="text-orga1b08c9">
 <p>
 Nothing new here as well.
 </p>
@@ -6252,9 +6251,9 @@ A &#9674; B &#9674; C
 </div>
 </div>
 
-<div id="outline-container-org4b0781c" class="outline-3">
-<h3 id="org4b0781c">Selective Specification</h3>
-<div class="outline-text-3" id="text-org4b0781c">
+<div id="outline-container-org02aef1c" class="outline-3">
+<h3 id="org02aef1c">Selective Specification</h3>
+<div class="outline-text-3" id="text-org02aef1c">
 <p>
 Some functions in APL can be used to select portions of an array. When
 associated with assignment, they can be used to assign values to
@@ -6283,7 +6282,7 @@ Let's assign the first three elements of a vector by using the Take
 </pre>
 </div>
 
-<pre class="example" id="orgbe80a19">
+<pre class="example" id="orged5e4cf">
 ┌→──────┐
 │ABC 4 5│
 └───────┘
@@ -6301,7 +6300,7 @@ value to it:
 </pre>
 </div>
 
-<pre class="example" id="orgc4a1276">
+<pre class="example" id="orgb1247bf">
 ┌→───┐
 ↓NEW │
 │DATA│
@@ -6320,7 +6319,7 @@ select all A's on the matrix, and replace them by asterisk:
 </pre>
 </div>
 
-<pre class="example" id="orgf2c73e6">
+<pre class="example" id="org6fb9fce">
 ┌→───┐
 ↓NEW │
 │D*T*│
@@ -6339,7 +6338,7 @@ elements at the top-left 2×2 submatrix of <code>MAT</code>:
 </pre>
 </div>
 
-<pre class="example" id="org7dcccb9">
+<pre class="example" id="org4c67daf">
 ┌→───┐
 ↓⎕⎕W │
 │⎕⎕T*│
@@ -6359,7 +6358,7 @@ We can also use the Compression (<code>/</code>) function for selection.
 </pre>
 </div>
 
-<pre class="example" id="orga5438dc">
+<pre class="example" id="org1fb32cb">
 ┌→─────────┐
 ↓1  2  3  4│
 │5  6  7  8│
@@ -6386,7 +6385,7 @@ X&#8592;<span style="color: #f5c791;">10</span>&#215;&#9075;<span style="color: 
 </pre>
 </div>
 
-<pre class="example" id="org2882872">
+<pre class="example" id="orgc6c0833">
 ┌→────────────────────────────┐
 │1 2 3 4 5 6 7 8 9 10 11 12 13│
 └─────────────────────────────┘
@@ -6410,7 +6409,7 @@ X&#8592;<span style="color: #f5c791;">3</span>
 </pre>
 </div>
 
-<pre class="example" id="org7a3ab63">
+<pre class="example" id="org5c6f1d4">
 ┌→───────────────────┐
 │1 2 3 4 5 6 7 8 9 10│
 └────────────────────┘
@@ -6439,7 +6438,7 @@ We can use Enlist (monadic <code>∊</code>) to remove nesting from an array.
 </pre>
 </div>
 
-<pre class="example" id="orgc441a7d">
+<pre class="example" id="orgd9e7389">
 ┌→───────────────┐
 │┌→──┐ ┌→───┐ ┌→┐│
 │↓1 2│ │TEXT│ ↓1││
@@ -6488,9 +6487,9 @@ So, the sky is the limit. For more info, see <a href="https://aplwiki.com/LearnM
 </div>
 </div>
 
-<div id="outline-container-org46a8108" class="outline-3">
-<h3 id="org46a8108">Binding Strengths</h3>
-<div class="outline-text-3" id="text-org46a8108">
+<div id="outline-container-org45c9090" class="outline-3">
+<h3 id="org45c9090">Binding Strengths</h3>
+<div class="outline-text-3" id="text-org45c9090">
 <p>
 In general, APL evaluates from right to left. However, some elements
 can be said to have stronger binding.
@@ -6567,9 +6566,9 @@ For more info, see <a href="https://aplwiki.com/LearnMoreApl/BindingStrengths">t
 </div>
 </div>
 
-<div id="outline-container-org5e9c32d" class="outline-3">
-<h3 id="org5e9c32d">Pervasive Functions</h3>
-<div class="outline-text-3" id="text-org5e9c32d">
+<div id="outline-container-org5188dce" class="outline-3">
+<h3 id="org5188dce">Pervasive Functions</h3>
+<div class="outline-text-3" id="text-org5188dce">
 <p>
 There are Scalar and Mixed functions in APL. Scalar functions have the
 property of being <i>pervasive</i>, that is, they apply to all levels of
@@ -6580,7 +6579,7 @@ nesting on the data.
 Here are some scalar functions:
 </p>
 
-<pre class="example" id="org01ccb60">
+<pre class="example" id="orgc342c4c">
 + - × ÷ | ⌈ ⌊ * ⍟ ○ ! ^ ∨ ⍲ ⍱ &lt; ≤ = ≥ &gt; ≠
 Monadic ~
 Monadic ?
@@ -6592,9 +6591,9 @@ For more info, see <a href="https://aplwiki.com/LearnMoreApl/PervasiveFunctions"
 </div>
 </div>
 
-<div id="outline-container-org195f714" class="outline-3">
-<h3 id="org195f714">OO, Classes and Inheritance</h3>
-<div class="outline-text-3" id="text-org195f714">
+<div id="outline-container-org4ee0040" class="outline-3">
+<h3 id="org4ee0040">OO, Classes and Inheritance</h3>
+<div class="outline-text-3" id="text-org4ee0040">
 <p>
 GNU APL does not support object orientation, therefore I will not be
 covering it. However, Dyalog APL does.
@@ -6607,9 +6606,9 @@ Object-oriented APL <a href="https://aplwiki.com/LearnMoreApl/AplClasses">inform
 </div>
 </div>
 
-<div id="outline-container-org388cb30" class="outline-2">
-<h2 id="org388cb30">Finishing</h2>
-<div class="outline-text-2" id="text-org388cb30">
+<div id="outline-container-orgf962f39" class="outline-2">
+<h2 id="orgf962f39">Finishing</h2>
+<div class="outline-text-2" id="text-orgf962f39">
 <div class="org-src-container">
 <pre class="src src-gnu-apl"><span style="color: #454459;">&#9053; Closes the script file.</span>
 )OFF

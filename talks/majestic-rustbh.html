@@ -29,15 +29,15 @@
 <div class="slides">
 <section id="sec-title-slide"><h2>Majestic Lisp:</h2><p>do Zero ao Lisp em Rust</p><br/><h3 style="font-size:0.9em">Lucas S. Vieira</h3><br/><p style="font-size:0.7em;"><a href="mailto:lucas.vieira@ufvjm.edu.br">lucas.vieira@ufvjm.edu.br</a><br/>Universidade Federal dos Vales do Jequitinhonha e Mucuri<br/>08 de dezembro de 2020</p>
 </section>
-<section id="table-of-contents"><div id="table-of-contents">
+<section id="sec-table-of-contents"><div id="table-of-contents" role="doc-toc">
 <h2>&Iacute;ndice</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#/slide-org7b6ee21">Introdução</a></li>
-<li><a href="#/slide-orgd747995">Características e Implementação</a></li>
-<li><a href="#/slide-orgbbe6f1e">Comparando Majestic e outros Lisps</a></li>
-<li><a href="#/slide-org65fc3b5">Interpretador metacircular</a></li>
-<li><a href="#/slide-org610decd">Referências</a></li>
+<li><a href="#/slide-orgb6f0897">Introdução</a></li>
+<li><a href="#/slide-org2c7c158">Características e Implementação</a></li>
+<li><a href="#/slide-org906fde9">Comparando Majestic e outros Lisps</a></li>
+<li><a href="#/slide-org2549443">Interpretador metacircular</a></li>
+<li><a href="#/slide-orga21c07b">Referências</a></li>
 </ul>
 </div>
 </div>
@@ -52,13 +52,13 @@ flex: 1;
 </style>
 
 <section>
-<section id="slide-org7b6ee21">
-<h2 id="org7b6ee21">Introdução</h2>
-<div class="outline-text-2" id="text-org7b6ee21">
+<section id="slide-orgb6f0897">
+<h2 id="orgb6f0897">Introdução</h2>
+<div class="outline-text-2" id="text-orgb6f0897">
 </div>
 </section>
-<section id="slide-orgfda45b8">
-<h3 id="orgfda45b8">Quem sou eu?</h3>
+<section id="slide-orgc39926d">
+<h3 id="orgc39926d">Quem sou eu?</h3>
 <div class="container">
 
 <div class="col">
@@ -83,7 +83,7 @@ programação, desenvolvimento de jogos, programação bare-metal
 <div class="col">
 
 
-<div id="org9c55c57" class="figure">
+<div id="org4d9f60d" class="figure">
 <p><img src="img/eu.jpg" alt="eu.jpg" width="200" />
 </p>
 </div>
@@ -99,8 +99,8 @@ programação, desenvolvimento de jogos, programação bare-metal
 </div>
 
 </section>
-<section id="slide-orgb72f415">
-<h3 id="orgb72f415">O que é Majestic Lisp?</h3>
+<section id="slide-org63adf3e">
+<h3 id="org63adf3e">O que é Majestic Lisp?</h3>
 <p>
 Dialeto da família das linguagens Lisp.
 </p>
@@ -113,8 +113,8 @@ Dialeto da família das linguagens Lisp.
 </ul>
 
 </section>
-<section id="slide-orgacad197">
-<h3 id="orgacad197">Um segundo. O que é Bel?</h3>
+<section id="slide-org57e080b">
+<h3 id="org57e080b">Um segundo. O que é Bel?</h3>
 <p>
 Dialeto de Lisp criado por Paul Graham em 2019.
 </p>
@@ -129,8 +129,8 @@ de LISP 1.5.</li>
 </ul>
 
 </section>
-<section id="slide-orgf2cc0a9">
-<h3 id="orgf2cc0a9">Objetivos de Majestic Lisp</h3>
+<section id="slide-orgdd25780">
+<h3 id="orgdd25780">Objetivos de Majestic Lisp</h3>
 <p>
 Escrito como <i>literate  program</i> na forma de livro, guia  o leitor sobre
 como construir um interpretador de Majestic passo-a-passo em Rust.
@@ -148,17 +148,17 @@ como construir um interpretador de Majestic passo-a-passo em Rust.
 </section>
 </section>
 <section>
-<section id="slide-orgd747995">
-<h2 id="orgd747995">Características e Implementação</h2>
-<div class="outline-text-2" id="text-orgd747995">
+<section id="slide-org2c7c158">
+<h2 id="org2c7c158">Características e Implementação</h2>
+<div class="outline-text-2" id="text-org2c7c158">
 </div>
 </section>
-<section id="slide-orgea31c87">
-<h3 id="orgea31c87">Live Demo</h3>
+<section id="slide-orgf934035">
+<h3 id="orgf934035">Live Demo</h3>
 
 </section>
-<section id="slide-orge0bd9ea">
-<h3 id="orge0bd9ea">Por que Rust?</h3>
+<section id="slide-orgd12de43">
+<h3 id="orgd12de43">Por que Rust?</h3>
 <p>
 A  escolha não  foi motivada  por performance,  corretude ou  <i>safety</i> /
 <i>security</i>.
@@ -172,11 +172,11 @@ A  escolha não  foi motivada  por performance,  corretude ou  <i>safety</i> /
 </ul>
 
 </section>
-<section id="slide-org8975f37">
-<h4 id="org8975f37">Exemplo: Objeto básico de Bel (C11)</h4>
+<section id="slide-org5de0d04">
+<h4 id="org5de0d04">Exemplo: Objeto básico de Bel (C11)</h4>
 <div class="org-src-container">
 
-<pre  class="src src-C" ><code trim><span style="color: #9d81ba;">typedef</span> <span style="color: #9d81ba;">struct</span> <span style="color: #62D2DB;">BEL</span> <span style="color: #62D2DB;">Bel</span>;
+<pre  class="src src-C"   ><code trim><span style="color: #9d81ba;">typedef</span> <span style="color: #9d81ba;">struct</span> <span style="color: #62D2DB;">BEL</span> <span style="color: #62D2DB;">Bel</span>;
 <span style="color: #9d81ba;">typedef</span> <span style="color: #9d81ba;">struct</span>
 {
     <span style="color: #62D2DB;">Bel</span> *<span style="color: #7CF083;">car</span>;
@@ -198,11 +198,11 @@ A  escolha não  foi motivada  por performance,  corretude ou  <i>safety</i> /
 </div>
 
 </section>
-<section id="slide-org525b601">
-<h4 id="org525b601">Exemplo: Objeto básico de Majestic (Rust 2018)</h4>
+<section id="slide-orgdc77fd9">
+<h4 id="orgdc77fd9">Exemplo: Objeto básico de Majestic (Rust 2018)</h4>
 <div class="org-src-container">
 
-<pre  class="src src-rust" ><code trim><span style="color: #e55c7a;">#[derive(Debug, Trace, Finalize, Clone)]</span>
+<pre  class="src src-rust"   ><code trim><span style="color: #e55c7a;">#[derive(Debug, Trace, Finalize, Clone)]</span>
 <span style="color: #9d81ba;">pub</span> <span style="color: #9d81ba;">enum</span> <span style="color: #62D2DB;">Maj</span> {
     <span style="color: #62D2DB;">Sym</span>(<span style="color: #62D2DB;">u64</span>),
     <span style="color: #62D2DB;">Cons</span> {
@@ -219,21 +219,21 @@ A  escolha não  foi motivada  por performance,  corretude ou  <i>safety</i> /
 </section>
 </section>
 <section>
-<section id="slide-orgbbe6f1e">
-<h2 id="orgbbe6f1e">Comparando Majestic e outros Lisps</h2>
-<div class="outline-text-2" id="text-orgbbe6f1e">
+<section id="slide-org906fde9">
+<h2 id="org906fde9">Comparando Majestic e outros Lisps</h2>
+<div class="outline-text-2" id="text-org906fde9">
 </div>
 </section>
-<section id="slide-orgc6d7f08">
-<h3 id="orgc6d7f08">Exemplo</h3>
+<section id="slide-orgb7f6cd4">
+<h3 id="orgb7f6cd4">Exemplo</h3>
 <div class="org-src-container">
 
-<pre  class="src src-majestic" ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> *my-list* '<span style="color: #47ba99;">(</span>a b c d<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+<pre  class="src src-majestic"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> *my-list* '<span style="color: #47ba99;">(</span>a b c d<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
 <span style="color: #0D9C94;">(</span><span style="color: #0bc9cf;">map</span> <span style="color: #47ba99;">(</span><span style="color: #0bc9cf;">cons</span> 'z<span style="color: #47ba99;">)</span> *my-list*<span style="color: #0D9C94;">)</span>
 </code></pre>
 </div>
 
-<pre class="example" id="org89e3021">
+<pre class="example" id="org7ee1fb5">
 ((z . a) (z . b) (z . c) (z . d))
 </pre>
 
@@ -242,11 +242,11 @@ Faremos comparações com Scheme, Common Lisp, Clojure e Shen.
 </p>
 
 </section>
-<section id="slide-org7d0441e">
-<h3 id="org7d0441e">Scheme</h3>
+<section id="slide-orgb7b2520">
+<h3 id="orgb7b2520">Scheme</h3>
 <div class="org-src-container">
 
-<pre  class="src src-scheme" ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">define</span> <span style="color: #0bc9cf;">*my-list*</span> '<span style="color: #47ba99;">(</span>a b c d<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+<pre  class="src src-scheme"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">define</span> <span style="color: #0bc9cf;">*my-list*</span> '<span style="color: #47ba99;">(</span>a b c d<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
 <span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">map</span> <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">lambda</span> <span style="color: #62D2DB;">(</span>x<span style="color: #62D2DB;">)</span> <span style="color: #62D2DB;">(</span>cons 'z x<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span> *my-list*<span style="color: #0D9C94;">)</span>
 </code></pre>
 </div>
@@ -260,11 +260,11 @@ Scheme tem desgosto por mutabilidade.
 </p>
 
 </section>
-<section id="slide-org3bb12c7">
-<h3 id="org3bb12c7">Common Lisp</h3>
+<section id="slide-org8df2a12">
+<h3 id="org8df2a12">Common Lisp</h3>
 <div class="org-src-container">
 
-<pre  class="src src-lisp" ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defparameter</span> <span style="color: #7CF083;">*my-list*</span> '<span style="color: #47ba99;">(</span>a b c d<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+<pre  class="src src-lisp"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defparameter</span> <span style="color: #7CF083;">*my-list*</span> '<span style="color: #47ba99;">(</span>a b c d<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
 <span style="color: #0D9C94;">(</span>mapcar <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">lambda</span> <span style="color: #62D2DB;">(</span>x<span style="color: #62D2DB;">)</span> <span style="color: #62D2DB;">(</span>cons 'z x<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span> *my-list*<span style="color: #0D9C94;">)</span>
 <span style="color: #454459;">;; </span><span style="color: #454459;">ou...</span>
 <span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">loop</span> for x in *my-list* collect <span style="color: #47ba99;">(</span>cons 'z x<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
@@ -276,7 +276,7 @@ Algumas considerações&#x2026;
 </p>
 
 </section>
-<section id="slide-org3bb12c7-split">
+<section id="slide-org8df2a12-split">
 
 <ul>
 <li class="fragment appear">CL  é um  Lisp-2. Funções  e variáveis  podem ter  o mesmo  nome sem
@@ -288,11 +288,11 @@ invocação em runtime).</li>
 </ul>
 
 </section>
-<section id="slide-org2dca611">
-<h3 id="org2dca611">Clojure</h3>
+<section id="slide-org57d7193">
+<h3 id="org57d7193">Clojure</h3>
 <div class="org-src-container">
 
-<pre  class="src src-clojure" ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> <span style="color: #7CF083;">*my-list*</span> '<span style="color: #47ba99;">(</span>a b c d<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+<pre  class="src src-clojure"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> <span style="color: #7CF083;">*my-list*</span> '<span style="color: #47ba99;">(</span>a b c d<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
 <span style="color: #0D9C94;">(</span>map #<span style="color: #47ba99;">(</span>cons 'z <span style="color: #7CF083;">%</span><span style="color: #47ba99;">)</span> <span style="color: #7CF083;">*my-list*</span><span style="color: #0D9C94;">)</span>
 </code></pre>
 </div>
@@ -302,7 +302,7 @@ invocação em runtime).</li>
 </p>
 
 </section>
-<section id="slide-org2dca611-split">
+<section id="slide-org57d7193-split">
 
 <p>
 Vamos tentar de novo.
@@ -310,12 +310,12 @@ Vamos tentar de novo.
 
 <div class="org-src-container">
 
-<pre  class="src src-clojure" ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> <span style="color: #7CF083;">*my-list*</span> '<span style="color: #47ba99;">(</span>a b c d<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+<pre  class="src src-clojure"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">def</span> <span style="color: #7CF083;">*my-list*</span> '<span style="color: #47ba99;">(</span>a b c d<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
 <span style="color: #0D9C94;">(</span>map #<span style="color: #47ba99;">(</span>list 'z <span style="color: #7CF083;">%</span><span style="color: #47ba99;">)</span> <span style="color: #7CF083;">*my-list*</span><span style="color: #0D9C94;">)</span>
 </code></pre>
 </div>
 
-<pre class="example" id="orgb6442fc">
+<pre class="example" id="org7dcdfd0">
 ((z a) (z b) (z c) (z d))
 </pre>
 
@@ -324,7 +324,7 @@ Algumas considerações&#x2026;
 </p>
 
 </section>
-<section id="slide-org2dca611-split">
+<section id="slide-org57d7193-split">
 
 <ul>
 <li class="fragment appear">Clojure tem desgosto por mutabilidade.</li>
@@ -334,11 +334,11 @@ Algumas considerações&#x2026;
 </ul>
 
 </section>
-<section id="slide-orgcc49922">
-<h3 id="orgcc49922">Shen</h3>
+<section id="slide-org1ddcc97">
+<h3 id="org1ddcc97">Shen</h3>
 <div class="org-src-container">
 
-<pre  class="src src-shen" ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">set</span> *my-list* <span style="color: #47ba99;">[</span>a b c d<span style="color: #47ba99;">]</span><span style="color: #0D9C94;">)</span>
+<pre  class="src src-shen"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">set</span> *my-list* <span style="color: #47ba99;">[</span>a b c d<span style="color: #47ba99;">]</span><span style="color: #0D9C94;">)</span>
 <span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">map</span> <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">cons</span> z<span style="color: #47ba99;">)</span> <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">value</span> *my-list*<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
 </code></pre>
 </div>
@@ -351,12 +351,11 @@ trabalha com um sistema de tipos estático e opcional.
 </section>
 </section>
 <section>
-<section id="slide-org65fc3b5">
-<h2 id="org65fc3b5">Interpretador metacircular</h2>
+<section id="slide-org2549443">
+<h2 id="org2549443">Interpretador metacircular</h2>
 
-<div id="orgb93eed6" class="figure">
-<p><object type="image/svg+xml" data="img/metacircular.svg" class="org-svg" width="500">
-Sorry, your browser does not support SVG.</object>
+<div id="orgbbf8b3f" class="figure">
+<p><img src="img/metacircular.svg" alt="metacircular.svg" class="org-svg" width="500" />
 </p>
 </div>
 
@@ -367,11 +366,11 @@ Sorry, your browser does not support SVG.</object>
 </ul>
 
 </section>
-<section id="slide-org441e903">
-<h3 id="org441e903"><code>eval</code></h3>
+<section id="slide-orgeb93a0d">
+<h3 id="orgeb93a0d"><code>eval</code></h3>
 <div class="org-src-container">
 
-<pre  class="src src-majestic" ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defn</span> eval. <span style="color: #47ba99;">(</span>exp env<span style="color: #47ba99;">)</span>
+<pre  class="src src-majestic"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defn</span> eval. <span style="color: #47ba99;">(</span>exp env<span style="color: #47ba99;">)</span>
   <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">cond</span>
     <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">numberp</span> exp<span style="color: #9d81ba;">)</span> exp<span style="color: #62D2DB;">)</span>
     <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">symbolp</span> exp<span style="color: #9d81ba;">)</span> <span style="color: #9d81ba;">(</span>lookup. exp env<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
@@ -390,11 +389,11 @@ Sorry, your browser does not support SVG.</object>
 </div>
 
 </section>
-<section id="slide-orge83bfeb">
-<h3 id="orge83bfeb"><code>apply</code></h3>
+<section id="slide-org31b6e26">
+<h3 id="org31b6e26"><code>apply</code></h3>
 <div class="org-src-container">
 
-<pre  class="src src-majestic" ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defn</span> apply. <span style="color: #47ba99;">(</span>proc args<span style="color: #47ba99;">)</span>
+<pre  class="src src-majestic"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defn</span> apply. <span style="color: #47ba99;">(</span>proc args<span style="color: #47ba99;">)</span>
   <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">cond</span>
     <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">primitivep</span> proc<span style="color: #9d81ba;">)</span> <span style="color: #9d81ba;">(</span><span style="color: #9d81ba;">apply</span> proc args<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
     <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span><span style="color: #0bc9cf;">eq</span> <span style="color: #35BF88;">(</span><span style="color: #0bc9cf;">first</span> proc<span style="color: #35BF88;">)</span> 'closure<span style="color: #9d81ba;">)</span>
@@ -407,14 +406,14 @@ Sorry, your browser does not support SVG.</object>
 </div>
 
 </section>
-<section id="slide-org0178f00">
-<h3 id="org0178f00">Exemplos</h3>
+<section id="slide-orga319f27">
+<h3 id="orga319f27">Exemplos</h3>
 <div class="container">
 <div class="col">
 
 <div class="org-src-container">
 
-<pre  class="src src-majestic" ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">quote</span> foo<span style="color: #0D9C94;">)</span>
+<pre  class="src src-majestic"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">quote</span> foo<span style="color: #0D9C94;">)</span>
 
 *mynum*
 
@@ -438,7 +437,7 @@ Sorry, your browser does not support SVG.</object>
 
 <div class="org-src-container">
 
-<pre  class="src src-lisp" ><code trim>foo
+<pre  class="src src-lisp"   ><code trim>foo
 
 <span style="color: #f5c791;">7</span>
 
@@ -460,7 +459,7 @@ okay
 </div>
 
 </section>
-<section id="slide-org0178f00-split">
+<section id="slide-orga319f27-split">
 
 <p>
 Perguntas?
@@ -469,8 +468,8 @@ Perguntas?
 </section>
 </section>
 <section>
-<section id="slide-org610decd">
-<h2 id="org610decd">Referências</h2>
+<section id="slide-orga21c07b">
+<h2 id="orga21c07b">Referências</h2>
 <p style="font-size:0.7em;text-align:left;">
 ABELSON, H.; SUSSMAN,  G. J. <b>Structure and  Interpretation of Computer
 Programs</b>. MIT Press: Cambridge, 1996. ISBN: 978-0-262-51087-5.
@@ -501,18 +500,13 @@ GRAHAM,  P.  <b>The  roots of  Lisp</b>.   Janeiro de  2002.  Disponível  em:
 // Full list of configuration options available here:
 // https://github.com/hakimel/reveal.js#configuration
 Reveal.initialize({
-multiplex: {
-    secret: '', // null if client
-    id: '', // id, obtained from socket.io server
-    url: '' // Location of socket.io server
-},
 
 // Optional libraries used to extend on reveal.js
 dependencies: [
 ,
  { src: 'https://cdn.jsdelivr.net/npm/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } }]
-});
 
+});
 
 </script>
 </body>

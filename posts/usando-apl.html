@@ -6,12 +6,11 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Escalonando matrizes em APL</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="Lucas Vieira" />
-<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -32,8 +31,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -42,21 +42,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,7 +192,6 @@
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   .org-svg { width: 90%; }
-  /*]]>*/-->
 </style>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164062058-1"></script>
@@ -230,16 +229,15 @@ gtag('config', 'UA-164062058-1');
              }
 });
 </script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="preamble" class="status">
 <h1 class="title">Escalonando matrizes em APL</h1><p><i>Escrito em Ago 22, 2019 por Lucas Vieira<br/><a href="mailto:lucasvieira@protonmail.com">lucasvieira@protonmail.com</a></i></p>
 </div>
-<div id="content">
+<div id="content" class="content">
 
-<div id="org47dddf4" class="figure">
+<div id="orgf80f86b" class="figure">
 <p><img src="img/apl-logo.jpg" alt="apl-logo.jpg" />
 </p>
 <p><span class="figure-number">Figura 1: </span>Alegoria para a linguagem APL.</p>
@@ -279,9 +277,9 @@ quiser um código compatível com Dyalog APL, veja o final desta
 postagem.
 </p>
 
-<div id="outline-container-org6b91fd1" class="outline-2">
-<h2 id="org6b91fd1">A linguagem APL</h2>
-<div class="outline-text-2" id="text-org6b91fd1">
+<div id="outline-container-org3cd5733" class="outline-2">
+<h2 id="org3cd5733">A linguagem APL</h2>
+<div class="outline-text-2" id="text-org3cd5733">
 <p>
 Segundo a Wikipedia e a <a href="https://aplwiki.com/DiscoveringApl">APL Wiki</a>, APL é derivada de uma notação
 matemática criada em meados de 1950 por Kenneth E. Iverson, em
@@ -294,7 +292,7 @@ acordo com as primeiras letras do nome de seu livro.
 </p>
 
 
-<div id="org994a0ff" class="figure">
+<div id="org6eb5cc0" class="figure">
 <p><img src="img/gnu-apl-keyboard.png" alt="gnu-apl-keyboard.png" />
 </p>
 <p><span class="figure-number">Figura 2: </span>Esquema de teclado para GNU APL, no Emacs.</p>
@@ -317,14 +315,14 @@ seguido de um outro caractere válido; esta combinação é então
 transformada em um caractere Unicode específico.
 </p>
 
-<div class="notes" id="org63fd0a7">
+<div class="notes" id="org5eca531">
 <p>
 <b>ATENÇÃO:</b> É importante que sua fonte monoespaçada do navegador tenha
 suporte a caracteres da linguagem APL para que você consiga ver o
 código! Para tanto, veja se estes caracteres&#x2026;
 </p>
 
-<pre class="example" id="org832f80c">
+<pre class="example" id="org846d529">
 ¨¯⌽≥⊖⎕∘↑→_¯∩⊃
 </pre>
 
@@ -333,7 +331,7 @@ código! Para tanto, veja se estes caracteres&#x2026;
 </p>
 
 
-<div id="org3f1b90e" class="figure">
+<div id="orgec5d518" class="figure">
 <p><img src="img/apl-characters.png" alt="apl-characters.png" />
 </p>
 <p><span class="figure-number">Figura 3: </span>Alguns caracteres especiais da linguagem APL.</p>
@@ -349,9 +347,9 @@ Dyalog <a href="https://www.dyalog.com/apl-font-keyboard.htm">que estão aqui</a
 </div>
 </div>
 
-<div id="outline-container-org5b33a78" class="outline-2">
-<h2 id="org5b33a78">Método de Escalonamento de Gauss-Jordan</h2>
-<div class="outline-text-2" id="text-org5b33a78">
+<div id="outline-container-org9f21231" class="outline-2">
+<h2 id="org9f21231">Método de Escalonamento de Gauss-Jordan</h2>
+<div class="outline-text-2" id="text-org9f21231">
 <p>
 Antes de mais nada, vamos falar um pouquinho de Matemática, porque é
 de lá que APL vem. Mas não se assuste, só quero explicar o que diabos
@@ -468,9 +466,9 @@ cálculos.
 </div>
 </div>
 
-<div id="outline-container-org12542e8" class="outline-2">
-<h2 id="org12542e8">Gauss-Jordan em APL</h2>
-<div class="outline-text-2" id="text-org12542e8">
+<div id="outline-container-org2de8b79" class="outline-2">
+<h2 id="org2de8b79">Gauss-Jordan em APL</h2>
+<div class="outline-text-2" id="text-org2de8b79">
 <p>
 Vamos implementar esta ferramenta que nos permite resolver problemas
 lineares, como é o caso do problema das maçãs. Mas antes disso, vamos
@@ -492,13 +490,13 @@ aprendê-la.
 </p>
 </div>
 
-<div id="outline-container-orgc64ca84" class="outline-3">
-<h3 id="orgc64ca84">Caixa de Ferramentas</h3>
-<div class="outline-text-3" id="text-orgc64ca84">
+<div id="outline-container-org9135858" class="outline-3">
+<h3 id="org9135858">Caixa de Ferramentas</h3>
+<div class="outline-text-3" id="text-org9135858">
 </div>
-<div id="outline-container-org8cc0aea" class="outline-4">
-<h4 id="org8cc0aea">IDENTITY</h4>
-<div class="outline-text-4" id="text-org8cc0aea">
+<div id="outline-container-org1813693" class="outline-4">
+<h4 id="org1813693">IDENTITY</h4>
+<div class="outline-text-4" id="text-org1813693">
 <p>
 Esta função gera uma matriz-identidade de ordem <code>N</code>. Matrizes-identidade
 são matrizes quadradas (mesmo número de linhas e colunas) que possuem
@@ -534,7 +532,7 @@ não houver mais números <code>1</code> ou <code>0</code> a serem escritos, ess
 e <code>0</code>'s se repete. Veja:
 </p>
 
-<pre class="example" id="org132ab37">
+<pre class="example" id="org347878a">
       1,3⍴0
 1 0 0 0
       3 3⍴(1,3⍴0)
@@ -545,8 +543,8 @@ e <code>0</code>'s se repete. Veja:
 </div>
 
 <ul class="org-ul">
-<li><a id="org0272384"></a>Sobre parâmetros de funções em APL<br />
-<div class="outline-text-5" id="text-org0272384">
+<li><a id="org118130f"></a>Sobre parâmetros de funções em APL<br />
+<div class="outline-text-5" id="text-org118130f">
 <p>
 A noção de parâmetros de uma função em APL é diferente do que
 normalmente vemos em outras linguagens. Aqui, uma função pode ter os
@@ -565,9 +563,9 @@ A função <code>IDENTITY</code> é uma função <i>monádica</i> e com valor de
 </ul>
 </div>
 
-<div id="outline-container-orgf036dc4" class="outline-4">
-<h4 id="orgf036dc4">EXTENDBOTTOM</h4>
-<div class="outline-text-4" id="text-orgf036dc4">
+<div id="outline-container-org940ae98" class="outline-4">
+<h4 id="org940ae98">EXTENDBOTTOM</h4>
+<div class="outline-text-4" id="text-org940ae98">
 <p>
 Esta função adiciona uma nova <i>linha</i> com zeros na parte inferior da
 matriz. Esta função independe do tamanho da matriz, que é deduzido
@@ -586,7 +584,7 @@ Veja o que acontece quando aplicamos ela a uma matriz-identidade de
 dimensões <code>3×3</code>:
 </p>
 
-<pre class="example" id="orgfeb803c">
+<pre class="example" id="orgfa3f5f4">
       EXTENDBOTTOM IDENTITY 3
 1 0 0
 0 1 0
@@ -601,9 +599,9 @@ mas serve para ajudar a gerar algumas matrizes de teste.
 </div>
 </div>
 
-<div id="outline-container-org72bb0d1" class="outline-4">
-<h4 id="org72bb0d1">EXTENDRIGHT</h4>
-<div class="outline-text-4" id="text-org72bb0d1">
+<div id="outline-container-orgc01d63b" class="outline-4">
+<h4 id="orgc01d63b">EXTENDRIGHT</h4>
+<div class="outline-text-4" id="text-orgc01d63b">
 <p>
 Similar a <code>EXTENDBOTTOM</code>, esta função adiciona uma nova <i>coluna</i> de zeros
 à direita da matriz.
@@ -620,7 +618,7 @@ Similar a <code>EXTENDBOTTOM</code>, esta função adiciona uma nova <i>coluna</
 Aplicando esta operação a uma matriz-identidade <code>3×3</code>, temos:
 </p>
 
-<pre class="example" id="org65a9a9b">
+<pre class="example" id="org74b0dfd">
       EXTENDRIGHT IDENTITY 3
 1 0 0 0
 0 1 0 0
@@ -633,9 +631,9 @@ Também utilizaremos esta função para criar matrizes para testes.
 </div>
 </div>
 
-<div id="outline-container-orgaf114f9" class="outline-4">
-<h4 id="orgaf114f9">PIVOT</h4>
-<div class="outline-text-4" id="text-orgaf114f9">
+<div id="outline-container-org929a45e" class="outline-4">
+<h4 id="org929a45e">PIVOT</h4>
+<div class="outline-text-4" id="text-org929a45e">
 <p>
 Agora, faremos uma função diádica que coleta o pivô de uma matriz <code>MAT</code>,
 na linha <code>N</code>. Se a linha não possui pivô, retornamos uma resposta
@@ -702,9 +700,9 @@ de <code>LST</code> que está na posição <code>IDX</code>.
 </div>
 </div>
 
-<div id="outline-container-org91e3e84" class="outline-4">
-<h4 id="org91e3e84">GCD</h4>
-<div class="outline-text-4" id="text-org91e3e84">
+<div id="outline-container-org0728793" class="outline-4">
+<h4 id="org0728793">GCD</h4>
+<div class="outline-text-4" id="text-org0728793">
 <p>
 Esta é a primeira função no nosso código que realmente tem alguma
 espécie de estrutura de repetição.
@@ -736,15 +734,15 @@ Veja que, sendo uma função diádica, <code>GCD</code> precisa ser escrita entr
 ambos os números:
 </p>
 
-<pre class="example" id="org24dbbf0">
+<pre class="example" id="org305b43d">
       99 GCD 63
 9
 </pre>
 </div>
 
 <ul class="org-ul">
-<li><a id="orgc6a84ed"></a>Sobre controle de fluxo em APL<br />
-<div class="outline-text-5" id="text-orgc6a84ed">
+<li><a id="org0fd8ab9"></a>Sobre controle de fluxo em APL<br />
+<div class="outline-text-5" id="text-org0fd8ab9">
 <p>
 Como você deve ter visto, não utilizei nenhum tipo de estrutura de
 controle (if&#x2026;else), e nenhuma estrutura de repetição (loop, while,
@@ -788,9 +786,9 @@ resposta vazia &#x2013;, e nenhum pulo ocorreria.
 </ul>
 </div>
 
-<div id="outline-container-orgc3c87e6" class="outline-4">
-<h4 id="orgc3c87e6">SIMPVEC</h4>
-<div class="outline-text-4" id="text-orgc3c87e6">
+<div id="outline-container-org1e8e548" class="outline-4">
+<h4 id="org1e8e548">SIMPVEC</h4>
+<div class="outline-text-4" id="text-org1e8e548">
 <p>
 Esta função monádica simplifica um certo vetor de elementos, dividindo
 todos pelo máximo divisor comum da porção inteira de todos os
@@ -818,15 +816,15 @@ não queria nenhum número "quebrado" em meus resultados.
 Vejamos a aplicação desta função:
 </p>
 
-<pre class="example" id="orgab1b9c1">
+<pre class="example" id="org64d482e">
       SIMPVEC 4 2 8
 2 1 4
 </pre>
 </div>
 
 <ul class="org-ul">
-<li><a id="org0afcf90"></a>Sobre operadores em APL<br />
-<div class="outline-text-5" id="text-org0afcf90">
+<li><a id="org1269887"></a>Sobre operadores em APL<br />
+<div class="outline-text-5" id="text-org1269887">
 <p>
 Note que <code>SIMPVEC</code> utiliza nossa outra função <code>GCD</code>. E sua aparição é
 peculiar, porque não é utilizada da forma esperada &#x2013; <code>GCD</code> parece ser
@@ -846,7 +844,7 @@ precisasse calcular a soma entre todos estes números, a forma de
 escrita que nos vem à mente é esta:
 </p>
 
-<pre class="example" id="org7ceb055">
+<pre class="example" id="org310260d">
 4 + 5 + 8 + 2
 </pre>
 
@@ -856,7 +854,7 @@ vetor. Para obtermos este comportamento, basta utilizarmos a função
 Soma (<code>+</code>) com o operador Reduce (<code>/</code>):
 </p>
 
-<pre class="example" id="org73a390a">
+<pre class="example" id="orgc1002e0">
       +/4 5 8 2
 19
 </pre>
@@ -871,18 +869,18 @@ O raciocínio para o uso de <code>GCD</code> é o mesmo; é como se intercaláss
 </div>
 </div>
 
-<div id="outline-container-org04517e7" class="outline-3">
-<h3 id="org04517e7">Operações fundamentais</h3>
-<div class="outline-text-3" id="text-org04517e7">
+<div id="outline-container-org2007778" class="outline-3">
+<h3 id="org2007778">Operações fundamentais</h3>
+<div class="outline-text-3" id="text-org2007778">
 <p>
 Agora que temos as operações fundamentais, podemos implementar o
 método de escalonamento de Gauss-Jordan. Faremos isto com duas funções.
 </p>
 </div>
 
-<div id="outline-container-org00a2dc6" class="outline-4">
-<h4 id="org00a2dc6">Eliminação Gaussiana</h4>
-<div class="outline-text-4" id="text-org00a2dc6">
+<div id="outline-container-org2d023ac" class="outline-4">
+<h4 id="org2d023ac">Eliminação Gaussiana</h4>
+<div class="outline-text-4" id="text-org2d023ac">
 <p>
 A função <code>GAUSSELIM</code> é uma função diádica, que fixa uma linha de índice
 <code>L</code> na matriz <code>A</code>, e executa operações nas outras linhas, de forma que o
@@ -943,7 +941,7 @@ Depois, geramos uma lista de números de linhas sequenciais. Para a
 nossa matriz das maçãs, teríamos uma lista assim:
 </p>
 
-<pre class="example" id="org3f50311">
+<pre class="example" id="orgb77149d">
       ⍳3
 1 2 3
 </pre>
@@ -980,7 +978,7 @@ Aplicando eliminação gaussiana, ao tomarmos a primeira linha do
 problema como fixa, teremos:
 </p>
 
-<pre class="example" id="org85a5c8f">
+<pre class="example" id="org4e62daf">
       1 GAUSSELIM A
 1   3   4   53
 0 ¯11 ¯22 ¯209
@@ -989,8 +987,8 @@ problema como fixa, teremos:
 </div>
 
 <ul class="org-ul">
-<li><a id="org7c3680d"></a>Sobre funções anônimas em APL<br />
-<div class="outline-text-5" id="text-org7c3680d">
+<li><a id="org237d912"></a>Sobre funções anônimas em APL<br />
+<div class="outline-text-5" id="text-org237d912">
 <p>
 Um aspecto importante da programação funcional é a possibilidade de
 declarar funções sem um nome definido, e manipulá-las como se fossem
@@ -1003,7 +1001,7 @@ expressões <i>lambda</i>. Em GNU APL, elas são tratadas como funções
 possivelmente diádicas que sempre retornam algum valor:
 </p>
 
-<pre class="example" id="orgbb50242">
+<pre class="example" id="org53d86c5">
       {⍵ + 2} 5        ⍝ Monádica
 7
       2 {⍺ + ⍵} 3      ⍝ Diádica, notação infixa
@@ -1016,9 +1014,9 @@ possivelmente diádicas que sempre retornam algum valor:
 </ul>
 </div>
 
-<div id="outline-container-org29f29d0" class="outline-4">
-<h4 id="org29f29d0">Escalonamento</h4>
-<div class="outline-text-4" id="text-org29f29d0">
+<div id="outline-container-org0f52fa7" class="outline-4">
+<h4 id="org0f52fa7">Escalonamento</h4>
+<div class="outline-text-4" id="text-org0f52fa7">
 <p>
 A função <code>GAUSSJORDAN</code> é uma função monádica que realiza o escalonamento
 completo de uma matriz. Seu algoritmo é simples: para cada linha da
@@ -1044,9 +1042,9 @@ ao valor de retorno.
 </div>
 </div>
 
-<div id="outline-container-org0a7db68" class="outline-2">
-<h2 id="org0a7db68">Realizando testes</h2>
-<div class="outline-text-2" id="text-org0a7db68">
+<div id="outline-container-org0f88163" class="outline-2">
+<h2 id="org0f88163">Realizando testes</h2>
+<div class="outline-text-2" id="text-org0f88163">
 <p>
 Está pronto o nosso programa que realiza escalonamentos de
 matrizes. Podemos testá-lo agora, e aproveitar também para discutir
@@ -1054,16 +1052,16 @@ e provar propriedades de algumas matrizes.
 </p>
 </div>
 
-<div id="outline-container-orgecf8db2" class="outline-3">
-<h3 id="orgecf8db2">Problema das Maçãs</h3>
-<div class="outline-text-3" id="text-orgecf8db2">
+<div id="outline-container-org514b4cc" class="outline-3">
+<h3 id="org514b4cc">Problema das Maçãs</h3>
+<div class="outline-text-3" id="text-org514b4cc">
 <p>
 Se criarmos uma matriz <code>PMJ</code> com os dados do problema passado
 inicialmente, veremos que a matriz escalonada bate com o resultado
 apresentado:
 </p>
 
-<pre class="example" id="orga8ced3b">
+<pre class="example" id="orgc284410">
       PMJ←3 4⍴1 3 4 53 6 7 2 109 5 1 3 76
       PMJ
 1 3 4  53
@@ -1077,15 +1075,15 @@ apresentado:
 </div>
 </div>
 
-<div id="outline-container-org6904e0e" class="outline-3">
-<h3 id="org6904e0e">Sistemas com soluções nulas</h3>
-<div class="outline-text-3" id="text-org6904e0e">
+<div id="outline-container-org9c5b8ce" class="outline-3">
+<h3 id="org9c5b8ce">Sistemas com soluções nulas</h3>
+<div class="outline-text-3" id="text-org9c5b8ce">
 <p>
 Podemos verificar também o mesmo para um sistema com solução zero,
 gerado com números aleatórios e com todas as equações iguais a zero:
 </p>
 
-<pre class="example" id="org90d00c4">
+<pre class="example" id="org2f85925">
       A←EXTENDRIGHT 3 3⍴7?7
       A
 1 4 3 0
@@ -1099,16 +1097,16 @@ gerado com números aleatórios e com todas as equações iguais a zero:
 </div>
 </div>
 
-<div id="outline-container-org1d56582" class="outline-3">
-<h3 id="org1d56582">Outros Sistemas Possíveis</h3>
-<div class="outline-text-3" id="text-org1d56582">
+<div id="outline-container-orge569221" class="outline-3">
+<h3 id="orge569221">Outros Sistemas Possíveis</h3>
+<div class="outline-text-3" id="text-orge569221">
 <p>
 Podemos também testar o método de Gauss-Jordan para outros sistemas
 que possuem soluções. Aqui definimos duas matrizes e imprimimo-nas
 lado a lado, antes e depois do escalonamento:
 </p>
 
-<pre class="example" id="orgdad85be">
+<pre class="example" id="org51254fa">
      B←3 4⍴2 1 ¯1 8 ¯3 ¯1 2 ¯11 ¯2 1 2 ¯3
      C←3 5⍴2 4 1 0 1 0 2 2 ¯8 6 3 0 2 0 0
      (B C)
@@ -1130,15 +1128,15 @@ para obtermos a resposta.
 </div>
 </div>
 
-<div id="outline-container-org98a4809" class="outline-3">
-<h3 id="org98a4809">Sistemas impossíveis</h3>
-<div class="outline-text-3" id="text-org98a4809">
+<div id="outline-container-orgb700dea" class="outline-3">
+<h3 id="orgb700dea">Sistemas impossíveis</h3>
+<div class="outline-text-3" id="text-orgb700dea">
 <p>
 Alguns sistemas de equações são impossíveis de serem
 resolvidos. Considere a matriz <code>D</code> na saída abaixo.
 </p>
 
-<pre class="example" id="orgcb6575e">
+<pre class="example" id="org2a3168d">
       D←3 4⍴1 3 13 9 0 1 5 2 0 ¯2 ¯10 ¯8
       D
 1  3  13  9
@@ -1188,7 +1186,7 @@ invés de uma única coluna na "parte aumentada", temos três colunas,
 correspondentes a uma matriz identidade do lado direito:
 </p>
 
-<pre class="example" id="org2bc30a0">
+<pre class="example" id="org0e9d3cc">
       E←(3 3⍴1 2 3 1 1 2 0 1 1),IDENTITY 3
       E
 1 2 3 1 0 0
@@ -1209,9 +1207,9 @@ resultado significa que <code>E</code> é uma matriz <i>singular</i>, ou seja, n
 </div>
 </div>
 
-<div id="outline-container-org398cc8c" class="outline-3">
-<h3 id="org398cc8c">Matrizes inversas</h3>
-<div class="outline-text-3" id="text-org398cc8c">
+<div id="outline-container-orgf4e3b36" class="outline-3">
+<h3 id="orgf4e3b36">Matrizes inversas</h3>
+<div class="outline-text-3" id="text-orgf4e3b36">
 <p>
 Pelo mesma forma como descobrimos que <code>E</code> é uma <i>matriz singular</i>, podemos
 criar as matrizes <code>F</code> e <code>G</code>, e veremos que elas, sim, são
@@ -1219,7 +1217,7 @@ inversíveis. Veja que <i>catenamos</i> a matriz-identidade a elas apenas ao
 realizar Gauss-Jordan, contrário ao que fizemos em <code>E</code>:
 </p>
 
-<pre class="example" id="org30fa891">
+<pre class="example" id="org10143a0">
      F←(3 3⍴1 2 3 1 1 2 0 1 2)
      G←4 4⍴2 ¯2 6 2 3 4 1 1 1 2 3 4 ¯1 ¯4 0 0
      (F G)
@@ -1249,16 +1247,16 @@ matriz, podemos constatar que a matriz <code>G</code> é inversível.
 </p>
 </div>
 
-<div id="outline-container-org0eef7af" class="outline-4">
-<h4 id="org0eef7af">Invertendo matrizes em APL puro</h4>
-<div class="outline-text-4" id="text-org0eef7af">
+<div id="outline-container-orgbee4de7" class="outline-4">
+<h4 id="orgbee4de7">Invertendo matrizes em APL puro</h4>
+<div class="outline-text-4" id="text-orgbee4de7">
 <p>
 Este último passo é, na realidade, redundante. APL possui uma função
 Dominó (<code>⌹</code>) que, quando usada de forma monádica, calcula a inversa de
 uma certa matriz. Compare estes dois resultados:
 </p>
 
-<pre class="example" id="org53bf8bb">
+<pre class="example" id="orgdad5e0b">
       ⌹F
 ¯1.5258556E¯16  1 ¯1
  2.0000000E0   ¯2 ¯1
@@ -1283,9 +1281,9 @@ utilizar o Dominó (<code>⌹</code>) que programar todo o processo de Gauss-Jor
 </div>
 </div>
 
-<div id="outline-container-org7280535" class="outline-2">
-<h2 id="org7280535">Suporte a Dyalog APL</h2>
-<div class="outline-text-2" id="text-org7280535">
+<div id="outline-container-org613244c" class="outline-2">
+<h2 id="org613244c">Suporte a Dyalog APL</h2>
+<div class="outline-text-2" id="text-org613244c">
 <p>
 Assim como em outras linguagens, existem várias implementações de APLs
 que são utilizadas no mercado. Uma delas é o Dyalog APL, que possui
@@ -1362,7 +1360,7 @@ Alguns exemplos de uso estão abaixo. Veja que a função <code>⌹</code> funci
 esperado.
 </p>
 
-<pre class="example" id="org4346ce1">
+<pre class="example" id="orgec64fe3">
       F←(3 3⍴1 2 3 1 1 2 0 1 2)
       G←4 4⍴2 ¯2 6 2 3 4 1 1 1 2 3 4 ¯1 ¯4 0 0
       F G
@@ -1383,9 +1381,9 @@ esperado.
 </div>
 </div>
 
-<div id="outline-container-orgdcee186" class="outline-2">
-<h2 id="orgdcee186">Conclusão</h2>
-<div class="outline-text-2" id="text-orgdcee186">
+<div id="outline-container-org74fb5aa" class="outline-2">
+<h2 id="org74fb5aa">Conclusão</h2>
+<div class="outline-text-2" id="text-org74fb5aa">
 <p>
 Meus estudos da linguagem APL e a tentativa de implementar este
 processo me levaram a algo que sempre gosto, que é explanar um certo

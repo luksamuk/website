@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Git</title>
+<meta name="author" content="(Lucas S. Vieira)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/league.css" id="theme"/>
+
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/npm/reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h3>Git<br/></h3><p>Webinar Técnico<br/><br/>Lucas S. Vieira</h3><br/><p><a href="mailto:lucas.vieira@atsinformatica.com.br">lucas.vieira@atsinformatica.com.br</a><br/>21 de março de 2022<br/>ATS Informática</p>
+</section>
+<style type="text/css">
+.reveal pre {
+box-shadow: 0px 0px 0px rgba(0, 0, 0, 0) !important;
+}
+</style>
+
+<style>
+.container{
+display: flex;
+}
+.col{
+flex: 1;
+}
+</style>
+
+<section>
+<section id="slide-org1f72585">
+<h2 id="org1f72585">O que é Git?</h2>
+
+<div id="org67f44b6" class="figure">
+<p><img src="./git_img/git-logo.png" alt="git-logo.png" width="500px" />
+</p>
+</div>
+
+</section>
+<section id="slide-orga0aea5f">
+<h3 id="orga0aea5f">Surgimento do Git</h3>
+<div class="container">
+<div class="col">
+<p>
+Criado por Linus Torvalds.
+</p>
+
+<p>
+Feito para o Linux.
+</p>
+
+<p>
+Ao contrário de  outros SCMs (como SVN), Git não  armazena <i>deltas</i>, e
+sim <i>snapshots</i>.
+</p>
+
+</div>
+<div class="col">
+
+
+<div id="orgfd8eaf2" class="figure">
+<p><img src="./git_img/linus.jpg" alt="linus.jpg" width="500px" />
+</p>
+</div>
+
+</div>
+</div>
+
+</section>
+<section id="slide-org00d8dd0">
+<h3 id="org00d8dd0">Git vs. GitHub</h3>
+
+<div id="orgd572dd1" class="figure">
+<p><img src="./git_img/Octocat.png" alt="Octocat.png" height="200px" />
+</p>
+</div>
+
+<p>
+Git = Controle de versão.
+</p>
+
+<p>
+GitHub = <i>Git forge</i> e rede social.
+</p>
+
+</section>
+<section id="slide-org5629509">
+<h4 id="org5629509">Qual a importância de uma Git Forge?</h4>
+<ul>
+<li>Portfolio;</li>
+<li>Compartilhamento de código aberto;</li>
+<li>Hospedagem de sites estáticos (GitHub Pages);</li>
+<li>Integração com outros serviços (ex. Heroku);</li>
+<li><b>Comunidade!</b></li>
+
+</ul>
+
+</section>
+<section id="slide-orgae206bc">
+<h3 id="orgae206bc">Uso de linha de comando</h3>
+<div class="org-src-container">
+
+<pre  class="src src-bash"   ><code trim>$ git status  <span style="color: #454459;"># </span><span style="color: #454459;">Status do seu branch</span>
+$ git --help  <span style="color: #454459;"># </span><span style="color: #454459;">Leia a ajuda!</span>
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org8a3c0ff">
+<h2 id="org8a3c0ff">Git Básico</h2>
+<div class="outline-text-2" id="text-org8a3c0ff">
+</div>
+</section>
+<section id="slide-org1eae602">
+<h3 id="org1eae602">Git Clone e Git Init</h3>
+
+</section>
+<section id="slide-orgaa8496c">
+<h3 id="orgaa8496c">Git Pull e Git Push</h3>
+
+</section>
+<section id="slide-orge6b9947">
+<h3 id="orge6b9947">Git Checkout e Git Branch</h3>
+
+</section>
+<section id="slide-org4d3a765">
+<h3 id="org4d3a765">Git Remote e Git Fetch</h3>
+
+</section>
+</section>
+<section>
+<section id="slide-org2ba214e">
+<h2 id="org2ba214e">Boas práticas de Git</h2>
+<div class="outline-text-2" id="text-org2ba214e">
+</div>
+</section>
+<section id="slide-org76dc4be">
+<h3 id="org76dc4be">Arquivos binários</h3>
+<p>
+Tudo aquilo que não for comparável a  um arquivo de texto, para o Git,
+é um arquivo binário.
+</p>
+
+<p class="fragment (appear)">
+<b>JAMAIS</b> suba um arquivo binário para o Git.
+</p>
+
+<p class="fragment (appear)">
+Como toda boa regra, há exceções.
+</p>
+
+</section>
+<section id="slide-org91606d6">
+<h4 id="org91606d6">Arquivo .gitignore</h4>
+<p>
+Arquivos gerados dentro do repositório podem ser desconsiderados.
+</p>
+
+<p>
+O  <code>.gitignore</code> opera  verticalmente  ignorando  arquivos via  caminho
+absoluto ou <i>wildcard</i>.
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-text"   ><code trim>*.pdf     # Ignora arquivos PDF
+*.exe     # Ignora execut&#225;veis do Windows
+target/   # Ignora todo o diret&#243;rio "target" nesta pasta
+src/*.dcu # Ignora todos os .dcu na pasta src/
+</code></pre>
+</div>
+
+</section>
+<section id="slide-orgcbbb7b3">
+<h4 id="orgcbbb7b3">Git LFS</h4>
+<p>
+Git suporta extensões! Uma das mais conhecidas é o <i>Large File Support
+(LFS)</i>.
+</p>
+
+<p>
+O  LFS  existe para  ajudar  com  armazenamento de  arquivos  binários
+grandes que sejam necessários para o projeto.
+</p>
+
+<p>
+Cada  <i>forge</i>  que suporta  LFS  armazena  os  objetos em  um  <i>store</i>
+especial.
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-bash"   ><code trim>$ git lfs track <span style="color: #f5c791;">"*.mp3"</span>
+$ git lfs track <span style="color: #f5c791;">"*.bin"</span>
+$ git lfs track <span style="color: #f5c791;">"*.res"</span>
+</code></pre>
+</div>
+
+<p>
+<a href="https://www.atlassian.com/git/tutorials/git-lfs">Fonte</a>
+</p>
+
+</section>
+<section id="slide-orge1a6fc8">
+<h3 id="orge1a6fc8">Git Submodules e Git Subtrees</h3>
+<p>
+Submódulos operam como links para outros repositórios.
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-text"   ><code trim>[submodule "meu_submodulo"]
+path = "meu_submodulo"
+url = https://github.com/luksamuk/meu_submodulo
+</code></pre>
+</div>
+
+<div class="org-src-container">
+
+<pre  class="src src-bash"   ><code trim>$ git submodule init
+$ git submodule update
+</code></pre>
+</div>
+
+</section>
+<section id="slide-orge1a6fc8-split">
+
+<p>
+Subárvores  incluem   o  código   inteiro  de  outro   repositório  no
+repositório atual.
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-bash"   ><code trim>$ git remote add meu_submodulo <span style="color: #f5c791;">\</span>
+  https://github.com/luksamuk/meu_submodulo
+
+$ git subtree add --squash <span style="color: #f5c791;">\</span>
+  --prefix=meu_submodulo/ <span style="color: #f5c791;">\</span>
+  meu_submodulo master
+</code></pre>
+</div>
+
+<p>
+<a href="https://andrey.nering.com.br/2016/git-submodules-vs-subtrees/">Fonte</a>
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org4fb02b6">
+<h2 id="org4fb02b6">Branches e Forks</h2>
+<div class="outline-text-2" id="text-org4fb02b6">
+</div>
+</section>
+<section id="slide-org4edd8f2">
+<h3 id="org4edd8f2">Branch</h3>
+</section>
+<section id="slide-orgd467dc6">
+<h4 id="orgd467dc6">Git Flow</h4>
+
+</section>
+<section id="slide-org7ac9e66">
+<h3 id="org7ac9e66">Forks</h3>
+
+</section>
+</section>
+<section>
+<section id="slide-org23fe0db">
+<h2 id="org23fe0db">Merge vs. Rebase</h2>
+<div class="outline-text-2" id="text-org23fe0db">
+</div>
+</section>
+<section id="slide-org2e28b60">
+<h3 id="org2e28b60">O que é Git Merge?</h3>
+
+</section>
+<section id="slide-orgee878d1">
+<h3 id="orgee878d1">O que é Git Rebase?</h3>
+<div class="outline-text-3" id="text-orgee878d1">
+</div>
+</section>
+<section id="slide-org9afcbe2">
+<h4 id="org9afcbe2">Regra de ouro do uso de Rebase</h4>
+
+</section>
+<section id="slide-org33e4256">
+<h3 id="org33e4256">Nomenclatura</h3>
+
+</section>
+<section id="slide-org731c612">
+<h3 id="org731c612">Exemplo: Recuperar alterações da <code>develop</code></h3>
+
+</section>
+<section id="slide-org1b7d7e9">
+<h3 id="org1b7d7e9">Exemplo: Trabalhando em conjunto na mesma branch</h3>
+
+</section>
+<section id="slide-org0230c15">
+<h3 id="org0230c15">Outros usos para merge</h3>
+
+</section>
+</section>
+<section>
+<section id="slide-org40fe97e">
+<h2 id="org40fe97e">Produtividade com Git</h2>
+<div class="outline-text-2" id="text-org40fe97e">
+</div>
+</section>
+<section id="slide-orgecc66ed">
+<h3 id="orgecc66ed">Reflog</h3>
+
+</section>
+<section id="slide-org1ddb3ab">
+<h3 id="org1ddb3ab">Git Restore</h3>
+
+</section>
+<section id="slide-orga7c7090">
+<h3 id="orga7c7090">Git Bisect</h3>
+
+</section>
+<section id="slide-orgaf816f5">
+<h3 id="orgaf816f5">Integração contínua (CI) e Entrega contínua (CD)</h3>
+<div class="outline-text-3" id="text-orgaf816f5">
+</div>
+</section>
+<section id="slide-org57f4a18">
+<h4 id="org57f4a18">Github Actions</h4>
+
+</section>
+</section>
+<section>
+<section id="slide-org7ac5b2c">
+<h2 id="org7ac5b2c">Referências</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+slideNumber:true,
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+,
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } }]
+
+});
+
+</script>
+</body>
+</html>
