@@ -199,7 +199,210 @@ $ git push origin :branch_original
 git fetch --prune
 #+end_src
 
-* Boas práticas de Git
+* Boas práticas
+
+** Ignorando arquivos
+
+Alguns  arquivos  *não  deveriam*  subir para  o  Git  (salvo  algumas
+exceções). Em geral: /arquivos binários/ (blobs).
+
+Isso pode ser feito com um arquivo ~.gitignore~.
+
+#+reveal: split
+
+O arquivo pode ser colocado na raiz do repositório ou em uma subpasta.
+
+#+begin_src text
+,*.pdf
+,*.jpg
+,*.png
+,*.exe
+,*~
+,*.dcu
+#+end_src
+
+#+reveal: split
+
+Se for extremamente necessário  armazenar arquivos binários *grandes*,
+use a extensão Git LFS (/Large File Support/).
+
+#+begin_src bash
+$ git lfs track "*.mp3"
+$ git lfs track "*.bin"
+$ git lfs track "*.res"
+#+end_src
+
+[[https://www.atlassian.com/git/tutorials/git-lfs]]
+
+** Atualizar uma branch
+
+Pode  ser  necessário  atualizar  o  branch  atual  de  acordo  com  a
+~develop~.
+
+Há duas formas de fazer isto:
+
+#+ATTR_REVEAL: :frag (appear)
+- Merge;
+- *Rebase*.
+
+#+reveal: split
+
+Antes de mais nada, atualize a ~develop~.
+
+#+begin_src bash
+$ git checkout develop
+$ git pull
+$ git checkout feature/xxxx
+#+end_src
+
+*** Merge
+
+Basta atualizar a ~develop~ e dar merge na feature:
+
+#+begin_src bash
+$ git merge develop
+#+end_src
+
+"Merge ~develop~ into ~feature/xxx~"
+
+*** Rebase
+
+O /rebase/ opera sob o seguinte fluxo:
+
+#+ATTR_REVEAL: :frag (appear)
+1. "Rebobina" sua branch atual até o ponto em comum com a ~develop~;
+2. Recupera todos os novos commits que estão na ~develop~;
+3. Reaplica os commits da sua branch novamente, um a um.
+
+#+reveal: split
+
+O /rebase/ efetivamente  *modifica o histórico da branch*,  por isso é
+necessário ter acesso de mudança na branch.
+
+#+begin_src bash
+$ git rebase develop
+#+end_src
+
+"Rebase feature/xxxx onto develop"
+
+#+reveal: split
+
+#+attr_org: :width 100
+[[./git_img/rebase1.png]]
+
+#+reveal: split
+
+#+attr_org: :width 100
+[[./git_img/rebase2.png]]
+
+*** Regra de ouro do Rebase
+
+*Nunca, NUNCA faça rebase em uma branch PÚBLICA.*
+
+#+ATTR_REVEAL: :frag (appear)
+Ex: Completar PR de ~feature/xxxx~ para ~develop~ com /rebase/.
+
+#+ATTR_REVEAL: :frag (appear)
+Motivo: Vai zuar a ~develop~ *PRA TODO MUNDO*.
+
+*** Desvantagens do rebase
+
+#+ATTR_REVEAL: :frag (appear)
+1. Basicamente *refaz o histórico da branch*.
+2. Dependendo do uso, um /rebase/ pode gerar mais de um conflito.
+3. O /rebase/ na verdade é um "Comando Bombril".
+
+*** Qual escolher?
+
+O histórico do Git em si é um documento. Ele pode significar:
+
+#+ATTR_REVEAL: :frag (appear)
+1. O percurso de /COMO/ e /QUANDO/ foram feitos os commits;
+2. Uma linha lógica de desenvolvimento de cada task.
+
+#+reveal: split
+
+#+ATTR_REVEAL: :frag (appear)
+Para  o  primeiro caso,  atualize  sua  branch  com /merges/.  Para  o
+segundo, use /rebases/.
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_src bash
+$ git log
+$ git log --oneline
+$ git log --graph
+$ git log --graph --oneline
+#+end_src
+
+* Produtividade com Git
+
+** Commits em branches erradas
+
+*** Caso 1
+
+"Estou na develop, fiz commit e não criei minha branch!"
+
+#+ATTR_REVEAL: :frag (highlight-green)
+1. Crie a branch a partir da ~develop~;
+2. Volte para a ~develop~;
+3. Desfaça o commit (apagando);
+4. Vá para a branch nova e o commit estará lá.
+
+#+reveal: split
+
+Começando da ~develop~:
+
+#+begin_src bash
+$ git checkout -b feature/xxxx
+$ git checkout develop
+$ git reset --hard HEAD~1
+$ git checkout feature/xxxx
+#+end_src
+
+Para mais de um commit, ajuste o ~git reset~.
+
+*** Caso 2
+
+"Estou na  master, fiz  commit, mas  deveria ter  criado uma  branch a
+partir da develop!"
+
+#+ATTR_REVEAL: :frag (appear)
+Para começar: Nada de pânico.
+
+#+reveal: split
+
+#+ATTR_REVEAL: :frag (highlight-green)
+1. Abra o log;
+2. Anote o /hash/ do commit (pode ser o pequeno);
+3. Crie a branch normalmente;
+4. Faça *cherry-pick* do commit para a sua branch;
+5. Desfaça o commit na ~master~.
+
+#+reveal: split
+
+#+begin_src bash
+$ git log --oneline
+
+$ git checkout develop
+$ git checkout -b feature/xxxx
+$ git cherry-pick f5a0f14
+$ git checkout master
+$ git reset --hard HEAD~1
+#+end_src
+
+- Pode dar conflito.
+- Para mais commits,  ajuste a quantidade de  cherry-picks (faça-os em
+  ordem!) e ajuste o ~git reset~.
+
+** Investigando através do Git
+
+# Bisect
+
+** Revertendo merges
+
+# Revert do revert
+
+* COMMENT Boas práticas de Git
 
 ** Arquivos binários
 
@@ -276,36 +479,7 @@ $ git subtree add --squash \
 
 [[https://andrey.nering.com.br/2016/git-submodules-vs-subtrees/][Fonte]]
 
-* Branches e Forks
-
-** Branch
-
-# Falar a respeito da parte não-óbvia de branches
-
-*** Git Flow
-
-** Forks
-
-* Merge vs. Rebase
-
-** O que é Git Merge?
-
-** O que é Git Rebase?
-
-*** Regra de ouro do uso de Rebase
-
-** Nomenclatura
-
-** Exemplo: Recuperar alterações da ~develop~
-
-** Exemplo: Trabalhando em conjunto na mesma branch
-
-** Outros usos para merge
-
-# Cherry-pick
-# Squash
-
-* Produtividade com Git
+* COMMENT Produtividade com Git
 ** TODO Conflitos
 ** Reflog
 
