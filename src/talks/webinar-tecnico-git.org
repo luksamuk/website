@@ -16,17 +16,20 @@
 #+reveal_title_slide: <h3>%t<br/></h3><p>%s<br/><br/>%a</h3><br/><p>%e<br/>%d<br/>ATS Informática</p>
 
 :CUSTOM_CSS:
+# Caixas de código
 #+html: <style type="text/css">
 #+html: .reveal pre {
 #+html:     box-shadow: 0px 0px 0px rgba(0, 0, 0, 0) !important;
+#+html:     font-size: 0.7em;
 #+html: }
 #+html: </style>
 
+# Colunas
 #+html: <style>
-#+html: .container{
+#+html: .container {
 #+html:     display: flex;
 #+html: }
-#+html: .col{
+#+html: .col {
 #+html:     flex: 1;
 #+html: }
 #+html: </style>
@@ -133,7 +136,8 @@ Adicionar um  repositório remoto  chamado ~origin~ para  o repositório
 atual.
 
 #+begin_src bash
-$ git remote add origin https://github.com/fulano/repo.git
+$ git remote add \
+  origin https://github.com/fulano/repo.git
 #+end_src
 
 *** Enviando commits para o repositório remoto
@@ -220,6 +224,8 @@ O arquivo pode ser colocado na raiz do repositório ou em uma subpasta.
 ,*~
 ,*.dcu
 #+end_src
+
+Exemplos para projetos de cada linguagem: https://gitignore.io
 
 #+reveal: split
 
@@ -326,13 +332,18 @@ O histórico do Git em si é um documento. Ele pode significar:
 Para  o  primeiro caso,  atualize  sua  branch  com /merges/.  Para  o
 segundo, use /rebases/.
 
-#+ATTR_REVEAL: :frag (appear)
+#+reveal: split
+
 #+begin_src bash
 $ git log
 $ git log --oneline
 $ git log --graph
 $ git log --graph --oneline
 #+end_src
+
+#+ATTR_REVEAL: :frag (appear)
+#+ATTR_ORG: :width 300
+[[./git_img/gitlog.png]]
 
 * Produtividade com Git
 
@@ -391,66 +402,162 @@ $ git reset --hard HEAD~1
 #+end_src
 
 - Pode dar conflito.
-- Para mais commits,  ajuste a quantidade de  cherry-picks (faça-os em
+- Para mais commits,  ajuste a quantidade de  /cherry-picks/ (faça-os em
   ordem!) e ajuste o ~git reset~.
 
-** Investigando através do Git
+** Investigando commits
 
-# Bisect
+"Uma   funcionalidade  funcionava   na  data   X,  mas   não  funciona
+mais. Preciso descobrir qual commit quebrou a funcionalidade"
 
-** Revertendo merges
+*** Git Bisect
 
-# Revert do revert
+É possível realizar  pesquisa binária via Git através  de Bisect. Para
+iniciar uma sessão de Bisect:
 
-* COMMENT Boas práticas de Git
+#+ATTR_REVEAL: :frag (highlight-green)
+1. Encontre o /hash/ do commit em que a funcionalidade estava OK;
+2. Inicie o processo;
+3. Marque o commit atual como "ruim" (quebrado);
+4. Marque o commit antigo como "bom", através do /hash/.
 
-** Arquivos binários
-
-Tudo aquilo que não for comparável a  um arquivo de texto, para o Git,
-é um arquivo binário.
-
-#+ATTR_REVEAL: :frag (appear)
-*JAMAIS* suba um arquivo binário para o Git.
-
-#+ATTR_REVEAL: :frag (appear)
-Como toda boa regra, há exceções.
-
-*** Arquivo .gitignore
-
-Arquivos gerados dentro do repositório podem ser desconsiderados.
-
-O  ~.gitignore~ opera  verticalmente  ignorando  arquivos via  caminho
-absoluto ou /wildcard/.
-
-#+begin_src text
-,*.pdf     # Ignora arquivos PDF
-,*.exe     # Ignora executáveis do Windows
-target/   # Ignora todo o diretório "target" nesta pasta
-src/*.dcu # Ignora todos os .dcu na pasta src/
-#+end_src
-
-*** Git LFS
-
-Git suporta extensões! Uma das mais conhecidas é o /Large File Support
-(LFS)/.
-
-O  LFS  existe para  ajudar  com  armazenamento de  arquivos  binários
-grandes que sejam necessários para o projeto.
-
-Cada  /forge/  que suporta  LFS  armazena  os  objetos em  um  /store/
-especial.
+#+reveal: split
 
 #+begin_src bash
-$ git lfs track "*.mp3"
-$ git lfs track "*.bin"
-$ git lfs track "*.res"
+$ git bisect start
+$ git bisect bad
+$ git bisect good f5a0f14
 #+end_src
 
-[[https://www.atlassian.com/git/tutorials/git-lfs][Fonte]]
+Caso  o repositório  use /tags/,  as  versões da  aplicação podem  ser
+melhor localizadas através das mesmas!
 
-** Git Submodules e Git Subtrees
+#+reveal: split
 
-Submódulos operam como links para outros repositórios.
+O Bisect realiza checkout em cada commit, a cada passo.
+
+#+ATTR_REVEAL: :frag (highlight-green)
+1. Teste a aplicação no commit atual;
+2. Se estiver "quebrado", use o comando ~git bisect bad~;
+3. Se estiver OK, use ~git bisect good~;
+4. Repita até acabarem os passos.
+
+#+reveal: split
+
+Ao  final,  o  Git  estará  apontando para  o  commit  que  quebrou  a
+funcionalidade, que poderá ser analisado:
+
+#+begin_src bash
+$ git show
+
+$ git show f5a0f14
+#+end_src
+
+Para voltar o Git ao normal:
+
+#+begin_src bash
+$ git bisect reset
+#+end_src
+
+** Revertendo commits
+
+"É fim  da sprint, e durante  testes de integração, foi  detectado que
+meu  pull  request  quebrou  algum sistema.  Foi  requisitado  que  eu
+revertesse meu pull request."
+
+*** Git Revert
+
+Normalmente, pode-se fazer um revert diretamente pelo Azure DevOps.
+
+Mas existem  situações em que um  revert pode dar conflito  e terá que
+ser feito manualmente.
+
+Ex: O PR foi  feito no início da semana e  foi realizada uma resolução
+de conflitos sobre ele.
+
+#+reveal: split
+
+Sem problemas!
+
+#+ATTR_REVEAL: :frag (highlight-green)
+1. Crie uma branch a partir da ~develop~;
+2. Encontre o /commit de merge/ do PR e copie seu /hash/;
+3. Realize um revert do commit;
+4. Se necessário, resolva conflitos;
+5. Dê push, criando a branch remota, e faça um novo PR.
+
+#+reveal: split
+
+#+begin_src bash
+$ git checkout develop
+$ git checkout -b feature/revert-xxxx
+$ git log --graph --oneline
+$ git revert f5a0f14
+$ git push -u origin feature/revert-xxxx
+#+end_src
+
+#+reveal: split
+
+*ATENÇÃO:* /Revert/ e /Reset/ são operações DIFERENTES.
+
+#+ATTR_REVEAL: :frag (appear)
+- O  /reset/ é  capaz  de remover  commits que  estejam  em pontas  de
+  branches, ou resetar o estado de alteração de arquivos.
+- O /revert/ *cria um novo commit*,  retornando um ou mais arquivos ao
+  estado anterior.
+
+#+reveal: split
+
+Após criar o PR de revert,  para continuar trabalhando no mesmo código
+e consertar bugs, você poderá recriar sua branch e realizar um *revert
+do revert*.
+
+#+begin_src bash
+$ git checkout develop
+$ git checkout -b feature/xxxx
+$ git revert f12345
+#+end_src
+
+** Investigando operações
+
+"Realizei um Git Reset e deletei meu último commit por acidente. O que
+eu faço????"
+
+#+ATTR_REVEAL: :frag (appear)
+Primeiramente: Calma.
+
+*** Git Reflog
+O Reflog é um log especial de /referência de movimentos/ do Git.
+
+O Reflog é único para cada máquina.
+
+#+reveal: split
+
+#+ATTR_ORG: :width 300
+[[./git_img/gitreflog.png]]
+
+#+reveal: split
+
+Pelos /hashes/ do Reflog, você pode:
+
+#+ATTR_REVEAL: :frag (highlight-green)
+1. Recriar ou restaurar um arquivo a partir de um ponto no tempo;
+2. Resetar uma branch antes de uma operação;
+3. Desfazer praticamente qualquer coisa na máquina local.
+
+#+begin_src bash
+$ git reflog
+$ git checkout f5a0f14 -- src/main.rs
+$ git reset --hard f5a0f14
+#+end_src
+
+* Extras
+
+** Submodules e Subtrees
+
+Um  repositório pode  operar como  "guarda-chuva", sendo  populado por
+outros  repositórios. Isso  pode  ser interessante  para projetos  com
+muitos módulos.
 
 #+begin_src text
 [submodule "meu_submodulo"]
@@ -477,25 +584,39 @@ $ git subtree add --squash \
   meu_submodulo master
 #+end_src
 
-[[https://andrey.nering.com.br/2016/git-submodules-vs-subtrees/][Fonte]]
+** Integração Contínua (CI) e Entrega Contínua (CD)
 
-* COMMENT Produtividade com Git
-** TODO Conflitos
-** Reflog
+É possível  usar soluções de  CI e CD  com repositórios Git.  Cada Git
+Forge implementa isso de uma forma.
 
-** Git Restore
+Exemplo: https://github.com/luksamuk/sonic-platformer
 
-** Git Bisect
+* Conclusão
 
-# Situação: Funcionalidade  funcionava na  versão X, mas  não funciona
-# mais
+Os  tópicos apresentados  nem arranham  a superfície  do que  Git pode
+fazer.
 
-** Integração contínua (CI) e Entrega contínua (CD)
+Recomendo ver o livro do Git.
 
-*** Github Actions
-
-# Falar  que é  possível  chamar  as pipelines  do  Azure pelo  Github
-# Actions
+* Dúvidas?
 
 * Referências
+
+#+ATTR_HTML: :style font-size:0.65em;text-align:left;
+Git:      Submodules      vs.       Subtrees.      Disponível      em:
+https://andrey.nering.com.br/2016/git-submodules-vs-subtrees/
+
+#+ATTR_HTML: :style font-size:0.65em;text-align:left;
+GitHub Blog:  How to undo  (almost) anything with Git.  Disponível em:
+https://github.blog/2015-06-08-how-to-undo-almost-anything-with-git/
+
+#+ATTR_HTML: :style font-size:0.65em;text-align:left;
+Referência do Git. Disponível em: https://git-scm.com/docs/
+
+#+ATTR_HTML: :style font-size:0.65em;text-align:left;
+Livro Oficial do Git. Disponível em: https://git-scm.com/book/en/v2
+
+#+ATTR_HTML: :style font-size:0.65em;text-align:left;
+Livro     Oficial    do     Git     (Português).    Disponível     em:
+https://git-scm.com/book/pt-br/v2
 
