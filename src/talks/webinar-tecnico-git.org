@@ -73,6 +73,7 @@ GitHub = /Git forge/ e rede social.
 
 *** Qual a importância de uma Git Forge?
 
+#+ATTR_REVEAL: :frag (highlight-blue)
 - Portfolio;
 - Compartilhamento de código aberto;
 - Hospedagem de sites estáticos (GitHub Pages);
@@ -82,21 +83,121 @@ GitHub = /Git forge/ e rede social.
 ** Uso de linha de comando
 
 #+begin_src bash
-$ git status  # Status do seu branch
-$ git --help  # Leia a ajuda!
+$ git status
+$ git --help
 #+end_src
 
-* Git Básico
+* Fluxo padrão de Git
 
-** Git Clone e Git Init
+** Criando um repositório
 
-** Git Pull e Git Push
+#+ATTR_REVEAL: :frag (grow)
+- Via ~git clone~
+- Via ~git push~ (manualmente)
+- Forks de repositórios
 
-** Git Checkout e Git Branch
+** Gerenciando commits
 
-** Git Remote e Git Fetch
+*** Adicionando arquivos para a área de /staging/
 
-# Falar do que é o upstream
+#+begin_src bash
+$ git add arquivo.txt
+$ git add .
+$ git add -A
+#+end_src
+
+*** Commits
+
+#+begin_src bash
+$ git commit
+$ git commit -m 'Mensagem do commit'
+#+end_src
+
+*** Desfazendo commits
+
+Para desfazer seu último commit na branch atual:
+
+#+begin_src bash
+$ git reset --soft HEAD~1
+#+end_src
+
+#+ATTR_REVEAL: :frag (appear)
+- O número indica a quantidade de commits desfeitos.
+- Se estiver no Git CMD, troque =~= por =^=.
+- Caso  você queira  reverter  e  REMOVER as  alterações,  use a  flag
+  ~--hard~.
+
+*** Definindo o repositório remoto
+
+Adicionar um  repositório remoto  chamado ~origin~ para  o repositório
+atual.
+
+#+begin_src bash
+$ git remote add origin https://github.com/fulano/repo.git
+#+end_src
+
+*** Enviando commits para o repositório remoto
+
+#+begin_src bash
+$ git push
+#+end_src
+
+#+reveal: split
+
+Pode ser que o /upstream/ da branch não esteja definido.
+Podemos criar a branch no repositório remoto (~origin~).
+
+#+begin_src bash
+$ git push --set-upstream origin minha_branch
+$ git push -u origin minha_branch
+#+end_src
+
+** Criando branches
+
+*** Estilo /Git Flow/
+
+#+ATTR_REVEAL: :frag (appear)
+- *Branches padrão:* ~master~, ~develop~
+- *Novas implementações:* ~feature/xxxx~ (pela ~develop~)
+- *Correções de emergência (e SLAs):* ~hotfix/xxxx~ (pela ~master~)
+  
+#+ATTR_REVEAL: :frag (appear)
+#+begin_src bash
+$ git checkout develop
+$ git checkout -b feature/xxxx
+#+end_src
+
+** Gerenciando branches
+
+*** Deletar uma branch (local)
+
+#+begin_src bash
+$ git checkout outra_branch
+$ git branch -d branch_original
+
+$ git branch -D branch_original
+#+end_src
+
+*** Deletar uma branch (remota)
+
+Na verdade, fazemos um "/push/ da remoção".
+
+~origin~ é o nome do repositório remoto.
+
+#+begin_src bash
+$ git push origin --delete branch_original
+#+end_src
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_src bash
+$ git push origin :branch_original
+#+end_src
+
+*** Remover e recuperar referências de branches remotas
+
+#+begin_src bash
+git fetch --prune
+#+end_src
 
 * Boas práticas de Git
 
