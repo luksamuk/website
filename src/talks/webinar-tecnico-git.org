@@ -111,13 +111,13 @@ $ git status
 $ git --help
 #+end_src
 
-* Fluxo padrão de Git
+* Fluxo de Git
 
 ** Criando um repositório
 
 #+ATTR_REVEAL: :frag (grow)
-- Via ~git clone~
-- Via ~git push~ (manualmente)
+- Via ~git clone~ (clonar remoto)
+- Via ~git init~ (manualmente)
 - Forks de repositórios
 
 ** Gerenciando commits
@@ -137,6 +137,20 @@ $ git commit
 $ git commit -m 'Mensagem do commit'
 #+end_src
 
+*** Log de commits
+
+#+begin_src bash
+$ git log
+$ git log --oneline
+$ git log --graph
+$ git log --graph --oneline
+#+end_src
+
+#+reveal: split
+
+#+ATTR_ORG: :width 300
+[[./git_img/gitlog.png]]
+
 *** Desfazendo commits
 
 Para desfazer seu último commit na branch atual:
@@ -150,6 +164,15 @@ $ git reset --soft HEAD~1
 - Se estiver no Git CMD, troque =~= por =^=.
 - Caso  você queira  reverter  e  REMOVER as  alterações,  use a  flag
   ~--hard~.
+
+*** ATENÇÃO!
+
+*RESET*  não  é  *REVERT*.  Existe   uma  diferença  entre  desfazer  commits  e
+revertê-los.
+
+#+ATTR_REVEAL: :frag (appear)
+*Resetar*  implica  refazer  a  história.  *Reverter*  implica  criar  uma  nova
+alteração no futuro que desfaça uma do passado.
 
 *** Definindo o repositório remoto
 
@@ -224,7 +247,7 @@ $ git push origin :branch_original
 git fetch --prune
 #+end_src
 
-* Boas práticas
+* Práticas comuns
 
 ** Ignorando arquivos
 
@@ -372,22 +395,9 @@ O histórico do Git em si é um documento. Ele pode significar:
 1. O percurso de /COMO/ e /QUANDO/ foram feitos os commits;
 2. Uma linha lógica de desenvolvimento de cada task.
 
-#+reveal: split
-
+#+ATTR_REVEAL: :frag (appear)
 Para  o  primeiro caso,  atualize  sua  branch  com /merges/.  Para  o
 segundo, use /rebases/.
-
-#+begin_src bash
-$ git log
-$ git log --oneline
-$ git log --graph
-$ git log --graph --oneline
-#+end_src
-
-#+reveal: split
-
-#+ATTR_ORG: :width 300
-[[./git_img/gitlog.png]]
 
 * Produtividade com Git
 
