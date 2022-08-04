@@ -15,7 +15,7 @@ The following steps were built atop some  quick notes I did so I never
 forget this stuff.  There's a small chance I'll update  this post with
 more stuff.
 
-/Last updated at/ [2021-04-12 14:38]
+/Last updated at/ [2022-08-03 22:13]
 
 * Preparation
 
@@ -30,7 +30,8 @@ Here's what you'll need:
 - An SD Card which can store 9front's files (up to 2GB will do);
 - A spare keyboard  and a spare 3-button mouse (most  wheel mouses are
   compatible);
-- A 9front Raspberry Pi image (use one compatible with your Pi);
+- [[http://9front.org/releases/][A 9front Raspberry Pi image]]
+  (use one compatible with your Pi);
 - An HDMI cable (and some TV or monitor to connect your RPi to);
 - An Ethernet cable to plug the  Pi to your router (or whatever device
   you use);
@@ -38,6 +39,8 @@ Here's what you'll need:
   - ~arp-scan~, for device discovery on local network;
   - 9front's spin of  the ~drawterm~ program, which can be  found on its
     website.
+- [[http://wiki.9front.org/drawterm][Drawterm]], specifically one compatible
+  with changes made to 9front.
 
 Downloading the Linux programs and 9front  Pi image is a trivial task,
 so I'll let you figure this out.
@@ -136,9 +139,9 @@ Before this ~switch~ structure, add  the following lines. You may change
 them according to your needs, but *keep the user ~glenda~*.
 
 #+begin_src rc
-auth/factotum -g 'key proto=p9sk1 dom=plan9 user=glenda !password=glenda' >[2]/dev/null
-aux/listen1 -t tcp!*!ncpu /bin/cpu -R >[2]/dev/null &
-ip/ipconfig >[2]/dev/null
+auth/factotum -g 'key proto=p9sk1 dom=plan9 user=glenda !password=glenda'
+aux/listen1 -t tcp!*!rcpu /rc/bin/service/tcp17019 -R &
+ip/ipconfig
 #+end_src
 
 A few command line programs are used  here, so we'll take some time to
@@ -669,6 +672,8 @@ configuration section.
 
 #+begin_src rc
 git/clone https://github.com/netsurf-plan9/nsport
+cd nsport
+git/clone https://github.com/netsurf-plan9/netsurf
 #+end_src
 
 After  that, fetch  other  libraries which  are  crucial for  building
@@ -678,7 +683,7 @@ Note that fetching all library repositories will take a while.
 
 #+begin_src rc
 cd nsport
-fetch clone git
+fetch clone https
 #+end_src
 
 Every once in a while, you may  want to update the Netsurf source code
