@@ -1,0 +1,232 @@
+#+TITLE: Techimera
+#+SUBTITLE: Orquestração de Contêineres com Kubernetes
+#+AUTHOR: Lucas S. Vieira
+#+DATE: 7 de outubro de 2022
+#+EMAIL: lucasvieira@protonmail.com
+#+STARTUP: showall inlineimages
+
+#+reveal_margin: 0.2
+#+reveal_theme: beige
+#+reveal_plugins: (print-pdf zoom)
+#+options: num:nil timestamp:nil toc:nil reveal_title_slide:nil
+#+reveal_init_options: slideNumber:false, controlsLayout:"edges"
+#+reveal_default_slide_background: ./techimera/default.jpg
+#+reveal_default_slide_transition: slide
+
+* 
+:PROPERTIES:
+:reveal_background: ./techimera/title.jpg
+:END:
+
+#+attr_html: :style font-size:1.2em;text-align:center;
+*Orquestração de Contêineres com Kubernetes*
+
+Lucas S. Vieira
+
+7 de outubro de 2022
+
+* Índice
+:PROPERTIES:
+:reveal_background: ./techimera/index.jpg
+:END:
+
+1. Introdução ao Kubernetes
+2. Prova de Conceito
+3. Deploy do Exemplo no Kubernetes
+
+* Introdução ao Kubernetes (K8s)
+
+#+attr_org: :width 200
+#+attr_html: :width 300
+[[./techimera/kubernetes-logo.png]]
+
+** O que é Kubernetes?
+
+- Ferramenta criada pela Google para orquestração de contêineres.
+- Excelente para escalabilidade horizontal e gerenciamento de recursos.
+- Exige configuração minuciosa.
+- A menor unidade do K8s são os /Pods/, que abstraem *um ou mais contêineres*.
+
+** Kubernetes vs. Docker Compose
+
+#+attr_org: :width 200
+#+attr_html: :width 200
+[[./techimera/docker-compose.png]]
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+- Compose usa /Serviços/, Kubernetes gerencia  /Pods/ através de /ReplicaSets/ e
+  similares.
+- Kubernetes é pensado para HA.
+- /Pods/ são efêmeros, diferente de serviços.
+- Serviços  são  contêineres  com  configuração extra.  /Pods/  são  muito  mais
+  maleáveis.
+
+** Kubernetes vs. Docker Swarm
+
+#+attr_org: :width 200
+#+attr_html: :width 200
+[[./techimera/docker-swarm.png]]
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+- Swarm leva o Compose para clusters.
+- Swarm é muito mais simples e familiar para quem usa Compose.
+- Swarm não suporta HA.
+- Pode ser necessário muito uso de ferramentas extras para configurar um cluster
+  com Swarm (Vagrant, Terraform, Ansible...)
+  
+* Prova de Conceito
+
+#+attr_org: :height 200
+#+attr_html: :height 300
+[[./techimera/lisperati.png]]
+
+** Tecnologias utilizadas
+
+#+attr_org: :width 200
+#+attr_html: :width 250
+[[./techimera/lisp.png]]
+
+#+attr_html: :style font-size:0.8em;text-align:left;
+- API REST, CRUD de usuários, sem autenticação\\
+  (https://github.com/luksamuk/techimera-k8s/)
+- Feita em Common Lisp, Permite debug remoto via Swank Server
+- Usa PostgreSQL 14
+- Docker Compose a título de comparação
+
+** Imagens para Contêineres
+
+#+attr_org: :width 200
+#+attr_html: :width 250
+[[./techimera/moby.webp]]
+
+#+attr_html: :style font-size:0.8em;text-align:left;
+- Imagem da aplicação, hospedada no DockerHub\\
+  (https://hub.docker.com/repository/docker/luksamuk/techimera)
+- PostgreSQL 14
+- PgAdmin4 (apenas no K8s)
+
+** Kubernetes on-premise
+
+#+attr_org: :width 200
+#+attr_html: :width 400
+[[./techimera/rpi4.jpg]]
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+- Manjaro Linux arm64 rodando em um Raspberry Pi 4 Model B
+  - Quad core, 8GB RAM, 64GB SD
+- K3s da Rancher (https://k3s.io/)
+  - K8s modificado  e com baixo  footprint; bom para  IoT mas também  para larga
+    escala
+
+** Utilitários
+
+#+attr_org: :width 200
+#+attr_html: :width 400
+[[./techimera/k9s.png]]
+
+- K9s (https://k9scli.io/) -- Ferramenta CLI para K8s
+- Kubectl -- Utilitário CLI padrão
+- DBeaver CE -- Gerenciamento de BD
+  
+* Deploy no Kubernetes
+
+Agora, vamos provisionar o PostgreSQL, o backend, e o PgAdmin4.
+
+Mas primeiro, vamos analisar a arquitetura desse provisionamento.
+
+#+reveal: split
+
+#+html: <center>
+
+#+attr_org: :height 200
+#+attr_html: :height 700
+[[./techimera/pgsql-arq.png]]
+
+#+html: </center>
+
+#+reveal: split
+
+#+html: <center>
+
+#+attr_org: :height 200
+#+attr_html: :height 700
+[[./techimera/backend-arq.png]]
+
+#+html: </center>
+
+#+reveal: split
+
+#+html: <center>
+
+#+attr_org: :height 200
+#+attr_html: :height 700
+[[./techimera/pgadmin-arq.png]]
+
+#+html: </center>
+
+** Aplicando configurações
+
+Temos Kubectl  instalado e a  configuração de acesso em  =~/.kube/config=, então
+basta usarmos o console diretamente.
+
+#+begin_src bash
+kubectl apply -f namespace.yml
+kubectl apply -f postgresql.yml
+kubectl apply -f backend.yml
+kubectl apply -f pgadmin.yml
+#+end_src
+
+*** Fazendo requisições no backend
+
+Para criar alguns usuários...
+
+#+begin_src bash
+curl -X POST 192.168.2.6:30000/user/seed
+#+end_src
+
+Para recuperar os usuários...
+
+#+begin_src bash
+curl 192.168.2.6:30000/user
+#+end_src
+
+** Port-forwarding
+
+Podemos  acessar  um recurso  no  cluster  de  várias  formas. Para  um  serviço
+ClusterIP,  podemos espelhar  a porta  de um  deployment na  nossa máquina,  por
+exemplo.
+
+#+begin_src bash
+kubectl port-forward \
+	-n techimera \
+	deployment/postgresql-deployment \
+	5432:5432
+#+end_src
+
+** Ingresses
+
+Ingresses expõem uma aplicação através de endpoints na porta 80.
+
+No K3s,  o gerenciador do  cluster é o  Traefik Proxy, então  temos configuração
+específica para ele.
+
+#+begin_src bash
+kubectl apply -f ingress.yml
+#+end_src
+
+*** Testando ingresses
+
+Requisições na API:
+
+#+begin_src bash
+curl 192.168.2.6/api/user
+#+end_src
+
+Acesso ao PgAdmin4:
+
+http://192.168.2.6/pgadmin
+
+* 
+:PROPERTIES:
+:reveal_background: ./techimera/thanks.jpg
+:END:
