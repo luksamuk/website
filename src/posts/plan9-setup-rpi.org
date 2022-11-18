@@ -15,7 +15,7 @@ The following steps were built atop some  quick notes I did so I never
 forget this stuff.  There's a small chance I'll update  this post with
 more stuff.
 
-/Last updated at/ [2022-08-03 22:13]
+/Last updated at/ [2022-11-18 00:30]
 
 * Preparation
 
@@ -442,6 +442,11 @@ Or you may log in to a new session to see your changes take effect.
 repository. The following just repeats  the instructions on the linked
 repo.
 
+/*NOTE:* As  of now  (2022-11-18), Git  for Plan  9 is  contained by  default on
+9front./ You shouldn't need to perform the installation steps anymore.
+
+*** Installation
+
 First we obtain a bootstrap copy.
 
 #+begin_src rc
@@ -464,6 +469,8 @@ mk all
 mk install
 #+end_src
 
+*** Setting up username
+
 The next step is setting up a  username and an email.
 
 Create a  file ~$home/lib/git~, which can  be done with ~touch~.  Then use
@@ -476,6 +483,34 @@ Acme or Sam to edit it and add stuff like the following:
 #+end_example
 
 Make sure you add the newline at the end of the file.
+
+*** Setting up an SSH key for Git
+
+You might  need to create an  SSH key to  authorize your 9front box  on websites
+such as SourceHut or GitHub, which work best with SSH interaction.
+
+Start by creating an SSH private key,  that *won't be shared*. Notice that /this
+step may take a while/:
+
+#+begin_src rc
+auth/rsagen -t 'service=ssh' >$home/lib/sshkey
+#+end_src
+
+Now, create an SSH public key that *will be shared with your Git Forge*:
+
+#+begin_src rc
+auth/rsa2ssh $home/lib/sshkey >$home/lib/sshkey.pub
+#+end_src
+
+Finally, just send the private key to [[http://man.9front.org/4/factotum][~factotum(4)~]] so you may now use it.
+You may also add  this line to your ~profile~ so that it  is always available on
+login.
+
+#+begin_src rc
+cat $home/lib/sshkey >/mnt/factotum/ctl
+#+end_src
+
+The reference to these steps may be found [[http://wiki.9front.org/ssh][here]].
 
 Now you can look at the manpages ~git(1)~ and ~gitfs(4)~ to get started.
 
