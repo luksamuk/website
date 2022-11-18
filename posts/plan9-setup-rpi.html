@@ -219,22 +219,26 @@ gtag('config', 'UA-164062058-1');
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org4983f42">Preparation</a></li>
-<li><a href="#orgf5f258d">Automatic boot</a></li>
-<li><a href="#org7ce206f">Configuring remote access</a></li>
-<li><a href="#org477ddd0">Connecting remotely</a></li>
-<li><a href="#org936bb24">Logging in remotely to a graphical session</a></li>
-<li><a href="#org9557399">Binding the local filesystem</a></li>
-<li><a href="#org96ec897">Setting up the Plumber</a></li>
-<li><a href="#orgd3e02f8">Extra stuff</a>
+<li><a href="#org617173c">Preparation</a>
 <ul>
-<li><a href="#orgdc92be1">Setting up Git</a></li>
-<li><a href="#org61d7bc5">Setup automatic time synchronization</a></li>
-<li><a href="#orgc373413">Bottom bar</a></li>
-<li><a href="#orge344b48">Lua</a></li>
-<li><a href="#orgb2d0827">Scheme</a></li>
-<li><a href="#orgac428eb">Vim</a></li>
-<li><a href="#org5c28291">Netsurf</a></li>
+<li><a href="#org88ed742">A quick note on Drawterm</a></li>
+</ul>
+</li>
+<li><a href="#orgd6616a2">Automatic boot</a></li>
+<li><a href="#org33b7182">Configuring remote access</a></li>
+<li><a href="#org3ba8391">Connecting remotely</a></li>
+<li><a href="#org1326f6d">Logging in remotely to a graphical session</a></li>
+<li><a href="#org5add5d2">Binding the local filesystem</a></li>
+<li><a href="#org3ed9255">Setting up the Plumber</a></li>
+<li><a href="#org281ede0">Extra stuff</a>
+<ul>
+<li><a href="#org7d7c616">Setting up Git</a></li>
+<li><a href="#orgde9b45a">Setup automatic time synchronization</a></li>
+<li><a href="#orge86cf33">Bottom bar</a></li>
+<li><a href="#org598f7e0">Lua</a></li>
+<li><a href="#org26dcc7e">Scheme</a></li>
+<li><a href="#org2caa49d">Vim</a></li>
+<li><a href="#org2585e32">Netsurf</a></li>
 </ul>
 </li>
 </ul>
@@ -253,14 +257,14 @@ more stuff.
 </p>
 
 <p>
-<i>Last updated at</i> <span class="timestamp-wrapper"><span class="timestamp">[2022-08-03 Wed 22:13]</span></span>
+<i>Last updated at</i> <span class="timestamp-wrapper"><span class="timestamp">[2022-11-18 Fri 00:43]</span></span>
 </p>
 
-<div id="outline-container-org4983f42" class="outline-2">
-<h2 id="org4983f42">Preparation</h2>
-<div class="outline-text-2" id="text-org4983f42">
+<div id="outline-container-org617173c" class="outline-2">
+<h2 id="org617173c">Preparation</h2>
+<div class="outline-text-2" id="text-org617173c">
 
-<div id="orgdaec5b5" class="figure">
+<div id="org9b14346" class="figure">
 <p><img src="./img/rpi.jpg" alt="rpi.jpg" width="500" />
 </p>
 <p><span class="figure-number">Figure 1: </span>My local Raspberry Pi setup.</p>
@@ -286,8 +290,7 @@ you use);</li>
 <li>9front's spin of  the <code>drawterm</code> program, which can be  found on its
 website.</li>
 </ul></li>
-<li><a href="http://wiki.9front.org/drawterm">Drawterm</a>, specifically one compatible
-with changes made to 9front.</li>
+<li><a href="http://wiki.9front.org/drawterm">Drawterm</a>, specifically one compatible with changes made to 9front.</li>
 </ul>
 
 <p>
@@ -317,11 +320,24 @@ you'll need to plug these before  booting again &#x2013; the reasons will be
 described later.
 </p>
 </div>
+
+<div id="outline-container-org88ed742" class="outline-3">
+<h3 id="org88ed742">A quick note on Drawterm</h3>
+<div class="outline-text-3" id="text-org88ed742">
+<p>
+I never really got  Drawterm to work with audio on Linux  with its default build
+configuration, so I  recommend using the <code>sndio</code> driver. If  you manage to build
+it, simply run  <code>sndiod -dd</code> on a  console window and any  sound playback should
+work with  Drawterm. Notice though  that it may  affect playback on  other Linux
+programs, as it blocks audio channels for playback.
+</p>
+</div>
+</div>
 </div>
 
-<div id="outline-container-orgf5f258d" class="outline-2">
-<h2 id="orgf5f258d">Automatic boot</h2>
-<div class="outline-text-2" id="text-orgf5f258d">
+<div id="outline-container-orgd6616a2" class="outline-2">
+<h2 id="orgd6616a2">Automatic boot</h2>
+<div class="outline-text-2" id="text-orgd6616a2">
 <p>
 Let's  start with  the basics.  Suppose you  have written  your 9front
 image to an SD  Card, plugged it in you Raspberry  Pi, and plugged the
@@ -405,9 +421,9 @@ attached.
 </div>
 </div>
 
-<div id="outline-container-org7ce206f" class="outline-2">
-<h2 id="org7ce206f">Configuring remote access</h2>
-<div class="outline-text-2" id="text-org7ce206f">
+<div id="outline-container-org33b7182" class="outline-2">
+<h2 id="org33b7182">Configuring remote access</h2>
+<div class="outline-text-2" id="text-org33b7182">
 <p>
 Next,  we'll  configure  9front  so   that,  after  booting,  it  will
 automatically allow other machines to connect to it remotely.
@@ -501,9 +517,9 @@ power chord and the Ethernet cable are needed.
 </div>
 </div>
 
-<div id="outline-container-org477ddd0" class="outline-2">
-<h2 id="org477ddd0">Connecting remotely</h2>
-<div class="outline-text-2" id="text-org477ddd0">
+<div id="outline-container-org3ba8391" class="outline-2">
+<h2 id="org3ba8391">Connecting remotely</h2>
+<div class="outline-text-2" id="text-org3ba8391">
 <p>
 Now we'll connect remotely to our RPi which runs 9front.
 </p>
@@ -529,7 +545,7 @@ network.
 This will ask you for your password, and will show you some output:
 </p>
 
-<pre class="example" id="org84f1f47">
+<pre class="example" id="org62e08a8">
 Interface: xxxx, type: xxxx, MAC: xx:xx:xx:xx:xx:xx, IPv4: 192.168.2.x
 Starting arp-scan 1.9.7 with 256 hosts (https://github.com/royhills/arp-scan)
 ...
@@ -561,7 +577,7 @@ is "glenda".
 This will open a Drawterm window containing the following prompt:
 </p>
 
-<pre class="example" id="orgd662626">
+<pre class="example" id="org287ac60">
 glenda@plan9 p9sk1 password:
 </pre>
 
@@ -572,7 +588,7 @@ an error related to <code>ipconfig</code> (since it  is being run for a second t
 &#x2013; first time was on boot). It will then give you a prompt:
 </p>
 
-<pre class="example" id="org0f66bad">
+<pre class="example" id="org4a67335">
 cpu%
 </pre>
 
@@ -588,9 +604,9 @@ terminal). Let's change that.
 </div>
 </div>
 
-<div id="outline-container-org936bb24" class="outline-2">
-<h2 id="org936bb24">Logging in remotely to a graphical session</h2>
-<div class="outline-text-2" id="text-org936bb24">
+<div id="outline-container-org1326f6d" class="outline-2">
+<h2 id="org1326f6d">Logging in remotely to a graphical session</h2>
+<div class="outline-text-2" id="text-org1326f6d">
 <p>
 The <code>riostart</code> script assumes that you are booting 9front by plugging an
 HDMI  cable, a  keyboard and  a mouse  to it,  so we  need an  adapted
@@ -719,9 +735,9 @@ greeted by <code>rio</code>.
 </div>
 </div>
 
-<div id="outline-container-org9557399" class="outline-2">
-<h2 id="org9557399">Binding the local filesystem</h2>
-<div class="outline-text-2" id="text-org9557399">
+<div id="outline-container-org5add5d2" class="outline-2">
+<h2 id="org5add5d2">Binding the local filesystem</h2>
+<div class="outline-text-2" id="text-org5add5d2">
 <p>
 One interesting way to use the <code>9fs</code> protocol indirectly is to have your
 local filesystem avaiable to access on your drawterm session.
@@ -784,7 +800,7 @@ You may want to experiment with binding other directories.
 </p>
 
 
-<div id="org6eb80ea" class="figure">
+<div id="org347a945" class="figure">
 <p><img src="./img/plan9rpi.png" alt="plan9rpi.png" />
 </p>
 <p><span class="figure-number">Figure 2: </span>An in-progress screenshot of the configuration. This screenshot was taken from Drawterm.</p>
@@ -792,9 +808,9 @@ You may want to experiment with binding other directories.
 </div>
 </div>
 
-<div id="outline-container-org96ec897" class="outline-2">
-<h2 id="org96ec897">Setting up the Plumber</h2>
-<div class="outline-text-2" id="text-org96ec897">
+<div id="outline-container-org3ed9255" class="outline-2">
+<h2 id="org3ed9255">Setting up the Plumber</h2>
+<div class="outline-text-2" id="text-org3ed9255">
 <p>
 The  <code>plumber(4)</code> is  a  very important  interprocess message  protocol,
 which  is initialized  by  the  command <code>plumber</code>  when  we  log onto  a
@@ -813,7 +829,7 @@ Create a file <code>$home/lib/plumbing</code>. Then, using  Acme or Sam, edit it
 it looks like the following:
 </p>
 
-<pre class="example" id="org62b9899">
+<pre class="example" id="org2bc3e46">
 editor = sam
 include basic
 </pre>
@@ -831,7 +847,7 @@ alt  display  mode).  These  variables  are  then  used on  the  basic
 plumbing rules, which we've included at the end of the file.
 </p>
 
-<pre class="example" id="org61fc7d1">
+<pre class="example" id="orgff01f24">
 editor  = acme
 browser = 'mothra -a'
 include basic
@@ -866,26 +882,35 @@ Or you may log in to a new session to see your changes take effect.
 </div>
 </div>
 
-<div id="outline-container-orgd3e02f8" class="outline-2">
-<h2 id="orgd3e02f8">Extra stuff</h2>
-<div class="outline-text-2" id="text-orgd3e02f8">
+<div id="outline-container-org281ede0" class="outline-2">
+<h2 id="org281ede0">Extra stuff</h2>
+<div class="outline-text-2" id="text-org281ede0">
 
-<div id="org93445bf" class="figure">
+<div id="org57a9193" class="figure">
 <p><img src="./img/plan9rpi2.png" alt="plan9rpi2.png" />
 </p>
 <p><span class="figure-number">Figure 3: </span>Another screenshot of Plan 9, this time taken directly within it. The screenshot was taken from <code>rio</code> and saved directly to my Linux hard drive</p>
 </div>
 </div>
 
-<div id="outline-container-orgdc92be1" class="outline-3">
-<h3 id="orgdc92be1">Setting up Git</h3>
-<div class="outline-text-3" id="text-orgdc92be1">
+<div id="outline-container-org7d7c616" class="outline-3">
+<h3 id="org7d7c616">Setting up Git</h3>
+<div class="outline-text-3" id="text-org7d7c616">
 <p>
 <a href="https://github.com/oridb/git9">Git for Plan 9</a> can be set up with easy steps, as it is stated on their
 repository. The following just repeats  the instructions on the linked
 repo.
 </p>
 
+<p>
+<i><b>NOTE:</b> As  of now  (2022-11-18), Git  for Plan  9 is  contained by  default on
+9front.</i> You shouldn't need to perform the installation steps anymore.
+</p>
+</div>
+
+<div id="outline-container-org218c35c" class="outline-4">
+<h4 id="org218c35c">Installation</h4>
+<div class="outline-text-4" id="text-org218c35c">
 <p>
 First we obtain a bootstrap copy.
 </p>
@@ -913,7 +938,12 @@ mk all
 mk install
 </pre>
 </div>
+</div>
+</div>
 
+<div id="outline-container-orgd2bcd7f" class="outline-4">
+<h4 id="orgd2bcd7f">Setting up username</h4>
+<div class="outline-text-4" id="text-orgd2bcd7f">
 <p>
 The next step is setting up a  username and an email.
 </p>
@@ -923,7 +953,7 @@ Create a  file <code>$home/lib/git</code>, which can  be done with <code>touch</
 Acme or Sam to edit it and add stuff like the following:
 </p>
 
-<pre class="example" id="org7bee9e2">
+<pre class="example" id="org3790bdf">
 [user]
 	name=Your Name
 	email=youremail@example.com
@@ -932,16 +962,61 @@ Acme or Sam to edit it and add stuff like the following:
 <p>
 Make sure you add the newline at the end of the file.
 </p>
+</div>
+</div>
+
+<div id="outline-container-org695c8d4" class="outline-4">
+<h4 id="org695c8d4">Setting up an SSH key for Git</h4>
+<div class="outline-text-4" id="text-org695c8d4">
+<p>
+You might  need to create an  SSH key to  authorize your 9front box  on websites
+such as SourceHut or GitHub, which work best with SSH interaction.
+</p>
+
+<p>
+Start by creating an SSH private key,  that <b>won't be shared</b>. Notice that <i>this
+step may take a while</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">auth/rsagen -t <span style="color: #f5c791;">'service=ssh'</span> <span style="color: #9d81ba;">&gt;</span><span style="color: #7CF083;">$home</span>/lib/sshkey
+</pre>
+</div>
+
+<p>
+Now, create an SSH public key that <b>will be shared with your Git Forge</b>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">auth/rsa2ssh <span style="color: #7CF083;">$home</span>/lib/sshkey <span style="color: #9d81ba;">&gt;</span><span style="color: #7CF083;">$home</span>/lib/sshkey.pub
+</pre>
+</div>
+
+<p>
+Finally, just send the private key to <a href="http://man.9front.org/4/factotum"><code>factotum(4)</code></a> so you may now use it.
+You may also add  this line to your <code>profile</code> so that it  is always available on
+login.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">cat <span style="color: #7CF083;">$home</span>/lib/sshkey <span style="color: #9d81ba;">&gt;</span>/mnt/factotum/ctl
+</pre>
+</div>
+
+<p>
+The reference to these steps may be found <a href="http://wiki.9front.org/ssh">here</a>.
+</p>
 
 <p>
 Now you can look at the manpages <code>git(1)</code> and <code>gitfs(4)</code> to get started.
 </p>
 </div>
 </div>
+</div>
 
-<div id="outline-container-org61d7bc5" class="outline-3">
-<h3 id="org61d7bc5">Setup automatic time synchronization</h3>
-<div class="outline-text-3" id="text-org61d7bc5">
+<div id="outline-container-orgde9b45a" class="outline-3">
+<h3 id="orgde9b45a">Setup automatic time synchronization</h3>
+<div class="outline-text-3" id="text-orgde9b45a">
 <p>
 If you're  someone like me who  is not currently in  January 1st 1970,
 you may  want to  set up  Plan 9 to  fetch the  current date  from the
@@ -1021,9 +1096,9 @@ the <a href="https://9p.io/wiki/plan9/installation_instructions/">9p.io wiki</a>
 </div>
 </div>
 
-<div id="outline-container-orgc373413" class="outline-3">
-<h3 id="orgc373413">Bottom bar</h3>
-<div class="outline-text-3" id="text-orgc373413">
+<div id="outline-container-orge86cf33" class="outline-3">
+<h3 id="orge86cf33">Bottom bar</h3>
+<div class="outline-text-3" id="text-orge86cf33">
 <p>
 There's  an <a href="https://git.sr.ht/~ft/bar">interesting  widget I  stumbled across</a>,  which shows  some
 information &#x2013; the  current date, specially, which I miss  the most.
@@ -1065,9 +1140,9 @@ care of that.
 </div>
 </div>
 
-<div id="outline-container-orge344b48" class="outline-3">
-<h3 id="orge344b48">Lua</h3>
-<div class="outline-text-3" id="text-orge344b48">
+<div id="outline-container-org598f7e0" class="outline-3">
+<h3 id="org598f7e0">Lua</h3>
+<div class="outline-text-3" id="text-org598f7e0">
 <p>
 Lua  5.4 works  fine on  Plan  9, and  there are  some libraries  that
 enhance the interoperability of Lua with Plan 9.
@@ -1102,9 +1177,9 @@ interactive shell through <code>lu9 -i</code>.
 </div>
 </div>
 
-<div id="outline-container-orgb2d0827" class="outline-3">
-<h3 id="orgb2d0827">Scheme</h3>
-<div class="outline-text-3" id="text-orgb2d0827">
+<div id="outline-container-org26dcc7e" class="outline-3">
+<h3 id="org26dcc7e">Scheme</h3>
+<div class="outline-text-3" id="text-org26dcc7e">
 <p>
 There is <a href="http://www.t3x.org/s9fes/">an awesome implementation of Scheme</a> by Nils M. Holm which not
 only runs on Plan 9, but was also built for it.
@@ -1133,7 +1208,7 @@ mk inst
 To use Scheme 9 from Empty Space, just run the program <code>s9</code>.
 </p>
 
-<pre class="example" id="org4ffa9d1">
+<pre class="example" id="orgf9b760d">
 cpu% s9
 Scheme 9 from Empty Space (Reimagined)
 &gt; (+ 1 2 3)
@@ -1149,9 +1224,9 @@ Scheme 9 from Empty Space (Reimagined)
 </div>
 </div>
 
-<div id="outline-container-orgac428eb" class="outline-3">
-<h3 id="orgac428eb">Vim</h3>
-<div class="outline-text-3" id="text-orgac428eb">
+<div id="outline-container-org2caa49d" class="outline-3">
+<h3 id="org2caa49d">Vim</h3>
+<div class="outline-text-3" id="text-org2caa49d">
 <p>
 Before anything, you seriously should be using Acme or Sam. But if you
 still insist on using  Vim, <a href="https://vmsplice.net/9vim.html">there is a way</a> to have  Vim 7.1 working on
@@ -1177,9 +1252,9 @@ system. <code>xxd</code> is useful for generating hexdumps.
 </div>
 </div>
 
-<div id="outline-container-org5c28291" class="outline-3">
-<h3 id="org5c28291">Netsurf</h3>
-<div class="outline-text-3" id="text-org5c28291">
+<div id="outline-container-org2585e32" class="outline-3">
+<h3 id="org2585e32">Netsurf</h3>
+<div class="outline-text-3" id="text-org2585e32">
 <p>
 Mothra is  a browser that  works for the  simplest tasks, but  you may
 want to use a browser which renders HTML properly.
@@ -1192,7 +1267,7 @@ this.
 </p>
 
 
-<div id="orgc6c20aa" class="figure">
+<div id="orga8ae45b" class="figure">
 <p><img src="./img/plan9rpi-netsurf.png" alt="plan9rpi-netsurf.png" />
 </p>
 <p><span class="figure-number">Figure 4: </span>Comparison between Google.com rendering on both Mothra (left) and NetSurf (right).</p>
