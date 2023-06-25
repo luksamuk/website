@@ -5,9 +5,18 @@ cp -r src/posts/img docs/posts/
 
 cp -r src/css src/files docs/
 
-cp -r src/pages/images src/pages/img docs/pages/
+cp -r \
+   src/pages/images \
+   src/pages/img \
+   docs/pages/
 
-cp -r src/talks/images src/talks/img src/talks/git_img src/talks/techimera docs/talks/
+cp -r \
+   src/talks/images \
+   src/talks/img \
+   src/talks/git_img \
+   src/talks/techimera \
+   src/talks/pragmatic \
+   docs/talks/
 
 cp -r static docs/
 
