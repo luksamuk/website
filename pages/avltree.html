@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
 <head>
-<!-- 2023-07-06 Thu 20:22 -->
+<!-- 2023-07-06 Thu 20:27 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Árvore AVL</title>
@@ -213,73 +213,73 @@ Programming, Tech, and occasional rant space by Lucas Vieira" />
 <h2>&Iacute;ndice</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgb6c8a8f">Introdução</a></li>
-<li><a href="#org964556e">Cabeçalhos e bibliotecas</a></li>
-<li><a href="#org6f99e57">Estilo de impressão</a></li>
-<li><a href="#org34da1b8">Início da classe AVLTree</a></li>
-<li><a href="#org4c75864">Elementos privados</a>
+<li><a href="#orgaee3d8f">Introdução</a></li>
+<li><a href="#orgf6c6a96">Cabeçalhos e bibliotecas</a></li>
+<li><a href="#orgdc09d27">Estilo de impressão</a></li>
+<li><a href="#org484dd8c">Início da classe AVLTree</a></li>
+<li><a href="#org825f2e9">Elementos privados</a>
 <ul>
-<li><a href="#orgd0d0c7d">Altura de um nó</a></li>
-<li><a href="#org201b724">Balanceamento</a>
+<li><a href="#org5300bd0">Altura de um nó</a></li>
+<li><a href="#orga6e7903">Balanceamento</a>
 <ul>
-<li><a href="#org08965d5">Cálculo de índice de balanceamento</a></li>
-<li><a href="#org0ba9c74">Rotação à esquerda</a></li>
-<li><a href="#orgd1a73a4">Rotação à direita</a></li>
-<li><a href="#org68047ad">Rotação dupla à direita</a></li>
-<li><a href="#org5bbf010">Rotação dupla à esquerda</a></li>
-<li><a href="#org3048bbd">Função de balanceamento</a></li>
+<li><a href="#org0a64780">Cálculo de índice de balanceamento</a></li>
+<li><a href="#orga433a19">Rotação à esquerda</a></li>
+<li><a href="#org5da6441">Rotação à direita</a></li>
+<li><a href="#orgde12cc0">Rotação dupla à direita</a></li>
+<li><a href="#orgc12dde6">Rotação dupla à esquerda</a></li>
+<li><a href="#org15ae1d6">Função de balanceamento</a></li>
 </ul>
 </li>
-<li><a href="#org0117246">Inserção</a></li>
-<li><a href="#org0e3758e">Impressão</a>
+<li><a href="#org23d282f">Inserção</a></li>
+<li><a href="#org99be673">Impressão</a>
 <ul>
-<li><a href="#orgd7d3d8a">Impressão em ordem</a></li>
-<li><a href="#org829c2c5">Impressão em pré-ordem</a></li>
-<li><a href="#orgbb1a2be">Impressão em pós-ordem</a></li>
-<li><a href="#orga6a77c5">Impressão por nível</a></li>
-<li><a href="#org16e8a73">Impressão triangular</a></li>
-<li><a href="#org2feccb8">Exemplo de uso da impressão triangular</a></li>
+<li><a href="#org87e8669">Impressão em ordem</a></li>
+<li><a href="#org0164c4c">Impressão em pré-ordem</a></li>
+<li><a href="#orga0a6a82">Impressão em pós-ordem</a></li>
+<li><a href="#org12af635">Impressão por nível</a></li>
+<li><a href="#org8acf4e5">Impressão triangular</a></li>
+<li><a href="#org14608c6">Exemplo de uso da impressão triangular</a></li>
 </ul>
 </li>
-<li><a href="#org2795f52">Limpeza de sub-árvore</a></li>
-<li><a href="#org23a3448">Pesquisa</a></li>
-<li><a href="#org20304e0">Remoção</a></li>
+<li><a href="#orgae8823c">Limpeza de sub-árvore</a></li>
+<li><a href="#org0825c11">Pesquisa</a></li>
+<li><a href="#org16c508b">Remoção</a></li>
 </ul>
 </li>
-<li><a href="#org822d23b">Elementos públicos</a>
+<li><a href="#orgf5dfac2">Elementos públicos</a>
 <ul>
-<li><a href="#orgf30db64">Construtores</a></li>
-<li><a href="#org0feb32e">Destrutor</a></li>
-<li><a href="#orgdb1b284">Métodos externos</a>
+<li><a href="#org16c90fe">Construtores</a></li>
+<li><a href="#org63e835d">Destrutor</a></li>
+<li><a href="#org7cf3ad4">Métodos externos</a>
 <ul>
-<li><a href="#org77b880f">Inserção</a></li>
-<li><a href="#org275ecd6">Impressão</a></li>
-<li><a href="#orgb65b8f4">Limpeza</a></li>
-<li><a href="#org325e1dc">Pesquisa</a></li>
-<li><a href="#org15bf72c">Remoção</a></li>
+<li><a href="#org909cd70">Inserção</a></li>
+<li><a href="#org1abff96">Impressão</a></li>
+<li><a href="#org8281c1c">Limpeza</a></li>
+<li><a href="#org1f81feb">Pesquisa</a></li>
+<li><a href="#org30cbd17">Remoção</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgf2d29bf">Testes</a>
+<li><a href="#org8ceafcd">Testes</a>
 <ul>
-<li><a href="#org4853681">Impressão de elementos na tela</a></li>
-<li><a href="#org5001f4b">Teste de inserção</a></li>
-<li><a href="#org3682041">Teste de construtor</a></li>
-<li><a href="#orgafc404a">Teste de caracteres</a></li>
-<li><a href="#org077451c">Teste de pesquisa</a></li>
-<li><a href="#org84dd873">Teste de remoção</a></li>
+<li><a href="#org7d008f1">Impressão de elementos na tela</a></li>
+<li><a href="#org6a6da11">Teste de inserção</a></li>
+<li><a href="#org1156cef">Teste de construtor</a></li>
+<li><a href="#org3e02058">Teste de caracteres</a></li>
+<li><a href="#orge2275bb">Teste de pesquisa</a></li>
+<li><a href="#org4d5381e">Teste de remoção</a></li>
 </ul>
 </li>
-<li><a href="#orga451b7b">Ponto de entrada</a></li>
-<li><a href="#orge2fdc06">Compilação</a></li>
+<li><a href="#org643a7ce">Ponto de entrada</a></li>
+<li><a href="#orga542a68">Compilação</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgb6c8a8f" class="outline-2">
-<h2 id="orgb6c8a8f">Introdução</h2>
-<div class="outline-text-2" id="text-orgb6c8a8f">
+<div id="outline-container-orgaee3d8f" class="outline-2">
+<h2 id="orgaee3d8f">Introdução</h2>
+<div class="outline-text-2" id="text-orgaee3d8f">
 <p>
 Este documento visa implementar uma árvore AVL utilizando a linguagem
 C++, em sua especificação de 2014. A árvore é implementada utilizando
@@ -305,9 +305,9 @@ Caso queira ver  apenas o código, <a href="avltree.cpp">poderá encontrá-lo aq
 </div>
 </div>
 
-<div id="outline-container-org964556e" class="outline-2">
-<h2 id="org964556e">Cabeçalhos e bibliotecas</h2>
-<div class="outline-text-2" id="text-org964556e">
+<div id="outline-container-orgf6c6a96" class="outline-2">
+<h2 id="orgf6c6a96">Cabeçalhos e bibliotecas</h2>
+<div class="outline-text-2" id="text-orgf6c6a96">
 <p>
 Começamos identificando cabeçalhos de bibliotecas úteis a serem
 utilizadas. Temos bibliotecas para Entrada e Saída e para Matemática
@@ -330,11 +330,11 @@ elementos a serem adicionados na árvore, respectivamente.
 </div>
 </div>
 
-<div id="outline-container-org6f99e57" class="outline-2">
-<h2 id="org6f99e57">Estilo de impressão</h2>
-<div class="outline-text-2" id="text-org6f99e57">
+<div id="outline-container-orgdc09d27" class="outline-2">
+<h2 id="orgdc09d27">Estilo de impressão</h2>
+<div class="outline-text-2" id="text-orgdc09d27">
 <p>
-<a id="org805486f"></a>
+<a id="org7fffb49"></a>
 </p>
 
 <p>
@@ -369,9 +369,9 @@ linha. Ponteiros nulos também serão impressos por conveniência.</li>
 </div>
 </div>
 
-<div id="outline-container-org34da1b8" class="outline-2">
-<h2 id="org34da1b8">Início da classe AVLTree</h2>
-<div class="outline-text-2" id="text-org34da1b8">
+<div id="outline-container-org484dd8c" class="outline-2">
+<h2 id="org484dd8c">Início da classe AVLTree</h2>
+<div class="outline-text-2" id="text-org484dd8c">
 <p>
 A classe <code>AVLTree</code> é uma classe construída utilizando <i>templates</i>. Desta
 forma, esta classe pode ser generalizada para qualquer tipo
@@ -448,13 +448,13 @@ um ponteiro para o nó-raiz da árvore.</li>
 </div>
 </div>
 
-<div id="outline-container-org4c75864" class="outline-2">
-<h2 id="org4c75864">Elementos privados</h2>
-<div class="outline-text-2" id="text-org4c75864">
+<div id="outline-container-org825f2e9" class="outline-2">
+<h2 id="org825f2e9">Elementos privados</h2>
+<div class="outline-text-2" id="text-org825f2e9">
 </div>
-<div id="outline-container-orgd0d0c7d" class="outline-3">
-<h3 id="orgd0d0c7d">Altura de um nó</h3>
-<div class="outline-text-3" id="text-orgd0d0c7d">
+<div id="outline-container-org5300bd0" class="outline-3">
+<h3 id="org5300bd0">Altura de um nó</h3>
+<div class="outline-text-3" id="text-org5300bd0">
 <p>
 Este método calcula a altura de um nó arbitrário da árvore. Ele é
 especialmente útil para a programação do balanceamento da mesma.
@@ -495,9 +495,9 @@ maior valor.
 </div>
 </div>
 
-<div id="outline-container-org201b724" class="outline-3">
-<h3 id="org201b724">Balanceamento</h3>
-<div class="outline-text-3" id="text-org201b724">
+<div id="outline-container-orga6e7903" class="outline-3">
+<h3 id="orga6e7903">Balanceamento</h3>
+<div class="outline-text-3" id="text-orga6e7903">
 <p>
 Os métodos a seguir descrevem o balanceamento baseado no algoritmo
 AVL.
@@ -510,9 +510,9 @@ eventual uso de um <i>ponteiro para ponteiro</i> (<code>node_t**</code>).
 </p>
 </div>
 
-<div id="outline-container-org08965d5" class="outline-4">
-<h4 id="org08965d5">Cálculo de índice de balanceamento</h4>
-<div class="outline-text-4" id="text-org08965d5">
+<div id="outline-container-org0a64780" class="outline-4">
+<h4 id="org0a64780">Cálculo de índice de balanceamento</h4>
+<div class="outline-text-4" id="text-org0a64780">
 <p>
 Este método calcula o índice de balanceamento para um nó
 arbitrário. Este cálculo é feito através da diferença entre <i>esquerda</i> e
@@ -550,9 +550,9 @@ atual chegue ao nó-folha mais baixo.
 </div>
 </div>
 
-<div id="outline-container-org0ba9c74" class="outline-4">
-<h4 id="org0ba9c74">Rotação à esquerda</h4>
-<div class="outline-text-4" id="text-org0ba9c74">
+<div id="outline-container-orga433a19" class="outline-4">
+<h4 id="orga433a19">Rotação à esquerda</h4>
+<div class="outline-text-4" id="text-orga433a19">
 <p>
 Uma rotação à esquerda é realizada em um certo nó <code>a</code>, trocando-o pela
 sua sub-árvore da direita <code>b</code>. O nó <code>a</code> em questão, por conseguinte,
@@ -564,7 +564,7 @@ A sub-árvore esquerda do nó <code>b</code> torna-se a sub-árvore direita do n
 </p>
 
 
-<div id="orgc7ddec2" class="figure">
+<div id="org94a93ec" class="figure">
 <p><img src="img/lrot.svg" alt="lrot.svg" class="org-svg" />
 </p>
 </div>
@@ -583,9 +583,9 @@ A sub-árvore esquerda do nó <code>b</code> torna-se a sub-árvore direita do n
 </div>
 </div>
 
-<div id="outline-container-orgd1a73a4" class="outline-4">
-<h4 id="orgd1a73a4">Rotação à direita</h4>
-<div class="outline-text-4" id="text-orgd1a73a4">
+<div id="outline-container-org5da6441" class="outline-4">
+<h4 id="org5da6441">Rotação à direita</h4>
+<div class="outline-text-4" id="text-org5da6441">
 <p>
 Uma rotação à direita é realizada em um certo nó <code>a</code>, trocando-o pela
 sua sub-árvore da esquerda <code>b</code>. O nó <code>a</code> em questão, por conseguinte,
@@ -597,7 +597,7 @@ A sub-árvore direita do nó <code>b</code> torna-se a sub-árvore esquerda do n
 </p>
 
 
-<div id="orged13035" class="figure">
+<div id="org60872e4" class="figure">
 <p><img src="img/rrot.svg" alt="rrot.svg" class="org-svg" />
 </p>
 </div>
@@ -616,9 +616,9 @@ A sub-árvore direita do nó <code>b</code> torna-se a sub-árvore esquerda do n
 </div>
 </div>
 
-<div id="outline-container-org68047ad" class="outline-4">
-<h4 id="org68047ad">Rotação dupla à direita</h4>
-<div class="outline-text-4" id="text-org68047ad">
+<div id="outline-container-orgde12cc0" class="outline-4">
+<h4 id="orgde12cc0">Rotação dupla à direita</h4>
+<div class="outline-text-4" id="text-orgde12cc0">
 <p>
 Uma rotação dupla à direita constitui-se de rotacionar um certo nó <code>a</code>
 em duas etapas. Na primeira etapa, realizamos uma rotação <i>à esquerda</i>
@@ -626,7 +626,7 @@ no <i>filho esquerdo</i> de <code>a</code>; em seguida, rotacionamos <code>a</co
 </p>
 
 
-<div id="org2b360ee" class="figure">
+<div id="org9ed06af" class="figure">
 <p><img src="img/rrot_dbl.svg" alt="rrot_dbl.svg" class="org-svg" />
 </p>
 </div>
@@ -643,9 +643,9 @@ no <i>filho esquerdo</i> de <code>a</code>; em seguida, rotacionamos <code>a</co
 </div>
 </div>
 
-<div id="outline-container-org5bbf010" class="outline-4">
-<h4 id="org5bbf010">Rotação dupla à esquerda</h4>
-<div class="outline-text-4" id="text-org5bbf010">
+<div id="outline-container-orgc12dde6" class="outline-4">
+<h4 id="orgc12dde6">Rotação dupla à esquerda</h4>
+<div class="outline-text-4" id="text-orgc12dde6">
 <p>
 Uma rotação dupla à esquerda constitui-se de rotacionar um certo nó <code>a</code>
 em duas etapas. Na primeira etapa, realizamos uma rotação no filho
@@ -653,7 +653,7 @@ em duas etapas. Na primeira etapa, realizamos uma rotação no filho
 </p>
 
 
-<div id="orgf03d855" class="figure">
+<div id="orgc80a0fe" class="figure">
 <p><img src="img/lrot_dbl.svg" alt="lrot_dbl.svg" class="org-svg" />
 </p>
 </div>
@@ -670,9 +670,9 @@ em duas etapas. Na primeira etapa, realizamos uma rotação no filho
 </div>
 </div>
 
-<div id="outline-container-org3048bbd" class="outline-4">
-<h4 id="org3048bbd">Função de balanceamento</h4>
-<div class="outline-text-4" id="text-org3048bbd">
+<div id="outline-container-org15ae1d6" class="outline-4">
+<h4 id="org15ae1d6">Função de balanceamento</h4>
+<div class="outline-text-4" id="text-org15ae1d6">
 <p>
 A função de balanceamento a seguir realiza, efetivamente, o
 balanceamento de uma sub-árvore cuja raiz seja passada por parâmetro.
@@ -735,9 +735,9 @@ Por convenção, ignoramos nós nulos. Isso será útil durante a remoção.
 </div>
 </div>
 
-<div id="outline-container-org0117246" class="outline-3">
-<h3 id="org0117246">Inserção</h3>
-<div class="outline-text-3" id="text-org0117246">
+<div id="outline-container-org23d282f" class="outline-3">
+<h3 id="org23d282f">Inserção</h3>
+<div class="outline-text-3" id="text-org23d282f">
 <p>
 O método de <i>inserção</i> retorna <i>verdadeiro</i> se a chave ainda não existir
 na árvore, e for portanto inserida com sucesso; caso contrário,
@@ -795,19 +795,19 @@ regra <code>0 &lt;= |coef| &lt;= 2</code>.
 </div>
 </div>
 
-<div id="outline-container-org0e3758e" class="outline-3">
-<h3 id="org0e3758e">Impressão</h3>
-<div class="outline-text-3" id="text-org0e3758e">
+<div id="outline-container-org99be673" class="outline-3">
+<h3 id="org99be673">Impressão</h3>
+<div class="outline-text-3" id="text-org99be673">
 <p>
 Os métodos a seguir demonstram a implementação de várias formas de
 impressão dos elementos da árvore na tela, de acordo com o que foi
-previamente descrito na Seção <a href="#org805486f">No description for this link</a>.
+previamente descrito na Seção <a href="#org7fffb49">No description for this link</a>.
 </p>
 </div>
 
-<div id="outline-container-orgd7d3d8a" class="outline-4">
-<h4 id="orgd7d3d8a">Impressão em ordem</h4>
-<div class="outline-text-4" id="text-orgd7d3d8a">
+<div id="outline-container-org87e8669" class="outline-4">
+<h4 id="org87e8669">Impressão em ordem</h4>
+<div class="outline-text-4" id="text-org87e8669">
 <p>
 Imprimir um nó <i>em ordem</i> envolve imprimir recursivamente a sub-árvore
 de seu filho esquerdo, imprimir seu próprio valor, e imprimir
@@ -834,9 +834,9 @@ imprime os elementos da árvore em ordem crescente.
 </div>
 </div>
 
-<div id="outline-container-org829c2c5" class="outline-4">
-<h4 id="org829c2c5">Impressão em pré-ordem</h4>
-<div class="outline-text-4" id="text-org829c2c5">
+<div id="outline-container-org0164c4c" class="outline-4">
+<h4 id="org0164c4c">Impressão em pré-ordem</h4>
+<div class="outline-text-4" id="text-org0164c4c">
 <p>
 Imprimir um nó <i>em pré-ordem</i> envolve imprimir primeiramente o valor do
 nó, e então imprimir recursivamente a sub-árvore dos filhos esquerdo e
@@ -857,9 +857,9 @@ direito deste nó, respectivamente.
 </div>
 </div>
 
-<div id="outline-container-orgbb1a2be" class="outline-4">
-<h4 id="orgbb1a2be">Impressão em pós-ordem</h4>
-<div class="outline-text-4" id="text-orgbb1a2be">
+<div id="outline-container-orga0a6a82" class="outline-4">
+<h4 id="orga0a6a82">Impressão em pós-ordem</h4>
+<div class="outline-text-4" id="text-orga0a6a82">
 <p>
 Imprimir um nó em <i>pós-ordem</i> envolve, primeiramente, imprimir em
 recursão a sub-árvore dos filhos direito e esquerdo, e então imprimir
@@ -880,9 +880,9 @@ o valor do nó atual.
 </div>
 </div>
 
-<div id="outline-container-orga6a77c5" class="outline-4">
-<h4 id="orga6a77c5">Impressão por nível</h4>
-<div class="outline-text-4" id="text-orga6a77c5">
+<div id="outline-container-org12af635" class="outline-4">
+<h4 id="org12af635">Impressão por nível</h4>
+<div class="outline-text-4" id="text-org12af635">
 <p>
 Impressão <i>por nível</i> envolve imprimir, em sequência, todos os nós
 existentes na árvore, em um formato linear. Note que esta impressão em
@@ -921,9 +921,9 @@ fila.
 </div>
 </div>
 
-<div id="outline-container-org16e8a73" class="outline-4">
-<h4 id="org16e8a73">Impressão triangular</h4>
-<div class="outline-text-4" id="text-org16e8a73">
+<div id="outline-container-org8acf4e5" class="outline-4">
+<h4 id="org8acf4e5">Impressão triangular</h4>
+<div class="outline-text-4" id="text-org8acf4e5">
 <p>
 A impressão <i>triangular</i> é muito similar à impressão <i>por nível</i>, todavia
 utilizamos <i>duas filas</i> (<code>std::queue</code>) para realizar a impressão.
@@ -976,14 +976,14 @@ triangular e desenhar uma árvore binária apropriada em papel.
 </div>
 </div>
 
-<div id="outline-container-org2feccb8" class="outline-4">
-<h4 id="org2feccb8">Exemplo de uso da impressão triangular</h4>
-<div class="outline-text-4" id="text-org2feccb8">
+<div id="outline-container-org14608c6" class="outline-4">
+<h4 id="org14608c6">Exemplo de uso da impressão triangular</h4>
+<div class="outline-text-4" id="text-org14608c6">
 <p>
 Tomemos a impressão triangular a seguir:
 </p>
 
-<pre class="example" id="org14d8fc9">
+<pre class="example" id="org2be7b67">
 28 
 22 35 
 20 25 32 39 
@@ -1014,7 +1014,7 @@ Assim, teremos a árvore AVL conforme desenhado a seguir.
 </p>
 
 
-<div id="org81c5fcf" class="figure">
+<div id="org94402b9" class="figure">
 <p><img src="img/triangle_print.svg" alt="triangle_print.svg" class="org-svg" />
 </p>
 </div>
@@ -1022,9 +1022,9 @@ Assim, teremos a árvore AVL conforme desenhado a seguir.
 </div>
 </div>
 
-<div id="outline-container-org2795f52" class="outline-3">
-<h3 id="org2795f52">Limpeza de sub-árvore</h3>
-<div class="outline-text-3" id="text-org2795f52">
+<div id="outline-container-orgae8823c" class="outline-3">
+<h3 id="orgae8823c">Limpeza de sub-árvore</h3>
+<div class="outline-text-3" id="text-orgae8823c">
 <p>
 O método a seguir <i>limpa</i> a sub-árvore do nó informado, incluindo o nó
 atual e removendo todos os nós abaixo do mesmo.
@@ -1052,9 +1052,9 @@ torne-se um ponteiro <i>nulo</i>, caso mais operações sejam esperadas.
 </div>
 </div>
 
-<div id="outline-container-org23a3448" class="outline-3">
-<h3 id="org23a3448">Pesquisa</h3>
-<div class="outline-text-3" id="text-org23a3448">
+<div id="outline-container-org0825c11" class="outline-3">
+<h3 id="org0825c11">Pesquisa</h3>
+<div class="outline-text-3" id="text-org0825c11">
 <p>
 O método a seguir realiza uma pesquisa na árvore, procurando por uma
 informação passada por referência.
@@ -1085,9 +1085,9 @@ seguido. A resposta será um valor booleano.
 </div>
 </div>
 
-<div id="outline-container-org20304e0" class="outline-3">
-<h3 id="org20304e0">Remoção</h3>
-<div class="outline-text-3" id="text-org20304e0">
+<div id="outline-container-org16c508b" class="outline-3">
+<h3 id="org16c508b">Remoção</h3>
+<div class="outline-text-3" id="text-org16c508b">
 <p>
 A implementação da remoção de um nó envolve três casos:
 </p>
@@ -1211,13 +1211,13 @@ implica em uma necessidade de balanceamento.
 </div>
 </div>
 
-<div id="outline-container-org822d23b" class="outline-2">
-<h2 id="org822d23b">Elementos públicos</h2>
-<div class="outline-text-2" id="text-org822d23b">
+<div id="outline-container-orgf5dfac2" class="outline-2">
+<h2 id="orgf5dfac2">Elementos públicos</h2>
+<div class="outline-text-2" id="text-orgf5dfac2">
 </div>
-<div id="outline-container-orgf30db64" class="outline-3">
-<h3 id="orgf30db64">Construtores</h3>
-<div class="outline-text-3" id="text-orgf30db64">
+<div id="outline-container-org16c90fe" class="outline-3">
+<h3 id="org16c90fe">Construtores</h3>
+<div class="outline-text-3" id="text-org16c90fe">
 <p>
 A classe <code>AVLTree</code> possui dois construtores, onde ambos definem o
 ponteiro para a raiz da árvore como um valor <i>nulo</i>.
@@ -1258,9 +1258,9 @@ comum.
 </div>
 </div>
 
-<div id="outline-container-org0feb32e" class="outline-3">
-<h3 id="org0feb32e">Destrutor</h3>
-<div class="outline-text-3" id="text-org0feb32e">
+<div id="outline-container-org63e835d" class="outline-3">
+<h3 id="org63e835d">Destrutor</h3>
+<div class="outline-text-3" id="text-org63e835d">
 <p>
 O destrutor da classe <code>AVLTree</code> invoca o método interno de limpeza para
 a sub-árvore. Como o destrutor é invocado como finalizador da classe,
@@ -1278,18 +1278,18 @@ não é necessário atribuir nulidade à raiz da mesma.
 </div>
 </div>
 
-<div id="outline-container-orgdb1b284" class="outline-3">
-<h3 id="orgdb1b284">Métodos externos</h3>
-<div class="outline-text-3" id="text-orgdb1b284">
+<div id="outline-container-org7cf3ad4" class="outline-3">
+<h3 id="org7cf3ad4">Métodos externos</h3>
+<div class="outline-text-3" id="text-org7cf3ad4">
 <p>
 Os métodos a seguir constituem <i>invólucros</i> para métodos internos da
 árvore.
 </p>
 </div>
 
-<div id="outline-container-org77b880f" class="outline-4">
-<h4 id="org77b880f">Inserção</h4>
-<div class="outline-text-4" id="text-org77b880f">
+<div id="outline-container-org909cd70" class="outline-4">
+<h4 id="org909cd70">Inserção</h4>
+<div class="outline-text-4" id="text-org909cd70">
 <p>
 Insere uma certa informação na árvore. Retorna um valor booleano
 indicando o <i>status</i> da inserção de tal informação.
@@ -1306,13 +1306,13 @@ indicando o <i>status</i> da inserção de tal informação.
 </div>
 </div>
 
-<div id="outline-container-org275ecd6" class="outline-4">
-<h4 id="org275ecd6">Impressão</h4>
-<div class="outline-text-4" id="text-org275ecd6">
+<div id="outline-container-org1abff96" class="outline-4">
+<h4 id="org1abff96">Impressão</h4>
+<div class="outline-text-4" id="text-org1abff96">
 <p>
 Imprime a árvore por inteiro, de acordo com o estilo de impressão
 fornecido, segundo a enumeração demonstrada na Seção
-<a href="#org805486f">No description for this link</a>.
+<a href="#org7fffb49">No description for this link</a>.
 </p>
 
 <p>
@@ -1349,9 +1349,9 @@ impressão <i>em ordem</i> será feita por padrão.
 </div>
 </div>
 
-<div id="outline-container-orgb65b8f4" class="outline-4">
-<h4 id="orgb65b8f4">Limpeza</h4>
-<div class="outline-text-4" id="text-orgb65b8f4">
+<div id="outline-container-org8281c1c" class="outline-4">
+<h4 id="org8281c1c">Limpeza</h4>
+<div class="outline-text-4" id="text-org8281c1c">
 <p>
 Limpa todos os elementos da árvore.
 </p>
@@ -1374,9 +1374,9 @@ inserção de mais elementos.
 </div>
 </div>
 
-<div id="outline-container-org325e1dc" class="outline-4">
-<h4 id="org325e1dc">Pesquisa</h4>
-<div class="outline-text-4" id="text-org325e1dc">
+<div id="outline-container-org1f81feb" class="outline-4">
+<h4 id="org1f81feb">Pesquisa</h4>
+<div class="outline-text-4" id="text-org1f81feb">
 <p>
 Pesquisa por um elemento na árvore, que será passado <i>por valor</i> para
 este método.
@@ -1398,9 +1398,9 @@ Retorna um valor booleano representando a existência do elemento na
 </div>
 </div>
 
-<div id="outline-container-org15bf72c" class="outline-4">
-<h4 id="org15bf72c">Remoção</h4>
-<div class="outline-text-4" id="text-org15bf72c">
+<div id="outline-container-org30cbd17" class="outline-4">
+<h4 id="org30cbd17">Remoção</h4>
+<div class="outline-text-4" id="text-org30cbd17">
 <p>
 Remove um elemento na árvore, que será passado <i>por valor</i> para este
 método.
@@ -1424,18 +1424,18 @@ elemento na árvore.
 </div>
 </div>
 
-<div id="outline-container-orgf2d29bf" class="outline-2">
-<h2 id="orgf2d29bf">Testes</h2>
-<div class="outline-text-2" id="text-orgf2d29bf">
+<div id="outline-container-org8ceafcd" class="outline-2">
+<h2 id="org8ceafcd">Testes</h2>
+<div class="outline-text-2" id="text-org8ceafcd">
 <p>
 As funções a seguir determinam testes para o instanciamento e a
 manipulação de elementos na árvore AVL.
 </p>
 </div>
 
-<div id="outline-container-org4853681" class="outline-3">
-<h3 id="org4853681">Impressão de elementos na tela</h3>
-<div class="outline-text-3" id="text-org4853681">
+<div id="outline-container-org7d008f1" class="outline-3">
+<h3 id="org7d008f1">Impressão de elementos na tela</h3>
+<div class="outline-text-3" id="text-org7d008f1">
 <p>
 Esta função generaliza a impressão dos elementos em uma árvore passada
 <i>por referência</i> como parâmetro. Normalmente, ela é invocada ao final de
@@ -1469,9 +1469,9 @@ que a invoca.
 </div>
 </div>
 
-<div id="outline-container-org5001f4b" class="outline-3">
-<h3 id="org5001f4b">Teste de inserção</h3>
-<div class="outline-text-3" id="text-org5001f4b">
+<div id="outline-container-org6a6da11" class="outline-3">
+<h3 id="org6a6da11">Teste de inserção</h3>
+<div class="outline-text-3" id="text-org6a6da11">
 <p>
 Este teste insere certos elementos, um a um, em uma <code>AVLTree</code> de números
 inteiros, mostrando impressões <i>em ordem</i> e <i>por nível</i> após cada
@@ -1505,9 +1505,9 @@ inserção.
 </div>
 </div>
 
-<div id="outline-container-org3682041" class="outline-3">
-<h3 id="org3682041">Teste de construtor</h3>
-<div class="outline-text-3" id="text-org3682041">
+<div id="outline-container-org1156cef" class="outline-3">
+<h3 id="org1156cef">Teste de construtor</h3>
+<div class="outline-text-3" id="text-org1156cef">
 <p>
 Esta função testa o uso do construtor alternativo da classe <code>AVLTree</code>
 para números inteiros, através da passagem de uma literal de vetor
@@ -1533,9 +1533,9 @@ numérico.
 </div>
 </div>
 
-<div id="outline-container-orgafc404a" class="outline-3">
-<h3 id="orgafc404a">Teste de caracteres</h3>
-<div class="outline-text-3" id="text-orgafc404a">
+<div id="outline-container-org3e02058" class="outline-3">
+<h3 id="org3e02058">Teste de caracteres</h3>
+<div class="outline-text-3" id="text-org3e02058">
 <p>
 Esta função usa o construtor alternativo da classe <code>AVLTree</code> para
 construir uma árvore AVL de <i>caracteres</i>.
@@ -1555,9 +1555,9 @@ construir uma árvore AVL de <i>caracteres</i>.
 </div>
 </div>
 
-<div id="outline-container-org077451c" class="outline-3">
-<h3 id="org077451c">Teste de pesquisa</h3>
-<div class="outline-text-3" id="text-org077451c">
+<div id="outline-container-orge2275bb" class="outline-3">
+<h3 id="orge2275bb">Teste de pesquisa</h3>
+<div class="outline-text-3" id="text-orge2275bb">
 <p>
 Esta função testa a pesquisa de alguns elementos em uma <code>AVLTree</code> de
 números inteiros.
@@ -1583,9 +1583,9 @@ números inteiros.
 </div>
 </div>
 
-<div id="outline-container-org84dd873" class="outline-3">
-<h3 id="org84dd873">Teste de remoção</h3>
-<div class="outline-text-3" id="text-org84dd873">
+<div id="outline-container-org4d5381e" class="outline-3">
+<h3 id="org4d5381e">Teste de remoção</h3>
+<div class="outline-text-3" id="text-org4d5381e">
 <p>
 Esta função  testa a  remoção de  alguns elementos  de uma  <code>AVLTree</code> de
 números inteiros.
@@ -1617,9 +1617,9 @@ números inteiros.
 </div>
 </div>
 
-<div id="outline-container-orga451b7b" class="outline-2">
-<h2 id="orga451b7b">Ponto de entrada</h2>
-<div class="outline-text-2" id="text-orga451b7b">
+<div id="outline-container-org643a7ce" class="outline-2">
+<h2 id="org643a7ce">Ponto de entrada</h2>
+<div class="outline-text-2" id="text-org643a7ce">
 <p>
 Esta é a função principal da aplicação, constituindo o ponto de
 entrada da mesma. Utilizamos este ponto de entrada para executar testes.
@@ -1642,9 +1642,9 @@ entrada da mesma. Utilizamos este ponto de entrada para executar testes.
 </div>
 </div>
 
-<div id="outline-container-orge2fdc06" class="outline-2">
-<h2 id="orge2fdc06">Compilação</h2>
-<div class="outline-text-2" id="text-orge2fdc06">
+<div id="outline-container-orga542a68" class="outline-2">
+<h2 id="orga542a68">Compilação</h2>
+<div class="outline-text-2" id="text-orga542a68">
 <p>
 O código a seguir constitui um arquivo <i>Makefile</i> para a compilação do
 arquivo em questão.
