@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: luksamuk/emacs-export
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
@@ -21,7 +23,7 @@ jobs:
         run: sh ./ci-run.sh
 
       - name: Deploy to GH Pages
-        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: docs
