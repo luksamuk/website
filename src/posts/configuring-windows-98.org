@@ -1,0 +1,390 @@
+#+title: Configuring Windows 98... in 2023!
+#+setupfile: setupfile.org
+#+language: en_US
+#+startup: showall latexpreview
+# #+startup: inlineimages
+#+author: Lucas S. Vieira
+#+email: lucasvieira@protonmail.com
+#+date: Jul 31, 2023
+#+options: toc:2
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/win98.jpg]]
+
+Write intro here.
+
+* Preparation
+
+You'll need  a few things on  this article. Make  sure you download all  of them
+before beginning.
+
+- VirtualBox (an updated version is enough);
+- A Windows 98 Second Edition ISO. [[https://archive.org/details/Windows98SE_201906][I am using a Brazillian Portuguese ISO]]. It is
+  not an unaltered copy, but it was the best I found since I wanted a Brazillian
+  Portuguese system.
+- [[https://retrorevive.enochdew.com/4gb-ram-windows-98/][A patch for allowing up to 4GB of RAM on Windows 98]].
+- [[https://documents.upperswanley.com/Don/scitech-display-doctor-7.iso][SciTech Display Doctor  video driver]], as explained on [[https://forums.virtualbox.org/viewtopic.php?f=28&t=9918][this  post]] on VirtualBox
+  forums.  This   is  an   abandonware  ISO  containing   the  driver.
+- [[https://archive.org/details/directx_9c][DirectX 9.0c Redistributable]].
+- [[https://archive.org/details/msfn-archived-topics-june-2021.-7z_202106][KernelEx 4.5.2 and unicows.exe]], for  forward compatibility with newer versions
+  of Windows.
+- [[https://archive.org/details/ie-6-ptbr][Internet Explorer 6 installer (Brazillian Portuguese)]]
+- (OPTIONAL) [[https://www.vogons.org/viewtopic.php?t=14934][AutoPatcher for Windows 98 SE]]
+  
+Notice that some software can be found on the [[https://archive.org][Internet Archive]], so if you're not
+seeing something  in your desired version  or language, you can  always download
+abandonware  from the  archive for  free --  some are  even posted  by Microsoft
+themselves!
+
+** Helper ISO file
+
+I've compiled most of  the assets that are patches and programs  on a single ISO
+image [LINK HERE!]. These can be shared since they are mostly opensource or free
+projects, or sometimes abandonware. But you  should refer to the links above for
+the newest versions of  these softwares. Also, you may want  to create ISO files
+from folders on Linux by using the ~mkisofs~ tool.
+
+* Creating the virtual machine
+
+First of all, create a new virtual  machine on VirtualBox. It should be labelled
+as a Windows 98.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/001.png]]
+
+Use a maximum of  1024MB for RAM. This should be enough for  now. We'll raise it
+to 4096MB afterwards.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/002.png]]
+
+For hard disk capacity, 10GB should be enough.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/003.png]]
+
+Here is a summary of the configuration:
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/004.png]]
+
+Now boot your VM.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/005.png]]
+
+Again, in my case,  I'm using a Portuguese ISO, so pick up the
+option to boot from CD.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/006.png]]
+
+Run the installer from the first option.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/007.png]]
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/008.png]]
+
+Now configure the unallocated space on your virtual hard drive.
+Make sure you activate support for large storage disks.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/009.png]]
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/010.png]]
+
+You should have to  reboot and enter the CD installation  again. Then follow the
+installation instructions,  and you  should see some prompts like the following.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/011.png]]
+
+Skip through them, and at some point you'll end up at the graphical installer.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/012.png]]
+
+At this point, I generally select a  personalized setup so that I can enable all
+features, including extra languages.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/013.png]]
+
+On  keyboard layout,  if you're  installing  a Brazillian  Portuguese system,  I
+recommend using the Português (Brasil ABNT2) keyboard.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/014.png]]
+
+Now everything should be straightforward. Go on with the installation and reboot
+a few times; this  time, boot from your hard disk instead of  the CD. You should
+be able to log in.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/015.png]]
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/016.png]]
+
+* Extending available memory
+
+Now  let's allow  up to  4GB of  RAM on  our Windows  98 machine.  Go ahead  and
+download the  4GB Patch, or  mount the ~util~  ISO I created  -- if you  do, the
+patch should be located at ~D:\4GBWin98~.
+
+The files are already disposed on the hierarchy they are supposed to be on ~C:\~
+drive, so  you should just  copy the files  to their desired  location. However,
+*make sure you rename the files that  are being replaced*, in case anything goes
+wrong.
+
+In case some  files are apparently missing,  on Windows Explorer, go  to ~Show >
+Folder Options~, then allow hidden files to be viewed.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/017.png]]
+
+After finishing,  turn off  the virtual  machine. Go  back to  VirtualBox, right
+click the virtual machine and go to Settings. On the System section, go ahead to
+the slider called Base Memory and set it to 4096MB.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/018.png]]
+
+Start your virtual  machine once again. It  is possible that an  error occurs on
+the first boot; if that happens, just turn of the machine and turn it on again.
+
+Finally, right  click on ~My  Computer~ and go  to ~Properties~. You  should see
+that your virtual machine now has close to 4GB of RAM installed.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/019.png]]
+
+* Installing a video driver
+
+Firstly, turn off your VM, right click it on VirtualBox, then go to Settings. On
+the  Display  tab,   set  Video  Memory  to  128MB,  and   activate  "Enable  3D
+Acceleration".
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/020.png]]
+
+Boot the  virtual machine and  *mount the ISO  for SciTech Display  Driver*. You
+should be  able to run the  installer from ~D:\~  driver and you'll also  find a
+text file containing the activation, which will be needed later.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/021.png]]
+
+Do an express installation and, at the end, allow it to reboot your computer.
+
+On boot, you should see the  following screen for SciTech Display Doctor. Scroll
+down, select Register Now, and use the credentials on the text file on the disc.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/022.png]]
+
+You'll be prompted to reboot at the end;  do it again. Once you do, on the video
+driver's dashboard,  select "Monitor not selected"  and, on the new  screen that
+opens, select a proper Super VGA resolution.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/023.png]]
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/024.png]]
+
+Reboot Windows again and you'll see that the monitor was selected.
+
+Now  click the  "Disabled"  link beside  "SciTech Display  Driver".  On the  new
+screen, select SciTech Nucleus Driver. Apply and reboot again.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/025.png]]
+
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/026.png]]
+
+Now you'll see  that the Graphics Adapter for VirtualBox  is properly recognized
+on the dashboard.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/027.png]]
+
+Now,  right  click  on  the  desktop  and select  Properties,  then  go  to  the
+Configuration tab. On Colors, select High Color (16 bits), then click OK.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/028.png]]
+
+You'll be prompted to reboot once more. The reboot may hang; allow it to be like
+that for a few seconds, then force a reboot through VirtualBox.  If Windows asks
+whether you want to boot on Safe Boot, just pick Normal Boot.
+
+Once again, right click the Desktop and go to properties. Now you should be able
+to select  True Color  (32 bit)  mode, and  a proper  resolution --  I'm picking
+1024x768.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/029.png]]
+
+Now your desktop works with proper colors and a proper resolution!
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/030.png]]
+
+Furthermore, *install DirectX 9.0c Redistributable* for DirectX support!
+
+* Fixing MS-DOS Prompt memory error
+
+Now that we have a video driver  installed, we might have problems while running
+applications such as the MS-DOS Prompt, for example.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/031.png]]
+
+This   is   an   easy   fix,   but    not   an   obvious   one.   According   to
+[[https://www.windowsbbs.com/threads/not-enough-memory-error-when-trying-to-run-a-dos-program-in-a-window.37148/#post-197188][one of the answers on a forum]], it's a vcache issue.
+
+Go to  ~Start >  Execute~, and  type ~System.ini~, then  press Enter.  You'll be
+presented with an ~.ini~ file on Notepad.
+
+Find the  ~[vcache]~ section and  add the new line,  like the example  below (do
+not just replace the entire section if there's something already there!):
+
+#+begin_example
+[vcache]
+MaxFileCache=512000
+#+end_example
+
+Save the file, exit and reboot. You should  now be able to run the MS-DOS Prompt
+with no further problems.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/032.png]]
+
+
+* Installing KernelEx to allow some forward compatibility
+
+Some programs will simply  not run on Windows 98, period.  But sometimes you can
+force them to  run like newer versions of Windows  through a compatibility layer
+called KernelEx.
+
+First, run the  installation for ~unicows.exe~ and, when prompted  to an extract
+location, use ~C:\Windows\System~ (Note that *this is not System32!*).
+
+Afterwards, run  the KernelEx installation.  Enable KernelEx extensions  for all
+applications and, when prompted to reboot, do it.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/033.png]]
+
+You  should now  be able  to  right click  any  application or  shortcut, go  to
+Properties,  and then  you'll see  a KernelEx  tab where  you can  configure the
+kernel to act like some newer versions of Windows.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/034.png]]
+
+* Internet Explorer 6
+
+At this point, run the installer for  Internet Explorer 6. It should extract all
+installer files and then execute the setup.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/035.png]]
+
+This process  will update  Internet Explorer, Windows  Media Player  and Outlook
+Express.
+
+*Notice  that  the   installer  will  automatically  reboot   the  system  after
+ installation!*
+
+#  Now, for Windows Update. Start by opening Internet Explorer 6. If asked, select
+#  a manual  internet configuration, and then  select LAN network; also,  skip any
+#  e-mail configuration.
+
+# Now, access http://windowsupdaterestored.com. Don't  worry about browsing on the
+# new web; it'll work, even though most  websites won't work on Windows 98 at this
+# point.
+
+# #+attr_html: :width 500
+# #+attr_org: :width 50
+# [[file:./win98/036.png]]
+
+# Click  the  link  "Windows  Update  Restored  v3.1"  and  *ACCEPT  ANY  SOFTWARE
+# INSTALLATION THAT APPEARS.*
+
+* Extras
+
+** Miscellaneous programs
+
+
+
+** AutoPatcher for Win98SE
+
+If you're taking your  installation a bit more seriously, you  might want to run
+the AutoPatcher for Windows 98 SE.
+
+However, notice that, *if you like Windows 98 the way it is right now, you might
+not wanna do this*. The default  installation for the patch will replace certain
+system files, deleting  most of the system shortcuts and  changing your system's
+default language.
+
+Open the instalation file for AutoPatcher and install it.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/037.png]]
+
+It  will create  a shortcut  on your  desktop; double  click it.  You should  be
+presented with an MS-DOS Prompt like the following.
+
+#+attr_html: :width 500
+#+attr_org: :width 50
+[[file:./win98/038.png]]
+
+Type "A" and let it patch everything it can. Then select "I" so that it installs
+all modules.
+
+Your computer will reboot SEVERAL  TIMES while installing programs, hotfixes and
+updates. Just accept everything and skip installations when they are in loop.

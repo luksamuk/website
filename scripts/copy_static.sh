@@ -1,7 +1,9 @@
 #!/bin/bash
 cp -r src/img docs/
 
-cp -r src/posts/img docs/posts/
+cp -r src/posts/img \
+   src/posts/win98 \
+   docs/posts/
 
 cp -r src/css src/files docs/
 
