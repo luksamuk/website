@@ -248,7 +248,7 @@ gtag('config', 'G-22RF3F5XE0');
 </div>
 <div id="content" class="content">
 
-<div id="org29bc044" class="figure">
+<div id="org35d1993" class="figure">
 <p><img src="img/majestic-repl-1.png" alt="majestic-repl-1.png" />
 </p>
 <p><span class="figure-number">Figura 1: </span>REPL de Majestic Lisp, em pleno funcionamento.</p>
@@ -289,9 +289,9 @@ implicação  inesperada que,  na verdade,  tornou-se uma  pedra no  meu
 sapato e algo digno de pesquisa aprofundada&#x2026;
 </p>
 
-<div id="outline-container-org5dc6833" class="outline-2">
-<h2 id="org5dc6833">Recapitulando: Contexto léxico</h2>
-<div class="outline-text-2" id="text-org5dc6833">
+<div id="outline-container-orgc6e13e1" class="outline-2">
+<h2 id="orgc6e13e1">Recapitulando: Contexto léxico</h2>
+<div class="outline-text-2" id="text-orgc6e13e1">
 <p>
 Como dito no post anterior,  uma declaração <i>local</i> de variáveis envolve
 a  criação de  um contexto  léxico onde  uma variável  seja válida  e,
@@ -299,7 +299,7 @@ portanto, tenha  também um  "tempo de vida".  Na prática,  em Majestic
 Lisp, apenas funções poderiam realizar tal façanha.
 </p>
 
-<pre class="example" id="org04191cd">
+<pre class="example" id="org962c744">
 &gt; ((fn (y x) (+ x y))
    3 2)
 5
@@ -337,9 +337,9 @@ diferente, todavia, o princípio de tornar \(x\) bem-definido é o mesmo.
 </div>
 </div>
 
-<div id="outline-container-org642d39d" class="outline-2">
-<h2 id="org642d39d"><code>let</code> it be <code>fn</code>'bda</h2>
-<div class="outline-text-2" id="text-org642d39d">
+<div id="outline-container-org077b607" class="outline-2">
+<h2 id="org077b607"><code>let</code> it be <code>fn</code>'bda</h2>
+<div class="outline-text-2" id="text-org077b607">
 <p>
 Para que  a definição de  um contexto  léxico seja mais  palatável que
 declarar uma  função anônima,  criamos um  <i>macro</i>: uma  regra sintática
@@ -347,7 +347,7 @@ que,    antes    da     interpretação,    transforma-se    em    outra
 expressão. Vejamos:
 </p>
 
-<pre class="example" id="org174c6f1">
+<pre class="example" id="org5e8c9a0">
 &gt; (let ((x 2)
         (y 3))
     (+ x y))
@@ -450,9 +450,9 @@ Majestic). <code>unquote-splice</code> geralmente é sinalizado pelo token <code
 </div>
 </div>
 
-<div id="outline-container-org47ce05e" class="outline-3">
-<h3 id="org47ce05e">Escrevendo o macro</h3>
-<div class="outline-text-3" id="text-org47ce05e">
+<div id="outline-container-orgc9f144d" class="outline-3">
+<h3 id="orgc9f144d">Escrevendo o macro</h3>
+<div class="outline-text-3" id="text-orgc9f144d">
 <p>
 Se considerarmos  uma função <code>sep-let-pairs</code>  que realize o  trabalho de
 separar as listas anteriormente citadas, é simples declararmos o macro
@@ -476,9 +476,9 @@ locais, com um vocabulário que nem ao menos temos ainda!
 </div>
 </div>
 
-<div id="outline-container-orgc001986" class="outline-3">
-<h3 id="orgc001986">Driblando o uso recursivo de <code>let</code></h3>
-<div class="outline-text-3" id="text-orgc001986">
+<div id="outline-container-orgc2a8039" class="outline-3">
+<h3 id="orgc2a8039">Driblando o uso recursivo de <code>let</code></h3>
+<div class="outline-text-3" id="text-orgc2a8039">
 <p>
 Podemos driblar esse  problema através do próprio  recurso que estamos
 explorando:  uma aplicação  de função.  Para coletarmos  o retorno  de
@@ -509,9 +509,9 @@ como esperado.
 </div>
 </div>
 
-<div id="outline-container-org931c6f0" class="outline-3">
-<h3 id="org931c6f0">Trocando <code>let</code> por desestruturação de listas</h3>
-<div class="outline-text-3" id="text-org931c6f0">
+<div id="outline-container-org1975ef6" class="outline-3">
+<h3 id="org1975ef6">Trocando <code>let</code> por desestruturação de listas</h3>
+<div class="outline-text-3" id="text-org1975ef6">
 <p>
 Nosso problema foi parcialmente resolvido, exceto pelo segundo <code>let</code> que
 é responsável por desestruturar <code>lists</code> em dois elementos independentes.
@@ -566,9 +566,9 @@ uso de <code>let</code>.
 </p>
 </div>
 
-<div id="outline-container-org5b6cd2c" class="outline-4">
-<h4 id="org5b6cd2c">Abusando da desestruturação</h4>
-<div class="outline-text-4" id="text-org5b6cd2c">
+<div id="outline-container-org9bb47c5" class="outline-4">
+<h4 id="org9bb47c5">Abusando da desestruturação</h4>
+<div class="outline-text-4" id="text-org9bb47c5">
 <p>
 Como uma  nota avulsa, o fato  de <code>let</code> usar uma  função anônima implica
 que o  próprio <code>let</code>  pode ser usado  para desestruturar  funções.  Isso
@@ -607,9 +607,9 @@ aliases <code>first</code> / <code>rest</code> / <code>second</code>) acaba se r
 </div>
 </div>
 
-<div id="outline-container-org05efd6b" class="outline-2">
-<h2 id="org05efd6b"><code>let</code>, o auto-contido</h2>
-<div class="outline-text-2" id="text-org05efd6b">
+<div id="outline-container-org84b4adc" class="outline-2">
+<h2 id="org84b4adc"><code>let</code>, o auto-contido</h2>
+<div class="outline-text-2" id="text-org84b4adc">
 <p>
 Nosso macro já possui muita utilidade  e, de fato, foi a implementação
 que utilizei por um bom tempo em Majestic Lisp.
@@ -648,9 +648,9 @@ nenhuma dependência extra.
 </p>
 </div>
 
-<div id="outline-container-orgca96234" class="outline-3">
-<h3 id="orgca96234"><code>sep-let-pairs</code>, a função local</h3>
-<div class="outline-text-3" id="text-orgca96234">
+<div id="outline-container-org98eaf7e" class="outline-3">
+<h3 id="org98eaf7e"><code>sep-let-pairs</code>, a função local</h3>
+<div class="outline-text-3" id="text-org98eaf7e">
 <p>
 Felizmente, nosso problema pode ser resolvido através da mesma técnica
 que nos permitiu receber o retorno de <code>sep-let-pairs</code>, e desestruturá-lo
@@ -691,7 +691,7 @@ definição normalmente.
 Vejamos o que acontece agora quando tentamos usar o macro <code>let</code>&#x2026;
 </p>
 
-<pre class="example" id="org3286c0f">
+<pre class="example" id="org16ad524">
 &gt; (let ((a 1)
         (b 2))
     (+ a b))
@@ -704,9 +704,9 @@ Ops! Alguma das chamadas a <code>sepfn</code> está incorreta.
 </div>
 </div>
 
-<div id="outline-container-org624ff32" class="outline-3">
-<h3 id="org624ff32">O problema do contexto léxico</h3>
-<div class="outline-text-3" id="text-org624ff32">
+<div id="outline-container-org5c6d91f" class="outline-3">
+<h3 id="org5c6d91f">O problema do contexto léxico</h3>
+<div class="outline-text-3" id="text-org5c6d91f">
 <p>
 Se analisarmos  bem o código,  veremos que o  problema não pode  ser a
 chamada que resulta  na desestruturação da lista em <code>syms</code>  e <code>vals</code>: ali,
@@ -767,9 +767,9 @@ Isso implica em uma conclusão muito importante&#x2026;
 </div>
 </div>
 
-<div id="outline-container-orgda5159b" class="outline-3">
-<h3 id="orgda5159b">Recursão em funções locais?</h3>
-<div class="outline-text-3" id="text-orgda5159b">
+<div id="outline-container-orgee70290" class="outline-3">
+<h3 id="orgee70290">Recursão em funções locais?</h3>
+<div class="outline-text-3" id="text-orgee70290">
 <p>
 A conclusão é esta: levando em consideração apenas o escopo léxico e o
 global de Majestic Lisp, torna-se claro que <b>funções anônimas não podem
@@ -823,9 +823,9 @@ também nos MLs (OCaml, Standard ML&#x2026;).
 </div>
 </div>
 
-<div id="outline-container-orgd9f0771" class="outline-2">
-<h2 id="orgd9f0771">Conclusão e possíveis soluções</h2>
-<div class="outline-text-2" id="text-orgd9f0771">
+<div id="outline-container-org9b884de" class="outline-2">
+<h2 id="org9b884de">Conclusão e possíveis soluções</h2>
+<div class="outline-text-2" id="text-org9b884de">
 <p>
 Esse foi  o post  de hoje,  que termina  com uma  solução e,  ao mesmo
 tempo, com uma indagação; esse problema não é de resolução trivial, ao
@@ -877,9 +877,9 @@ implementações dessas construções seja um bom ponto de partida.
 </div>
 </div>
 
-<div id="outline-container-org23b6438" class="outline-2">
-<h2 id="org23b6438"><i>Post-scriptum</i>: <code>letrec</code></h2>
-<div class="outline-text-2" id="text-org23b6438">
+<div id="outline-container-orgd19605d" class="outline-2">
+<h2 id="orgd19605d"><i>Post-scriptum</i>: <code>letrec</code></h2>
+<div class="outline-text-2" id="text-orgd19605d">
 <p>
 Após trocar  algumas ideias  com alguns  amigos, acabei  chegando hoje
 (19/11/2020) a uma solução prática  para o problema: <code>letrec</code>, uma forma
@@ -952,7 +952,7 @@ diferente de <code>letfn</code> e <code>let</code>, que podem ser declarados com
 </p>
 </blockquote>
 
-<pre class="example" id="org75cf597">
+<pre class="example" id="orgfb832d4">
 &gt; (letrec ((foo ()
              (do (print "Calling foo")
                  (bar)))
