@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <wasmpsx-player id="wasmpsx"></wasmpsx-player>
+    <script src="wasmpsx.min.js"></script>
+    <script>
+     const req = new XMLHttpRequest();
+     const psx = document.getElementById('wasmpsx');
+     req.open("GET", "./game.iso", true);
+     req.responseType = "blob";
+
+     req.onload = (event) => {
+	 console.log("File fetched.");
+	 const blob = req.response;
+	 if(blob) {
+	     psx.readFile(blob);
+	 } else {
+	     console.log("Could not fetch file");
+	 }
+     }
+
+     req.send();
+    </script>
+  </body>
+</html>
