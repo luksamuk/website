@@ -1,26 +1,23 @@
-<!DOCTYPE html>
 <html>
-  <head></head>
-  <body>
-    <wasmpsx-player id="wasmpsx"></wasmpsx-player>
-    <script src="wasmpsx.min.js"></script>
-    <script>
-     const req = new XMLHttpRequest();
-     const psx = document.getElementById('wasmpsx');
-     req.open("GET", "./game.iso", true);
-     req.responseType = "blob";
-
-     req.onload = (event) => {
-	 console.log("File fetched.");
-	 const blob = req.response;
-	 if(blob) {
-	     psx.readFile(blob);
-	 } else {
-	     console.log("Could not fetch file");
-	 }
-     }
-
-     req.send();
-    </script>
-  </body>
+    <head>
+        <style>
+            body, html {
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div style="width:100%;height:100%;max-width:100%">
+            <div id="game"></div>
+        </div>
+        <script>
+         EJS_player = "#game";
+         EJS_core = "psx";
+	 EJS_biosUrl = './openbios.bin';
+         EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+         EJS_gameUrl = "./game.iso";
+        </script>
+        <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+    </body>
 </html>
