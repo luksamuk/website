@@ -216,7 +216,7 @@ gtag('config', 'G-22RF3F5XE0');
 </div>
 <div id="content" class="content">
 
-<div id="org3b2cc18" class="figure">
+<div id="org6a9ec39" class="figure">
 <p><img src="img/you-have-lisp.png" alt="you-have-lisp.png" />
 </p>
 <p><span class="figure-number">Figura 1: </span>Fonte: <a href="https://toggl.com/track/programming-princess/">Toggl.com</a></p>
@@ -261,7 +261,7 @@ forma,  ficará  simples acompanhar  o  que  está sendo  digitado  pelo
 usuário e o que o mesmo receberá na tela como resposta. Um exemplo:
 </p>
 
-<pre class="example" id="org4c04a4c">
+<pre class="example" id="org85a927e">
 &gt; entrada do usuário
 resposta do interpretador
 
@@ -270,9 +270,9 @@ resposta do interpretador
 resposta do interpretador
 </pre>
 
-<div id="outline-container-org31ed288" class="outline-2">
-<h2 id="org31ed288">Condicionais</h2>
-<div class="outline-text-2" id="text-org31ed288">
+<div id="outline-container-org592024b" class="outline-2">
+<h2 id="org592024b">Condicionais</h2>
+<div class="outline-text-2" id="text-org592024b">
 <p>
 Majestic Lisp segue, em geral, algumas orientações sintáticas providas
 por Common  Lisp, Scheme e Clojure,  no que tange a  sintaxe. Por esse
@@ -286,7 +286,7 @@ O  primeiro  tipo  de  condicional   é  uma  forma  especial,  chamada
 seguinte sintaxe geral:
 </p>
 
-<pre class="example" id="org53ff9ce">
+<pre class="example" id="orga75b87b">
 (if &lt;condição&gt; &lt;consequência&gt; &lt;alternativa&gt;)
 </pre>
 
@@ -295,7 +295,7 @@ Assim, podemos por exemplo testar pela nulidade de um elemento e fazer
 algo diferente quando esse elemento é ou não é nulo:
 </p>
 
-<pre class="example" id="orgb0408d0">
+<pre class="example" id="org2289334">
 &gt; (defn with-one (x)
     (if (nilp x)
         (cons 0 1)
@@ -316,7 +316,7 @@ implementação (bastante redundante) da função <code>abs</code>, que retorna 
 absoluto de um número:
 </p>
 
-<pre class="example" id="org5435af3">
+<pre class="example" id="org07d4885">
 &gt; (defn abs (x)
     (cond ((= x 0) 0)
           ((&gt; x 0) x)
@@ -366,7 +366,7 @@ outras linguagens de programação.
 A título de curiosidade, eis uma forma melhor de programar <code>abs</code>:
 </p>
 
-<pre class="example" id="orgb63fe3b">
+<pre class="example" id="org1a9b3ec">
 &gt; (defn abs (x)
     (if (&lt; x 0)
         (- x)
@@ -376,9 +376,9 @@ abs
 </div>
 </div>
 
-<div id="outline-container-org1aa8e2a" class="outline-2">
-<h2 id="org1aa8e2a">Quasiquoting</h2>
-<div class="outline-text-2" id="text-org1aa8e2a">
+<div id="outline-container-orgd9a3804" class="outline-2">
+<h2 id="orgd9a3804">Quasiquoting</h2>
+<div class="outline-text-2" id="text-orgd9a3804">
 <p>
 Anteriormente, comentamos a ideia de <i>quoting</i>, existente na maioria dos
 Lisps.  No  caso especial  de  uma  lista  que estiver  <i>quotada</i>,  isso
@@ -387,7 +387,7 @@ interpretador, e não  será analisada para detecção  de forma especial,
 macro, função, ou nada parecido.
 </p>
 
-<pre class="example" id="orgc8e038e">
+<pre class="example" id="org2dfb742">
 &gt; (+ 1 2)
 3
 
@@ -426,7 +426,7 @@ retorna  uma  lista  com  os  símbolos  <code>good</code>,  <code>morning</code
 fornecido.
 </p>
 
-<pre class="example" id="org2560ccb">
+<pre class="example" id="org4dba52e">
 &gt; (defn hello (name-sym)
     (list 'good 'morning name-sym))
 hello
@@ -440,7 +440,7 @@ Podemos evitar o  uso da função <code>list</code>, e também  evitar <i>quotar
 individuais, através do uso de <i>quasiquote</i> e <i>unquote</i>:
 </p>
 
-<pre class="example" id="org1497b43">
+<pre class="example" id="org0f93267">
 &gt; (defn hello (name-sym)
     `(good morning ,name-sym))
 hello
@@ -460,7 +460,7 @@ simplesmente  colocar ordenadamente  o conteúdo  dessa lista  em nosso
 <i>quasiquote</i>.
 </p>
 
-<pre class="example" id="org953dbff">
+<pre class="example" id="org2200296">
 &gt; (defn full-hello (names)
     `(good morning ,@names and have a nice day))
 full-hello
@@ -475,7 +475,7 @@ uma.  Assim   teremos  alguma   versatilidade.  Para   isso,  usaremos
 condicionais:
 </p>
 
-<pre class="example" id="org2a8e1ca">
+<pre class="example" id="orged356a9">
 &gt; (defn hello (name)
     (if (consp name)
         `(good morning and have a nice day ,@name)
@@ -491,9 +491,9 @@ hello
 </div>
 </div>
 
-<div id="outline-container-orgef3762a" class="outline-2">
-<h2 id="orgef3762a">Macros</h2>
-<div class="outline-text-2" id="text-orgef3762a">
+<div id="outline-container-org4090fd0" class="outline-2">
+<h2 id="org4090fd0">Macros</h2>
+<div class="outline-text-2" id="text-org4090fd0">
 <p>
 Podemos usufruir do <i>quasiquote</i> para  definir <i>macros</i>, que nada mais são
 que funções que <b>transformam o que foi escrito em outra coisa</b>, antes de
@@ -504,7 +504,7 @@ esse resultado ser interpretado.
 Isso justifica, por exemplo, o fato de uma função como essa:
 </p>
 
-<pre class="example" id="org4195726">
+<pre class="example" id="orgfac56cd">
 &gt; (defn square (x)
     (* x x))
 square
@@ -514,7 +514,7 @@ square
 ser, na realidade, definida dessa forma, por baixo dos panos:
 </p>
 
-<pre class="example" id="org19f7dc0">
+<pre class="example" id="orgc27881b">
 &gt; (def square
     (fn (x) (* x x)))
 square
@@ -525,7 +525,7 @@ O que ocorre é que <code>defn</code> em  si é um macro, responsável por trans
 uma sintaxe como
 </p>
 
-<pre class="example" id="orgd7cbd3b">
+<pre class="example" id="orgc65c4bf">
 (defn &lt;nome&gt; &lt;lambda-list&gt; &lt;expressão&gt;)
 </pre>
 
@@ -533,7 +533,7 @@ uma sintaxe como
 em
 </p>
 
-<pre class="example" id="orgfe76bbd">
+<pre class="example" id="org2bada70">
 (def &lt;nome&gt; (fn &lt;lambda-list&gt; &lt;expressão&gt;))
 </pre>
 
@@ -543,7 +543,7 @@ nisso, podemos  definir um  possível <i>macro</i> para  <code>defn</code>, usan
 <code>defmac</code>:
 </p>
 
-<pre class="example" id="org5d01320">
+<pre class="example" id="org45eba97">
 &gt; (defmac defn (name lambda-list expr)
     `(def ,name (fn ,lambda-list ,expr)))
 defn
@@ -554,7 +554,7 @@ De fato, até mesmo a forma  <code>defmac</code> é, na realidade, um <i>macro</
 Lisp define <code>defmac</code> da seguinte forma:
 </p>
 
-<pre class="example" id="org8454b9f">
+<pre class="example" id="org962c988">
 &gt; (def defmac
     (mac (name lambda-list expr)
       `(def ,name (mac ,lambda-list ,expr))))
@@ -575,7 +575,7 @@ poderá usar funções como  <code>macroexpand</code> e <code>macroexpand-1</cod
 no último post.
 </p>
 
-<pre class="example" id="org06ba762">
+<pre class="example" id="org7b0324c">
 &gt; (macroexpand-1 '(defmac defn (name lambda-list expr)
                    `(def ,name (fn ,lambda-list ,expr))))
 (def defn
@@ -585,16 +585,16 @@ no último post.
 </div>
 </div>
 
-<div id="outline-container-org3ff2408" class="outline-2">
-<h2 id="org3ff2408">Desestruturação em funções</h2>
-<div class="outline-text-2" id="text-org3ff2408">
+<div id="outline-container-org6418a12" class="outline-2">
+<h2 id="org6418a12">Desestruturação em funções</h2>
+<div class="outline-text-2" id="text-org6418a12">
 <p>
 Majestic  Lisp possui  uma  pequena diferença  na  declaração de  suas
 funções, o que pode ser  também algo extremamente conveniente do ponto
 de vista de linguagem. Vejamos a função a seguir:
 </p>
 
-<pre class="example" id="org85691f4">
+<pre class="example" id="org65b5f67">
 &gt; (defn show-first (lst)
     (if (nilp lst)
         '(no elements)
@@ -648,7 +648,7 @@ Vamos  reescrever <code>show-first</code>,  desestruturando  a  lista recebida  
 parâmetro:
 </p>
 
-<pre class="example" id="orgd0b205c">
+<pre class="example" id="org4965d82">
 &gt; (defn show-first ((x . xs))
     (if (nilp x)
         '(no elements)
@@ -670,9 +670,9 @@ definição do macro <code>let</code>, que veremos a seguir.
 </div>
 </div>
 
-<div id="outline-container-orgc9cb4bc" class="outline-2">
-<h2 id="orgc9cb4bc">Variáveis locais</h2>
-<div class="outline-text-2" id="text-orgc9cb4bc">
+<div id="outline-container-orgbe09098" class="outline-2">
+<h2 id="orgbe09098">Variáveis locais</h2>
+<div class="outline-text-2" id="text-orgbe09098">
 <p>
 Há situações onde declarar uma  variável global, através da forma <code>def</code>,
 não seja algo tão pertinente.  Nessas situações, podemos criar <i>escopos</i>
@@ -683,7 +683,7 @@ onde certas variáveis irão assumir os valores que demos a elas.
 Para criarmos esses <i>escopos</i>, basta usarmos o macro <code>let</code><sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>:
 </p>
 
-<pre class="example" id="org4dec501">
+<pre class="example" id="org21337ab">
 &gt; (let ((x 1)
         (y 2))
     (+ x y))
@@ -695,7 +695,7 @@ O macro  <code>let</code> possui uma  sintaxe similar à  forma como é  definid
 linguagens Common Lisp e Scheme:
 </p>
 
-<pre class="example" id="org75625d6">
+<pre class="example" id="org9021b26">
 (let &lt;lista-de-definições&gt; &lt;expressão&gt;)
 </pre>
 
@@ -703,7 +703,7 @@ linguagens Common Lisp e Scheme:
 Onde a <code>&lt;lista-de-definições&gt;</code> possui a forma
 </p>
 
-<pre class="example" id="orge7e2fd0">
+<pre class="example" id="orge9eabd2">
 (&lt;variável1&gt; &lt;valor1&gt;) (&lt;variável2&gt; &lt;valor2&gt;) ... (&lt;variávelN&gt; &lt;valorN&gt;)
 </pre>
 
@@ -720,7 +720,7 @@ redefinição  deixe de  valer após  a execução  do <code>let</code>.  Na lit
 damos a isso o nome de <i>sombreamento</i> (<i>shadowing</i>).
 </p>
 
-<pre class="example" id="org44a91cc">
+<pre class="example" id="orge819695">
 &gt; (def x 5)
 x
 
@@ -736,9 +736,9 @@ x
 </pre>
 </div>
 
-<div id="outline-container-org6e7519b" class="outline-3">
-<h3 id="org6e7519b">Implementação do macro <code>let</code></h3>
-<div class="outline-text-3" id="text-org6e7519b">
+<div id="outline-container-org0d0fdd4" class="outline-3">
+<h3 id="org0d0fdd4">Implementação do macro <code>let</code></h3>
+<div class="outline-text-3" id="text-org0d0fdd4">
 <p>
 O macro <code>let</code> é implementado de uma forma relativamente elegante.
 </p>
@@ -754,7 +754,7 @@ realmente um escopo.
 Eis a implementação de <code>let</code> em código:
 </p>
 
-<pre class="example" id="org1867f72">
+<pre class="example" id="org8cf036c">
 (defn sep-pairs (pairs syms vals)
   (if (nilp pairs)
       (list syms vals)
@@ -776,7 +776,7 @@ portanto não convém explicar a  fundo. Basicamente, ela toma uma lista
 na forma
 </p>
 
-<pre class="example" id="org2447b89">
+<pre class="example" id="orgfd0c3af">
 ((x1 v1) (x2 v2) ... (xn vn))
 </pre>
 
@@ -784,7 +784,7 @@ na forma
 e transforma-a em uma lista como
 </p>
 
-<pre class="example" id="org6133852">
+<pre class="example" id="org30de5a4">
 ((xn .. x2 x1) (vn ... v2 v1))
 </pre>
 
@@ -794,7 +794,7 @@ O  macro   <code>let</code>  utiliza-se   dessa  lista  retornada   por  <code>s
 pseudocódigo:
 </p>
 
-<pre class="example" id="org80f1117">
+<pre class="example" id="org976746c">
 ((fn (xn .. x2 x1) &lt;corpo-do-let&gt;)
  vn ... v2 v1)
 </pre>
@@ -810,9 +810,9 @@ função anônima, declarada por baixo dos panos.
 </div>
 </div>
 
-<div id="outline-container-org740cf44" class="outline-2">
-<h2 id="org740cf44">Captura de escopo</h2>
-<div class="outline-text-2" id="text-org740cf44">
+<div id="outline-container-orgbd0d7d0" class="outline-2">
+<h2 id="orgbd0d7d0">Captura de escopo</h2>
+<div class="outline-text-2" id="text-orgbd0d7d0">
 <p>
 Como  <code>let</code> usa  uma função  para criar  um escopo,  isso significa  que
 aquela função,  tal como qualquer  outra função declarada  em Majestic
@@ -832,7 +832,7 @@ Vejamos uma implementação (mais redundante) para a função <code>1+</code>, q
 <code>1</code> a um número passado por parâmetro:
 </p>
 
-<pre class="example" id="org0731e20">
+<pre class="example" id="org97e83bd">
 &gt; (def 1+
     (let ((x 1))
       (fn (y) (+ x y))))
@@ -866,9 +866,9 @@ sempre terá um valor conhecido para <code>1+</code>.
 </div>
 </div>
 
-<div id="outline-container-org0ecf6d5" class="outline-2">
-<h2 id="org0ecf6d5">Aplicação parcial</h2>
-<div class="outline-text-2" id="text-org0ecf6d5">
+<div id="outline-container-orgf549cd1" class="outline-2">
+<h2 id="orgf549cd1">Aplicação parcial</h2>
+<div class="outline-text-2" id="text-orgf549cd1">
 <p>
 O último tópico a ser abordado é a ideia de <i>aplicação parcial</i>, que não
 é uma ideia presente em  Lisps mais conhecidos<sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>, sendo talvez uma
@@ -879,7 +879,7 @@ das  poucas "surpresas"  da linguagem,  para veteranos  em Lisp.
 Vejamos a função a seguir.
 </p>
 
-<pre class="example" id="org8b52025">
+<pre class="example" id="org3faa553">
 &gt; (defn sum (a b c)
     (+ a b c))
 sum
@@ -902,7 +902,7 @@ fornecidos e requeridos não seria o mesmo.
 Mas isso não ocorre em Majestic Lisp:
 </p>
 
-<pre class="example" id="org845d54c">
+<pre class="example" id="orgf4ff642">
 &gt; (sum 1)
 #&lt;function (fn (b c)) {...}&gt;
 
@@ -935,7 +935,7 @@ Isso pode ser particularmente  útil quando definimos funções derivadas
 de outras. Podemos brincar com a ideia, usando a própria função <code>sum</code>:
 </p>
 
-<pre class="example" id="org27eef97">
+<pre class="example" id="org297dfd0">
 &gt; (def 3+ (sum 1 2))
 3+
 
@@ -948,9 +948,9 @@ de outras. Podemos brincar com a ideia, usando a própria função <code>sum</co
 </div>
 </div>
 
-<div id="outline-container-org243122a" class="outline-2">
-<h2 id="org243122a">Conclusão</h2>
-<div class="outline-text-2" id="text-org243122a">
+<div id="outline-container-org021bc03" class="outline-2">
+<h2 id="org021bc03">Conclusão</h2>
+<div class="outline-text-2" id="text-org021bc03">
 <p>
 É  só isso  por  hoje. Imaginei  que  esse post  seria  um pouco  mais
 sucinto  mas, no  fim  das contas,  há bastante  teoria  por trás  dos
