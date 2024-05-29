@@ -8,16 +8,28 @@
         </style>
     </head>
     <body>
-        <div style="width:100%;height:100%;max-width:100%">
-            <div id="game"></div>
-        </div>
-        <script>
-         EJS_player = "#game";
-         EJS_core = "psx";
-	 EJS_biosUrl = './openbios.bin';
-         EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-         EJS_gameUrl = "./GAME.ISO";
-        </script>
-        <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+      <div style="width:100%;height:100%;max-width:100%">
+        <div id="game"></div>
+      </div>
+      <script>
+       let queryParams = new URLSearchParams(window.location.search);
+       let game = params.get("game");
+       switch(game) {
+	   case "sonic":
+	       EJS_gameUrl = "./SONIC.ISO";
+	       break;
+	   default:
+	       EJS_gameUrl = "./GAME.ISO";
+	       break;
+       }
+
+       console.log("Game:", EJS_gameUrl);
+       
+       EJS_player = "#game";
+       EJS_core = "psx";
+       EJS_biosUrl = './openbios.bin';
+       EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+      </script>
+      <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
     </body>
 </html>
