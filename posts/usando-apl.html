@@ -1,0 +1,1407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Escalonando matrizes em APL</title>
+<meta name="author" content="Lucas Vieira" />
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira" />
+<meta name="generator" content="Org Mode" />
+<style type="text/css">
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-22RF3F5XE0"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-22RF3F5XE0');
+</script>
+<link rel="stylesheet" type="text/css" href="../css/main.css" />
+<link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="../css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="../img/cat-i-mage.jpg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:image" content="../img/cat-i-mage.jpg">
+<meta name="theme-color" content="#14171e">
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<nav><h1><a href="../">The Alchemist's Hideout</a></h1></nav><h1 class="title">Escalonando matrizes em APL</h1><p><i>Escrito em Ago 22, 2019 por Lucas Vieira<br/><a href="mailto:lucasvieira@protonmail.com">lucasvieira@protonmail.com</a></i></p>
+</div>
+<div id="content" class="content">
+
+<div id="org87dd708" class="figure">
+<p><img src="img/apl-logo.jpg" alt="apl-logo.jpg" />
+</p>
+<p><span class="figure-number">Figura 1: </span>Alegoria para a linguagem APL.</p>
+</div>
+
+
+<p>
+As últimas semanas das minhas férias têm sido muito
+movimentadas. Gastei um bom tempo lendo e colocando em dia alguns
+artigos que eu precisava ter adiantado, mas que não pude por falta de
+tempo.
+</p>
+
+<p>
+Uma das coisas nas quais resolvi me concentrar foi no meu aprendizado
+de uma linguagem chamada APL, que me deixou curioso porque haviam me
+dito que era boa para resolver problemas com vetores e matrizes. Mas
+esta linguagem também é cheia de símbolos Unicode, o que me afastou
+dela por medo de complexidade no código.
+</p>
+
+<p>
+Pois bem, após insistir (e ter uma ajudinha do editor de texto Emacs
+para inserir símbolos!), compartilho aqui com vocês uma pequena
+aplicação que fiz para escalonar matrizes através de reduções de
+Gauss-Jordan.
+</p>
+
+<p>
+Caso você queira ver o código completo sem o texto, poderá ver <a href="https://gist.github.com/luksamuk/8ae9f5afcbfa1af16ce2b3099e1f90ef">neste
+gist</a> do GitHub.
+</p>
+
+<p>
+<b>NOTA:</b> O código mostrado aqui funcionará apenas em GNU APL. Se você
+quiser um código compatível com Dyalog APL, veja o final desta
+postagem.
+</p>
+<div id="outline-container-orgab32a40" class="outline-2">
+<h2 id="orgab32a40">A linguagem APL</h2>
+<div class="outline-text-2" id="text-orgab32a40">
+<p>
+Segundo a Wikipedia e a <a href="https://aplwiki.com/DiscoveringApl">APL Wiki</a>, APL é derivada de uma notação
+matemática criada em meados de 1950 por Kenneth E. Iverson, em
+Harvard. Em 1962, Iverson lançou um livro chamado <i>A Programming
+Language</i>, que demonstrava esta notação para descrever operações em
+matrizes multidimensionais, de forma que um computador pudesse
+compreendê-las e executá-las. Eventualmente, Iverson juntou-se à
+IBM, onde implementou sua linguagem em um <a href="https://en.wikipedia.org/wiki/IBM_1130">IBM 1130</a>, e nomeou-a APL, de
+acordo com as primeiras letras do nome de seu livro.
+</p>
+
+
+<div id="orgab976dd" class="figure">
+<p><img src="img/gnu-apl-keyboard.png" alt="gnu-apl-keyboard.png" />
+</p>
+<p><span class="figure-number">Figura 2: </span>Esquema de teclado para GNU APL, no Emacs.</p>
+</div>
+
+<p>
+APL é uma linguagem incomum para os dias de hoje, principalmente
+porque seu uso exige a escrita de símbolos específicos, o que
+atualmente só pode ser feito em teclados comuns com uso de software
+adicional. Todavia, computadores modernos ainda possuem esquemas de
+digitação para APL, o que torna o uso da linguagem algo
+surpreendentemente trivial.
+</p>
+
+<p>
+Para o código que vou mostrar aqui, usei um esquema de escrita no
+editor de texto Emacs. A entrada dos caracteres da linguagem pode ser
+feita através de uma tecla especial, ou escrevendo o caractere <code>.</code>,
+seguido de um outro caractere válido; esta combinação é então
+transformada em um caractere Unicode específico.
+</p>
+
+<div class="notes" id="org6427679">
+<p>
+<b>ATENÇÃO:</b> É importante que sua fonte monoespaçada do navegador tenha
+suporte a caracteres da linguagem APL para que você consiga ver o
+código! Para tanto, veja se estes caracteres&#x2026;
+</p>
+
+<pre class="example" id="orgea13ac4">
+¨¯⌽≥⊖⎕∘↑→_¯∩⊃
+</pre>
+
+<p>
+&#x2026;são mostrados como nesta figura:
+</p>
+
+
+<div id="org76d1e52" class="figure">
+<p><img src="img/apl-characters.png" alt="apl-characters.png" />
+</p>
+<p><span class="figure-number">Figura 3: </span>Alguns caracteres especiais da linguagem APL.</p>
+</div>
+
+<p>
+Caso eles não estejam sendo renderizados adequadamente, recomendo
+utilizar a fonte GNU FreeFont, ou alguma das fontes recomendadas para
+Dyalog <a href="https://www.dyalog.com/apl-font-keyboard.htm">que estão aqui</a>.
+</p>
+
+</div>
+</div>
+</div>
+<div id="outline-container-orgb256f90" class="outline-2">
+<h2 id="orgb256f90">Método de Escalonamento de Gauss-Jordan</h2>
+<div class="outline-text-2" id="text-orgb256f90">
+<p>
+Antes de mais nada, vamos falar um pouquinho de Matemática, porque é
+de lá que APL vem. Mas não se assuste, só quero explicar o que diabos
+é isso de escalonamento e de Gauss-Jordan, caso você não saiba.
+</p>
+
+<p>
+Suponha o seguinte problema:
+</p>
+
+<blockquote>
+<p>
+Pedro, Maria e Júlia ganharam maçãs. Sobre a quantidade que cada um
+ganhou, sabemos o seguinte:
+</p>
+
+<ul class="org-ul">
+<li>A soma entre as uma vez maçãs de Pedro, o triplo das maçãs de Maria
+e quatro vezes as maçãs de Júlia é igual a 53.</li>
+<li>A soma entre seis vezes as maçãs de Pedro, sete vezes as maçãs de
+Maria, e o dobro das maçãs de Júlia é igual a 109.</li>
+<li>A soma entre cinco vezes as maçãs de Pedro, uma vez as maçãs de
+Maria e o triplo das maçãs de Júlia é igual a 76.</li>
+</ul>
+
+<p>
+Qual o número de maçãs que cada um recebeu?
+</p>
+</blockquote>
+
+<p>
+Podemos modelar este problema com um sistema simples de
+equações. Vamos supor que a quantidade de maçãs de Pedro seja \(x\), a
+de Maria seja \(y\), e a de Júlia seja \(z\):
+</p>
+
+\begin{equation*}
+  \begin{cases}
+        x + 3y + 4z = 53\\
+        6x + 7y + 2z = 109\\
+        5x + y + 3z = 76
+  \end{cases}
+\end{equation*}
+
+<p>
+Este é um problema simples que pode ser resolvido sem adentrar o
+tópico de matrizes, através de substituições sucessivas. Mas não é
+resolver este problema em APL que é algo interessante para nós: o que
+nós queremos é resolver <i>problemas como este</i>, através do auxílio do
+computador!
+</p>
+
+<p>
+O que normalmente fazemos nas aulas de Álgebra Linear é representar
+esta situação através de uma matriz com os coeficientes e os valores
+após o sinal de igualdade. Veja:
+</p>
+
+\begin{bmatrix}
+  1 & 3 & 4 & 53\\
+  6 & 7 & 2 & 109\\
+  5 & 1 & 3 & 76
+\end{bmatrix}
+
+
+<p>
+O processo na Matemática para solucionar este problema linear, usando
+matrizes, chama-se Processo de Gauss-Jordan, consistindo em efetuar
+Eliminações Gaussianas para cada linha, até que sobre apenas uma
+matriz-identidade com uma coluna extra de valores, desse jeito:
+</p>
+
+\begin{bmatrix}
+  1 & 0 & 0 & 10\\
+  0 & 1 & 0 & 5\\
+  0 & 0 & 1 & 7
+\end{bmatrix}
+
+<p>
+Veja que, se nós fôssemos reescrever esta matriz no formato de
+equações, considerando a mesma equivalência para os coeficientes que
+utilizamos para essa tradução em primeiro lugar, teríamos estas
+equações aqui:
+</p>
+
+\begin{equation*}
+  \begin{cases}
+        x + 0y + 0z = 10\\
+        0x + y + 0z = 5\\
+        0x + 0y + z = 7
+  \end{cases}
+  \quad \Rightarrow \quad
+  \begin{cases}
+        x = 10\\
+        y = 5\\
+        z = 7
+  \end{cases}
+\end{equation*}
+
+
+<p>
+Esse processo de gerar a matriz-identidade de um lado é conhecido como
+escalonamento, e o processo normalmente ensinado para fazê-lo é o
+método de Gauss-Jordan.
+</p>
+
+<p>
+Este método pode ser descrito como uma sequência de passos para
+manipularmos a matriz. E claro, se há sequência de passos, então o
+computador consegue resolver! Quando programarmos este comportamento,
+deixarei mais claro o que precisa ocorrer para efetuarmos estes
+cálculos.
+</p>
+</div>
+</div>
+<div id="outline-container-org8d244c2" class="outline-2">
+<h2 id="org8d244c2">Gauss-Jordan em APL</h2>
+<div class="outline-text-2" id="text-org8d244c2">
+<p>
+Vamos implementar esta ferramenta que nos permite resolver problemas
+lineares, como é o caso do problema das maçãs. Mas antes disso, vamos
+criar algumas outras ferramentas que vão nos ajudar tanto nas
+implementações quanto ao gerar matrizes para testes.
+</p>
+
+<p>
+Uma coisa importante a destacar é que não pretendo tornar este post
+uma espécie de tutorial para APL, portanto, as descrições das funções
+serão superficiais.
+</p>
+
+<p>
+Caso você esteja curioso quanto à linguagem, poderá consultar a página
+com <a href="../pages/learn-apl.html">minhas notas sobre APL</a>, que fiz para que eu mesmo pudesse
+consultar em caso de dúvidas. Lá, há links que você pode seguir para
+aprendê-la.
+</p>
+</div>
+<div id="outline-container-orgdb3d9b4" class="outline-3">
+<h3 id="orgdb3d9b4">Caixa de Ferramentas</h3>
+<div class="outline-text-3" id="text-orgdb3d9b4">
+</div>
+<div id="outline-container-orgd378606" class="outline-4">
+<h4 id="orgd378606">IDENTITY</h4>
+<div class="outline-text-4" id="text-orgd378606">
+<p>
+Esta função gera uma matriz-identidade de ordem <code>N</code>. Matrizes-identidade
+são matrizes quadradas (mesmo número de linhas e colunas) que possuem
+apenas o número <code>1</code> em sua diagonal principal, e <code>0</code> em todas as outras
+posições.
+</p>
+
+<p>
+Note que as funções de APL podem possuir uma variável de retorno
+(normalmente nomeio-a <code>R</code>). No caso de <code>IDENTITY</code>, trata-se de uma função
+de um parâmetro, que nomeei <code>N</code>.
+</p>
+
+<p>
+Veja o código, levando em consideração que APL interpreta cada linha
+de expressão <b>da direita para a esquerda</b>, diferente do
+convencional. Esta regra evita alguns problemas de ambiguidade
+sintática, juntamente com outras que não mencionarei aqui.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-gnu-apl">&#8711;R&#8592;<span style="color: #0bc9cf;">IDENTITY</span> N
+  R&#8592;(N N)&#9076;(<span style="color: #f5c791;">1</span>,N&#9076;<span style="color: #f5c791;">0</span>)
+&#8711;
+</pre>
+</div>
+
+<p>
+<code>IDENTITY</code> gera uma matriz <code>N×N</code>, e escreve em cada linha desta matriz
+a sequência de um número <code>1</code> e <code>N</code> números <code>0</code>. Caso alguma sequência de
+números "sobre", ela será escrita no início da próxima linha. E quando
+não houver mais números <code>1</code> ou <code>0</code> a serem escritos, essa sequência de <code>1</code>'s
+e <code>0</code>'s se repete. Veja:
+</p>
+
+<pre class="example" id="org242f96a">
+      1,3⍴0
+1 0 0 0
+      3 3⍴(1,3⍴0)
+1 0 0
+0 1 0
+0 0 1
+</pre>
+</div>
+<ul class="org-ul">
+<li><a id="org5ed2be6"></a>Sobre parâmetros de funções em APL<br />
+<div class="outline-text-5" id="text-org5ed2be6">
+<p>
+A noção de parâmetros de uma função em APL é diferente do que
+normalmente vemos em outras linguagens. Aqui, uma função pode ter os
+seguintes números de parâmetros: zero (niládica), um (monádica) ou
+dois (diádica). Uma função sem parâmetros não indica nenhum parâmetro
+em seu cabeçalho (a linha com o primeiro Del, <code>∇</code>). Uma função com um
+parâmetro informa-o à direita do nome da mesma, e uma função diádica
+informa um parâmetro à esquerda do nome, e outro à direita do nome.
+</p>
+
+<p>
+A função <code>IDENTITY</code> é uma função <i>monádica</i> e com valor de retorno.
+</p>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-orgb402d84" class="outline-4">
+<h4 id="orgb402d84">EXTENDBOTTOM</h4>
+<div class="outline-text-4" id="text-orgb402d84">
+<p>
+Esta função adiciona uma nova <i>linha</i> com zeros na parte inferior da
+matriz. Esta função independe do tamanho da matriz, que é deduzido
+durante a operação.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-gnu-apl">&#8711;R&#8592;<span style="color: #0bc9cf;">EXTENDBOTTOM</span> MAT
+  R&#8592;(((&#8593;&#9076;MAT)&#9076;<span style="color: #f5c791;">1</span>),<span style="color: #f5c791;">0</span>)\[<span style="color: #f5c791;">1</span>]MAT
+&#8711;
+</pre>
+</div>
+
+<p>
+Veja o que acontece quando aplicamos ela a uma matriz-identidade de
+dimensões <code>3×3</code>:
+</p>
+
+<pre class="example" id="org373b6f0">
+      EXTENDBOTTOM IDENTITY 3
+1 0 0
+0 1 0
+0 0 1
+0 0 0
+</pre>
+
+<p>
+Esta função não possui uso na implementação do escalonamento em si,
+mas serve para ajudar a gerar algumas matrizes de teste.
+</p>
+</div>
+</div>
+<div id="outline-container-org605cca5" class="outline-4">
+<h4 id="org605cca5">EXTENDRIGHT</h4>
+<div class="outline-text-4" id="text-org605cca5">
+<p>
+Similar a <code>EXTENDBOTTOM</code>, esta função adiciona uma nova <i>coluna</i> de zeros
+à direita da matriz.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-gnu-apl">&#8711;R&#8592;<span style="color: #0bc9cf;">EXTENDRIGHT</span> MAT
+  R&#8592;(((<span style="color: #f5c791;">2</span>&#9015;&#9076;MAT)&#9076;<span style="color: #f5c791;">1</span>),<span style="color: #f5c791;">0</span>)\MAT
+&#8711;
+</pre>
+</div>
+
+<p>
+Aplicando esta operação a uma matriz-identidade <code>3×3</code>, temos:
+</p>
+
+<pre class="example" id="orgaf4623c">
+      EXTENDRIGHT IDENTITY 3
+1 0 0 0
+0 1 0 0
+0 0 1 0
+</pre>
+
+<p>
+Também utilizaremos esta função para criar matrizes para testes.
+</p>
+</div>
+</div>
+<div id="outline-container-orge8f67ef" class="outline-4">
+<h4 id="orge8f67ef">PIVOT</h4>
+<div class="outline-text-4" id="text-orge8f67ef">
+<p>
+Agora, faremos uma função diádica que coleta o pivô de uma matriz <code>MAT</code>,
+na linha <code>N</code>. Se a linha não possui pivô, retornamos uma resposta
+vazia.
+</p>
+
+<p>
+Antes de mais nada, vejamos o que é um <i>pivô</i> de uma certa
+linha. Suponha a seguinte matriz:
+</p>
+
+\begin{bmatrix}
+  5 & 3 & 7\\
+  0 & 0 & 2\\
+  0 & 4 & 9
+\end{bmatrix}
+
+<p>
+O <i>pivô</i> de uma linha da matriz é o primeiro elemento da linha que,
+quando procuramos <i>da esquerda para direita</i> nela, não seja nulo. Sendo
+assim, os pivôs de cada linha da matriz serão <code>5</code>, <code>2</code> e <code>4</code>,
+respectivamente.
+</p>
+
+<p>
+Vejamos como isto pode ser feito em APL. Como já dito, a função <code>PIVOT</code>
+é uma função diádica (seus parâmetros são <code>N</code> e <code>MAT</code>), que possui os
+valores locais <code>LST</code> e <code>IDX</code> (que precisam ser indicados no cabeçalho da
+função, ou serão redeclarados como variáveis globais).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-gnu-apl">&#8711;R&#8592;N <span style="color: #0bc9cf;">PIVOT</span> MAT;LST;IDX
+  LST&#8592;N&#9015;[<span style="color: #f5c791;">1</span>]MAT
+  IDX&#8592;(<span style="color: #f5c791;">0</span>&#8800;LST)&#9075;<span style="color: #f5c791;">1</span>
+  &#8594;(IDX&gt;&#9076;LST)/0
+  R&#8592;IDX&#9015;LST
+&#8711;
+</pre>
+</div>
+
+<p>
+Aqui temos a variável <code>LST</code> armazenando temporariamente a linha onde
+precisamos encontrar o pivô. Por exemplo, podemos ter <code>LST</code> valendo <code>0 4
+9</code>.
+</p>
+
+<p>
+A variável <code>IDX</code> será um valor que armazena o índice do primeiro
+elemento não-nulo de <code>LST</code>. Por exemplo, para o valor de <code>LST</code> que estamos
+supondo, <code>IDX</code> valerá <code>2</code> (segunda posição na linha).
+</p>
+
+<p>
+Se <code>IDX</code> for um valor maior do que o número de elementos naquela linha,
+então nenhum pivô foi encontrado, e a linha é nula; neste caso,
+encerramos a função, sem dar uma resposta.
+</p>
+
+<p>
+Caso tudo tenha corrido bem, a variável de retorno recebe o elemento
+de <code>LST</code> que está na posição <code>IDX</code>.
+</p>
+</div>
+</div>
+<div id="outline-container-org86b9076" class="outline-4">
+<h4 id="org86b9076">GCD</h4>
+<div class="outline-text-4" id="text-org86b9076">
+<p>
+Esta é a primeira função no nosso código que realmente tem alguma
+espécie de estrutura de repetição.
+</p>
+
+<p>
+Esta operação é o algoritmo trivial de Euclides para calcular o máximo
+divisor comum entre dois números. Convencionaremos que <code>A</code> seja sempre
+maior que <code>B</code>, para que este algoritmo funcione adequadamente.
+</p>
+
+<p>
+Vou me abster de explicá-la totalmente, porque esta função é simples e
+óbvia (alguns autores dizem que é o algoritmo mais velho do mundo!).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-gnu-apl">&#8711;R&#8592;A <span style="color: #0bc9cf;">GCD</span> B
+  &#8594;(B=<span style="color: #f5c791;">0</span>)/END
+  (A B)&#8592;(B (|B | A))
+  &#8594;<span style="color: #f5c791;">1</span>
+<span style="color: #9d81ba;">END:</span> R&#8592;A
+&#8711;
+</pre>
+</div>
+
+<p>
+Veja que, sendo uma função diádica, <code>GCD</code> precisa ser escrita entre
+ambos os números:
+</p>
+
+<pre class="example" id="org93fb86e">
+      99 GCD 63
+9
+</pre>
+</div>
+<ul class="org-ul">
+<li><a id="orgf57cb3b"></a>Sobre controle de fluxo em APL<br />
+<div class="outline-text-5" id="text-orgf57cb3b">
+<p>
+Como você deve ter visto, não utilizei nenhum tipo de estrutura de
+controle (if&#x2026;else), e nenhuma estrutura de repetição (loop, while,
+for). O motivo é que a especificação padrão de APL não determina a
+existência destas estruturas.
+</p>
+
+<p>
+Isto não significa que APLs não têm estas estruturas. Elas podem ser
+facilmente implementadas através de alguns macros na linguagem. APLs
+com mais ferramentas, como Dyalog APL, possuem estas estruturas;
+alguns outros APLs (como o próprio GNU APL) possuem editores de texto
+embutidos, ou extensões para modificarmos funções que já foram
+redefinidas no ambiente (tecnicamente, isto significa que arquivos de
+código de APL são desnecessários &#x2013; de fato, APLs possuem ferramentas
+para salvar <i>workspaces</i>).
+</p>
+
+<p>
+Como GNU APL é mais simples (não sendo menos potente que outros APLs),
+ao invés de estruturas de controle, utilizamos a função GoTo (<code>→</code>) que,
+como o nome sugere, pula para uma certa linha da função em que está;
+se a linha for inexistente, a função é encerrada imediatamente,
+independente de existir valor de retorno.
+</p>
+
+<p>
+Esta função é utilizada com o operador Compress (<code>/</code> diádico) para
+determinar se o pulo deve ou não ocorrer. Por exemplo, na primeira
+linha de <code>GCD</code>, o pulo só ocorre se <code>B</code> for igual a <code>0</code>; isto retorna um
+valor <code>1</code>, e APL retorna a linha atribuída ao rótulo <code>END</code>.
+</p>
+
+<p>
+Se este não fosse o caso, APL não daria nenhum valor à função GoTo
+(<code>→</code>) &#x2013; o uso de Compress com um primeiro argumento <code>0</code> retorna uma
+resposta vazia &#x2013;, e nenhum pulo ocorreria.
+</p>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-orga34cc5b" class="outline-4">
+<h4 id="orga34cc5b">SIMPVEC</h4>
+<div class="outline-text-4" id="text-orga34cc5b">
+<p>
+Esta função monádica simplifica um certo vetor de elementos, dividindo
+todos pelo máximo divisor comum da porção inteira de todos os
+números.
+</p>
+
+<p>
+Note que o vetor só será realmente simplificado se nenhum dos
+elementos tornar-se um número fracionário. Decidi fazer isso porque
+não queria nenhum número "quebrado" em meus resultados.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-gnu-apl">&#8711;R&#8592;<span style="color: #0bc9cf;">SIMPVEC</span> VEC;SIMPL
+  SIMPL&#8592;VEC&#247;GCD/&#8970;|VEC[&#9042;|VEC]
+  &#8594;(&#215;+/0&lt;SIMPL-&#8970;SIMPL)/DONTSIMPL
+  R&#8592;SIMPL
+  &#8594;<span style="color: #f5c791;">0</span>
+<span style="color: #9d81ba;">  DONTSIMPL:</span>R&#8592;VEC
+&#8711;
+</pre>
+</div>
+
+<p>
+Vejamos a aplicação desta função:
+</p>
+
+<pre class="example" id="orgb9cbbdc">
+      SIMPVEC 4 2 8
+2 1 4
+</pre>
+</div>
+<ul class="org-ul">
+<li><a id="orge02860a"></a>Sobre operadores em APL<br />
+<div class="outline-text-5" id="text-orge02860a">
+<p>
+Note que <code>SIMPVEC</code> utiliza nossa outra função <code>GCD</code>. E sua aparição é
+peculiar, porque não é utilizada da forma esperada &#x2013; <code>GCD</code> parece ser
+monádica dentro de <code>SIMPVEC</code>.
+</p>
+
+<p>
+A razão para isso é o uso do operador Reduce (<code>/</code> monádico; a função
+aplicada aparece à esquerda, mas não é um parâmetro). Em APL,
+<i>operadores</i> são "funções" especiais, que modificam a forma como funções
+são aplicadas a outros parâmetros.
+</p>
+
+<p>
+Por exemplo, suponha o vetor <code>A</code>, contendo os números <code>4 5 8 2</code>. Se eu
+precisasse calcular a soma entre todos estes números, a forma de
+escrita que nos vem à mente é esta:
+</p>
+
+<pre class="example" id="org6a67ce4">
+4 + 5 + 8 + 2
+</pre>
+
+<p>
+Veja que a função Soma (<code>+</code>) é <b>intercalada</b> entre os elementos do
+vetor. Para obtermos este comportamento, basta utilizarmos a função
+Soma (<code>+</code>) com o operador Reduce (<code>/</code>):
+</p>
+
+<pre class="example" id="org4e4cdf8">
+      +/4 5 8 2
+19
+</pre>
+
+<p>
+O raciocínio para o uso de <code>GCD</code> é o mesmo; é como se intercalássemos
+<code>GCD</code> e fôssemos executando <b>da esquerda para a direita</b>.
+</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgc2e3933" class="outline-3">
+<h3 id="orgc2e3933">Operações fundamentais</h3>
+<div class="outline-text-3" id="text-orgc2e3933">
+<p>
+Agora que temos as operações fundamentais, podemos implementar o
+método de escalonamento de Gauss-Jordan. Faremos isto com duas funções.
+</p>
+</div>
+<div id="outline-container-org8d2b6cc" class="outline-4">
+<h4 id="org8d2b6cc">Eliminação Gaussiana</h4>
+<div class="outline-text-4" id="text-org8d2b6cc">
+<p>
+A função <code>GAUSSELIM</code> é uma função diádica, que fixa uma linha de índice
+<code>L</code> na matriz <code>A</code>, e executa operações nas outras linhas, de forma que o
+pivô da linha <code>L</code> seja o único elemento não-nulo de sua coluna.
+</p>
+
+<p>
+Vejamos o que isto significa com notação matemática. Vamos ver a
+matriz do problema das maçãs:
+</p>
+
+\begin{bmatrix}
+  1 & 3 & 4 & 53\\
+  6 & 7 & 2 & 109\\
+  5 & 1 & 3 & 76
+\end{bmatrix}
+
+
+<p>
+Suponhamos que desejamos fixar a primeira linha. Sendo assim, temos <code>L
+= 1</code>.
+</p>
+
+<p>
+O pivô da linha <code>1</code> é o número <code>1</code>. Portanto, os números que estão na
+mesma coluna (<code>6</code> e <code>5</code>) precisam ser zerados.
+</p>
+
+<p>
+Para efeito de exemplo, vamos zerar a linha <code>2</code>. Para tanto,
+realizaremos o seguinte algoritmo:
+</p>
+
+<ul class="org-ul">
+<li>Multiplique os elementos da linha <code>2</code> pelo pivô da linha fixada;</li>
+<li>Multiplique os elementos da linha fixada pelo pivô da linha <code>2</code>;</li>
+<li>Subtraia as linhas geradas, armazene na linha não-fixada (<code>2</code>).</li>
+</ul>
+
+\begin{align*}
+         1 \times    (6\quad   7\quad    2\quad  109)&\\
+  -\quad 6 \times    (1\quad   3\quad    4\quad   53)&\\
+                   = (0\quad  -11\quad -22\quad -209)&\\
+\end{align*}
+
+<p>
+E o mesmo processo seria feito para a linha <code>3</code>.
+</p>
+
+<p>
+Em APL, o primeiro a ser feito é <b>simplificar</b> a linha fixada. Para
+isso, aplicamos a função <code>SIMPVEC</code> na linha <code>L</code>. Este não é um passo
+obrigatório, mas garante números menores no processo.
+</p>
+
+<p>
+Depois, geramos uma lista de números de linhas sequenciais. Para a
+nossa matriz das maçãs, teríamos uma lista assim:
+</p>
+
+<pre class="example" id="orge36e314">
+      ⍳3
+1 2 3
+</pre>
+
+<p>
+Desta lista gerada, removemos a linha fixada (<code>L = 1</code>), e armazenamos o
+resultado na variável local <code>ZEROLNS</code>.
+</p>
+
+<p>
+Agora, para cada índice de linha em <code>ZEROLNS</code>, aplicamos o processo
+descrito anteriormente. Isto é feito com uma função anônima declarada
+<i>inline</i>. O operador Each (<code>¨</code>) garante que esta função seja aplicada a
+cada elemento de <code>ZEROLNS</code>, em sequência.
+</p>
+
+<p>
+A nova matriz é então armazenada na variável de resultado.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-gnu-apl">&#8711;R&#8592;L <span style="color: #0bc9cf;">GAUSSELIM</span> A;ZEROLNS
+  &#8594;(<span style="color: #f5c791;">0</span>=+/|A[L;])/END
+  A[L;]&#8592;(&#215;L PIVOT A)&#215;SIMPVEC A[L;]
+  ZEROLNS&#8592;(~L=ZEROLNS)/ZEROLNS&#8592;&#9075;&#8593;&#9076;A
+  R&#8592;{A[&#9077;;]&#8592;((L PIVOT A)&#215;A[&#9077;;])-(A[&#9077;;L]&#215;A[L;])}&#168;ZEROLNS
+<span style="color: #9d81ba;">END:</span>R&#8592;A
+&#8711;
+</pre>
+</div>
+
+<p>
+Aplicando eliminação gaussiana, ao tomarmos a primeira linha do
+problema como fixa, teremos:
+</p>
+
+<pre class="example" id="org6aa367d">
+      1 GAUSSELIM A
+1   3   4   53
+0 ¯11 ¯22 ¯209
+0 ¯14 ¯17 ¯189
+</pre>
+</div>
+<ul class="org-ul">
+<li><a id="org5ce026d"></a>Sobre funções anônimas em APL<br />
+<div class="outline-text-5" id="text-org5ce026d">
+<p>
+Um aspecto importante da programação funcional é a possibilidade de
+declarar funções sem um nome definido, e manipulá-las como se fossem
+valores, repassando-as como parâmetros, por exemplo.
+</p>
+
+<p>
+A maioria das implementações modernas de APL possuem algum suporte a
+expressões <i>lambda</i>. Em GNU APL, elas são tratadas como funções
+possivelmente diádicas que sempre retornam algum valor:
+</p>
+
+<pre class="example" id="orgc72d879">
+      {⍵ + 2} 5        ⍝ Monádica
+7
+      2 {⍺ + ⍵} 3      ⍝ Diádica, notação infixa
+5
+      {⍺ + ⍵}/2 3 4 5  ⍝ Diádica, aplicada via Reduce
+14
+</pre>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org418ecbb" class="outline-4">
+<h4 id="org418ecbb">Escalonamento</h4>
+<div class="outline-text-4" id="text-org418ecbb">
+<p>
+A função <code>GAUSSJORDAN</code> é uma função monádica que realiza o escalonamento
+completo de uma matriz. Seu algoritmo é simples: para cada linha da
+matriz, realize uma eliminação gaussiana, tomando-a como fixa.
+</p>
+
+<p>
+No final do processo, tudo o que temos que fazer é realizar uma
+simplificação extra em todas as linhas, e então repassar a nova matriz
+ao valor de retorno.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-gnu-apl">&#8711;R&#8592;<span style="color: #0bc9cf;">GAUSSJORDAN</span> MAT
+  R&#8592;{MAT&#8592;&#9077; GAUSSELIM MAT}&#168;&#9075;&#8593;&#9076;MAT
+  R&#8592;{MAT[&#9077;;]&#8592;SIMPVEC MAT[&#9077;;]}&#168;&#9075;&#8593;&#9076;MAT
+  R&#8592;MAT
+&#8711;
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org94356a4" class="outline-2">
+<h2 id="org94356a4">Realizando testes</h2>
+<div class="outline-text-2" id="text-org94356a4">
+<p>
+Está pronto o nosso programa que realiza escalonamentos de
+matrizes. Podemos testá-lo agora, e aproveitar também para discutir
+e provar propriedades de algumas matrizes.
+</p>
+</div>
+<div id="outline-container-org2e2c9f6" class="outline-3">
+<h3 id="org2e2c9f6">Problema das Maçãs</h3>
+<div class="outline-text-3" id="text-org2e2c9f6">
+<p>
+Se criarmos uma matriz <code>PMJ</code> com os dados do problema passado
+inicialmente, veremos que a matriz escalonada bate com o resultado
+apresentado:
+</p>
+
+<pre class="example" id="orgd1a5ca7">
+      PMJ←3 4⍴1 3 4 53 6 7 2 109 5 1 3 76
+      PMJ
+1 3 4  53
+6 7 2 109
+5 1 3  76
+      GAUSSJORDAN PMJ
+1 0 0 10
+0 1 0  5
+0 0 1  7
+</pre>
+</div>
+</div>
+<div id="outline-container-orge8404ad" class="outline-3">
+<h3 id="orge8404ad">Sistemas com soluções nulas</h3>
+<div class="outline-text-3" id="text-orge8404ad">
+<p>
+Podemos verificar também o mesmo para um sistema com solução zero,
+gerado com números aleatórios e com todas as equações iguais a zero:
+</p>
+
+<pre class="example" id="org129ba25">
+      A←EXTENDRIGHT 3 3⍴7?7
+      A
+1 4 3 0
+7 6 2 0
+5 1 4 0
+      GAUSSJORDAN A
+1 0 0 0
+0 1 0 0
+0 0 1 0
+</pre>
+</div>
+</div>
+<div id="outline-container-org600eef6" class="outline-3">
+<h3 id="org600eef6">Outros Sistemas Possíveis</h3>
+<div class="outline-text-3" id="text-org600eef6">
+<p>
+Podemos também testar o método de Gauss-Jordan para outros sistemas
+que possuem soluções. Aqui definimos duas matrizes e imprimimo-nas
+lado a lado, antes e depois do escalonamento:
+</p>
+
+<pre class="example" id="orgb2b783c">
+     B←3 4⍴2 1 ¯1 8 ¯3 ¯1 2 ¯11 ¯2 1 2 ¯3
+     C←3 5⍴2 4 1 0 1 0 2 2 ¯8 6 3 0 2 0 0
+     (B C)
+ 2  1 ¯1   8   2 4 1  0 1 
+¯3 ¯1  2 ¯11   0 2 2 ¯8 6 
+¯2  1  2  ¯3   3 0 2  0 0 
+     {GAUSSJORDAN ⍵}¨(B C)
+1 0 0  2   13  0  0  32 ¯22 
+0 1 0  3    0 13  0  ¯4   6 
+0 0 1 ¯1    0  0 13 ¯48  33 
+</pre>
+
+<p>
+Veja que não há matriz-identidade na parte esquerda da matriz <code>C</code>. Isto
+diz respeito ao algoritmo de simplificação, que evita gerar números
+fracionários. No caso dela, bastaria dividir as três linhas por <code>13</code>
+para obtermos a resposta.
+</p>
+</div>
+</div>
+<div id="outline-container-orgd8aac0d" class="outline-3">
+<h3 id="orgd8aac0d">Sistemas impossíveis</h3>
+<div class="outline-text-3" id="text-orgd8aac0d">
+<p>
+Alguns sistemas de equações são impossíveis de serem
+resolvidos. Considere a matriz <code>D</code> na saída abaixo.
+</p>
+
+<pre class="example" id="org9146606">
+      D←3 4⍴1 3 13 9 0 1 5 2 0 ¯2 ¯10 ¯8
+      D
+1  3  13  9
+0  1   5  2
+0 ¯2 ¯10 ¯8
+      GAUSSJORDAN D
+1 0 ¯2  5
+0 1  5 ¯3
+0 0  0  1
+</pre>
+
+<p>
+A matriz <code>D</code> corresponde ao conjunto de equações:
+</p>
+
+\begin{equation*}
+  \begin{cases}
+        x + 3y + 13z = 9\\
+        y + 5z = 2\\
+        -2y - 10z = -8\\
+  \end{cases}
+\end{equation*}
+
+<p>
+Infelizmente, seu escalonamento não sugere uma solução matematicamente
+válida:
+</p>
+
+\begin{equation*}
+  \begin{cases}
+        x - 2z = 5\\
+        y + 5z = 2\\
+        0 = 1\\
+  \end{cases}
+\end{equation*}
+
+<p>
+Como todos os coeficientes foram zerados na terceira linha, e a "parte
+aumentada" (correspondente à parte após o sinal de igualdade) não foi
+zerada para esta mesma linha, caímos em um resultado absurdo. Isto
+significa que não existe solução para as equações iniciais.
+</p>
+
+<p>
+O mesmo pode ser observado para a matriz <code>E</code> abaixo. Neste caso, ao
+invés de uma única coluna na "parte aumentada", temos três colunas,
+correspondentes a uma matriz identidade do lado direito:
+</p>
+
+<pre class="example" id="org05e662b">
+      E←(3 3⍴1 2 3 1 1 2 0 1 1),IDENTITY 3
+      E
+1 2 3 1 0 0
+1 1 2 0 1 0
+0 1 1 0 0 1
+      GAUSSJORDAN E
+1 0 1 ¯2  3  1
+0 1 1  0  0  1
+0 0 0  1 ¯1 ¯1
+</pre>
+
+<p>
+O mesmo problema ocorre para o escalonamento de <code>E</code>. Todavia, como
+colocamos uma matriz identidade <i>catenada</i> ao lado direito de <code>E</code>, este
+resultado significa que <code>E</code> é uma matriz <i>singular</i>, ou seja, não possui
+<i>matriz inversa</i>.
+</p>
+</div>
+</div>
+<div id="outline-container-org3f2f1cf" class="outline-3">
+<h3 id="org3f2f1cf">Matrizes inversas</h3>
+<div class="outline-text-3" id="text-org3f2f1cf">
+<p>
+Pelo mesma forma como descobrimos que <code>E</code> é uma <i>matriz singular</i>, podemos
+criar as matrizes <code>F</code> e <code>G</code>, e veremos que elas, sim, são
+inversíveis. Veja que <i>catenamos</i> a matriz-identidade a elas apenas ao
+realizar Gauss-Jordan, contrário ao que fizemos em <code>E</code>:
+</p>
+
+<pre class="example" id="org6fe3e15">
+     F←(3 3⍴1 2 3 1 1 2 0 1 2)
+     G←4 4⍴2 ¯2 6 2 3 4 1 1 1 2 3 4 ¯1 ¯4 0 0
+     (F G)
+1 2 3    2 ¯2 6 2 
+1 1 2    3  4 1 1 
+0 1 2    1  2 3 4 
+        ¯1 ¯4 0 0 
+     {GAUSSJORDAN ⍵,IDENTITY 2⌷[1]⍴⍵}¨(F G)
+1 0 0  0  1 ¯1   63   0  0  0  ¯2  36 ¯8  33 
+0 1 0  2 ¯2 ¯1    0 126  0  0   1 ¯18  4 ¯48 
+0 0 1 ¯1  1  1    0   0 21  0   5  ¯6 ¯1  ¯9 
+                  0   0  0 63 ¯11   9 19  24 
+</pre>
+
+<p>
+Aqui podemos ver que, no caso de <code>F</code> (à esquerda), como a parte original
+da matriz transformou-se na matriz-identidade, toda a parte aumentada
+apresentada corresponde à matriz inversa de <code>F</code> (matematicamente,
+\(F^{-1}\)).
+</p>
+
+<p>
+No caso de <code>G</code> (à direita), ainda não temos a matriz identidade, mas
+falta apenas um passo para tal: dividir cada linha por seu respectivo
+pivô. De qualquer forma, como não há linha nula na parte original da
+matriz, podemos constatar que a matriz <code>G</code> é inversível.
+</p>
+</div>
+<div id="outline-container-org1329dc8" class="outline-4">
+<h4 id="org1329dc8">Invertendo matrizes em APL puro</h4>
+<div class="outline-text-4" id="text-org1329dc8">
+<p>
+Este último passo é, na realidade, redundante. APL possui uma função
+Dominó (<code>⌹</code>) que, quando usada de forma monádica, calcula a inversa de
+uma certa matriz. Compare estes dois resultados:
+</p>
+
+<pre class="example" id="org07faf78">
+      ⌹F
+¯1.5258556E¯16  1 ¯1
+ 2.0000000E0   ¯2 ¯1
+¯1.0000000E0    1  1
+      ¯3↑[2]GAUSSJORDAN F,IDENTITY 3
+ 0  1 ¯1
+ 2 ¯2 ¯1
+¯1  1  1
+</pre>
+
+<p>
+Veja que o resultado dado pela função Dominó (<code>⌹</code>) não é exatamente o
+mesmo, porque ela utiliza outros métodos e trabalha com pontos
+flutuantes. Porém, podemos observar que o valor <code>¯1.5258556E¯16</code>,
+que corresponde aproximadamente a <code>-0.00000000000000015258556</code>, é um
+valor bem próximo do requerido (<code>0</code>). Este tipo de ruído relacionado a
+pontos flutuantes é esperado, e portanto pode ser mais interessante
+utilizar o Dominó (<code>⌹</code>) que programar todo o processo de Gauss-Jordan.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org061e3e5" class="outline-2">
+<h2 id="org061e3e5">Suporte a Dyalog APL</h2>
+<div class="outline-text-2" id="text-org061e3e5">
+<p>
+Assim como em outras linguagens, existem várias implementações de APLs
+que são utilizadas no mercado. Uma delas é o Dyalog APL, que possui
+recursos avançados como suporte a Orientação a Objetos,
+interoperabilidade com .NET e Windows Forms, suporte a algumas
+estruturas de controle, interoperabilidade com a linguagem R, etc.
+</p>
+
+<p>
+Se você digitou diretamente o código aqui mostrado em Dyalog APL,
+provavelmente percebeu que muitos erros apareceram; alguns
+relacionados à aplicação de Compress (<code>/</code>) a definições de variáveis,
+uso incorreto de Take (<code>↑</code>), alguns resultados podem não ter aparecido
+corretamente, enfim, uma gama de coisas.
+</p>
+
+<p>
+Como este artigo não é para explicar totalmente a linguagem ou
+quaisquer dialetos, resguardo-me apenas a fornecer uma implementação
+completa dos códigos mostrados aqui. Veja que os nomes das funções e o
+estilo do código podem variar.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-dyalog"> Identity<span style="color: #9d81ba;">&#8592;{(&#9077;</span> <span style="color: #9d81ba;">&#9077;)&#9076;(</span><span style="color: #f5c791;">1</span><span style="color: #9d81ba;">,&#9077;&#9076;</span><span style="color: #f5c791;">0</span><span style="color: #9d81ba;">)}</span>
+ ExtendBottom<span style="color: #9d81ba;">&#8592;{(((</span><span style="color: #f5c791;">1</span><span style="color: #9d81ba;">&#8593;&#9076;&#9077;)&#9076;</span><span style="color: #f5c791;">1</span><span style="color: #9d81ba;">),</span><span style="color: #f5c791;">0</span><span style="color: #9d81ba;">)\[</span><span style="color: #f5c791;">1</span><span style="color: #9d81ba;">]&#9077;}</span>
+ ExtendRight<span style="color: #9d81ba;">&#8592;{(((</span><span style="color: #f5c791;">2</span><span style="color: #9d81ba;">&#9015;&#9076;&#9077;)&#9076;</span><span style="color: #f5c791;">1</span><span style="color: #9d81ba;">),</span><span style="color: #f5c791;">0</span><span style="color: #9d81ba;">)\&#9077;}</span>
+
+ <span style="color: #dbac66;">&#8711;</span>r<span style="color: #9d81ba;">&#8592;</span>n Pivot A<span style="color: #9d81ba;">;</span><span style="color: #0D9C94;">lst</span><span style="color: #9d81ba;">;</span><span style="color: #0D9C94;">idx</span>
+  <span style="color: #0D9C94;">lst</span><span style="color: #9d81ba;">&#8592;</span><span style="color: #0D9C94;">n</span><span style="color: #9d81ba;">&#9015;[</span><span style="color: #f5c791;">1</span><span style="color: #9d81ba;">]</span><span style="color: #0D9C94;">A</span>
+  <span style="color: #0D9C94;">idx</span><span style="color: #9d81ba;">&#8592;(</span><span style="color: #f5c791;">0</span><span style="color: #9d81ba;">&#8800;</span><span style="color: #0D9C94;">lst</span><span style="color: #9d81ba;">)&#9075;</span><span style="color: #f5c791;">1</span>
+  <span style="color: #9d81ba;">&#8594;(</span><span style="color: #0D9C94;">idx</span><span style="color: #9d81ba;">&gt;&#9076;</span><span style="color: #0D9C94;">lst</span><span style="color: #9d81ba;">)/</span><span style="color: #f5c791;">0</span>
+  <span style="color: #0D9C94;">r</span><span style="color: #9d81ba;">&#8592;</span><span style="color: #0D9C94;">idx</span><span style="color: #9d81ba;">&#9015;</span><span style="color: #0D9C94;">lst</span>
+ <span style="color: #dbac66;">&#8711;</span>
+
+ <span style="color: #dbac66;">&#8711;</span>r<span style="color: #9d81ba;">&#8592;</span>a Gcd b
+  <span style="color: #9d81ba;">&#8594;(</span><span style="color: #0D9C94;">b</span><span style="color: #9d81ba;">=</span><span style="color: #f5c791;">0</span><span style="color: #9d81ba;">)/</span>END
+  <span style="color: #9d81ba;">(</span><span style="color: #0D9C94;">a</span> <span style="color: #0D9C94;">b</span><span style="color: #9d81ba;">)&#8592;(</span><span style="color: #0D9C94;">b</span><span style="color: #9d81ba;">(|</span><span style="color: #0D9C94;">b</span><span style="color: #9d81ba;">|</span><span style="color: #0D9C94;">a</span><span style="color: #9d81ba;">))</span>
+  <span style="color: #9d81ba;">&#8594;</span><span style="color: #f5c791;">1</span>
+<span style="color: #9d81ba;">END:</span><span style="color: #0D9C94;">r</span><span style="color: #9d81ba;">&#8592;</span><span style="color: #0D9C94;">a</span>
+ <span style="color: #dbac66;">&#8711;</span>
+
+ <span style="color: #dbac66;">&#8711;</span>r<span style="color: #9d81ba;">&#8592;</span>SimplifyVec V<span style="color: #9d81ba;">;</span><span style="color: #0D9C94;">simpl</span>
+  <span style="color: #0D9C94;">simpl</span><span style="color: #9d81ba;">&#8592;</span><span style="color: #0D9C94;">V</span><span style="color: #9d81ba;">&#247;</span>Gcd<span style="color: #9d81ba;">/&#8970;|</span><span style="color: #0D9C94;">V</span><span style="color: #9d81ba;">[&#9042;|</span><span style="color: #0D9C94;">V</span><span style="color: #9d81ba;">]</span>
+  <span style="color: #9d81ba;">&#8594;(&#215;+/</span><span style="color: #f5c791;">0</span><span style="color: #9d81ba;">&lt;</span><span style="color: #0D9C94;">simpl</span><span style="color: #9d81ba;">-&#8970;</span><span style="color: #0D9C94;">simpl</span><span style="color: #9d81ba;">)/</span>DONTSIMPL
+  <span style="color: #0D9C94;">r</span><span style="color: #9d81ba;">&#8592;</span><span style="color: #0D9C94;">simpl</span>
+  <span style="color: #9d81ba;">&#8594;</span><span style="color: #f5c791;">0</span>
+<span style="color: #9d81ba;">DONTSIMPL:</span><span style="color: #0D9C94;">r</span><span style="color: #9d81ba;">&#8592;</span><span style="color: #0D9C94;">V</span>
+ <span style="color: #dbac66;">&#8711;</span>
+
+ <span style="color: #dbac66;">&#8711;</span>r<span style="color: #9d81ba;">&#8592;</span>L GaussElimination A<span style="color: #9d81ba;">;</span><span style="color: #0D9C94;">zerolns</span>
+  <span style="color: #9d81ba;">&#8594;(</span><span style="color: #f5c791;">0</span><span style="color: #9d81ba;">=+/|</span><span style="color: #0D9C94;">A</span><span style="color: #9d81ba;">[</span><span style="color: #0D9C94;">L</span><span style="color: #9d81ba;">;])/</span>END
+  <span style="color: #0D9C94;">A</span><span style="color: #9d81ba;">[</span><span style="color: #0D9C94;">L</span><span style="color: #9d81ba;">;]&#8592;(&#215;</span><span style="color: #0D9C94;">L</span> Pivot <span style="color: #0D9C94;">A</span><span style="color: #9d81ba;">)&#215;</span>SimplifyVec <span style="color: #0D9C94;">A</span><span style="color: #9d81ba;">[</span><span style="color: #0D9C94;">L</span><span style="color: #9d81ba;">;]</span>
+  <span style="color: #0D9C94;">zerolns</span><span style="color: #9d81ba;">&#8592;&#9075;</span><span style="color: #f5c791;">1</span><span style="color: #9d81ba;">&#8593;&#9076;</span><span style="color: #0D9C94;">A</span>
+  <span style="color: #0D9C94;">zerolns</span><span style="color: #9d81ba;">&#8592;(~</span><span style="color: #0D9C94;">L</span><span style="color: #9d81ba;">=</span><span style="color: #0D9C94;">zerolns</span><span style="color: #9d81ba;">)/</span><span style="color: #0D9C94;">zerolns</span>
+  <span style="color: #0D9C94;">r</span><span style="color: #9d81ba;">&#8592;{</span><span style="color: #0D9C94;">A</span><span style="color: #9d81ba;">[&#9077;;]&#8592;((</span><span style="color: #0D9C94;">L</span> <span style="color: #0D9C94;">Pivot</span> <span style="color: #0D9C94;">A</span><span style="color: #9d81ba;">)&#215;</span><span style="color: #0D9C94;">A</span><span style="color: #9d81ba;">[&#9077;;])-(</span><span style="color: #0D9C94;">A</span><span style="color: #9d81ba;">[&#9077;;</span><span style="color: #0D9C94;">L</span><span style="color: #9d81ba;">]&#215;</span><span style="color: #0D9C94;">A</span><span style="color: #9d81ba;">[</span><span style="color: #0D9C94;">L</span><span style="color: #9d81ba;">;])}&#168;</span><span style="color: #0D9C94;">zerolns</span>
+<span style="color: #9d81ba;">END:</span><span style="color: #0D9C94;">r</span><span style="color: #9d81ba;">&#8592;</span><span style="color: #0D9C94;">A</span>
+ <span style="color: #dbac66;">&#8711;</span>
+
+ <span style="color: #dbac66;">&#8711;</span>r<span style="color: #9d81ba;">&#8592;</span>GaussJordan A<span style="color: #9d81ba;">;</span><span style="color: #0D9C94;">line</span>
+  <span style="color: #9d81ba;">:For</span> <span style="color: #0D9C94;">line</span> <span style="color: #9d81ba;">:</span><span style="color: #9d81ba;">In</span> <span style="color: #9d81ba;">&#9075;</span><span style="color: #f5c791;">1</span><span style="color: #9d81ba;">&#8593;&#9076;</span><span style="color: #0D9C94;">A</span>
+          <span style="color: #0D9C94;">A</span><span style="color: #9d81ba;">&#8592;</span><span style="color: #0D9C94;">line</span> GaussElimination <span style="color: #0D9C94;">A</span>
+  <span style="color: #9d81ba;">:EndFor</span>
+  <span style="color: #9d81ba;">:For</span> <span style="color: #0D9C94;">line</span> <span style="color: #9d81ba;">:</span><span style="color: #9d81ba;">In</span> <span style="color: #9d81ba;">&#9075;</span><span style="color: #f5c791;">1</span><span style="color: #9d81ba;">&#8593;&#9076;</span><span style="color: #0D9C94;">A</span>
+          <span style="color: #0D9C94;">A</span><span style="color: #9d81ba;">[</span><span style="color: #0D9C94;">line</span><span style="color: #9d81ba;">;]&#8592;</span>SimplifyVec <span style="color: #0D9C94;">A</span><span style="color: #9d81ba;">[</span><span style="color: #0D9C94;">line</span><span style="color: #9d81ba;">;]</span>
+  <span style="color: #9d81ba;">:EndFor</span>
+  <span style="color: #0D9C94;">r</span><span style="color: #9d81ba;">&#8592;</span><span style="color: #0D9C94;">A</span>
+ <span style="color: #dbac66;">&#8711;</span>
+</pre>
+</div>
+
+<p>
+Alguns exemplos de uso estão abaixo. Veja que a função <code>⌹</code> funciona como
+esperado.
+</p>
+
+<pre class="example" id="org81d82bd">
+      F←(3 3⍴1 2 3 1 1 2 0 1 2)
+      G←4 4⍴2 ¯2 6 2 3 4 1 1 1 2 3 4 ¯1 ¯4 0 0
+      F G
+ 1 2 3   2 ¯2 6 2
+ 1 1 2   3  4 1 1
+ 0 1 2   1  2 3 4
+        ¯1 ¯4 0 0
+      {GaussJordan ⍵,Identity 2⌷[1]⍴⍵}¨(F G)
+ 1 0 0  0  1 ¯1  63   0  0  0  ¯2  36 ¯8  33
+ 0 1 0  2 ¯2 ¯1   0 126  0  0   1 ¯18  4 ¯48
+ 0 0 1 ¯1  1  1   0   0 21  0   5  ¯6 ¯1  ¯9
+                  0   0  0 63 ¯11   9 19  24
+      ⌹F
+ 0  1 ¯1
+ 2 ¯2 ¯1
+¯1  1  1
+</pre>
+</div>
+</div>
+<div id="outline-container-org1cb9cc8" class="outline-2">
+<h2 id="org1cb9cc8">Conclusão</h2>
+<div class="outline-text-2" id="text-org1cb9cc8">
+<p>
+Meus estudos da linguagem APL e a tentativa de implementar este
+processo me levaram a algo que sempre gosto, que é explanar um certo
+raciocínio que aprendi. Acredito que programação seja a forma mais
+didádica de explorar um conhecimento aprendido. Sem dúvida é mais
+fácil fazer isto com Matemática em geral, porém outras disciplinas
+também têm sua vez na Computação.
+</p>
+
+<p>
+APL é uma linguagem fantástica, e uma ferramenta sucinta e poderosa
+para manipulação de matrizes e vetores. O que utilizei aqui foram
+pouquíssimos recursos da linguagem, e ainda assim, consegui criar uma
+ferramenta poderosa que poderia ajudar qualquer pessoa durante um
+curso de Álgebra Linear.
+</p>
+
+<p>
+Como próximos passos, pretendo escrever um pequeno procedimento que
+mostre passo-a-passo a resolução de um problema dos tipos
+apresentados, sobretudo utilizando a notação de <i>boxing</i> de APL, que
+desenha caixas ao redor de vetores e matrizes.
+</p>
+
+<p>
+Até a próxima!
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<h3><a href="../">De volta à página anterior</a></h3>
+</div>
+</body>
+</html>
