@@ -219,51 +219,51 @@ gtag('config', 'G-22RF3F5XE0');
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org2caf048">Introduction</a>
+<li><a href="#orga061b8a">Introduction</a>
 <ul>
 <li>
 <ul>
-<li><a href="#orgd10e6bd">ACHTUNG!</a></li>
+<li><a href="#orgaca5c0f">ACHTUNG!</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org7d7dae1">Initial population</a>
+<li><a href="#orgd14d223">Initial population</a>
 <ul>
-<li><a href="#org1cb496c">Proto-chromosomes</a>
+<li><a href="#org222e618">Proto-chromosomes</a>
 <ul>
-<li><a href="#org53e937d">Example: Checking zygote generation</a></li>
+<li><a href="#orgb1d799f">Example: Checking zygote generation</a></li>
 </ul>
 </li>
-<li><a href="#org081a899">Generating initial chromosomes</a></li>
+<li><a href="#org15f26d3">Generating initial chromosomes</a></li>
 </ul>
 </li>
-<li><a href="#orga86364c">Computing fitness</a>
+<li><a href="#orgd33ce81">Computing fitness</a>
 <ul>
-<li><a href="#org52dd807">Example: Checking generated population</a></li>
+<li><a href="#orgce08fbe">Example: Checking generated population</a></li>
 </ul>
 </li>
-<li><a href="#orgb10b0e1">Selection</a>
+<li><a href="#orgb1cd214">Selection</a>
 <ul>
-<li><a href="#org50a66d8">Example: Checking selected chromosomes</a></li>
+<li><a href="#org320efc3">Example: Checking selected chromosomes</a></li>
 </ul>
 </li>
-<li><a href="#org8a3a46d">Crossover (Breeding)</a></li>
-<li><a href="#orgc007021">Mutation</a>
+<li><a href="#orgf9caf58">Crossover (Breeding)</a></li>
+<li><a href="#orgca871e8">Mutation</a>
 <ul>
-<li><a href="#org3739622">Example: Testing the mutation algorithm</a></li>
+<li><a href="#orgef4af72">Example: Testing the mutation algorithm</a></li>
 </ul>
 </li>
-<li><a href="#org581f82a">Crossover (Finalization)</a></li>
-<li><a href="#org8fb3bf8">Convergence</a></li>
-<li><a href="#orgbad577a">Debriefing and running the genetic algorithm</a></li>
-<li><a href="#orgcdebc4b">Conclusion</a></li>
+<li><a href="#org467c376">Crossover (Finalization)</a></li>
+<li><a href="#org1440a27">Convergence</a></li>
+<li><a href="#org8b92d49">Debriefing and running the genetic algorithm</a></li>
+<li><a href="#orge365098">Conclusion</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org2caf048" class="outline-2">
-<h2 id="org2caf048">Introduction</h2>
-<div class="outline-text-2" id="text-org2caf048">
+<div id="outline-container-orga061b8a" class="outline-2">
+<h2 id="orga061b8a">Introduction</h2>
+<div class="outline-text-2" id="text-orga061b8a">
 <p>
 A teacher of mine tasked me with the challenge of building a genetic algorithm
 to solve diophantine equations. Before I jump into it, I will first attempt to
@@ -281,9 +281,9 @@ This GA is built using Common Lisp, due to my distaste for Java. If you're
 allergic to parenthesis, you've been warned.
 </p>
 </div>
-<div id="outline-container-orgd10e6bd" class="outline-4">
-<h4 id="orgd10e6bd">ACHTUNG!</h4>
-<div class="outline-text-4" id="text-orgd10e6bd">
+<div id="outline-container-orgaca5c0f" class="outline-4">
+<h4 id="orgaca5c0f">ACHTUNG!</h4>
+<div class="outline-text-4" id="text-orgaca5c0f">
 <p>
 Since this post is the reproduction of following a tutorial and also my first
 attempt at producing a genetic algorithm, some or all of the things here might
@@ -298,9 +298,9 @@ file (<code>org-mode</code>; better viewed inside Emacs) <a href="https://raw.gi
 </div>
 </div>
 </div>
-<div id="outline-container-org7d7dae1" class="outline-2">
-<h2 id="org7d7dae1">Initial population</h2>
-<div class="outline-text-2" id="text-org7d7dae1">
+<div id="outline-container-orgd14d223" class="outline-2">
+<h2 id="orgd14d223">Initial population</h2>
+<div class="outline-text-2" id="text-orgd14d223">
 <p>
 Population is stored in a list. Unfortunately, this means that checking if a
 chromosome is in the list is <code>O(n)</code> speed at worst-case scenario (which is also a
@@ -322,9 +322,9 @@ stored in <code>*fittest*</code>. <code>*max-fitness*</code> tells us the least 
 expecting. And then, we have an initial <code>*rnd-state*</code> for randomization purposes.
 </p>
 </div>
-<div id="outline-container-org1cb496c" class="outline-3">
-<h3 id="org1cb496c">Proto-chromosomes</h3>
-<div class="outline-text-3" id="text-org1cb496c">
+<div id="outline-container-org222e618" class="outline-3">
+<h3 id="org222e618">Proto-chromosomes</h3>
+<div class="outline-text-3" id="text-org222e618">
 <p>
 Having a 32-bit number as chromosome also means that we need to look at the 16
 least significant bits at crossover phase, but the 16 most significant bits can
@@ -367,9 +367,9 @@ leading positions with zeroes. We can even build a function for that:
 </pre>
 </div>
 </div>
-<div id="outline-container-org53e937d" class="outline-4">
-<h4 id="org53e937d">Example: Checking zygote generation</h4>
-<div class="outline-text-4" id="text-org53e937d">
+<div id="outline-container-orgb1d799f" class="outline-4">
+<h4 id="orgb1d799f">Example: Checking zygote generation</h4>
+<div class="outline-text-4" id="text-orgb1d799f">
 <p>
 Here is an example of what happens when you print an immediately created
 proto. The first line is the actual value of the 32-bit integer, and the second
@@ -384,9 +384,9 @@ line is the binary representation of such integer, when you call
 </div>
 </div>
 </div>
-<div id="outline-container-org081a899" class="outline-3">
-<h3 id="org081a899">Generating initial chromosomes</h3>
-<div class="outline-text-3" id="text-org081a899">
+<div id="outline-container-org15f26d3" class="outline-3">
+<h3 id="org15f26d3">Generating initial chromosomes</h3>
+<div class="outline-text-3" id="text-org15f26d3">
 <p>
 We generate our first ten chromosomes in a very simple way. We just generate
 them from zygotes and put them on the list. We also use a helper macro which
@@ -479,9 +479,9 @@ bitmasks at the beginning.
 </div>
 </div>
 </div>
-<div id="outline-container-orga86364c" class="outline-2">
-<h2 id="orga86364c">Computing fitness</h2>
-<div class="outline-text-2" id="text-orga86364c">
+<div id="outline-container-orgd33ce81" class="outline-2">
+<h2 id="orgd33ce81">Computing fitness</h2>
+<div class="outline-text-2" id="text-orgd33ce81">
 <p>
 Our fitness is calculated by the amount of <code>1</code>'s in the binary representation of
 our number. The more the amount, the better.
@@ -520,9 +520,9 @@ We also add a convenient function for printing the chromosome with its fitness.
 </pre>
 </div>
 </div>
-<div id="outline-container-org52dd807" class="outline-3">
-<h3 id="org52dd807">Example: Checking generated population</h3>
-<div class="outline-text-3" id="text-org52dd807">
+<div id="outline-container-orgce08fbe" class="outline-3">
+<h3 id="orgce08fbe">Example: Checking generated population</h3>
+<div class="outline-text-3" id="text-orgce08fbe">
 <p>
 We can use <code>mapc</code> along with <code>print-chromosome-with-fitness</code> to beautifully print
 all of our generated specimen, and each chromosome's fitness. Here is an
@@ -537,7 +537,7 @@ example.
 </pre>
 </div>
 
-<pre class="example" id="org415fbc6">
+<pre class="example" id="org9528edb">
 00000001010000010000000000000100 =&gt; 4
 01000000100100010000000000100000 =&gt; 5
 00000010110100000000000010000000 =&gt; 5
@@ -552,18 +552,18 @@ example.
 </div>
 </div>
 </div>
-<div id="outline-container-orgb10b0e1" class="outline-2">
-<h2 id="orgb10b0e1">Selection</h2>
-<div class="outline-text-2" id="text-orgb10b0e1">
+<div id="outline-container-orgb1cd214" class="outline-2">
+<h2 id="orgb1cd214">Selection</h2>
+<div class="outline-text-2" id="text-orgb1cd214">
 <p>
 The selection phase is where the two fittest individuals are selected to pass on
 their genes to the next generation. This phase is automagically done on the
 <code>with-distinct-chromosome</code> macro.
 </p>
 </div>
-<div id="outline-container-org50a66d8" class="outline-3">
-<h3 id="org50a66d8">Example: Checking selected chromosomes</h3>
-<div class="outline-text-3" id="text-org50a66d8">
+<div id="outline-container-org320efc3" class="outline-3">
+<h3 id="org320efc3">Example: Checking selected chromosomes</h3>
+<div class="outline-text-3" id="text-org320efc3">
 <p>
 Using the same principle of printing the population, we can do the same with
 <code>*fittest*</code>, which is the variable storing the two fittest individuals. This time,
@@ -583,9 +583,9 @@ each one with the aid of <code>mapc</code> should do the trick.
 </div>
 </div>
 </div>
-<div id="outline-container-org8a3a46d" class="outline-2">
-<h2 id="org8a3a46d">Crossover (Breeding)</h2>
-<div class="outline-text-2" id="text-org8a3a46d">
+<div id="outline-container-orgf9caf58" class="outline-2">
+<h2 id="orgf9caf58">Crossover (Breeding)</h2>
+<div class="outline-text-2" id="text-orgf9caf58">
 <p>
 The crossover process produces two new chromosomes. We generate a new individual
 by making the parents exchange their least significant bits. Each new value is,
@@ -638,9 +638,9 @@ size. If it does, then the individuals of least fitness are removed.
 </div>
 </div>
 </div>
-<div id="outline-container-orgc007021" class="outline-2">
-<h2 id="orgc007021">Mutation</h2>
-<div class="outline-text-2" id="text-orgc007021">
+<div id="outline-container-orgca871e8" class="outline-2">
+<h2 id="orgca871e8">Mutation</h2>
+<div class="outline-text-2" id="text-orgca871e8">
 <p>
 To ensure population diversity and remove the chances of early convergence, we
 mutate some genes at a low rate. By picking a maximum of 16 genes, regardless of
@@ -665,9 +665,9 @@ probability): should the odds be on favor, the specified gene will suffer a
 </pre>
 </div>
 </div>
-<div id="outline-container-org3739622" class="outline-3">
-<h3 id="org3739622">Example: Testing the mutation algorithm</h3>
-<div class="outline-text-3" id="text-org3739622">
+<div id="outline-container-orgef4af72" class="outline-3">
+<h3 id="orgef4af72">Example: Testing the mutation algorithm</h3>
+<div class="outline-text-3" id="text-orgef4af72">
 <p>
 We can check whether this is working or not with a simple algorithm which
 generates a chromosome and its mutation; then, we just print them and see if
@@ -689,9 +689,9 @@ mutated gene here and there.
 </div>
 </div>
 </div>
-<div id="outline-container-org581f82a" class="outline-2">
-<h2 id="org581f82a">Crossover (Finalization)</h2>
-<div class="outline-text-2" id="text-org581f82a">
+<div id="outline-container-org467c376" class="outline-2">
+<h2 id="org467c376">Crossover (Finalization)</h2>
+<div class="outline-text-2" id="text-org467c376">
 <p>
 Now we define our actual crossover function. The crossover function takes into
 consideration both the breeding process and the mutation.
@@ -707,9 +707,9 @@ consideration both the breeding process and the mutation.
 </div>
 </div>
 </div>
-<div id="outline-container-org8fb3bf8" class="outline-2">
-<h2 id="org8fb3bf8">Convergence</h2>
-<div class="outline-text-2" id="text-org8fb3bf8">
+<div id="outline-container-org1440a27" class="outline-2">
+<h2 id="org1440a27">Convergence</h2>
+<div class="outline-text-2" id="text-org1440a27">
 <p>
 We need a strategy to check if our population converged. For a genetic
 algorithm, a converged population usually means that we've reached a max
@@ -725,9 +725,9 @@ fitness greater or equal than the specified max fitness.
 </div>
 </div>
 </div>
-<div id="outline-container-orgbad577a" class="outline-2">
-<h2 id="orgbad577a">Debriefing and running the genetic algorithm</h2>
-<div class="outline-text-2" id="text-orgbad577a">
+<div id="outline-container-org8b92d49" class="outline-2">
+<h2 id="org8b92d49">Debriefing and running the genetic algorithm</h2>
+<div class="outline-text-2" id="text-org8b92d49">
 <p>
 Now we can create a proper loop which will execute the steps of our algorithm
 until the population converges.
@@ -755,15 +755,15 @@ until the population converges.
 </div>
 </div>
 </div>
-<div id="outline-container-orgcdebc4b" class="outline-2">
-<h2 id="orgcdebc4b">Conclusion</h2>
-<div class="outline-text-2" id="text-orgcdebc4b">
+<div id="outline-container-orge365098" class="outline-2">
+<h2 id="orge365098">Conclusion</h2>
+<div class="outline-text-2" id="text-orge365098">
 <p>
 With everything all sorted and done, we can test our algorithm at once. Here's
 one possible output when running the function <code>run-genetic-algorithm</code>:
 </p>
 
-<pre class="example" id="orgb4f12c3">
+<pre class="example" id="orgda5f8c7">
 Generation: 0
 Fittest:
 00010010010011110001000000000000
