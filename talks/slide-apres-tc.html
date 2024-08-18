@@ -32,10 +32,10 @@
 <section id="sec-title-slide"><h3>Computação em Diferentes Formas<br/><br/>Lucas S. Vieira</h3><br/>Universidade Federal dos Vales do Jequitinhonha e Mucuri<br/>Novembro de 2019</p>
 </section>
 <section>
-<section id="slide-org94e4a75">
-<h2 id="org94e4a75">Introdução</h2>
+<section id="slide-orgd9fe9cd">
+<h2 id="orgd9fe9cd">Introdução</h2>
 </section>
-<section id="slide-org94e4a75-split">
+<section id="slide-orgd9fe9cd-split">
 
 <p>
 Programação é uma área muito ampla, subdividida em paradigmas.
@@ -50,7 +50,7 @@ Mas paradigmas não são dissociáveis.
 </p>
 
 </section>
-<section id="slide-org94e4a75-split">
+<section id="slide-orgd9fe9cd-split">
 
 <p>
 Precisamos de uma mente aberta ao racionalizar a computação.
@@ -66,7 +66,7 @@ Linguagens específicas são a ferramenta certa para o propósito certo.
 </p>
 
 </section>
-<section id="slide-org94e4a75-split">
+<section id="slide-orgd9fe9cd-split">
 
 <p>
 Matemática constitui uma <i>linguagem formal</i> (ainda que não seja
@@ -88,7 +88,7 @@ thought." (Iverson, 1986)
 </p>
 
 </section>
-<section id="slide-org94e4a75-split">
+<section id="slide-orgd9fe9cd-split">
 
 <p>
 A <i>notação formal</i> usada em TC é uma linguagem matemática que especifica
@@ -101,7 +101,7 @@ universalizadas.
 </p>
 
 </section>
-<section id="slide-org94e4a75-split">
+<section id="slide-orgd9fe9cd-split">
 
 <p>
 Mostraremos como <i>linguagens específicas</i> induzem formas diferentes de
@@ -114,10 +114,10 @@ Mas primeiro&#x2026;
 </section>
 </section>
 <section>
-<section id="slide-org8cf74a2">
-<h2 id="org8cf74a2">Autômatos celulares unidimensionais</h2>
+<section id="slide-org24be67b">
+<h2 id="org24be67b">Autômatos celulares unidimensionais</h2>
 </section>
-<section id="slide-org8cf74a2-split">
+<section id="slide-org24be67b-split">
 
 <p>
 Notação definida por Stephen Wolfram (2002)
@@ -134,26 +134,26 @@ Dados gerais de um AC unidimensional:
 
 </ul>
 </section>
-<section id="slide-orgf0e987a">
-<h3 id="orgf0e987a">Rule 90</h3>
+<section id="slide-orgcc2cc9f">
+<h3 id="orgcc2cc9f">Rule 90</h3>
 <p>
 Considere a seguinte regra baseada na vizinhança:
 </p>
 
-<pre style="font-size:0.7em;" class="example" id="orgfd52556">
+<pre style="font-size:0.7em;" class="example" id="org3aef05a">
 ⋄⋄⋄   ⋄⋄.   ⋄.⋄   ⋄..   .⋄⋄   .⋄.   ..⋄   ...
  .     ⋄     .     ⋄     ⋄     .     ⋄     . 
 </pre>
 </section>
-<section id="slide-orgefab1b5">
-<h4 id="orgefab1b5">Transformando em binário</h4>
-<pre style="font-size:0.7em;" class="example" id="org12ee3a2">
+<section id="slide-org457b1d6">
+<h4 id="org457b1d6">Transformando em binário</h4>
+<pre style="font-size:0.7em;" class="example" id="org9083853">
 111 110 101 100 011 010 001 000
  0   1   0   1   1   0   1   0
 </pre>
 </section>
-<section id="slide-org5a74ec0">
-<h4 id="org5a74ec0">Por que "Rule 90"?</h4>
+<section id="slide-org1136448">
+<h4 id="org1136448">Por que "Rule 90"?</h4>
 <div>
 \begin{align*}
         01011010_{2} &= (2^{6} + 2^{4} + 2^{3} + 2^{1})\\
@@ -163,24 +163,24 @@ Considere a seguinte regra baseada na vizinhança:
 
 </div>
 </section>
-<section id="slide-org37696be">
-<h4 id="org37696be">Simplificação da regra</h4>
+<section id="slide-orgc4cebf3">
+<h4 id="orgc4cebf3">Simplificação da regra</h4>
 <p>
 Equivale a realizar uma operação de <i>ou-exclusivo</i> entre os vizinhos e
 ignorar o estado da célula atual.
 </p>
 
-<pre style="font-size:0.7em;" class="example" id="orgf3d189a">
+<pre style="font-size:0.7em;" class="example" id="org9150b05">
 1X1 1X0 0X1 0X0
  0   1   1   0 
 </pre>
 </section>
 </section>
 <section>
-<section id="slide-org8ccbf27">
-<h2 id="org8ccbf27">APL</h2>
+<section id="slide-orgb660775">
+<h2 id="orgb660775">APL</h2>
 </section>
-<section id="slide-org8ccbf27-split">
+<section id="slide-orgb660775-split">
 
 <p>
 Começaremos com a linguagem criada por Kenneth E. Iverson, chamada
@@ -197,8 +197,8 @@ APL não possui, por padrão, nenhum <i>condicional</i> ou <i>laço de repetiç�
 explícitos.
 </p>
 </section>
-<section id="slide-org040a483">
-<h3 id="org040a483">Função para a Rule 90 em APL</h3>
+<section id="slide-org5dec9e7">
+<h3 id="org5dec9e7">Função para a Rule 90 em APL</h3>
 <div class="org-src-container">
 
 <pre  class="fragment (appear)"   ><code trim>rule90<span style="color: #9d81ba;">&#8592;{&#8835;</span><span style="color: #f5c791;">1</span><span style="color: #9d81ba;">=+/</span><span style="color: #0D9C94;">&#175;1</span> <span style="color: #f5c791;">1</span><span style="color: #9d81ba;">&#9021;&#168;&#8834;&#9077;}</span>
@@ -212,9 +212,9 @@ explícitos.
 
 </ul>
 </section>
-<section id="slide-org3b15dce">
-<h3 id="org3b15dce">Demonstração</h3>
-<pre class="example" id="orgf889cd9">
+<section id="slide-orga783894">
+<h3 id="orga783894">Demonstração</h3>
+<pre class="example" id="orge343285">
       disp 3 1⍴r (rule90 r) (rule90 rule90 r)
 ┌─────────────┐
 │0 0 1 1 1 0 0│
@@ -226,9 +226,9 @@ explícitos.
 </pre>
 
 </section>
-<section id="slide-org3b15dce-split">
+<section id="slide-orga783894-split">
 
-<pre class="example" id="org0e2b7bc">
+<pre class="example" id="org6c90ff8">
       gen←{(rule90⍣⍺)⍵}
       plotgen←{r←⍵⋄(⊃,/⍺ (⍴r))⍴⊃,/{⍵ gen r}¨¯1+⍳⍺}
       5 plotgen r
@@ -239,9 +239,9 @@ explícitos.
 0 1 0 0 0 1 0
 </pre>
 </section>
-<section id="slide-org3c14888">
-<h4 id="org3c14888">Visualização gráfica</h4>
-<pre class="example" id="orgdea1172">
+<section id="slide-org9149b4f">
+<h4 id="org9149b4f">Visualização gráfica</h4>
+<pre class="example" id="org47b61e3">
       drawfig←{' ⋄'[1+⍵]}
       ]display drawfig 10 plotgen r
 ┌→──────┐
@@ -259,7 +259,7 @@ explícitos.
 </pre>
 
 </section>
-<section id="slide-org3c14888-split">
+<section id="slide-org9149b4f-split">
 
 <div class="org-src-container">
 
@@ -301,8 +301,8 @@ explícitos.
 </code></pre>
 </div>
 </section>
-<section id="slide-org3cd058c">
-<h3 id="org3cd058c">Programa completo</h3>
+<section id="slide-org6e73f69">
+<h3 id="org6e73f69">Programa completo</h3>
 <div class="org-src-container">
 
 <pre  class="src src-dyalog"   ><code trim>rule90<span style="color: #9d81ba;">&#8592;{&#8835;</span><span style="color: #f5c791;">1</span><span style="color: #9d81ba;">=+/</span><span style="color: #0D9C94;">&#175;1</span> <span style="color: #f5c791;">1</span><span style="color: #9d81ba;">&#9021;&#168;&#8834;&#9077;}</span>
@@ -314,13 +314,13 @@ drawfig<span style="color: #9d81ba;">&#8592;{</span><span style="color: #f5c791;
 </section>
 </section>
 <section>
-<section id="slide-org7eec4fe">
-<h2 id="org7eec4fe">Outras linguagens?</h2>
-<div class="outline-text-2" id="text-org7eec4fe">
+<section id="slide-orgd6d2416">
+<h2 id="orgd6d2416">Outras linguagens?</h2>
+<div class="outline-text-2" id="text-orgd6d2416">
 </div>
 </section>
-<section id="slide-org890e94f">
-<h3 id="org890e94f">Common Lisp</h3>
+<section id="slide-orgd58864c">
+<h3 id="orgd58864c">Common Lisp</h3>
 <div class="org-src-container">
 
 <pre  class="src src-lisp"   ><code trim><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">rot</span> <span style="color: #47ba99;">(</span>n list<span style="color: #47ba99;">)</span>
@@ -350,14 +350,14 @@ drawfig<span style="color: #9d81ba;">&#8592;{</span><span style="color: #f5c791;
 </div>
 
 </section>
-<section id="slide-org890e94f-split">
+<section id="slide-orgd58864c-split">
 <pre class="example">
 (0 0 1 1 1 0 0)
 (0 1 1 0 1 1 0)
 </pre>
 </section>
-<section id="slide-org8e5378f">
-<h3 id="org8e5378f">C++ moderno</h3>
+<section id="slide-org12d8c47">
+<h3 id="org12d8c47">C++ moderno</h3>
 <div class="org-src-container">
 
 <pre  class="src src-C++"   ><code trim><span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;iostream&gt;</span>
@@ -406,7 +406,7 @@ drawfig<span style="color: #9d81ba;">&#8592;{</span><span style="color: #f5c791;
 </div>
 
 </section>
-<section id="slide-org8e5378f-split">
+<section id="slide-org12d8c47-split">
 <pre class="example">
 0 0 1 1 1 0 0 
 0 1 1 0 1 1 0
@@ -414,10 +414,10 @@ drawfig<span style="color: #9d81ba;">&#8592;{</span><span style="color: #f5c791;
 </section>
 </section>
 <section>
-<section id="slide-orgca67a0b">
-<h2 id="orgca67a0b">Nem tudo que reluz é ouro&#x2026;</h2>
+<section id="slide-org26fb9eb">
+<h2 id="org26fb9eb">Nem tudo que reluz é ouro&#x2026;</h2>
 </section>
-<section id="slide-orgca67a0b-split">
+<section id="slide-org26fb9eb-split">
 
 <p>
 APL é boa para vetores e matrizes, mas não para propósito geral*.
@@ -432,7 +432,7 @@ APL tem implementações muito fragmentadas.
 </p>
 
 </section>
-<section id="slide-orgca67a0b-split">
+<section id="slide-org26fb9eb-split">
 
 <p>
 As melhores partes de APL estão em Dyalog APL, uma implementação <i>paga</i>
@@ -445,10 +445,10 @@ Convenhamos, ninguém usa APL.
 </section>
 </section>
 <section>
-<section id="slide-orge134c64">
-<h2 id="orge134c64">&#x2026;mas nem tudo que é obscuro é carvão!</h2>
+<section id="slide-org50d633b">
+<h2 id="org50d633b">&#x2026;mas nem tudo que é obscuro é carvão!</h2>
 </section>
-<section id="slide-orge134c64-split">
+<section id="slide-org50d633b-split">
 
 <p>
 Aprender uma linguagem completamente diferente aguça sua forma de
@@ -465,20 +465,20 @@ Muitas soluções para problemas envolvem <i>pensamento lateral</i>.
 </section>
 </section>
 <section>
-<section id="slide-org5ad7a8e">
-<h2 id="org5ad7a8e">Problema: Dígrafos</h2>
+<section id="slide-org80f5edc">
+<h2 id="org80f5edc">Problema: Dígrafos</h2>
 <p>
 Encontre todos os caminhos do nó <code>a</code> ao nó <code>e</code>.
 </p>
 
 
-<div id="orgd8a2c31" class="figure">
+<div id="org40d9a39" class="figure">
 <p><img src="img/graph.svg" alt="graph.svg" class="org-svg" />
 </p>
 </div>
 </section>
-<section id="slide-org0c429ba">
-<h3 id="org0c429ba">Solução não-trivial: Use Prolog!</h3>
+<section id="slide-org646eeb5">
+<h3 id="org646eeb5">Solução não-trivial: Use Prolog!</h3>
 <div class="org-src-container">
 
 <pre  class="src src-prolog"   ><code trim>:- initialization main.
@@ -508,20 +508,20 @@ Encontre todos os caminhos do nó <code>a</code> ao nó <code>e</code>.
 </div>
 
 </section>
-<section id="slide-org0c429ba-split">
+<section id="slide-org646eeb5-split">
 <pre class="example">
 [[a,b,d,h,e],[a,b,c,e],[a,b,c,d,h,e],[a,g,h,e]]
 </pre>
 
 
 
-<div id="org5857863" class="figure">
+<div id="org4fed401" class="figure">
 <p><img src="img/graph.svg" alt="graph.svg" class="org-svg" />
 </p>
 </div>
 
 </section>
-<section id="slide-org0c429ba-split">
+<section id="slide-org646eeb5-split">
 
 <p>
 Prolog pode ser de grande ajuda quando utilizado com outros paradigmas
@@ -540,8 +540,8 @@ como Scheme (Abelson <i>et al.</i>, 1996; Pellegrini, 2018).
 </section>
 </section>
 <section>
-<section id="slide-org0bf3d98">
-<h2 id="org0bf3d98">Conclusão</h2>
+<section id="slide-orgdc4f0af">
+<h2 id="orgdc4f0af">Conclusão</h2>
 <p>
 Matemática é uma linguagem para racionalização, e portanto, um recurso
 para modelagem de raciocínio.
@@ -563,8 +563,8 @@ dizer!
 </section>
 </section>
 <section>
-<section id="slide-orgd50aa05">
-<h2 id="orgd50aa05">Bibliografia</h2>
+<section id="slide-org49af548">
+<h2 id="org49af548">Bibliografia</h2>
 <p style="font-size:0.7em;text-align:left;">
 ABELSON, H.; SUSSMAN, G. J.; SUSSMAN, J. <b>Structure and interpretation
 of computer programs.</b> MIT Press: Cambridge, 1996. ISBN:
