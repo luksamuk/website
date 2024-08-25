@@ -278,9 +278,9 @@ do que já fiz anteriormente por aqui, desta vez, vou explicar o
 passo-a-passo  das  operações  mais   simples,  para  que  você  possa
 compreender melhor a linguagem.
 </p>
-<div id="outline-container-orgf74c281" class="outline-4">
-<h4 id="orgf74c281">ACHTUNG!</h4>
-<div class="outline-text-4" id="text-orgf74c281">
+<div id="outline-container-orga2ee21b" class="outline-4">
+<h4 id="orga2ee21b">ACHTUNG!</h4>
+<div class="outline-text-4" id="text-orga2ee21b">
 <p>
 Já falei disso no meu <a href="./usando-apl">último post sobre APL</a>, mas é importante que você
 tenha uma <i>fonte compatível instalada</i> no seu dispositivo ou computador.
@@ -288,7 +288,7 @@ Por exemplo, veja se esta imagem&#x2026;
 </p>
 
 
-<div id="org5f56feb" class="figure">
+<div id="orgc34cdbc" class="figure">
 <p><img src="img/apl-characters-2.png" alt="apl-characters-2.png" />
 </p>
 <p><span class="figure-number">Figura 1: </span>Uma expressão em Dyalog APL.</p>
@@ -298,7 +298,7 @@ Por exemplo, veja se esta imagem&#x2026;
 &#x2026;corresponde ao código a seguir:
 </p>
 
-<pre class="example" id="orgebdd970">
+<pre class="example" id="org075fe22">
 {1+⊃+/((-⍺-(⌊⍺÷2))+⍳⍺)⌽¨(⌽2*¯1+⍳⍺)×¨⊂⍵}
 </pre>
 
@@ -310,9 +310,9 @@ Dyalog APL <a href="https://www.dyalog.com/apl-font-keyboard.htm">que estão aqu
 </p>
 </div>
 </div>
-<div id="outline-container-org0d2e26b" class="outline-2">
-<h2 id="org0d2e26b">ACs Unidimensionais</h2>
-<div class="outline-text-2" id="text-org0d2e26b">
+<div id="outline-container-orgacdf709" class="outline-2">
+<h2 id="orgacdf709">ACs Unidimensionais</h2>
+<div class="outline-text-2" id="text-orgacdf709">
 <p>
 Vamos  repassar um  pouco  sobre o  que são  <i>autômatos  celulares</i> e  a
 importância  deles.   Repetindo   um  pouco  o  que   já  disse  <a href="../talks/slide-apres-tc.html">nesta
@@ -335,11 +335,11 @@ A seguir,  para os propósitos  do nosso experimento, imagine  que esta
 fita tem seu  fim e seu início conectados, sendo  portanto <i>circular</i> &#x2013;
 ou seja, imagine que esta fita está  ao redor de uma lata, de um jeito
 que não  possamos identificar  qual é  a primeira  ou a  última célula
-dela (vide Figura <a href="#org8053f27">2</a>).
+dela (vide Figura <a href="#org5027884">2</a>).
 </p>
 
 
-<div id="org8053f27" class="figure">
+<div id="org5027884" class="figure">
 <p><img src="img/ac-torus.png" alt="ac-torus.png" />
 </p>
 <p><span class="figure-number">Figura 2: </span>Exemplo de uma fita circular de células. Cada número nas células representa o estado da célula atual.</p>
@@ -376,9 +376,9 @@ Se  isto pareceu  estranho, não  se  preocupe. Explicarei  o que  está
 acontecendo logo a seguir.
 </p>
 </div>
-<div id="outline-container-orgf41e6b2" class="outline-3">
-<h3 id="orgf41e6b2">Destrinchando a criação do vetor</h3>
-<div class="outline-text-3" id="text-orgf41e6b2">
+<div id="outline-container-org092b46a" class="outline-3">
+<h3 id="org092b46a">Destrinchando a criação do vetor</h3>
+<div class="outline-text-3" id="text-org092b46a">
 <p>
 Vamos parar  um pouco. Vou  tentar mostrar de  uma forma melhor  o que
 estou fazendo.
@@ -405,7 +405,7 @@ Cria, com  ajuda da  função <i>rho</i>  (<code>⍴</code>), um vetor  de 10  e
 todos são zeros:
 </p>
 
-<pre class="example" id="orgffc03aa">
+<pre class="example" id="org62db52f">
 0 0 0 0 0 0 0 0 0 0
 </pre>
 
@@ -437,7 +437,7 @@ APL e de GNU APL.
 
 <p>
 Em seguida, lembre-se  de que este vetor representa,  na realidade, um
-<i>cilindro</i>  (como visto  na Figura  <a href="#org8053f27">2</a>). Assim,  se rotacionarmos
+<i>cilindro</i>  (como visto  na Figura  <a href="#org5027884">2</a>). Assim,  se rotacionarmos
 este cilindro  <b>cinco células para  a direita</b>, colocaremos o  número <code>1</code>,
 que estava no início, no exato <b>meio</b> do nosso vetor.
 </p>
@@ -465,18 +465,18 @@ daremos o nome de <code>r</code>.
 </div>
 </div>
 </div>
-<div id="outline-container-org39a4f58" class="outline-2">
-<h2 id="org39a4f58">ACs em APL</h2>
-<div class="outline-text-2" id="text-org39a4f58">
+<div id="outline-container-org82152f2" class="outline-2">
+<h2 id="org82152f2">ACs em APL</h2>
+<div class="outline-text-2" id="text-org82152f2">
 <p>
 Agora que  temos um  vetor no qual  podemos testar  nossos algoritmos,
 vamos  programar   algumas  regras  básicas  de   autômatos  celulares
 unidimensionais que possamos utilizar também.
 </p>
 </div>
-<div id="outline-container-org3f76bd5" class="outline-3">
-<h3 id="org3f76bd5">Rule 90</h3>
-<div class="outline-text-3" id="text-org3f76bd5">
+<div id="outline-container-orgbc29205" class="outline-3">
+<h3 id="orgbc29205">Rule 90</h3>
+<div class="outline-text-3" id="text-orgbc29205">
 <p>
 A <i>Rule 90</i> é uma regra interessante, porque é capaz de gerar um <a href="https://pt.wikipedia.org/wiki/Fractal">fractal</a>
 chamado <a href="https://pt.wikipedia.org/wiki/Tri%C3%A2ngulo_de_Sierpinski">Triângulo de Sierpinski</a>.
@@ -487,7 +487,7 @@ Usando a notação visual de Wolfram<sup><a id="fnr.2" class="footref" href="#fn
 </p>
 
 
-<div id="orge5ba740" class="figure">
+<div id="org4df247d" class="figure">
 <p><img src="img/rule90.png" alt="rule90.png" />
 </p>
 <p><span class="figure-number">Figura 3: </span>Visualização gráfica da Rule 90. Fonte: Wolfram (2002; adaptado).</p>
@@ -514,7 +514,7 @@ quadrado solitário, na segunda linha.
 <p>
 Por  exemplo, na  Rule 90,  caso uma  célula esteja  <i>viva</i> e  seus dois
 vizinhos estejam também <i>vivos</i>, esta célula <i>morrerá</i> (veja o caso mais à
-esquerda na Figura <a href="#orge5ba740">3</a>).
+esquerda na Figura <a href="#org4df247d">3</a>).
 </p>
 
 <p>
@@ -533,16 +533,16 @@ um desenho similar a este:
 </p>
 
 
-<div id="org21a6ca6" class="figure">
+<div id="orgafb1450" class="figure">
 <p><img src="img/rule90_evol.png" alt="rule90_evol.png" />
 </p>
 <p><span class="figure-number">Figura 4: </span>Evolução da Rule 90 através do tempo. Fonte: Wolfram (2002; adaptado)</p>
 </div>
 </div>
 </div>
-<div id="outline-container-org837b0b0" class="outline-3">
-<h3 id="org837b0b0">Construindo a Rule 90 em APL</h3>
-<div class="outline-text-3" id="text-org837b0b0">
+<div id="outline-container-orgd7edec5" class="outline-3">
+<h3 id="orgd7edec5">Construindo a Rule 90 em APL</h3>
+<div class="outline-text-3" id="text-orgd7edec5">
 <p>
 Vamos  passo  a  passo  criar  uma expressão  em  APL  que  possa  ser
 transformada  em  uma  função;  esta  função  deverá  tomar  um  vetor
@@ -605,7 +605,7 @@ Vamos   fazer  uma   pausa  aqui   e  contemplar   o  que   temos  até
 então, comparando <code>r</code> a esse resultado parcial:
 </p>
 
-<pre class="example" id="org0b4b456">
+<pre class="example" id="org821ea47">
 r       =&gt; 0 0 0 0 0 1 0 0 0 0 0
 parcial =&gt; 0 0 0 0 1 0 1 0 0 0 0
 </pre>
@@ -635,7 +635,7 @@ centro, obteremos o seguinte:
 Mais explicitamente, compare:
 </p>
 
-<pre class="example" id="orgde21938">
+<pre class="example" id="org85c7289">
 z       =&gt; 0 0 0 0 0 1 1 1 0 0 0 0 0
 parcial =&gt; 0 0 0 0 1 1 2 1 1 0 0 0 0
 </pre>
@@ -647,7 +647,7 @@ interessante na Rule 90.
 </p>
 
 <p>
-Observando a Figura <a href="#orge5ba740">3</a>,  podemos ver  que o estado  da célula
+Observando a Figura <a href="#org4df247d">3</a>,  podemos ver  que o estado  da célula
 atual não  é verdadeiramente  importante para  esta regra.  Assim, não
 precisamos  levar  em  consideração  a  célula  atual.
 </p>
@@ -740,9 +740,9 @@ caso, chamaremos ela de <code>rule90</code>.
 </div>
 </div>
 </div>
-<div id="outline-container-orgb2bd6f4" class="outline-2">
-<h2 id="orgb2bd6f4">Generalizando as regras</h2>
-<div class="outline-text-2" id="text-orgb2bd6f4">
+<div id="outline-container-orgc7c0d03" class="outline-2">
+<h2 id="orgc7c0d03">Generalizando as regras</h2>
+<div class="outline-text-2" id="text-orgc7c0d03">
 <p>
 Há algum tempo atrás, criei algumas funções para generalizar a criação
 de regras de autômatos celulares,  cujos estados sejam apenas <i>vivos</i> ou
@@ -778,12 +778,12 @@ Assim, se aplicarmos <code>findrule</code> a <code>3</code> e ao nosso vetor <co
 <p>
 veremos que cada  um dos elementos se enquadra em  um caso de qualquer
 regra arbitrária que  sirva para uma vizinhança de  três elementos; se
-contarmos os casos da Figura <a href="#orge5ba740">3</a> da direita para a esquerda,
+contarmos os casos da Figura <a href="#org4df247d">3</a> da direita para a esquerda,
 começando de <code>1</code>, teremos um paralelo com a Rule 90, por exemplo.
 </p>
 
 <p>
-Explicarei melhor o  funcionamento de <code>findrule</code> <a href="#org5f68bd1">ao  final deste artigo</a>,
+Explicarei melhor o  funcionamento de <code>findrule</code> <a href="#org1954c59">ao  final deste artigo</a>,
 pois não é de entendimento trivial.
 </p>
 
@@ -815,7 +815,7 @@ do estado em questão no vetor informado a essa função.
 <p>
 Por exemplo, podemos emular a aplicação  de <code>rule90</code> em <code>r</code> através do uso
 de <code>do_rule3</code> para os casos <code>2</code>, <code>4</code>, <code>5</code> e <code>7</code>, que são os números dos casos de
-vizinhança para os quais a célula em questão sobrevive (vide a Figura <a href="#orge5ba740">3</a>):
+vizinhança para os quais a célula em questão sobrevive (vide a Figura <a href="#org4df247d">3</a>):
 </p>
 
 <div class="org-src-container">
@@ -828,9 +828,9 @@ vizinhança para os quais a célula em questão sobrevive (vide a Figura <a href
 </div>
 </div>
 </div>
-<div id="outline-container-org6665abf" class="outline-2">
-<h2 id="org6665abf">Criando mais regras de ACs</h2>
-<div class="outline-text-2" id="text-org6665abf">
+<div id="outline-container-org9e4e405" class="outline-2">
+<h2 id="org9e4e405">Criando mais regras de ACs</h2>
+<div class="outline-text-2" id="text-org9e4e405">
 <p>
 Com estas simples funções  podemos, finalmente, criar outros autômatos
 celulares à base de simples  generalização. Vejamos como podemos criar
@@ -858,9 +858,9 @@ visualizar estas classificações.
 </p>
 </div>
 </div>
-<div id="outline-container-org72c5816" class="outline-2">
-<h2 id="org72c5816">Representação visual</h2>
-<div class="outline-text-2" id="text-org72c5816">
+<div id="outline-container-org49b8104" class="outline-2">
+<h2 id="org49b8104">Representação visual</h2>
+<div class="outline-text-2" id="text-org49b8104">
 <p>
 Começamos atribuindo  uma função  qualquer de  autômato celular  a uma
 variável global <code>fn</code> em nosso  <i>workspace</i>. Poderemos trocar esta função à
@@ -883,7 +883,7 @@ fita de acordo com uma certa quantidade de gerações informada.
 </div>
 
 <p>
-A matriz gerada é similar à Figura <a href="#org21a6ca6">4</a>, porém numérica:
+A matriz gerada é similar à Figura <a href="#orgafb1450">4</a>, porém numérica:
 </p>
 
 <div class="org-src-container">
@@ -913,7 +913,7 @@ de espaço e os <code>1</code>'s pelo caractere <code>o</code> minúsculo, atrav
 
 <p>
 O  resultado  é uma  representação  que  lembra  mais ainda  a  Figura
-<a href="#org21a6ca6">4</a>:
+<a href="#orgafb1450">4</a>:
 </p>
 
 <div class="org-src-container">
@@ -932,9 +932,9 @@ ooo o o ooo
 </pre>
 </div>
 </div>
-<div id="outline-container-orgb795648" class="outline-3">
-<h3 id="orgb795648">Representando outros autômatos visualmente</h3>
-<div class="outline-text-3" id="text-orgb795648">
+<div id="outline-container-orgc45f868" class="outline-3">
+<h3 id="orgc45f868">Representando outros autômatos visualmente</h3>
+<div class="outline-text-3" id="text-orgc45f868">
 <p>
 Podemos  usar  nova representação  visual  para  testar nossos  outros
 autômatos celulares.
@@ -1080,9 +1080,9 @@ e um pouco menos interessantes.
 </div>
 </div>
 </div>
-<div id="outline-container-org7e4d01f" class="outline-2">
-<h2 id="org7e4d01f">Conclusão</h2>
-<div class="outline-text-2" id="text-org7e4d01f">
+<div id="outline-container-orgece3979" class="outline-2">
+<h2 id="orgece3979">Conclusão</h2>
+<div class="outline-text-2" id="text-orgece3979">
 <p>
 Muito foi explorado  até aqui, no sentido dos padrões  e da informação
 que  poderiam ser  criados. O  mais interessante  é que  este processo
@@ -1111,13 +1111,13 @@ programador.
 
 <hr>
 <p>
-<a id="org5f68bd1"></a>
+<a id="org1954c59"></a>
 </p>
 </div>
 </div>
-<div id="outline-container-orge240885" class="outline-2">
-<h2 id="orge240885">Extra: Explicando <code>findrule</code></h2>
-<div class="outline-text-2" id="text-orge240885">
+<div id="outline-container-orgf29003c" class="outline-2">
+<h2 id="orgf29003c">Extra: Explicando <code>findrule</code></h2>
+<div class="outline-text-2" id="text-orgf29003c">
 <p>
 Mais acima, simplesmente mostrei esta função&#x2026;
 </p>
@@ -1142,9 +1142,9 @@ manutenção vetorial da  linguagem, porém exige um pouco  mais de tempo
 de explicação para que o leitor acostume-se ao raciocínio.
 </p>
 </div>
-<div id="outline-container-orgea26f90" class="outline-3">
-<h3 id="orgea26f90">Racionalizando a função</h3>
-<div class="outline-text-3" id="text-orgea26f90">
+<div id="outline-container-orgf8ffa82" class="outline-3">
+<h3 id="orgf8ffa82">Racionalizando a função</h3>
+<div class="outline-text-3" id="text-orgf8ffa82">
 <p>
 Primeiramente,  vamos falar  a  respeito  de como  a  função  em si  é
 codificada, sem fazer nenhuma operação.
@@ -1157,7 +1157,7 @@ célula. Se  tomarmos a Rule  90 e  a transcrevermos em  ASCII, teremos
 algo assim:
 </p>
 
-<pre class="example" id="orga681865">
+<pre class="example" id="org7521078">
 111 110 101 100 011 010 001 000
  0   1   0   1   1   0   1   0
 
@@ -1206,9 +1206,9 @@ operação de <code>findrule</code>, e sim utiliza seu resultado.
 </p>
 </div>
 </div>
-<div id="outline-container-org71634bc" class="outline-3">
-<h3 id="org71634bc">Iniciando variáveis de apoio</h3>
-<div class="outline-text-3" id="text-org71634bc">
+<div id="outline-container-org1e76a6e" class="outline-3">
+<h3 id="org1e76a6e">Iniciando variáveis de apoio</h3>
+<div class="outline-text-3" id="text-org1e76a6e">
 <p>
 Vamos começar  definindo duas  variáveis: <code>a</code>, que  indica o  tamanho da
 nossa vizinhança, e <code>r</code>, que será a nossa <i>fita</i> para testes.
@@ -1221,9 +1221,9 @@ r<span style="color: #9d81ba;">&#8592;</span><span style="color: #0D9C94;">&#175
 </div>
 </div>
 </div>
-<div id="outline-container-orgba3fddf" class="outline-3">
-<h3 id="orgba3fddf">Vetor decrescente de múltiplos de <code>2</code></h3>
-<div class="outline-text-3" id="text-orgba3fddf">
+<div id="outline-container-orga251346" class="outline-3">
+<h3 id="orga251346">Vetor decrescente de múltiplos de <code>2</code></h3>
+<div class="outline-text-3" id="text-orga251346">
 <p>
 Primeiramente, geramos um vetor com números de <code>1</code> a <code>a</code>.
 </p>
@@ -1272,9 +1272,9 @@ Finalmente, usaremos a forma <i>monádica</i>  da função de <i>rotação horiz
 </div>
 </div>
 </div>
-<div id="outline-container-org68b76d8" class="outline-3">
-<h3 id="org68b76d8">Explicação do vetor de múltiplos criado</h3>
-<div class="outline-text-3" id="text-org68b76d8">
+<div id="outline-container-org63229c9" class="outline-3">
+<h3 id="org63229c9">Explicação do vetor de múltiplos criado</h3>
+<div class="outline-text-3" id="text-org63229c9">
 <p>
 Vamos parar por um momento para fazer um apanhado do que foi feito até
 agora.
@@ -1334,9 +1334,9 @@ vizinhanças para sua eventual transformação em um número decimal.
 </p>
 </div>
 </div>
-<div id="outline-container-org7e5c5e7" class="outline-3">
-<h3 id="org7e5c5e7">Distribuindo multiplicativamente o vetor para cópias de <code>r</code></h3>
-<div class="outline-text-3" id="text-org7e5c5e7">
+<div id="outline-container-orga461736" class="outline-3">
+<h3 id="orga461736">Distribuindo multiplicativamente o vetor para cópias de <code>r</code></h3>
+<div class="outline-text-3" id="text-orga461736">
 <p>
 Continuando com nosso  código em APL, multiplicaremos,  agora, cada um
 desses  números  por  uma  cópia   da  fita  original,  armazenada  em
@@ -1356,9 +1356,9 @@ números <code>1</code> foram transformados em um dos múltiplos de <code>r</cod
 </p>
 </div>
 </div>
-<div id="outline-container-orgfa989f9" class="outline-3">
-<h3 id="orgfa989f9">Rotacionando os vetores resultantes</h3>
-<div class="outline-text-3" id="text-orgfa989f9">
+<div id="outline-container-org5a02394" class="outline-3">
+<h3 id="org5a02394">Rotacionando os vetores resultantes</h3>
+<div class="outline-text-3" id="text-org5a02394">
 <p>
 Agora, precisamos  dar um jeito de  fazer com que estes  vetores sejam
 ligeiramente rotacionados para que cada valor passe a ficar exatamente
@@ -1403,7 +1403,7 @@ Vejamos um exemplo visual. Se tivéssemos uma vizinhança como <code>0 1 0</code
  vetores:
 </p>
 
-<pre class="example" id="org1117d7d">
+<pre class="example" id="org56b2d2a">
 0 4 0
 0 2 0
 0 1 0
@@ -1415,7 +1415,7 @@ Agora, podemos locomover o primeiro vetor  uma casa para a frente, e o
 célula em questão, ele poderá ficar onde está:
 </p>
 
-<pre class="example" id="org9986a26">
+<pre class="example" id="orge2b44ea">
 0 0 4   ⍝ Movido para a direita
 0 2 0
 1 0 0   ⍝ Movido para a esquerda
@@ -1425,7 +1425,7 @@ célula em questão, ele poderá ficar onde está:
 Se somarmos estes vetores elemento-a-elemento, teremos:
 </p>
 
-<pre class="example" id="orge688308">
+<pre class="example" id="orgf2a1e71">
 1 2 4
 </pre>
 
@@ -1435,7 +1435,7 @@ vizinhanças   das  células   cujos   lugares   estes  números   ocupam
 correspondem, exatamente, a tais números:
 </p>
 
-<pre class="example" id="org10e22a5">
+<pre class="example" id="org3262613">
 0 0 1 =&gt; 1
 0 1 0 =&gt; 2
 1 0 0 =&gt; 4
@@ -1459,9 +1459,9 @@ este vetor.
 </p>
 </div>
 </div>
-<div id="outline-container-org7f26164" class="outline-3">
-<h3 id="org7f26164">Criando vetor de índices de rotação</h3>
-<div class="outline-text-3" id="text-org7f26164">
+<div id="outline-container-org9933a28" class="outline-3">
+<h3 id="org9933a28">Criando vetor de índices de rotação</h3>
+<div class="outline-text-3" id="text-org9933a28">
 <p>
 Começaremos criando um novo vetor com os números de <code>1</code> a <code>a</code> inclusive.
 </p>
@@ -1502,7 +1502,7 @@ rotação.
 Veja que isto <i>garante</i> a lógica  envolvida: se subtrairmos <code>2</code> do vetor&#x2026;
 </p>
 
-<pre class="example" id="org6f84897">
+<pre class="example" id="orgd57f791">
 1 2 3
 </pre>
 
@@ -1510,7 +1510,7 @@ Veja que isto <i>garante</i> a lógica  envolvida: se subtrairmos <code>2</code>
 &#x2026;teremos&#x2026;
 </p>
 
-<pre class="example" id="orgfb7d551">
+<pre class="example" id="org68bd033">
 ¯1 0 1
 </pre>
 
@@ -1530,9 +1530,9 @@ operação, mas é o suficiente por enquanto.
 </div>
 </div>
 </div>
-<div id="outline-container-orgc27ecea" class="outline-3">
-<h3 id="orgc27ecea">Distribuindo as rotações para os vetores criados</h3>
-<div class="outline-text-3" id="text-orgc27ecea">
+<div id="outline-container-orgc81fecb" class="outline-3">
+<h3 id="orgc81fecb">Distribuindo as rotações para os vetores criados</h3>
+<div class="outline-text-3" id="text-orgc81fecb">
 <p>
 O próximo passo  é juntar ambas as expressões,  realizando uma rotação
 horizontal distribuída (ou <i>rotate each</i>, <code>⌽¨</code>)  entre cada um dos vetores de
@@ -1592,9 +1592,9 @@ vetor.
 </div>
 </div>
 </div>
-<div id="outline-container-orgf777411" class="outline-3">
-<h3 id="orgf777411">Finalizando</h3>
-<div class="outline-text-3" id="text-orgf777411">
+<div id="outline-container-org130f2d6" class="outline-3">
+<h3 id="org130f2d6">Finalizando</h3>
+<div class="outline-text-3" id="text-org130f2d6">
 <p>
 Finalmente, esta  é a expressão que  calcula o <i>caso</i> para  cada uma das
 células  de um  vetor,  para  qualquer regra  de  um autômato  celular
