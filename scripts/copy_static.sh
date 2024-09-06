@@ -18,6 +18,7 @@ cp -r \
    src/talks/git_img \
    src/talks/techimera \
    src/talks/pragmatic \
+   src/talks/psxprog \
    docs/talks/
 
 cp -r static docs/
