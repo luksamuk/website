@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en_us">
+<head>
+<meta charset="utf-8"/>
+<title>Retro Game Dev</title>
+<meta name="author" content="Lucas Samuel Vieira"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/serif.css" id="theme"/>
+
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/npm/reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h3>Retro Game Dev</h3><img src="./psxprog/sony-playstation.png" height=200px><p>Desenvolvendo para o PlayStation em 2024</p><p>Lucas Samuel Vieira<br/>19 de outubro de 2024</p>
+</section>
+<style>
+.container{
+display: flex;
+}
+.col{
+flex: 1;
+}
+</style>
+<section>
+<section id="slide-orgeb02f75">
+<h2 id="orgeb02f75">Quem sou eu?</h2>
+<div class="container">
+
+<div class="col">
+<p style="font-size:0.7em;text-align:left;">
+Desenvolvedor na Workalove EdTech
+</p>
+
+<p style="font-size:0.7em;text-align:left;">
+<b>Interesses:</b> Inteligência  artificial, ciência  cognitiva, filosofia  da mente,
+teoria   da   computação,   desenvolvimento  de   linguagens   de   programação,
+desenvolvimento de jogos, programação bare-metal
+</p>
+
+<div style="font-size:0.7em;text-align:left;">
+<p>Co-fundador da Common Lisp Brasil
+<br/>
+<i class="fa fa-globe" aria-hidden="true"></i><code> lisp.com.br</code>
+</p></div>
+
+</div>
+
+<div class="col">
+
+
+<div id="org97c299f" class="figure">
+<p><img src="psxprog/eu.jpg" alt="eu.jpg" width="200" />
+</p>
+</div>
+
+<div style="font-size:0.7em;text-align:left;">
+<i class="fa fa-linkedin" aria-hidden="true"></i><code> luksamuk</code><br/>
+<i class="fa fa-globe" aria-hidden="true"></i><code> https://luksamuk.codes/</code><br/>
+<i class="fa fa-github" aria-hidden="true"></i><code> luksamuk</code>
+</div>
+
+</div>
+
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgb65a19e">
+<h2 id="orgb65a19e">História do PlayStation</h2>
+<img class="r-stretch" src="./psxprog/kutaragi-psx.png">
+
+<p>
+Ken Kutaragi e o Sony PlayStation.
+</p>
+</section>
+<section id="slide-org86c06f8">
+<h3 id="org86c06f8">Antes do PlayStation&#x2026;</h3>
+<div class="container">
+<div class="col">
+<ul style="font-size:0.7em;text-align:left;">
+<li><b>Quarta geração de consoles (1987)</b>
+<ul>
+<li>Sega Genesis / Sega Mega Drive (1989)</li>
+<li><p>
+Super Nintendo / Super Famicom (1991)
+</p>
+</div></li>
+
+</ul></li>
+
+</ul>
+<div class="col">
+<img src="./psxprog/fourthgen.png">
+</div>
+</div>
+
+<img src="./psxprog/sonic-16.gif">
+<img src="./psxprog/mario-16.gif">
+
+</section>
+<section id="slide-org86c06f8-split">
+
+<p>
+3D  já  era  uma realidade  em  filmes  e  simulações,  e até  em  alguns  jogos
+(principalmente em arcades).
+</p>
+
+<img src="./psxprog/starfox-16.gif">
+
+<p style="font-size:0.7em;text-align:center;">
+<b>Exemplo:</b> StarFox (SNES, 1993)
+</p>
+
+</section>
+<section id="slide-org86c06f8-split">
+
+<p>
+<b>Enquanto isso&#x2026;</b>
+</p>
+
+<img class="r-stretch" src="./psxprog/s-smp-audio-chip.jpg">
+<ul>
+<li><b>Sony:</b> Ken Kutaragi</li>
+<li><b>S-SMP:</b> Sound Chip do SNES</li>
+
+</ul>
+</section>
+<section id="slide-orge419761">
+<h3 id="orge419761">Parceria Sony x Nintendo</h3>
+<img src="./psxprog/nintendo-playstation.png">
+
+<ul style="font-size:0.7em;text-align:left;">
+<li><b>Nintendo Super Disc / Nintendo Play Station</b></li>
+<li>Cartuchos de SNES + CD-ROMs
+<ul>
+<li>Apenas a Sony poderia produzir os CD-ROMs!</li>
+
+</ul></li>
+<li>Nintendo "trai" a Sony e fecha parceria com a Phillips</li>
+
+</ul>
+</section>
+<section id="slide-org35a3033">
+<h3 id="org35a3033">Quinta geração de consoles (1993)</h3>
+<p style="font-size:0.7em;text-align:left;">
+Consoles de 32-bits que introduziam o CD-ROM como mídia física*.
+</p>
+
+<p style="font-size:0.7em;text-align:left;">
+<b>Objetivo:</b> Colocar milhares de polígonos na tela &#x2013; 3D!
+</p>
+
+<div class="container">
+<div class="col">
+<ul style="font-size:0.7em;text-align:left;">
+<li>Sega Saturn (1994)</li>
+<li>Sony PlayStation (1994)</li>
+<li>Nintendo 64 (1996)</li>
+
+</ul>
+</div>
+<div class="col">
+<img src="./psxprog/fifthgen.png">
+</div>
+</div>
+
+<p style="font-size:0.4em;text-align:left;">
+*Exceto o Nintendo 64.
+</p>
+
+</section>
+<section id="slide-org35a3033-split">
+
+<img src="./psxprog/sonicr-32.gif">
+<img src="./psxprog/crash-32.gif">
+<img src="./psxprog/zelda-32.gif">
+
+<p style="font-size:0.5em;text-align:center;">
+<b>Sonic R</b> (Sega  Saturn), <b>Crash Bandicoot</b> (Sony PlayStation) e  <b>The Legend of
+Zelda: Ocarina of Time</b> (Nintendo 64).
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgb69680e">
+<h2 id="orgb69680e">Hardware</h2>
+<img class="r-stretch" src="./psxprog/psx-motherboard.png">
+
+<p>
+Placa-mãe de um PlayStation modelo SCPH-1000.
+</p>
+
+</section>
+<section id="slide-orgb69680e-split">
+
+<img class="r-stretch" src="./psxprog/psx-block-diagram.png">
+<p style="font-size:0.7em;text-align:center;">
+<b>Fonte:</b> <a href="https://psx.arthus.net/sdk/Psy-Q/DOCS/Devrefs/Hardware.pdf" style="font-size:0.7em;text-align:center;">PlayStation Hardware Reference</a>
+</p>
+</section>
+<section id="slide-orgc80a8f2">
+<h3 id="orgc80a8f2">CPU</h3>
+<p>
+MIPS R3000A 32-bit (LSI Logic) @ 33.86 MHz
+</p>
+
+<ul>
+<li>Geração anterior (16-bit) rodava a 7 MHz; geração 8-bit rodava a 1.7 MHz</li>
+<li>+/- 30 milhões de instruções por segundo</li>
+
+</ul>
+
+</section>
+<section id="slide-orgc80a8f2-split">
+
+
+<div class="container">
+<div class="col">
+<ul style="font-size:0.7em;text-align:left;">
+<li><b>Co-processadores:</b>
+<ul>
+<li><b>CP0:</b> <i>System Control</i> (cache, interrupções&#x2026;)</li>
+<li><b>CP2:</b> <i>Geometry Transformation Engine</i> (GTE)</li>
+
+</ul></li>
+
+</ul>
+
+<ul style="font-size:0.7em;text-align:left;">
+<li><b>MDEC:</b> <i>Motion Decoder</i> (DSP para decodificar vídeo)</li>
+
+</ul>
+
+<p style="font-size:0.5em;text-align:center;">
+<b>AO LADO:</b> Dieshot do CXD8530Q (primeira revisão), tirado da apresentação do Ken
+Kutaragi na Hot Chips '99.
+</p>
+
+<p style="font-size:0.5em;text-align:center;">
+<b>Fonte:</b> <a href="https://www.psdevwiki.com/ps1/CPU" style="font-size:0.5em;text-align:center;">PlayStation Dev Wiki</a>
+</p>
+</div>
+
+<div class="col">
+<img class="r-stretch" src="./psxprog/cpu-dieshot.jpg">
+</div>
+</div>
+
+
+
+</section>
+<section id="slide-orgc80a8f2-split">
+
+
+<p>
+A especificação das CPUs MIPS 32-bit possuía um <b>CP1</b> para <i>float</i>, e um D-Cache
+para acesso à RAM.
+</p>
+
+<p>
+<b>O PlayStation 1 não possui nenhum dos dois.</b>
+</p>
+</section>
+<section id="slide-org3a56825">
+<h3 id="org3a56825">Memória RAM</h3>
+<ul>
+<li>2 MB de memória EDO (Extended Data Out)</li>
+<li>Acesso LIVRE (você não terá segmentation faults)
+<ul>
+<li>Mas pode ter exceções de hardware</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section id="slide-org8d16931">
+<h4 id="org8d16931">Mapa de memória</h4>
+<div class="container">
+<div class="col">
+<ul style="font-size:0.7em;text-align:left;">
+<li><b>KSEG0:</b> Memória do kernel (memória física normal, com i-cache)</li>
+<li><b>KSEG1:</b> Memória do kernel (memória física normal, sem i-cache)</li>
+<li><b>KUSEG:</b> Memória virtual do usuário (com i-cache)</li>
+
+</ul>
+</div>
+
+<div class="col">
+<img class="r-stretch" src="./psxprog/psx-logic-memory.png">
+</div>
+</div>
+
+</section>
+<section id="slide-org8d16931-split">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">KUSEG</th>
+<th scope="col" class="org-left">Tamanho</th>
+<th scope="col" class="org-left">Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">00000000</td>
+<td class="org-left">2048K</td>
+<td class="org-left">RAM (primeiros 64K reservados)</td>
+</tr>
+
+<tr>
+<td class="org-left">1F000000</td>
+<td class="org-left">8192K</td>
+<td class="org-left">Expansão 1 (ROM/RAM)</td>
+</tr>
+
+<tr>
+<td class="org-left">1F800000</td>
+<td class="org-left">1K</td>
+<td class="org-left">Scratchpad</td>
+</tr>
+
+<tr>
+<td class="org-left">1F801000</td>
+<td class="org-left">4K</td>
+<td class="org-left">Portas E/S</td>
+</tr>
+
+<tr>
+<td class="org-left">1F802000</td>
+<td class="org-left">8K</td>
+<td class="org-left">Expansão 2 (Portas E/S)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+</tr>
+
+<tr>
+<td class="org-left">1FC00000</td>
+<td class="org-left">512K</td>
+<td class="org-left">BIOS ROM (Kernel)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="slide-org62b0b46">
+<h3 id="org62b0b46">GPU</h3>
+<div class="container">
+<div class="col">
+<ul style="font-size:0.7em;text-align:left;">
+<li><b>GPU:</b> SCPH-9000
+<ul>
+<li>Responsável pela rasterização</li>
+<li>Apenas rasterização 2D! (mais sobre isso depois)</li>
+
+</ul></li>
+<li><b>VRAM:</b> 1 MB</li>
+
+</ul>
+</div>
+
+<div class="col">
+<img class="r-stretch" src="./psxprog/spider-psx.gif">
+<p style="font-size:0.5em;text-align:center;">
+<b>Jogo:</b>  Spider-Man  (PSX).   Tente  notar os  artefatos  (<i>polygon  jittering</i>,
+ <i>z-fighting</i>, <i>t-junctions</i>&#x2026;)
+</p>
+</div>
+</div>
+</section>
+<section id="slide-org9314248">
+<h3 id="org9314248">Outras estruturas</h3>
+<ul style="font-size:0.7em;text-align:left;">
+<li><b>SPU</b> (Sound Processing Unit)
+<ul>
+<li>16-bit, estéreo ou mono</li>
+<li>Formato ADPCM, 24 canais</li>
+<li><b>SRAM:</b> 1 MB DRAM</li>
+
+</ul></li>
+<li><b>CD-ROM</b>
+<ul>
+<li>DSP controlador de motor e laser</li>
+<li>Mais próximo de um protótipo</li>
+<li>Sistema de arquivos ISO 9660.</li>
+
+</ul></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgab9c8b4">
+<h2 id="orgab9c8b4">Ferramentas de desenvolvimento</h2>
+<p>
+Existem várias formas hoje de começar no desenvolvimento para o PS1.
+</p>
+
+</section>
+<section id="slide-orgab9c8b4-split">
+
+<div class="container">
+<div class="col">
+<ul style="font-size:0.7em;text-align:left;">
+<li>Toolchain velha (Windows XP / Windows 98)
+<ul>
+<li>Psy-Q + ccpsx (C)</li>
+<li>Editor de sua escolha</li>
+
+</ul></li>
+
+</ul>
+</div>
+<div class="col">
+<img class="r-stretch" src="./psxprog/psy-q.jpg">
+</div>
+</div>
+
+</section>
+<section id="slide-orgab9c8b4-split">
+
+<div class="container">
+<div class="col">
+<ul style="font-size:0.7em;text-align:left;">
+<li>Toolchain nova (Windows 11 / Linux)
+<ul>
+<li>Psy-Q + Nugget + GCC-MIPSEL (C)</li>
+<li>Extensão PSXDev (VSCode)</li>
+
+</ul></li>
+
+</ul>
+</div>
+<div class="col">
+<img class="r-stretch" src="./psxprog/vscode.png">
+</div>
+</div>
+
+</section>
+<section id="slide-orgab9c8b4-split">
+
+<ul>
+<li>Toolchains alternativas
+<ul>
+<li><b>PSn00bSDK</b> (C + ASM)</li>
+<li>PsyQo + EASTL (C++)</li>
+<li>NetYaroze</li>
+
+</ul></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org79ce6dc">
+<h2 id="org79ce6dc">MIPS CPU</h2>
+<div class="outline-text-2" id="text-org79ce6dc">
+</div>
+</section>
+<section id="slide-org72ec3d3">
+<h3 id="org72ec3d3">Exercício</h3>
+<p>
+Converta o código em C a seguir para MIPS Assembly do PSX.
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-c"   ><code trim><span style="color: #62D2DB;">unsigned</span> <span style="color: #7CF083;">a</span> = <span style="color: #f5c791;">1</span>;
+<span style="color: #62D2DB;">unsigned</span> <span style="color: #7CF083;">b</span> = <span style="color: #f5c791;">1</span>;
+<span style="color: #62D2DB;">unsigned</span> <span style="color: #7CF083;">aux</span>;
+
+<span style="color: #62D2DB;">unsigned</span> <span style="color: #7CF083;">n</span> = <span style="color: #f5c791;">5</span>;
+
+<span style="color: #9d81ba;">do</span> {
+    aux = b;
+    b = a + b;
+    a = aux;
+    n--;
+} <span style="color: #9d81ba;">while</span>(n &gt; <span style="color: #f5c791;">0</span>);
+printf(<span style="color: #f5c791;">"a = %u\nb = %u\n"</span>, a, b);
+</code></pre>
+</div>
+</section>
+<section id="slide-org4bd49d4">
+<h3 id="org4bd49d4">Estrutura básica</h3>
+<div class="org-src-container">
+
+<pre  class="src src-asm"   ><code trim>        <span style="color: #9d81ba;">.psx</span>
+        <span style="color: #9d81ba;">.create</span> <span style="color: #f5c791;">"exercicio1.bin"</span>, <span style="color: #f5c791;">0x80010000</span>
+        <span style="color: #9d81ba;">.org</span>    <span style="color: #f5c791;">0x80010000</span>
+<span style="color: #0bc9cf;">Main</span>:
+        <span style="color: #454459;">;; </span><span style="color: #454459;">C&#243;digo aqui...</span>
+<span style="color: #0bc9cf;">Halt</span>:   <span style="color: #9d81ba;">j</span> Halt
+        <span style="color: #9d81ba;">nop</span>
+<span style="color: #0bc9cf;">End</span>:
+        <span style="color: #9d81ba;">.close</span>
+</code></pre>
+</div>
+</section>
+<section id="slide-org30cc810">
+<h3 id="org30cc810">Primeira tentativa</h3>
+<div class="org-src-container">
+
+<pre  class="src src-asm"   ><code trim><span style="color: #0bc9cf;">Main</span>:   <span style="color: #9d81ba;">li</span>      $t0, <span style="color: #f5c791;">0x1</span>         <span style="color: #454459;">; </span><span style="color: #454459;">a = $t0</span>
+        <span style="color: #9d81ba;">li</span>      $t1, <span style="color: #f5c791;">0x1</span>         <span style="color: #454459;">; </span><span style="color: #454459;">b = $t1</span>
+        <span style="color: #9d81ba;">li</span>      $t2, <span style="color: #f5c791;">0x2</span>         <span style="color: #454459;">; </span><span style="color: #454459;">n = $t2</span>
+<span style="color: #0bc9cf;">Loop</span>:   <span style="color: #9d81ba;">move</span>    $t3, $t1         <span style="color: #454459;">; </span><span style="color: #454459;">aux = $t3; aux &lt;- b</span>
+        <span style="color: #9d81ba;">add</span>     $t1, $t0         <span style="color: #454459;">; </span><span style="color: #454459;">b &lt;- b + a</span>
+        <span style="color: #9d81ba;">move</span>    $t0, $t3         <span style="color: #454459;">; </span><span style="color: #454459;">a &lt;- aux</span>
+        <span style="color: #9d81ba;">addi</span>    $t2, $t2, -0x1   <span style="color: #454459;">; </span><span style="color: #454459;">n &lt;- n + (-1)</span>
+        <span style="color: #9d81ba;">ble</span>     $r0, $t2, Loop   <span style="color: #454459;">; </span><span style="color: #454459;">goto Loop if (n &lt;= 0)</span>
+<span style="color: #0bc9cf;">Halt</span>:   <span style="color: #9d81ba;">j</span> Halt
+        <span style="color: #9d81ba;">nop</span>
+</code></pre>
+</div>
+
+<p style="font-size:0.7em;text-align:center;">
+&#x2026;Fofo. Só que não funciona. :)
+</p>
+</section>
+<section id="slide-orgb1286ea">
+<h3 id="orgb1286ea">Pipeline do processador</h3>
+<p>
+Um dos erros:
+</p>
+
+<pre class="example" id="org0486ccf">
+exercicio1.s(13) error: This instruction can't be in a delay slot
+</pre>
+
+<p>
+As linhas em questão:
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-asm"   ><code trim>        <span style="color: #9d81ba;">ble</span>     $r0, $t2, Loop <span style="color: #454459;">; </span><span style="color: #454459;">L12</span>
+<span style="color: #0bc9cf;">Halt</span>:   <span style="color: #9d81ba;">j</span> Halt                 <span style="color: #454459;">; </span><span style="color: #454459;">L13</span>
+</code></pre>
+</div>
+
+<p style="font-size:0.7em;text-align:center;">
+<b>??????????????????????????</b>
+</p>
+
+</section>
+<section id="slide-orgb1286ea-split">
+
+<p>
+O  processador  MIPS  possui  uma  <b>pipeline</b>.  Isso  significa  que  até  cinco
+instruções podem estar sendo processadas simultaneamente.
+</p>
+
+<ul>
+<li>Algumas instruções demoram mais que outras.
+<ul>
+<li>Jumps, em particular, demoram um ciclo a mais.</li>
+
+</ul></li>
+<li>Instruções imediatas demoram um ciclo.</li>
+
+</ul>
+
+<img class="r-stretch" src="./psxprog/mips-pipeline.png">
+
+</section>
+<section id="slide-orgb1286ea-split">
+
+<p>
+Em outras palavras, enquanto ainda estamos preparando o jump a ser executado por
+<code>blt</code>, já estaríamos processando o jump de <code>j</code>. <b>ISSO NÃO PODE ACONTECER!</b>
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-asm"   ><code trim>        <span style="color: #9d81ba;">ble</span>     $r0, $t2, Loop
+<span style="color: #0bc9cf;">Halt</span>:   <span style="color: #9d81ba;">j</span> Halt                 <span style="color: #454459;">; </span><span style="color: #454459;">no delay slot de ble!</span>
+</code></pre>
+</div>
+</section>
+<section id="slide-orgcdb4ce0">
+<h3 id="orgcdb4ce0">Segunda tentativa</h3>
+<p style="font-size:0.7em;text-align:center;">
+Podemos  tentar  fazer isso  de  uma  forma  ingênua,  garantindo que  todas  as
+instruções "lentas" tenham amplo tempo de execução:
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-asm"   ><code trim><span style="color: #0bc9cf;">Loop</span>:   <span style="color: #9d81ba;">move</span>    $t3, $t1         <span style="color: #454459;">; </span><span style="color: #454459;">aux = $t3; aux &lt;- b</span>
+        <span style="color: #9d81ba;">nop</span>
+        <span style="color: #9d81ba;">add</span>     $t1, $t0         <span style="color: #454459;">; </span><span style="color: #454459;">b &lt;- b + a</span>
+        <span style="color: #9d81ba;">nop</span>
+        <span style="color: #9d81ba;">move</span>    $t0, $t3         <span style="color: #454459;">; </span><span style="color: #454459;">a &lt;- aux</span>
+        <span style="color: #9d81ba;">nop</span>
+        <span style="color: #9d81ba;">addi</span>    $t2, $t2, -0x1   <span style="color: #454459;">; </span><span style="color: #454459;">n &lt;- n + (-1)</span>
+        <span style="color: #9d81ba;">ble</span>     $r0, $t2, Loop   <span style="color: #454459;">; </span><span style="color: #454459;">goto Loop if (n &lt;= 0)</span>
+        <span style="color: #9d81ba;">nop</span>
+<span style="color: #0bc9cf;">Halt</span>:   <span style="color: #9d81ba;">j</span> Halt
+        <span style="color: #9d81ba;">nop</span>
+</code></pre>
+</div>
+
+</section>
+<section id="slide-orgcdb4ce0-split">
+
+<p style="font-size:0.7em;text-align:center;">
+&#x2026;ou  podemos ser  mais  inteligentes que  isso e  pensar  em quais  instruções
+realmente precisariam ter seus delay slots garantidos.
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-asm"   ><code trim><span style="color: #0bc9cf;">Loop</span>:   <span style="color: #9d81ba;">move</span>    $t3, $t1         <span style="color: #454459;">; </span><span style="color: #454459;">aux = $t3; aux &lt;- b</span>
+        <span style="color: #9d81ba;">add</span>     $t1, $t0         <span style="color: #454459;">; </span><span style="color: #454459;">b &lt;- b + a</span>
+        <span style="color: #9d81ba;">addi</span>    $t2, $t2, -0x1   <span style="color: #454459;">; </span><span style="color: #454459;">n &lt;- n + (-1)</span>
+        <span style="color: #9d81ba;">move</span>    $t0, $t3         <span style="color: #454459;">; </span><span style="color: #454459;">a &lt;- aux</span>
+        <span style="color: #9d81ba;">ble</span>     $r0, $t2, Loop   <span style="color: #454459;">; </span><span style="color: #454459;">goto Loop if (n &lt;= 0)</span>
+        <span style="color: #9d81ba;">nop</span>
+<span style="color: #0bc9cf;">Halt</span>:   <span style="color: #9d81ba;">j</span> Halt
+        <span style="color: #9d81ba;">nop</span>
+</code></pre>
+</div>
+</section>
+<section id="slide-org00f9310">
+<h3 id="org00f9310">Montando e executando</h3>
+<div class="org-src-container">
+
+<pre  class="src src-bash"   ><code trim>armips exercicio1.s
+bin2exe.py exercicio1.bin exercicio1.exe
+</code></pre>
+</div>
+
+<pre class="example" id="org5ba2cbb">
+➜  ~ file exercicio1.exe
+exercicio1.exe: Sony Playstation executable PC=0x80010000,
+GP=0xffffffff, .text=[0x80010000,0x800], Stack=0x801fff00,
+()
+</pre>
+
+</section>
+<section id="slide-org00f9310-split">
+
+<img class="r-stretch" src="./psxprog/emulator-1.png">
+</section>
+</section>
+<section>
+<section id="slide-org4be382e">
+<h2 id="org4be382e">Gráficos</h2>
+<div class="outline-text-2" id="text-org4be382e">
+</div>
+</section>
+<section id="slide-org2218788">
+<h3 id="org2218788">Sistema de Gráficos</h3>
+<img class="r-stretch" src="./psxprog/psx-graphics-system.png">
+
+<p>
+<b>Fonte:</b> <a href="https://psx.arthus.net/sdk/Psy-Q/DOCS/Devrefs/Hardware.pdf">PlayStation Hardware Reference</a>
+</p>
+</section>
+<section id="slide-orgb637a8a">
+<h3 id="orgb637a8a">Entendendo a VRAM</h3>
+<p>
+Colocar imagem do TIMTOOL.EXE aqui.
+</p>
+</section>
+<section id="slide-orgcfbe604">
+<h3 id="orgcfbe604">Exemplo: Triângulo Gouraud-shaded em ASM</h3>
+
+</section>
+<section id="slide-org4bbaac7">
+<h3 id="org4bbaac7">Exemplo 2: Cubo Gouraud-shaded em C + Psy-Q</h3>
+</section>
+</section>
+<section>
+<section id="slide-org7de7746">
+<h2 id="org7de7746">Mais exemplos de homebrews</h2>
+<div class="outline-text-2" id="text-org7de7746">
+</div>
+</section>
+<section id="slide-orge73c16b">
+<h3 id="orge73c16b">Wipefaux</h3>
+
+</section>
+<section id="slide-org43d5b6b">
+<h3 id="org43d5b6b">engine-psx</h3>
+</section>
+</section>
+<section>
+<section id="slide-org7c4eaab">
+<h2 id="org7c4eaab">Conclusão</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+slideNumber:true,
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+,
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } }]
+
+});
+
+</script>
+</body>
+</html>
