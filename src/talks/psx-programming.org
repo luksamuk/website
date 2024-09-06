@@ -1,0 +1,492 @@
+#+title: Retro Game Dev
+#+subtitle: Desenvolvendo para o PlayStation em 2024
+#+author: Lucas Samuel Vieira
+#+email: lucasvieira@protonmail.com
+#+date: 19 de outubro de 2024
+#+language: en_us
+#+reveal_margin: 0.2
+#+reveal_trans: linear
+#+reveal_theme: serif
+#+reveal_plugins: (print-pdf zoom)
+#+options: num:nil timestamp:nil toc:nil
+#+reveal_init_options: slideNumber:true
+#+startup: latexpreview showall inlineimages
+# #+options: reveal_single_file:t
+
+#+reveal_title_slide: <h3>%t</h3><img src="./psxprog/sony-playstation.png" height=200px><p>%s</p><p>%a<br/>%d</p>
+# #+reveal_title_slide: <h3>%t</h3><p>%s</p><p>%a<br/>%d</p>
+
+:HTML_OPTIONS:
+#+html_head: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+#+html: <style>
+#+html: .container{
+#+html:     display: flex;
+#+html: }
+#+html: .col{
+#+html:     flex: 1;
+#+html: }
+#+html: </style>
+:END:
+
+* Quem sou eu?
+
+# container begin
+#+html: <div class="container">
+
+# Column begin
+#+html: <div class="col">
+#+attr_html: :style font-size:0.7em;text-align:left;
+Desenvolvedor na Workalove EdTech
+
+#+attr_html: :style font-size:0.7em;text-align:left;
+*Interesses:* Inteligência  artificial, ciência  cognitiva, filosofia  da mente,
+teoria   da   computação,   desenvolvimento  de   linguagens   de   programação,
+desenvolvimento de jogos, programação bare-metal
+
+#+html: <div style="font-size:0.7em;text-align:left;">
+#+html: <p>Co-fundador da Common Lisp Brasil
+#+html: <br/>
+#+html: <i class="fa fa-globe" aria-hidden="true"></i><code> lisp.com.br</code>
+#+html: </p></div>
+
+# Column end
+#+html: </div>
+
+# Column begin
+#+html: <div class="col">
+
+#+attr_html: :width 200
+#+attr_org: :width 200
+[[file:psxprog/eu.jpg]]
+
+#+html: <div style="font-size:0.7em;text-align:left;">
+#+html: <i class="fa fa-linkedin" aria-hidden="true"></i><code> luksamuk</code><br/>
+#+html: <i class="fa fa-globe" aria-hidden="true"></i><code> https://luksamuk.codes/</code><br/>
+#+html: <i class="fa fa-github" aria-hidden="true"></i><code> luksamuk</code>
+#+html: </div>
+
+# Column end
+#+html: </div>
+
+# container end
+#+html: </div>
+
+
+* História do PlayStation
+
+#+HTML: <img class="r-stretch" src="./psxprog/kutaragi-psx.png">
+
+Ken Kutaragi e o Sony PlayStation.
+
+** Antes do PlayStation...
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+attr_html: :style font-size:0.7em;text-align:left;
+- *Quarta geração de consoles (1987)*
+  - Sega Genesis / Sega Mega Drive (1989)
+  - Super Nintendo / Super Famicom (1991)
+    #+html: </div>
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/fourthgen.png">
+#+html: </div>
+#+html: </div>
+
+#+HTML: <img src="./psxprog/sonic-16.gif">
+#+HTML: <img src="./psxprog/mario-16.gif">
+
+#+reveal: split
+
+3D  já  era  uma realidade  em  filmes  e  simulações,  e até  em  alguns  jogos
+(principalmente em arcades).
+
+#+HTML: <img src="./psxprog/starfox-16.gif">
+
+#+attr_html: :style font-size:0.7em;text-align:center;
+*Exemplo:* StarFox (SNES, 1993)
+
+#+reveal: split
+
+*Enquanto isso...*
+
+#+HTML: <img class="r-stretch" src="./psxprog/s-smp-audio-chip.jpg">
+- *Sony:* Ken Kutaragi
+- *S-SMP:* Sound Chip do SNES
+
+** Parceria Sony x Nintendo
+
+#+HTML: <img src="./psxprog/nintendo-playstation.png">
+
+#+attr_html: :style font-size:0.7em;text-align:left;
+- *Nintendo Super Disc / Nintendo Play Station*
+- Cartuchos de SNES + CD-ROMs
+  - Apenas a Sony poderia produzir os CD-ROMs!
+- Nintendo "trai" a Sony e fecha parceria com a Phillips
+
+** Quinta geração de consoles (1993)
+
+#+attr_html: :style font-size:0.7em;text-align:left;
+Consoles de 32-bits que introduziam o CD-ROM como mídia física*.
+
+#+attr_html: :style font-size:0.7em;text-align:left;
+*Objetivo:* Colocar milhares de polígonos na tela -- 3D!
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+attr_html: :style font-size:0.7em;text-align:left;
+- Sega Saturn (1994)
+- Sony PlayStation (1994)
+- Nintendo 64 (1996)
+#+html: </div>
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/fifthgen.png">
+#+html: </div>
+#+html: </div>
+
+#+attr_html: :style font-size:0.4em;text-align:left;
+*Exceto o Nintendo 64.
+
+#+reveal: split
+
+#+HTML: <img src="./psxprog/sonicr-32.gif">
+#+HTML: <img src="./psxprog/crash-32.gif">
+#+HTML: <img src="./psxprog/zelda-32.gif">
+
+#+attr_html: :style font-size:0.5em;text-align:center;
+*Sonic R* (Sega  Saturn), *Crash Bandicoot* (Sony PlayStation) e  *The Legend of
+Zelda: Ocarina of Time* (Nintendo 64).
+
+* Hardware
+
+#+HTML: <img class="r-stretch" src="./psxprog/psx-motherboard.png">
+
+Placa-mãe de um PlayStation modelo SCPH-1000.
+
+#+reveal: split
+
+#+HTML: <img class="r-stretch" src="./psxprog/psx-block-diagram.png">
+#+attr_html: :style font-size:0.7em;text-align:center;
+*Fonte:* [[https://psx.arthus.net/sdk/Psy-Q/DOCS/Devrefs/Hardware.pdf][PlayStation Hardware Reference]]
+
+** CPU
+
+
+MIPS R3000A 32-bit (LSI Logic) @ 33.86 MHz
+
+- Geração anterior (16-bit) rodava a 7 MHz; geração 8-bit rodava a 1.7 MHz
+- +/- 30 milhões de instruções por segundo
+
+#+reveal: split
+
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+attr_html: :style font-size:0.7em;text-align:left;
+- *Co-processadores:*
+  - *CP0:* /System Control/ (cache, interrupções...)
+  - *CP2:* /Geometry Transformation Engine/ (GTE)
+
+#+attr_html: :style font-size:0.7em;text-align:left;
+- *MDEC:* /Motion Decoder/ (DSP para decodificar vídeo)
+
+#+attr_html: :style font-size:0.5em;text-align:center;
+*AO LADO:* Dieshot do CXD8530Q (primeira revisão), tirado da apresentação do Ken
+Kutaragi na Hot Chips '99.
+
+#+attr_html: :style font-size:0.5em;text-align:center;
+*Fonte:* [[https://www.psdevwiki.com/ps1/CPU][PlayStation Dev Wiki]]
+#+html: </div>
+
+#+html: <div class="col">
+#+html: <img class="r-stretch" src="./psxprog/cpu-dieshot.jpg">
+#+html: </div>
+#+html: </div>
+
+
+
+#+reveal: split
+
+
+A especificação das CPUs MIPS 32-bit possuía um *CP1* para /float/, e um D-Cache
+para acesso à RAM.
+
+*O PlayStation 1 não possui nenhum dos dois.*
+
+** Memória RAM
+
+- 2 MB de memória EDO (Extended Data Out)
+- Acesso LIVRE (você não terá segmentation faults)
+  - Mas pode ter exceções de hardware
+
+*** Mapa de memória
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+attr_html: :style font-size:0.7em;text-align:left;
+- *KSEG0:* Memória do kernel (memória física normal, com i-cache)
+- *KSEG1:* Memória do kernel (memória física normal, sem i-cache)
+- *KUSEG:* Memória virtual do usuário (com i-cache)
+#+html: </div>
+
+#+html: <div class="col">
+#+html: <img class="r-stretch" src="./psxprog/psx-logic-memory.png">
+#+html: </div>
+#+html: </div>
+
+#+reveal: split
+
+| KUSEG    | Tamanho | Descrição                      |
+|----------+---------+--------------------------------|
+| 00000000 | 2048K   | RAM (primeiros 64K reservados) |
+| 1F000000 | 8192K   | Expansão 1 (ROM/RAM)           |
+| 1F800000 | 1K      | Scratchpad                     |
+| 1F801000 | 4K      | Portas E/S                     |
+| 1F802000 | 8K      | Expansão 2 (Portas E/S)        |
+| ...      | ...     | ...                            |
+| 1FC00000 | 512K    | BIOS ROM (Kernel)              |
+
+** GPU
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+attr_html: :style font-size:0.7em;text-align:left;
+- *GPU:* SCPH-9000
+  - Responsável pela rasterização
+  - Apenas rasterização 2D! (mais sobre isso depois)
+- *VRAM:* 1 MB
+#+html: </div>
+
+#+html: <div class="col">
+#+html: <img class="r-stretch" src="./psxprog/spider-psx.gif">
+#+attr_html: :style font-size:0.5em;text-align:center;
+*Jogo:*  Spider-Man  (PSX).   Tente  notar os  artefatos  (/polygon  jittering/,
+ /z-fighting/, /t-junctions/...)
+#+html: </div>
+#+html: </div>
+
+** Outras estruturas
+
+#+attr_html: :style font-size:0.7em;text-align:left;
+- *SPU* (Sound Processing Unit)
+  - 16-bit, estéreo ou mono
+  - Formato ADPCM, 24 canais
+  - *SRAM:* 1 MB DRAM
+- *CD-ROM*
+  - DSP controlador de motor e laser
+  - Mais próximo de um protótipo
+  - Sistema de arquivos ISO 9660.
+
+
+* Ferramentas de desenvolvimento
+
+Existem várias formas hoje de começar no desenvolvimento para o PS1.
+
+#+reveal: split
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+attr_html: :style font-size:0.7em;text-align:left;
+- Toolchain velha (Windows XP / Windows 98)
+  - Psy-Q + ccpsx (C)
+  - Editor de sua escolha
+#+html: </div>
+#+html: <div class="col">
+#+html: <img class="r-stretch" src="./psxprog/psy-q.jpg">
+#+html: </div>
+#+html: </div>
+
+#+reveal: split
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+attr_html: :style font-size:0.7em;text-align:left;
+- Toolchain nova (Windows 11 / Linux)
+  - Psy-Q + Nugget + GCC-MIPSEL (C)
+  - Extensão PSXDev (VSCode)
+#+html: </div>
+#+html: <div class="col">
+#+html: <img class="r-stretch" src="./psxprog/vscode.png">
+#+html: </div>
+#+html: </div>
+
+#+reveal: split
+    
+- Toolchains alternativas
+  - *PSn00bSDK* (C + ASM)
+  - PsyQo + EASTL (C++)
+  - NetYaroze
+  
+
+* MIPS CPU
+
+** Exercício
+
+Converta o código em C a seguir para MIPS Assembly do PSX.
+
+#+begin_src c :tangle no :eval never
+unsigned a = 1;
+unsigned b = 1;
+unsigned aux;
+
+unsigned n = 5;
+
+do {
+    aux = b;
+    b = a + b;
+    a = aux;
+    n--;
+} while(n > 0);
+printf("a = %u\nb = %u\n", a, b);
+#+end_src
+
+** Estrutura básica
+
+#+begin_src asm :eval never
+        .psx
+        .create "exercicio1.bin", 0x80010000
+        .org    0x80010000
+Main:
+        ;; Código aqui...
+Halt:   j Halt
+	nop
+End:
+        .close
+#+end_src
+
+** Primeira tentativa
+
+#+begin_src asm :eval never
+Main:   li      $t0, 0x1         ; a = $t0
+        li      $t1, 0x1         ; b = $t1
+        li      $t2, 0x2         ; n = $t2
+Loop:   move    $t3, $t1         ; aux = $t3; aux <- b
+        add     $t1, $t0         ; b <- b + a
+        move    $t0, $t3         ; a <- aux
+        addi    $t2, $t2, -0x1   ; n <- n + (-1)
+        ble     $r0, $t2, Loop   ; goto Loop if (n <= 0)
+Halt:   j Halt
+	nop
+#+end_src
+
+#+attr_html: :style font-size:0.7em;text-align:center;
+...Fofo. Só que não funciona. :)
+
+** Pipeline do processador
+
+Um dos erros:
+
+#+begin_example
+exercicio1.s(13) error: This instruction can't be in a delay slot
+#+end_example
+
+As linhas em questão:
+
+#+begin_src asm :eval never
+        ble     $r0, $t2, Loop ; L12
+Halt:   j Halt                 ; L13
+#+end_src
+
+#+attr_html: :style font-size:0.7em;text-align:center;
+*??????????????????????????*
+
+#+reveal: split
+
+O  processador  MIPS  possui  uma  *pipeline*.  Isso  significa  que  até  cinco
+instruções podem estar sendo processadas simultaneamente.
+
+- Algumas instruções demoram mais que outras.
+  - Jumps, em particular, demoram um ciclo a mais.
+- Instruções imediatas demoram um ciclo.
+
+#+html: <img class="r-stretch" src="./psxprog/mips-pipeline.png">
+
+#+reveal: split
+
+Em outras palavras, enquanto ainda estamos preparando o jump a ser executado por
+~blt~, já estaríamos processando o jump de ~j~. *ISSO NÃO PODE ACONTECER!*
+
+#+begin_src asm :eval never
+        ble     $r0, $t2, Loop
+Halt:   j Halt                 ; no delay slot de ble!
+#+end_src
+
+** Segunda tentativa
+
+#+attr_html: :style font-size:0.7em;text-align:center;
+Podemos  tentar  fazer isso  de  uma  forma  ingênua,  garantindo que  todas  as
+instruções "lentas" tenham amplo tempo de execução:
+
+#+begin_src asm :eval never
+Loop:   move    $t3, $t1         ; aux = $t3; aux <- b
+	nop
+        add     $t1, $t0         ; b <- b + a
+	nop
+        move    $t0, $t3         ; a <- aux
+	nop
+        addi    $t2, $t2, -0x1   ; n <- n + (-1)
+        ble     $r0, $t2, Loop   ; goto Loop if (n <= 0)
+	nop
+Halt:   j Halt
+	nop
+#+end_src
+
+#+reveal: split
+
+#+attr_html: :style font-size:0.7em;text-align:center;
+...ou  podemos ser  mais  inteligentes que  isso e  pensar  em quais  instruções
+realmente precisariam ter seus delay slots garantidos.
+
+#+begin_src asm :eval never
+Loop:   move    $t3, $t1         ; aux = $t3; aux <- b
+        add     $t1, $t0         ; b <- b + a
+	addi    $t2, $t2, -0x1   ; n <- n + (-1)
+        move    $t0, $t3         ; a <- aux
+        ble     $r0, $t2, Loop   ; goto Loop if (n <= 0)
+	nop
+Halt:   j Halt
+	nop
+#+end_src
+
+** Montando e executando
+
+#+begin_src bash :eval never
+armips exercicio1.s
+bin2exe.py exercicio1.bin exercicio1.exe
+#+end_src
+
+#+begin_example
+➜  ~ file exercicio1.exe
+exercicio1.exe: Sony Playstation executable PC=0x80010000,
+GP=0xffffffff, .text=[0x80010000,0x800], Stack=0x801fff00,
+()
+#+end_example
+
+#+reveal: split
+
+#+html: <img class="r-stretch" src="./psxprog/emulator-1.png">
+
+* Gráficos
+
+** Sistema de Gráficos
+
+#+HTML: <img class="r-stretch" src="./psxprog/psx-graphics-system.png">
+
+*Fonte:* [[https://psx.arthus.net/sdk/Psy-Q/DOCS/Devrefs/Hardware.pdf][PlayStation Hardware Reference]]
+
+** Entendendo a VRAM
+
+Colocar imagem do TIMTOOL.EXE aqui.
+
+** Exemplo: Triângulo Gouraud-shaded em ASM
+
+** Exemplo 2: Cubo Gouraud-shaded em C + Psy-Q
+
+* Mais exemplos de homebrews
+
+** Wipefaux
+
+** engine-psx
+
+* Conclusão
+
