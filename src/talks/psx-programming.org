@@ -1,6 +1,6 @@
 #+title: Retro Game Dev
 #+subtitle: Desenvolvendo para o PlayStation em 2024
-#+author: Lucas Samuel Vieira
+#+author: Lucas S. Vieira
 #+email: lucasvieira@protonmail.com
 #+date: 19 de outubro de 2024
 #+language: en_us
@@ -13,8 +13,8 @@
 #+startup: latexpreview showall inlineimages
 # #+options: reveal_single_file:t
 
-#+reveal_title_slide: <h3>%t</h3><img src="./psxprog/sony-playstation.png" height=200px><p>%s</p><p>%a<br/>%d</p>
-# #+reveal_title_slide: <h3>%t</h3><p>%s</p><p>%a<br/>%d</p>
+#+reveal_title_slide: <h3><b>%t</b></h3><img src="./psxprog/sony-playstation.png" height=200px><p>%s</p><p>%a<br/>%d</p><p><b>UaiDev Talks 2024</b></p>
+# #+reveal_title_slide: <h3><b>%t</b></h3><p>%s</p><p>%a<br/>%d</p>
 
 :HTML_OPTIONS:
 #+html_head: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -72,12 +72,30 @@ desenvolvimento de jogos, programação bare-metal
 # container end
 #+html: </div>
 
+* Roadmap
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+attr_html: :style font-size:0.6em;text-align:left;
+- História do PlayStation
+- Toolchains
+- Hardware
+- Gráficos
+- Exemplos
+- Homebrews, projetos, cursos
+#+html: </div>
+
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/ps1-pic.png">
+#+html: </div>
+#+html: </div>
 
 * História do PlayStation
 
 #+HTML: <img class="r-stretch" src="./psxprog/kutaragi-psx.png">
 
-Ken Kutaragi e o Sony PlayStation.
+#+attr_html: :style font-size:0.6em;text-align:left;
+*Figura:* Ken Kutaragi e o Sony PlayStation
 
 ** Antes do PlayStation...
 
@@ -157,6 +175,66 @@ Consoles de 32-bits que introduziam o CD-ROM como mídia física*.
 *Sonic R* (Sega  Saturn), *Crash Bandicoot* (Sony PlayStation) e  *The Legend of
 Zelda: Ocarina of Time* (Nintendo 64).
 
+* Ferramentas de desenvolvimento
+
+Existem várias formas hoje de começar no desenvolvimento para o PS1.
+
+** Toolchain legada
+
+*Plataforma:* Windows XP / Windows 98
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+attr_html: :style font-size:0.7em;text-align:left;
+- Linguagem C
+- Psy-Q + ccpsx
+- Editor de sua escolha
+- Várias ferramentas de apoio (TIMTOOL, MC32, etc)
+- *Emulador:* no$psx
+#+html: </div>
+#+html: <div class="col">
+#+html: <img src="./psxprog/ps1-devkit.jpg">
+#+attr_html: :style font-size:0.6em;text-align:left;
+*Figura:* Kit de desenvolvimento oficial do PS1.
+#+html: </div>
+#+html: </div>
+
+** Toolchain nova
+
+*Plataforma:* Windows 11 / Linux
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+attr_html: :style font-size:0.7em;text-align:left;
+- Linguagem C
+- Psy-Q + Nugget + GCC-MIPSEL
+- Extensão PSX.Dev (VSCode)
+- *Emulador:* pcsx-redux
+#+html: </div>
+#+html: <div class="col">
+#+html: <img class="r-stretch" src="./psxprog/vscode.png">
+#+attr_html: :style font-size:0.6em;text-align:left;
+*Figura:* Dashboard da extensão PSX.Dev para VSCode.
+#+html: </div>
+#+html: </div>
+    
+** Toolchains alternativas
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+attr_html: :style font-size:0.7em;text-align:left;
+- *PSn00bSDK* (C + ASM)
+- PsyQo + EASTL (C++)
+- Net Yaroze (oficial, Psy-Q)
+#+html: </div>
+
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/netyaroze.jpg">
+#+attr_html: :style font-size:0.6em;text-align:left;
+*Figura:* Sony Net Yaroze + Psy-Q SDK.
+#+html: </div>
+#+html: </div>
+
 * Hardware
 
 #+HTML: <img class="r-stretch" src="./psxprog/psx-motherboard.png">
@@ -174,6 +252,7 @@ Placa-mãe de um PlayStation modelo SCPH-1000.
 
 MIPS R3000A 32-bit (LSI Logic) @ 33.86 MHz
 
+- RISC instruction set
 - Geração anterior (16-bit) rodava a 7 MHz; geração 8-bit rodava a 1.7 MHz
 - +/- 30 milhões de instruções por segundo
 
@@ -202,7 +281,6 @@ Kutaragi na Hot Chips '99.
 #+html: <img class="r-stretch" src="./psxprog/cpu-dieshot.jpg">
 #+html: </div>
 #+html: </div>
-
 
 
 #+reveal: split
@@ -277,48 +355,7 @@ para acesso à RAM.
   - Mais próximo de um protótipo
   - Sistema de arquivos ISO 9660.
 
-
-* Ferramentas de desenvolvimento
-
-Existem várias formas hoje de começar no desenvolvimento para o PS1.
-
-#+reveal: split
-
-#+html: <div class="container">
-#+html: <div class="col">
-#+attr_html: :style font-size:0.7em;text-align:left;
-- Toolchain velha (Windows XP / Windows 98)
-  - Psy-Q + ccpsx (C)
-  - Editor de sua escolha
-#+html: </div>
-#+html: <div class="col">
-#+html: <img class="r-stretch" src="./psxprog/psy-q.jpg">
-#+html: </div>
-#+html: </div>
-
-#+reveal: split
-
-#+html: <div class="container">
-#+html: <div class="col">
-#+attr_html: :style font-size:0.7em;text-align:left;
-- Toolchain nova (Windows 11 / Linux)
-  - Psy-Q + Nugget + GCC-MIPSEL (C)
-  - Extensão PSXDev (VSCode)
-#+html: </div>
-#+html: <div class="col">
-#+html: <img class="r-stretch" src="./psxprog/vscode.png">
-#+html: </div>
-#+html: </div>
-
-#+reveal: split
-    
-- Toolchains alternativas
-  - *PSn00bSDK* (C + ASM)
-  - PsyQo + EASTL (C++)
-  - NetYaroze
-  
-
-* MIPS CPU
+* COMMENT MIPS Assembly
 
 ** Exercício
 
@@ -357,10 +394,10 @@ End:
 ** Primeira tentativa
 
 #+begin_src asm :eval never
-Main:   li      $t0, 0x1         ; a = $t0
-        li      $t1, 0x1         ; b = $t1
-        li      $t2, 0x2         ; n = $t2
-Loop:   move    $t3, $t1         ; aux = $t3; aux <- b
+Main:   li      $t0, 0x1         ; a = $t0 <- 1
+        li      $t1, 0x1         ; b = $t1 <- 1
+        li      $t2, 0x5         ; n = $t2 <- 5
+Loop:   move    $t3, $t1         ; aux = $t3 <- b
         add     $t1, $t0         ; b <- b + a
         move    $t0, $t3         ; a <- aux
         addi    $t2, $t2, -0x1   ; n <- n + (-1)
@@ -404,7 +441,7 @@ instruções podem estar sendo processadas simultaneamente.
 #+reveal: split
 
 Em outras palavras, enquanto ainda estamos preparando o jump a ser executado por
-~blt~, já estaríamos processando o jump de ~j~. *ISSO NÃO PODE ACONTECER!*
+~ble~, já estaríamos processando o jump de ~j~. *ISSO NÃO PODE ACONTECER!*
 
 #+begin_src asm :eval never
         ble     $r0, $t2, Loop
@@ -468,25 +505,321 @@ GP=0xffffffff, .text=[0x80010000,0x800], Stack=0x801fff00,
 
 * Gráficos
 
-** Sistema de Gráficos
-
 #+HTML: <img class="r-stretch" src="./psxprog/psx-graphics-system.png">
 
 *Fonte:* [[https://psx.arthus.net/sdk/Psy-Q/DOCS/Devrefs/Hardware.pdf][PlayStation Hardware Reference]]
 
-** Entendendo a VRAM
+** Entendendo o Frame Buffer
 
-Colocar imagem do TIMTOOL.EXE aqui.
+#+html: <div class="container">
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/timtool.png">
+#+html: </div>
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/framebuffer.png">
+#+html: </div>
+#+html: </div>
 
-** Exemplo: Triângulo Gouraud-shaded em ASM
+#+attr_html: :style font-size:0.65em;text-align:left;
+- Color depth: 24bpp, 16bpp ou usando CLUTs (4bpp ou 8bpp).
+- Dividido em /texture pages/ (TPAGEs).
+- Comporta o /double buffer/ da tela.
+- Comporta texturas (tam. máx.: 256x256, precisão de 1 byte)
+- Polígonos suportam */gouraud shading/*...
 
-** Exemplo 2: Cubo Gouraud-shaded em C + Psy-Q
+** O que é Gouraud shading?
 
-* Mais exemplos de homebrews
+#+attr_html: :style font-size:0.6em;text-align:left;
+- Publicado em  1971 pelo  cientista computacional Henri  Gouraud
+- Método  de interpolação,  para produzir  sombreamento contínuo  de superfícies
+  representadas por polígonos
+- Usada principalmente para simulação de uso de luz
+
+#+attr_html: :style font-size:0.65em;text-align:left;
+*Fonte:* [[https://en.wikipedia.org/wiki/Gouraud_shading][Wikipedia]].
+
+#+reveal: split
+
+*Exemplos:*
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/gouraud-sphere.gif">
+#+attr_html: :style font-size:0.6em;text-align:left;
+Esfera low-poly com reflexão especular.
+#+html: </div>
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/banjo.png">
+#+attr_html: :style font-size:0.6em;text-align:left;
+Banjo, personagem de *Banjo-Kazooie*, como visto no Nintendo 64.
+#+html: </div>
+#+html: </div>
+
+* Exemplos de renderização
+
+#+html: <img class="r-stretch" src="./psxprog/psy-q.jpg">
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+*Figura:* Afresco do Psy-Q SDK.
+
+** Triângulo Gouraud-shaded (ASM)
+
+*Algumas constantes:*
+
+#+begin_src asm
+        .psx
+        .create "exercicio2.bin", 0x80010000
+        .org 0x80010000
+
+        IO_BASE_ADDR equ 0x1f80 ; Endereço-base (0x1f800000)
+        GP0          equ 0x1810 ; Reg. GP0 (GPU) no segm. de E/S
+        GP1          equ 0x1814 ; Reg. GP1 (GPU) no segm. de E/S
+Main:
+        lui     $t0, IO_BASE_ADDR
+	;; ...
+#+end_src
+
+#+reveal: split
+
+#+begin_src asm :exports none
+        ;; Config. de tela e GPU
+        li      $t1, 0x00000000   ; 0 = resetar GPU
+        sw      $t1, GP1($t0)     ; escrever packet em GP1 (IO_BASE_ADDR+GP1)
+        li      $t1, 0x03000000   ; habilitar display
+        sw      $t1, GP1($t0)
+        li      $t1, 0x08000001   ; modo 320x240, 15-bit, NTSC
+        sw      $t1, GP1($t0)
+        li      $t1, 0x06c60260   ; display range horizontal
+        sw      $t1, GP1($t0)
+        li      $t1, 0x07042018   ; display range vertical
+        sw      $t1, GP1($t0)
+#+end_src
+
+#+begin_src asm :exports none
+        ;; Config. de área de desenho
+        li      $t1, 0xe1000400   ; flag: config de desenho
+        sw      $t1, GP0($t0)     ; escrever packet em GP0 (IO_BASE_ADDR+GP0)
+        li      $t1, 0xe3000000   ; E3: topo-esquerda
+        sw      $t1, GP0($t0)
+        li      $t1, 0xe403bd3f   ; E4: fundo-direita
+        sw      $t1, GP0($t0)
+        li      $t1, 0xe5000000   ; E5: offset de desenho
+        sw      $t1, GP0($t0)
+#+end_src
+
+#+begin_src asm :exports none
+        ;; Limpeza da tela
+        li      $t1, 0x02000000   ; 02: desenhar retângulo flat-shaded (cor 0x000000)
+        sw      $t1, GP0($t0)
+        li      $t1, 0x00000000   ; coordenadas topo-esquerda (0, 0) 0x00YYYXXX
+        sw      $t1, GP0($t0)
+        li      $t1, 0x00ef013f   ; largura e altura (239, 319) 0xHHHHWWWW
+        sw      $t1, GP0($t0)	
+#+end_src
+
+#+begin_src asm
+        ;; Triângulo gouraud-shaded (CC = 30, cores = 0x00BBGGRR)
+        li      $t1, 0x300000ff ; 30 = POLY_G3. C1: 0x0000ff
+        sw      $t1, GP0($t0)
+        li      $t1, 0x002d00a0 ; V1: (160, 720) (0x00YYYXXX)
+        sw      $t1, GP0($t0)
+        li      $t1, 0x0000ff00 ; C2: 0x00ff00
+        sw      $t1, GP0($t0)
+        li      $t1, 0x00bb8050 ; V2: (80, 3000)
+        sw      $t1, GP0($t0)
+        li      $t1, 0x00ff0000 ; C3: 0xff0000
+        sw      $t1, GP0($t0)
+        li      $t1, 0x00bb80f0 ; V3: (240, 3000)
+        sw      $t1, GP0($t0)
+#+end_src
+
+#+begin_src asm :exports none
+Halt:   j Halt
+        nop
+        .close
+#+end_src
+
+#+reveal: split
+
+#+HTML: <img src="./psxprog/gouraudtriangle.png">
+
+** Cubo Gouraud-shaded (Psy-Q / C)
+
+*Passo 1:* Definir os vértices e a ordem deles para cada triângulo:
+
+#+html: <div class="container">
+#+html: <div class="col">
+
+#+begin_src c
+// NOTA: 64 = 0.015625
+// (note que 4096 = 1.0)
+SVECTOR vertices[] = {
+    { -64, -64, -64 },
+    {  64, -64, -64 },
+    {  64, -64,  64 },
+    { -64, -64,  64 },
+    { -64,  64, -64 },
+    {  64,  64, -64 },
+    {  64,  64,  64 },
+    { -64,  64,  64 }
+};
+#+end_src
+
+#+html: </div>
+#+html: <div class="col">
+
+#+begin_src c
+short faces[] = {
+    0, 3, 2, // top
+    0, 2, 1,
+    4, 0, 1, // front
+    4, 1, 5,
+    7, 4, 5, // bottom
+    7, 5, 6,
+    5, 1, 2, // right
+    5, 2, 6,
+    2, 3, 7, // back
+    2, 7, 6,
+    0, 4, 7, // left
+    0, 7, 3
+};
+#+end_src
+
+#+html: </div>
+#+html: </div>
+
+#+reveal: split
+
+*Passo 2:* Popular a matriz do mundo com rotação, translação e escala
+
+#+begin_src c
+static SVECTOR rotation    = {0, 0, 0};   // manipulado via código
+static VECTOR  translation = {0, 0, 700}; // 0.4375
+static VECTOR  scale       = {ONE, ONE, ONE};
+static MATRIX  world       = {0};
+
+// Populate world matrix with rotation, translation,
+// scale values
+RotMatrix(&rotation, &world);
+TransMatrix(&world, &translation);
+ScaleMatrix(&world, &scale);
+
+// Sets world matrix to be used by the GTE for rotation
+// and translation
+SetRotMatrix(&world);
+SetTransMatrix(&world);
+#+end_src
+
+#+reveal: split
+
+*Passo 3:*  Para cada triângulo,  transformar seus vértices e  transformá-los em
+pontos 2D:
+
+#+html: <div class="container">
+#+html: <div class="col">
+
+#+begin_src c
+for(i = 0; i < NUM_FACES * 3; i += 3) {
+    POLY_G3 *poly = (POLY_G3*)nextprim;
+    setPolyG3(poly);
+    setRGB0(poly, 255, 0, 255);
+    setRGB1(poly, 255, 255, 0);
+    setRGB2(poly, 0, 255, 255);
+    nclip = RotAverageNclip3(
+        &vertices[faces[i + 0]],
+        &vertices[faces[i + 1]],
+        &vertices[faces[i + 2]],
+        (long*)&poly->x0,
+        (long*)&poly->x1,
+        (long*)&poly->x2,
+        &p, &otz, &flg);
+    // ...
+}
+#+end_src
+
+#+html: </div>
+#+html: <div class="col">
+
+#+begin_src c
+// Extraído do SDK
+typedef struct {
+    u_long tag;
+    u_char r0, g0, b0, code;
+    short  x0,     y0;
+    u_char r1, g1, b1, pad1;
+    short  x1,     y1;
+    u_char r2, g2, b2, pad2;
+    short  x2,     y2;
+} POLY_G3; /* Gouraud Triangle */
+#+end_src
+
+#+html: </div>
+#+html: </div>
+
+#+reveal: split
+
+*Passo  4:* Verificar  se  a primitiva  deveria estar  sendo  desenhada na  tela
+(/normal clipping/) e colocá-la na /ordering table/ (lista de primitivas):
+
+#+begin_src c
+for(i = 0; i < NUM_FACES * 3; i += 3) {
+    // ...
+    if(nclip <= 0) continue;
+
+    if((otz > 0) && (otz < OT_LENGTH)) {
+        addPrim(ot[currbuff][otz], poly);
+        nextprim += sizeof(POLY_G3);
+    }
+}
+#+end_src
+
+#+reveal: split
+
+*Passo  5:* Esperar  vsync;  desenhar quadro  anterior;  realizar /sorting/  dos
+polígonos.
+
+#+html: <div class="container">
+#+html: <div class="col">
+
+#+begin_src c
+DrawSync(0);
+VSync(0);
+
+PutDispEnv(
+    &screen.disp[currbuff]);
+PutDrawEnv(
+    &screen.draw[currbuff]);
+
+DrawOTag(
+    ot[currbuff] +
+    OT_LENGTH - 1);
+#+end_src
+
+#+html: </div>
+
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/gouraudcube.gif">
+#+html: </div>
+#+html: </div>
+
+* Homebrews
 
 ** Wipefaux
 
 ** engine-psx
 
-* Conclusão
+** Comunidades e Cursos
 
+
+
+* Obrigado!
+
+#+HTML: <img class="r-stretch" src="./psxprog/ps1-logo.png">
+#+html: <br/>
+
+#+html: <div style="font-size:0.7em;text-align:center;">
+#+html: <i class="fa fa-envelope" aria-hidden="true"></i><code> lucasvieira@protonmail.com</code><br/>
+#+html: <i class="fa fa-linkedin" aria-hidden="true"></i><code> luksamuk</code><br/>
+#+html: <i class="fa fa-globe" aria-hidden="true"></i><code> https://luksamuk.codes/</code><br/>
+#+html: <i class="fa fa-github" aria-hidden="true"></i><code> luksamuk</code>
+#+html: </div>
