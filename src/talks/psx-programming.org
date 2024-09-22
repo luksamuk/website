@@ -40,15 +40,18 @@
 Desenvolvedor na Workalove EdTech
 
 #+attr_html: :style font-size:0.6em;text-align:left;
-*Interesses:* Inteligência  artificial, ciência  cognitiva, filosofia  da mente,
-teoria   da   computação,   desenvolvimento  de   linguagens   de   programação,
-desenvolvimento de jogos, programação bare-metal
+*Interesses:*  Ciência  cognitiva,  teoria  da  computação,  desenvolvimento  de
+linguagens, desenvolvimento de jogos, programação bare-metal
 
 #+html: <div style="font-size:0.6em;text-align:left;">
 #+html: <p>Co-fundador da Common Lisp Brasil
 #+html: <br/>
 #+html: <i class="fa fa-globe" aria-hidden="true"></i><code> lisp.com.br</code>
 #+html: </p></div>
+
+#+attr_html: :width 150
+#+attr_org: :width 150
+[[file:./psxprog/qrcode-website.png]]
 
 # Column end
 #+html: </div>
@@ -78,11 +81,11 @@ desenvolvimento de jogos, programação bare-metal
 #+html: <div class="col">
 #+attr_html: :style font-size:0.6em;text-align:left;
 - História do PlayStation
-- Toolchains
-- Hardware
-- Gráficos
-- Exemplos
-- Homebrews, projetos, cursos
+- Ferramentas e kits de desenvolvimento
+- Visão geral do hardware
+- Pipeline de gráficos
+- Exemplo de código
+- Homebrews e links úteis
 #+html: </div>
 
 #+html: <div class="col">
@@ -179,9 +182,9 @@ Consoles de 32-bits que introduziam o CD-ROM como mídia física*.
 *Sonic R* (Sega  Saturn), *Crash Bandicoot* (Sony PlayStation) e  *The Legend of
 Zelda: Ocarina of Time* (Nintendo 64).
 
-* Toolchains
+* Ferramentas e kits de desenvolvimento
 
-** Toolchain legada
+** Toolchain legacy
 
 #+attr_html: :style font-size:0.6em;text-align:center;
 *Plataforma:* Windows XP / Windows 98
@@ -190,10 +193,9 @@ Zelda: Ocarina of Time* (Nintendo 64).
 #+html: <div class="col">
 #+attr_html: :style font-size:0.6em;text-align:left;
 - Linguagem C
-- Psy-Q + ccpsx
+- Psy-Q + ccpsx (DJGPP modificado)
 - Editor de sua escolha
 - Várias ferramentas de apoio (TIMTOOL, MC32, etc)
-- *Emulador:* no$psx
 #+html: </div>
 #+html: <div class="col">
 #+html: <img src="./psxprog/ps1-devkit.jpg">
@@ -201,6 +203,24 @@ Zelda: Ocarina of Time* (Nintendo 64).
 *Figura:* Kit de desenvolvimento oficial do PS1.
 #+html: </div>
 #+html: </div>
+
+*** Net Yaroze (ネットやろうぜ, Netto Yarōze)
+
+# #+html: <div class="container">
+# #+html: <div class="col">
+#+attr_html: :style font-size:0.6em;text-align:center;
+Promoção da  Sony para atrair  hobbyistas /  indie devs. Incluía  um PlayStation
+para  desenvolvimento, cabo  serial, Psy-Q  SDK, guias  de desenvolvimento  e de
+hardware...
+# #+html: </div>
+
+
+# #+html: <div class="col">
+#+HTML: <img src="./psxprog/netyaroze.jpg">
+#+attr_html: :style font-size:0.6em;text-align:center;
+*Figura:* Sony Net Yaroze com o SDK.
+# #+html: </div>
+# #+html: </div>
 
 ** Toolchain nova
 
@@ -213,7 +233,6 @@ Zelda: Ocarina of Time* (Nintendo 64).
 - Linguagem C
 - Psy-Q + Nugget + GCC-MIPSEL
 - Extensão PSX.Dev (VSCode)
-- *Emulador:* pcsx-redux
 #+html: </div>
 #+html: <div class="col">
 #+html: <img class="r-stretch" src="./psxprog/vscode.png">
@@ -224,20 +243,10 @@ Zelda: Ocarina of Time* (Nintendo 64).
     
 ** Toolchains alternativas
 
-#+html: <div class="container">
-#+html: <div class="col">
 #+attr_html: :style font-size:0.6em;text-align:left;
 - *PSn00bSDK* (C + ASM)
 - PsyQo + EASTL (C++)
-- Net Yaroze (oficial, Psy-Q)
-#+html: </div>
-
-#+html: <div class="col">
-#+HTML: <img src="./psxprog/netyaroze.jpg">
-#+attr_html: :style font-size:0.6em;text-align:left;
-*Figura:* Sony Net Yaroze + Psy-Q SDK.
-#+html: </div>
-#+html: </div>
+- Assembly puro (~armips~)
 
 * Hardware
 
@@ -290,7 +299,7 @@ Solução: /fixed-points/ e /scratchpad/.
 - Acesso LIVRE (você não terá segmentation faults)
   - Mas pode ter exceções de hardware
 
-*** Mapa de memória
+*** COMMENT Mapa de memória
 
 #+attr_html: :style font-size:0.6em;text-align:left;
 Como 32-bit podem mapear até 2GB, os endereços que "sobram" no PlayStation foram
@@ -313,7 +322,7 @@ utilizados para outros propósitos muito úteis.
 #+attr_html: :style font-size:0.6em;text-align:left;
 - *GPU:* SCPH-9000 (Toshiba)
   - Responsável pela rasterização
-  - Apenas rasterização 2D! (mais sobre isso depois)
+  - Apenas rasterização 2D!
 - *VRAM:* 1 MB
 #+html: </div>
 
@@ -530,14 +539,14 @@ Banjo, personagem de *Banjo-Kazooie*, como visto no Nintendo 64.
 #+html: </div>
 #+html: </div>
 
-* Exemplos de renderização
+* Exemplo de código
 
 #+html: <img class="r-stretch" src="./psxprog/psy-q.jpg">
 
 #+attr_html: :style font-size:0.6em;text-align:center;
 *Figura:* Detalhe do Psy-Q SDK.
 
-** Triângulo Gouraud-shaded (ASM)
+** COMMENT Triângulo Gouraud-shaded (ASM)
 
 #+attr_html: :style font-size:0.6em;text-align:left;
 *Algumas constantes:*
@@ -697,8 +706,8 @@ SetTransMatrix(&world);
 *Passo 3:*  Para cada triângulo,  transformar seus vértices e  transformá-los em
 pontos 2D:
 
-#+html: <div class="container">
-#+html: <div class="col">
+# #+html: <div class="container">
+# #+html: <div class="col">
 
 #+attr_html: :style font-size:0.6em;text-align:left;
 #+begin_src c
@@ -720,25 +729,25 @@ for(i = 0; i < NUM_FACES * 3; i += 3) {
 }
 #+end_src
 
-#+html: </div>
-#+html: <div class="col">
+# #+html: </div>
+# #+html: <div class="col">
 
-#+attr_html: :style font-size:0.6em;text-align:left;
-#+begin_src c
-// Extraído do SDK
-typedef struct {
-    u_long tag;
-    u_char r0, g0, b0, code;
-    short  x0,     y0;
-    u_char r1, g1, b1, pad1;
-    short  x1,     y1;
-    u_char r2, g2, b2, pad2;
-    short  x2,     y2;
-} POLY_G3; /* Gouraud Triangle */
-#+end_src
+# #+attr_html: :style font-size:0.6em;text-align:left;
+# #+begin_src c
+# // Extraído do SDK
+# typedef struct {
+#     u_long tag;
+#     u_char r0, g0, b0, code;
+#     short  x0,     y0;
+#     u_char r1, g1, b1, pad1;
+#     short  x1,     y1;
+#     u_char r2, g2, b2, pad2;
+#     short  x2,     y2;
+# } POLY_G3; /* Gouraud Triangle */
+# #+end_src
 
-#+html: </div>
-#+html: </div>
+# #+html: </div>
+# #+html: </div>
 
 #+reveal: split
 
@@ -799,34 +808,65 @@ Pequenos projetos que desenvolvi usando este aprendizado.
 #+html: <div class="container">
 #+html: <div class="col">
 #+html: <img class="r-stretch" src="./psxprog/wipefaux.gif">
+
+#+attr_html: :style font-size:0.6em;text-align:center;
+Link para jogar online:
+
+#+attr_html: :style font-size:0.75em;text-align:center;
+[[https://luksamuk.codes/static/psx/?game=wipefaux][https://luksamuk.codes/static/psx/?game=wipefaux]]
+
 #+html: </div>
 #+html: <div class="col">
 #+attr_html: :style font-size:0.6em;text-align:center;
 Clone parcial  do jogo  WipEout. Desenvolvido durante  o curso  /PS1 Programming
 with MIPS Assembly & C/.
-#+html: </div>
-#+html: </div>
 
-#+attr_html: :style font-size:0.75em;text-align:center;
-[[https://luksamuk.codes/static/psx/?game=wipefaux][https://luksamuk.codes/static/psx/?game=wipefaux]]
+#+attr_html: :width 200
+#+attr_org: :width 200
+[[file:./psxprog/qrcode-wipefaux.png]]
+
+#+attr_html: :style font-size:0.6em;text-align:center;
+*ATENÇÃO: A performance é deplorável. Você foi avisado(a). :P*
+
+#+html: </div>
+#+html: </div>
 
 ** Sonic XA (~engine-psx~)
 
 #+html: <div class="container">
 #+html: <div class="col">
-#+html: <img class="r-stretch" src="./psxprog/engine-psx.gif">
+#+html: <img class="r-stretch" src="./psxprog/sonicxa-title.gif">
 #+html: </div>
 #+html: <div class="col">
-#+html: <img class="r-stretch" src="./psxprog/engine-psx-title.gif">
+#+html: <img class="r-stretch" src="./psxprog/sonicxa-level1.gif">
+#+html: </div>
+#+html: <div class="col">
+#+html: <img class="r-stretch" src="./psxprog/sonicxa-greenhill.gif">
 #+html: </div>
 #+html: </div>
 
+
+#+html: <div class="container">
+#+html: <div class="col">
 #+attr_html: :style font-size:0.6em;text-align:center;
 Fan-game de  Sonic The Hedgehog  utilizando técnicas  do hardware do  PSX (áudio
 CD-XA, FMVs via MDEC, etc.)
 
 #+attr_html: :style font-size:0.75em;text-align:center;
 [[https://github.com/luksamuk/engine-psx][https://github.com/luksamuk/engine-psx]]
+
+#+attr_html: :style font-size:0.6em;text-align:center;
+*(O link da imagem de CD para emulador está no projeto)*
+
+#+html: </div>
+#+html: <div class="col">
+
+#+attr_html: :width 200
+#+attr_org: :width 200
+[[file:./psxprog/qrcode-sonicxa.png]]
+
+#+html: </div>
+#+html: </div>
 
 ** Comunidades, Cursos e Links
 
@@ -839,12 +879,30 @@ CD-XA, FMVs via MDEC, etc.)
   
 * Obrigado!
 
-#+HTML: <img class="r-stretch" src="./psxprog/ps1-logo.png">
+#+html: <div class="container">
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/ps1-logo.png">
+#+html: </div>
+#+html: <div class="col">
+
+#+attr_html: :style font-size:0.6em;text-align:center;
+*Acesse esta apresentação:*
+
+#+attr_html: :width 200
+#+attr_org: :width 200
+[[file:./psxprog/qrcode-presentation.png]]
+
+#+attr_html: :style font-size:0.75em;text-align:center;
+https://luksamuk.codes/talks/psx-programming.html
+
+#+html: </div>
+#+html: </div>
+
 #+html: <br/>
 
-#+html: <div style="font-size:0.6em;text-align:center;">
-#+html: <i class="fa fa-envelope" aria-hidden="true"></i><code> lucasvieira@protonmail.com</code><br/>
-#+html: <i class="fa fa-linkedin" aria-hidden="true"></i><code> luksamuk</code><br/>
-#+html: <i class="fa fa-globe" aria-hidden="true"></i><code> https://luksamuk.codes/</code><br/>
-#+html: <i class="fa fa-github" aria-hidden="true"></i><code> luksamuk</code>
-#+html: </div>
+# #+html: <div style="font-size:0.6em;text-align:center;">
+# #+html: <i class="fa fa-envelope" aria-hidden="true"></i><code> lucasvieira@protonmail.com</code><br/>
+# #+html: <i class="fa fa-linkedin" aria-hidden="true"></i><code> luksamuk</code><br/>
+# #+html: <i class="fa fa-globe" aria-hidden="true"></i><code> https://luksamuk.codes/</code><br/>
+# #+html: <i class="fa fa-github" aria-hidden="true"></i><code> luksamuk</code>
+# #+html: </div>
