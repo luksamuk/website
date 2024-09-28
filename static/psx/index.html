@@ -1,43 +1,54 @@
 <html>
-    <head>
-        <style>
-            body, html {
-                margin: 0;
-                padding: 0;
-            }
-        </style>
-    </head>
-    <body>
-      <div style="width:100%;height:100%;max-width:100%">
-        <div id="game"></div>
-      </div>
-      <script>
-       let queryParams = new URLSearchParams(window.location.search);
-       let game = queryParams.get("game");
-       switch(game) {
-	   case "sonic":
-	       EJS_gameUrl = "./SONICV1.ISO";
-	       break;
-	   case "engine":
-	       EJS_gameUrl = "./ENGINEPSX.CHD";
-	       break;
-	   case "wipefaux":
-	       EJS_gameUrl = "./WIPEFAUX.CHD";
-	       break;
-	   default:
-	       EJS_gameUrl = "./GAME.ISO";
-	       break;
-       }
+  <head>
+    <style>
+     body, html {
+         margin: 0;
+         padding: 0;
+     }
+    </style>
+    <title>PlayStation Emulator</title>
+    <link rel="manifest" href="manifest.json">
+  </head>
+  <body>
+    <div style="width:100%;height:100%;max-width:100%">
+      <div id="game"></div>
+    </div>
+    <script>
+     window.scrollTo(0, 1);
 
-       console.log("Game:", EJS_gameUrl);
-       
-       EJS_player = "#game";
-       EJS_core = "psx";
-       EJS_biosUrl = './openbios.bin';
-       EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-       EJS_alignStartButton = "center";
-       /* EJS_DEBUG_XX = true; */
-      </script>
-      <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
-    </body>
+     let queryParams = new URLSearchParams(window.location.search);
+     let game = queryParams.get("game");
+     switch(game) {
+	 case "sonic":
+	     EJS_gameUrl = "./SONICV1.ISO";
+	     EJ_gameName = "sonicv1";
+	     document.title = "PSX: Sonic Engine";
+	     break;
+	 case "engine":
+	     EJS_gameUrl = "./ENGINEPSX.CHD";
+	     EJS_gameName= "sonicxa";
+	     document.title = "PSX: SONIC THE HEDGEHOG XA";
+	     break;
+	 case "wipefaux":
+	     EJS_gameUrl = "./WIPEFAUX.CHD";
+	     EJS_gameName = "wipefaux";
+	     document.title = "PSX: WIPEFAUX";
+	     break;
+	 default:
+	     EJS_gameUrl = "./GAME.ISO";
+	     EJS_gameName = "brick";
+	     document.title = "PSX: BRICK";
+	     break;
+     }
+
+     EJS_player = "#game";
+     EJS_core = "psx";
+     EJS_biosUrl = './openbios.bin';
+     EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+     EJS_alignStartButton = "center";
+     EJS_fullscreenOnLoaded = true;
+     /* EJS_DEBUG_XX = true; */
+    </script>
+    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+  </body>
 </html>
