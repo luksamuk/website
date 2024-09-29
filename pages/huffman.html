@@ -3,13 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
 <head>
-<!-- 2024-09-29 Sun 16:43 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Algoritmo de Compressão de Huffman</title>
 <meta name="author" content="Lucas S. Vieira" />
-<meta name="description" content="Implementação do método de compressão de Huffman em C++.
-Programming, Tech, and occasional rant space by Lucas Vieira" />
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira
+Implementação do método de compressão de Huffman em C++." />
 <meta name="keywords" content="huffman, cpp, documentação, algoritmos, estruturas de dados" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -212,6 +211,7 @@ gtag('config', 'G-22RF3F5XE0');
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta property="og:image" content="../img/cat-i-mage.jpg">
 <meta name="theme-color" content="#14171e">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script>
   window.MathJax = {
     tex: {
@@ -250,123 +250,11 @@ gtag('config', 'G-22RF3F5XE0');
 <nav><h1><a href="../">The Alchemist's Hideout</a></h1></nav><h1 class="title">Algoritmo de Compressão de Huffman</h1><p><i>Escrito em 3 de janeiro de 2020 por Lucas S. Vieira<br/><a href="mailto:lucasvieira@protonmail.com">lucasvieira@protonmail.com</a></i></p>
 </div>
 <div id="content" class="content">
-<div id="table-of-contents" role="doc-toc">
-<h2>&Iacute;ndice</h2>
-<div id="text-table-of-contents" role="doc-toc">
-<ul>
-<li><a href="#orgf05661b">Proposta do projeto</a></li>
-<li><a href="#orgbe483d0">Bibliotecas utilizadas</a></li>
-<li><a href="#orgb96cefa">Definições de tipos do projeto</a>
-<ul>
-<li><a href="#org6375cca">Mapa de frequências</a>
-<ul>
-<li><a href="#org4375e52">Impressão do mapa de frequências</a></li>
-</ul>
-</li>
-<li><a href="#org0d2dc24">Nó de árvore binária de Huffman</a></li>
-<li><a href="#orga505f12">Conjunto de nós-folha pré-alocados</a></li>
-<li><a href="#orgfd16063">Mapa de bits</a>
-<ul>
-<li><a href="#org1394ac4">Impressão do mapa de bits</a></li>
-</ul>
-</li>
-<li><a href="#orgead9680">Mapa de caracteres (mapa reverso de bits)</a>
-<ul>
-<li><a href="#orgadeee78">Impressão do mapa de caracteres (mapa reverso de bits)</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#orgdc5d32d">Cálculo de frequências</a></li>
-<li><a href="#org13fb4c9">Construção do conjunto de nós com frequência</a>
-<ul>
-<li><a href="#orgad61549">Extração do elemento de menor frequência</a></li>
-</ul>
-</li>
-<li><a href="#org440f1a6">Algoritmo de Huffman</a></li>
-<li><a href="#orgabecc50">Árvore binária de Huffman</a>
-<ul>
-<li><a href="#org51bda3f">Construção da árvore</a></li>
-<li><a href="#orge237528">Destruição da árvore</a></li>
-<li><a href="#org60fd9f3">Gerar conjunto de nós-folha</a></li>
-<li><a href="#org82e4ad9">Impressão gráfica da árvore</a>
-<ul>
-<li><a href="#orgd3b18b1">Geração de código GraphViz</a></li>
-<li><a href="#org634b45b">Impressão de código GraphViz</a></li>
-<li><a href="#orgaa586c6">Salvamento temporário de código GraphViz</a></li>
-<li><a href="#org94de24a">Exibição gráfica do código GraphViz</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#org04d9a1a">Criação do mapa de bits para cada caractere</a></li>
-<li><a href="#org27b650a">Gerenciamento de arquivos bit-a-bit</a>
-<ul>
-<li><a href="#org9155273">Cabeçalho do arquivo: mapa de bits</a>
-<ul>
-<li><a href="#org45070a2">Definição</a></li>
-<li><a href="#org9f89bb2">Criação do cabeçalho</a></li>
-<li><a href="#org647655a">Destruição do cabeçalho</a></li>
-<li><a href="#orgcf4c32b">Mostrando o cabeçalho na tela</a></li>
-</ul>
-</li>
-<li><a href="#orgd5db834">Escritor de arquivo</a>
-<ul>
-<li><a href="#org78d156f">Construtor/Destrutor</a></li>
-<li><a href="#org76a606d">Macro para dump de variável em um stream binário</a></li>
-<li><a href="#org4c73ac9">Registro de bytes cheios</a></li>
-<li><a href="#org26b890d">Abrir arquivo</a></li>
-<li><a href="#orgc14e4c0">Predicado para informar status do arquivo</a></li>
-<li><a href="#orgf0f7ffc">Fechar arquivo</a></li>
-<li><a href="#org7a4c57c">Escrever vetor de bits no arquivo</a></li>
-<li><a href="#orgfb32f27">Escrever cabeçalho informado no arquivo</a></li>
-<li><a href="#orgaec1d94">Bits sobrando</a></li>
-</ul>
-</li>
-<li><a href="#orgb2e0afa">Leitor do arquivo</a>
-<ul>
-<li><a href="#org64e9ef8">Construtor/Destrutor</a></li>
-<li><a href="#org76cad05">Macro para leitura de variável de um stream binário</a></li>
-<li><a href="#org00974b3">Leitura de novo byte</a></li>
-<li><a href="#org6620977">Abrir arquivo</a></li>
-<li><a href="#org489de88">Predicado para informar status do arquivo</a></li>
-<li><a href="#org7d2a0d3">Leitura de cabeçalho</a></li>
-<li><a href="#orgffe6ed0">Geração de mapa de caracteres</a></li>
-<li><a href="#org91613d2">Tradução de arquivo</a></li>
-<li><a href="#orgb9afef6">Fechamento de arquivo</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#org346eb03">Ponto de entrada</a>
-<ul>
-<li><a href="#org1798333">Variáveis globais</a></li>
-<li><a href="#org773b1e1">Texto de cabeçalho</a></li>
-<li><a href="#org80d7b7d">Texto de ajuda</a></li>
-<li><a href="#org84cacb8">Processo de compressão</a></li>
-<li><a href="#orgfb2315c">Processo de extração</a></li>
-<li><a href="#orgcffec86">Resolução de argumentos do console</a></li>
-<li><a href="#org24b056c">Função principal</a></li>
-</ul>
-</li>
-<li><a href="#org1a837a9">Apêndices</a>
-<ul>
-<li><a href="#org194a6ae">Teste tipográfico</a></li>
-<li><a href="#org26e6c23">Lorem ipsum simples</a></li>
-<li><a href="#org9206c2d">Lorem ipsum complexo</a></li>
-<li><a href="#org453d8dc">Makefile</a></li>
-<li><a href="#org05eb7e1">Sobre o licenciamento</a></li>
-<li><a href="#orgb137e59">Licença MIT</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
 
 
-<div id="outline-container-orgf05661b" class="outline-2">
-<h2 id="orgf05661b">Proposta do projeto</h2>
-<div class="outline-text-2" id="text-orgf05661b">
+<div id="outline-container-org9603334" class="outline-2">
+<h2 id="org9603334">Proposta do projeto</h2>
+<div class="outline-text-2" id="text-org9603334">
 <p>
 Este arquivo provê uma implementação completa para o Algoritmo de
 Compressão de Huffman para arquivos de texto. A compressão é realizada
@@ -384,7 +272,7 @@ Este programa foi escrito usando <i>programação literária</i>, um conceito
 inicialmente descrito por [<a href="#knuth1984">2</a>], onde
 </p>
 
-<div class="citacao" id="org04a9eb3">
+<div class="citacao" id="orgfbbacce">
 <p>
 ``Ao invés de imaginarmos que nossa tarefa principal é instruir
 um computador quanto ao que deve ser feito, vamos nos concentrar em
@@ -402,9 +290,9 @@ explicativa.
 </div>
 </div>
 
-<div id="outline-container-orgbe483d0" class="outline-2">
-<h2 id="orgbe483d0">Bibliotecas utilizadas</h2>
-<div class="outline-text-2" id="text-orgbe483d0">
+<div id="outline-container-orgded0606" class="outline-2">
+<h2 id="orgded0606">Bibliotecas utilizadas</h2>
+<div class="outline-text-2" id="text-orgded0606">
 <p>
 Abaixo, temos a inclusão de alguns cabeçalhos cruciais para a criação
 do programa. Enumerando-os, temos que:
@@ -471,9 +359,9 @@ disso, isentaremos apenas algumas estruturas do uso do prefixo <code>std::</code
 </div>
 </div>
 
-<div id="outline-container-orgb96cefa" class="outline-2">
-<h2 id="orgb96cefa">Definições de tipos do projeto</h2>
-<div class="outline-text-2" id="text-orgb96cefa">
+<div id="outline-container-orge9aabe3" class="outline-2">
+<h2 id="orge9aabe3">Definições de tipos do projeto</h2>
+<div class="outline-text-2" id="text-orge9aabe3">
 <p>
 Abaixo, enumeraremos alguns tipos-padrão que serão utilizados ao longo
 da aplicação.
@@ -486,9 +374,9 @@ pode ficar extremamente longa.
 </p>
 </div>
 
-<div id="outline-container-org6375cca" class="outline-3">
-<h3 id="org6375cca">Mapa de frequências</h3>
-<div class="outline-text-3" id="text-org6375cca">
+<div id="outline-container-org106a441" class="outline-3">
+<h3 id="org106a441">Mapa de frequências</h3>
+<div class="outline-text-3" id="text-org106a441">
 <p>
 A estrutura a seguir implementa um <i>mapa de frequências</i>, que mapeia um
 certo caractere para a frequência de sua aparição em um certo texto.
@@ -506,9 +394,9 @@ bits.
 </div>
 </div>
 
-<div id="outline-container-org4375e52" class="outline-4">
-<h4 id="org4375e52">Impressão do mapa de frequências</h4>
-<div class="outline-text-4" id="text-org4375e52">
+<div id="outline-container-org2f23916" class="outline-4">
+<h4 id="org2f23916">Impressão do mapa de frequências</h4>
+<div class="outline-text-4" id="text-org2f23916">
 <p>
 A função a seguir imprime um mapa de frequências no console, no
 formato de uma tabela.
@@ -547,9 +435,9 @@ formato de uma tabela.
 </div>
 </div>
 
-<div id="outline-container-org0d2dc24" class="outline-3">
-<h3 id="org0d2dc24">Nó de árvore binária de Huffman</h3>
-<div class="outline-text-3" id="text-org0d2dc24">
+<div id="outline-container-orgb1c0772" class="outline-3">
+<h3 id="orgb1c0772">Nó de árvore binária de Huffman</h3>
+<div class="outline-text-3" id="text-orgb1c0772">
 <p>
 A estrutura <code>huffman_node_t</code> define um nó qualquer na árvore binária do
 algoritmo de Huffman. Este nó possui um caractere associado, uma
@@ -589,9 +477,9 @@ didática do código em si.
 </div>
 </div>
 
-<div id="outline-container-orga505f12" class="outline-3">
-<h3 id="orga505f12">Conjunto de nós-folha pré-alocados</h3>
-<div class="outline-text-3" id="text-orga505f12">
+<div id="outline-container-orgddd7d99" class="outline-3">
+<h3 id="orgddd7d99">Conjunto de nós-folha pré-alocados</h3>
+<div class="outline-text-3" id="text-orgddd7d99">
 <p>
 O tipo <code>node_set_t</code> determina a estrutura de dados para um <i>conjunto</i> de
 nós de uma árvore de Huffman que já estejam alocados apropriadamente
@@ -668,9 +556,9 @@ de mesma frequência seriam removidos.
 </div>
 </div>
 
-<div id="outline-container-orgfd16063" class="outline-3">
-<h3 id="orgfd16063">Mapa de bits</h3>
-<div class="outline-text-3" id="text-orgfd16063">
+<div id="outline-container-org8878a70" class="outline-3">
+<h3 id="org8878a70">Mapa de bits</h3>
+<div class="outline-text-3" id="text-org8878a70">
 <p>
 O <i>mapa de bits</i> é uma estrutura que associa um <code>char</code> a um certo
 <code>std::vector</code> de valores booleanos e tamanho variável. Esta estrutura
@@ -684,9 +572,9 @@ momento da criação do arquivo compactado.
 </div>
 </div>
 
-<div id="outline-container-org1394ac4" class="outline-4">
-<h4 id="org1394ac4">Impressão do mapa de bits</h4>
-<div class="outline-text-4" id="text-org1394ac4">
+<div id="outline-container-org0ee7963" class="outline-4">
+<h4 id="org0ee7963">Impressão do mapa de bits</h4>
+<div class="outline-text-4" id="text-org0ee7963">
 <p>
 A função a seguir toma uma referência a um mapa de bits qualquer e
 imprime-o na tela, mostrando um caractere à esquerda e os bits
@@ -724,9 +612,9 @@ valor em hexadecimal.
 </div>
 </div>
 
-<div id="outline-container-orgead9680" class="outline-3">
-<h3 id="orgead9680">Mapa de caracteres (mapa reverso de bits)</h3>
-<div class="outline-text-3" id="text-orgead9680">
+<div id="outline-container-org300325a" class="outline-3">
+<h3 id="org300325a">Mapa de caracteres (mapa reverso de bits)</h3>
+<div class="outline-text-3" id="text-org300325a">
 <p>
 O <i>mapa de caracteres</i> é uma estrutura similar ao <i>mapa de bits</i>, porém
 invertida: temos associações entre <i>vetores de bits</i> como chaves para
@@ -740,9 +628,9 @@ encriptado para texto novamente.
 </div>
 </div>
 
-<div id="outline-container-orgadeee78" class="outline-4">
-<h4 id="orgadeee78">Impressão do mapa de caracteres (mapa reverso de bits)</h4>
-<div class="outline-text-4" id="text-orgadeee78">
+<div id="outline-container-orga7693b5" class="outline-4">
+<h4 id="orga7693b5">Impressão do mapa de caracteres (mapa reverso de bits)</h4>
+<div class="outline-text-4" id="text-orga7693b5">
 <p>
 Esta função realiza o exato mesmo trabalho de <code>print_bitmap</code>, porém de
 forma invertida, em adequação com o mapa de caracteres.
@@ -778,9 +666,9 @@ forma invertida, em adequação com o mapa de caracteres.
 </div>
 </div>
 
-<div id="outline-container-orgdc5d32d" class="outline-2">
-<h2 id="orgdc5d32d">Cálculo de frequências</h2>
-<div class="outline-text-2" id="text-orgdc5d32d">
+<div id="outline-container-org1dc56aa" class="outline-2">
+<h2 id="org1dc56aa">Cálculo de frequências</h2>
+<div class="outline-text-2" id="text-org1dc56aa">
 <p>
 Precisamos construir um mapa de todas as frequências de caracteres
 para o arquivo-texto lido. Para tanto, recebemos um <i>stream</i> de entrada
@@ -815,9 +703,9 @@ fim-de-arquivo (<code>EOF</code>), o que auxilia no momento da descompressão.
 </div>
 </div>
 
-<div id="outline-container-org13fb4c9" class="outline-2">
-<h2 id="org13fb4c9">Construção do conjunto de nós com frequência</h2>
-<div class="outline-text-2" id="text-org13fb4c9">
+<div id="outline-container-orgb463ce2" class="outline-2">
+<h2 id="orgb463ce2">Construção do conjunto de nós com frequência</h2>
+<div class="outline-text-2" id="text-orgb463ce2">
 <p>
 A função a seguir constrói um <i>conjunto de nós</i> da árvore binária de
 Huffman, baseado no <i>mapa de frequências</i> repassado. Os nós gerados são
@@ -863,9 +751,9 @@ inteiro qualquer.
 </div>
 </div>
 
-<div id="outline-container-orgad61549" class="outline-3">
-<h3 id="orgad61549">Extração do elemento de menor frequência</h3>
-<div class="outline-text-3" id="text-orgad61549">
+<div id="outline-container-orge7365b2" class="outline-3">
+<h3 id="orge7365b2">Extração do elemento de menor frequência</h3>
+<div class="outline-text-3" id="text-orge7365b2">
 <p>
 A função a seguir extrai o elemento de <i>menor frequência</i> no conjunto de
 nós do tipo <code>node_set_t</code>.
@@ -894,19 +782,19 @@ deste contêiner.
 </div>
 </div>
 
-<div id="outline-container-org440f1a6" class="outline-2">
-<h2 id="org440f1a6">Algoritmo de Huffman</h2>
-<div class="outline-text-2" id="text-org440f1a6">
+<div id="outline-container-orga9ffc85" class="outline-2">
+<h2 id="orga9ffc85">Algoritmo de Huffman</h2>
+<div class="outline-text-2" id="text-orga9ffc85">
 <p>
 Seja <code>C</code> o conjunto de nós-folha desconexos, cada qual contendo
 informações a respeito da frequência de um certo caractere do alfabeto
 do arquivo tratado. Sendo assim, [<a href="#cormen">1</a>] institui o seguinte
 algoritmo para criação de uma árvore binária de frequências dos
-caracteres, como exposto no Listing <a href="#org613916d">1</a>.
+caracteres, como exposto no Listing <a href="#orgea0609d">1</a>.
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listagem 1: </span>Algoritmo de Huffman. Fonte: <a href="cormen">cormen</a> (adaptado)</label><pre class="src src-text" id="org613916d">fun&#231;&#227;o Huffman(C)
+<label class="org-src-name"><span class="listing-number">Listagem 1: </span>Algoritmo de Huffman. Fonte: <a href="cormen">cormen</a> (adaptado)</label><pre class="src src-text" id="orgea0609d">fun&#231;&#227;o Huffman(C)
     n = |C|
     Q = C
     para i = 1 at&#233; n-1
@@ -944,16 +832,16 @@ agregue um bit <code>1</code> à codificação.
 </p>
 
 
-<div id="org50083aa" class="figure">
+<div id="orgc7f9a8e" class="figure">
 <p><img src="img/lipsum1_hufftree.png" alt="lipsum1_hufftree.png" />
 </p>
 <p><span class="figure-number">Figura 1: </span>Exemplo de árvore de Huffman gerada para um texto de um parágrafo.</p>
 </div>
 
 <p>
-Podemos observar, na Figura <a href="#org50083aa">1</a>, uma árvore binária de
+Podemos observar, na Figura <a href="#orgc7f9a8e">1</a>, uma árvore binária de
 Huffman gerada para um único arquivo-texto de um parágrafo (este texto
-encontra-se presente na Seção <a href="#orgbf00b15">No description for this link</a> dos Apêndices). Veja que
+encontra-se presente na Seção <a href="#orgda4a54e">No description for this link</a> dos Apêndices). Veja que
 há, também um único nó representado em notação hexadecimal; este nó
 corresponde ao caractere de fim-de-arquivo para o arquivo em questão.
 </p>
@@ -1010,14 +898,14 @@ nós-folha.
 
 <p>
 Arquivos com alfabetos mais variados possuem árvores ainda maiores. A
-Figura <a href="#org044c71c">2</a> exemplifica mais uma árvore, gerada para o
-arquivo exemplificado na Seção <a href="#org4c10649">No description for this link</a> dos Apêndices. Este arquivo
+Figura <a href="#org31abe5b">2</a> exemplifica mais uma árvore, gerada para o
+arquivo exemplificado na Seção <a href="#org00a156e">No description for this link</a> dos Apêndices. Este arquivo
 constitui-se de cinco parágrafos de texto em latim, gerado
 automaticamente para teste de tipografia.
 </p>
 
 
-<div id="org044c71c" class="figure">
+<div id="org31abe5b" class="figure">
 <p><img src="img/lipsum2_hufftree.png" alt="lipsum2_hufftree.png" />
 </p>
 <p><span class="figure-number">Figura 2: </span>Exemplo de árvore de Huffman gerada para um texto de cinco parágrafos.</p>
@@ -1025,9 +913,9 @@ automaticamente para teste de tipografia.
 </div>
 </div>
 
-<div id="outline-container-orgabecc50" class="outline-2">
-<h2 id="orgabecc50">Árvore binária de Huffman</h2>
-<div class="outline-text-2" id="text-orgabecc50">
+<div id="outline-container-org4786651" class="outline-2">
+<h2 id="org4786651">Árvore binária de Huffman</h2>
+<div class="outline-text-2" id="text-org4786651">
 <p>
 Nesta seção, discutiremos todos os processos relacionados ao
 gerenciamento da estrutura de árvore binária em si, envolvendo sua
@@ -1036,9 +924,9 @@ operações pertinentes para a mesma.
 </p>
 </div>
 
-<div id="outline-container-org51bda3f" class="outline-3">
-<h3 id="org51bda3f">Construção da árvore</h3>
-<div class="outline-text-3" id="text-org51bda3f">
+<div id="outline-container-org4df3852" class="outline-3">
+<h3 id="org4df3852">Construção da árvore</h3>
+<div class="outline-text-3" id="text-org4df3852">
 <p>
 A seguir, temos o processo de criação da árvore de Huffman em si,
 responsável pela invocação do algoritmo de Huffman.
@@ -1088,9 +976,9 @@ nossa árvore.
 </div>
 </div>
 
-<div id="outline-container-orge237528" class="outline-3">
-<h3 id="orge237528">Destruição da árvore</h3>
-<div class="outline-text-3" id="text-orge237528">
+<div id="outline-container-org97b76a8" class="outline-3">
+<h3 id="org97b76a8">Destruição da árvore</h3>
+<div class="outline-text-3" id="text-org97b76a8">
 <p>
 A destruição da árvore de Huffman, uma vez utilizada, perpassa apenas
 a deleção recursiva dos nós, a partir da raiz. Não precisamos de
@@ -1116,9 +1004,9 @@ memória durante a execução do programa.
 </div>
 </div>
 
-<div id="outline-container-org60fd9f3" class="outline-3">
-<h3 id="org60fd9f3">Gerar conjunto de nós-folha</h3>
-<div class="outline-text-3" id="text-org60fd9f3">
+<div id="outline-container-org01e24b9" class="outline-3">
+<h3 id="org01e24b9">Gerar conjunto de nós-folha</h3>
+<div class="outline-text-3" id="text-org01e24b9">
 <p>
 Esta função percorre uma árvore em nível, criando um conjunto de
 nós-folha da árvore. Um nó-folha é um nó que possui um caractere
@@ -1152,9 +1040,9 @@ associado, não sendo apenas um nó de frequência.
 </div>
 </div>
 
-<div id="outline-container-org82e4ad9" class="outline-3">
-<h3 id="org82e4ad9">Impressão gráfica da árvore</h3>
-<div class="outline-text-3" id="text-org82e4ad9">
+<div id="outline-container-orgc2632fd" class="outline-3">
+<h3 id="orgc2632fd">Impressão gráfica da árvore</h3>
+<div class="outline-text-3" id="text-orgc2632fd">
 <p>
 Nesta seção, explanaremos alguns algoritmos para que uma árvore gerada
 possa ser mostrada na tela de forma gráfica. Para tanto, usamos a
@@ -1177,9 +1065,9 @@ no programa.
 </p>
 </div>
 
-<div id="outline-container-orgd3b18b1" class="outline-4">
-<h4 id="orgd3b18b1">Geração de código GraphViz</h4>
-<div class="outline-text-4" id="text-orgd3b18b1">
+<div id="outline-container-orgdf6394a" class="outline-4">
+<h4 id="orgdf6394a">Geração de código GraphViz</h4>
+<div class="outline-text-4" id="text-orgdf6394a">
 <p>
 Esta função percorre a árvore de uma maneira específica e, neste
 processo, escreve, em um <i>stream</i> de saída, um código que represente a
@@ -1285,9 +1173,9 @@ válido.
 </div>
 </div>
 
-<div id="outline-container-org634b45b" class="outline-4">
-<h4 id="org634b45b">Impressão de código GraphViz</h4>
-<div class="outline-text-4" id="text-org634b45b">
+<div id="outline-container-org2bc474d" class="outline-4">
+<h4 id="org2bc474d">Impressão de código GraphViz</h4>
+<div class="outline-text-4" id="text-org2bc474d">
 <p>
 Esta função invoca o gerador de código anterior para o <i>stream</i> de saída
 padrão, efetivamente mostrando o código na tela.
@@ -1304,9 +1192,9 @@ padrão, efetivamente mostrando o código na tela.
 </div>
 </div>
 
-<div id="outline-container-orgaa586c6" class="outline-4">
-<h4 id="orgaa586c6">Salvamento temporário de código GraphViz</h4>
-<div class="outline-text-4" id="text-orgaa586c6">
+<div id="outline-container-org883bddb" class="outline-4">
+<h4 id="org883bddb">Salvamento temporário de código GraphViz</h4>
+<div class="outline-text-4" id="text-org883bddb">
 <p>
 Esta função salva temporariamente o código de visualização no arquivo
 <code>/tmp/huffmantree.dot</code>.
@@ -1340,9 +1228,9 @@ Veja que este código só será salvo se seu sistema possuir a ferramenta
 </div>
 </div>
 
-<div id="outline-container-org94de24a" class="outline-4">
-<h4 id="org94de24a">Exibição gráfica do código GraphViz</h4>
-<div class="outline-text-4" id="text-org94de24a">
+<div id="outline-container-orgfe53078" class="outline-4">
+<h4 id="orgfe53078">Exibição gráfica do código GraphViz</h4>
+<div class="outline-text-4" id="text-orgfe53078">
 <p>
 Esta função salva o código da árvore em um arquivo temporário e invoca
 uma das ferramentas de visualização gráfica do usuário. Veja que esta
@@ -1405,9 +1293,9 @@ também só está disponível quando <code>xdot</code> está presente no sistema
 </div>
 </div>
 
-<div id="outline-container-org04d9a1a" class="outline-2">
-<h2 id="org04d9a1a">Criação do mapa de bits para cada caractere</h2>
-<div class="outline-text-2" id="text-org04d9a1a">
+<div id="outline-container-orgcaed6bc" class="outline-2">
+<h2 id="orgcaed6bc">Criação do mapa de bits para cada caractere</h2>
+<div class="outline-text-2" id="text-orgcaed6bc">
 <p>
 A criação do mapa de bits para um caractere qualquer envolve
 determinar, a partir de trajetos para a <i>esquerda</i> e para a <i>direita</i>, a
@@ -1428,14 +1316,14 @@ o nó-folha em questão seja alcançado.
 </p>
 
 
-<div id="orgbc60659" class="figure">
+<div id="org8088654" class="figure">
 <p><img src="img/teste1_hufftree.png" alt="teste1_hufftree.png" />
 </p>
 <p><span class="figure-number">Figura 3: </span>Exemplo de árvore de Huffman gerada para o texto <code>abba is bad.</code></p>
 </div>
 
 <p>
-Vejamos o exemplo da árvore na Figura <a href="#orgbc60659">3</a>. A
+Vejamos o exemplo da árvore na Figura <a href="#org8088654">3</a>. A
 representação do caractere de Espaço (<code>0x20</code>) envolve a seguinte
 trajetória a partir da raiz: <i>direita</i>, <i>esquerda</i>, <i>esquerda</i>. Portanto,
 serão necessários três bits para este caractere: <code>100</code>.
@@ -1523,9 +1411,9 @@ dos caracteres, e salvando em outro arquivo os bits correspondentes
 </div>
 </div>
 
-<div id="outline-container-org27b650a" class="outline-2">
-<h2 id="org27b650a">Gerenciamento de arquivos bit-a-bit</h2>
-<div class="outline-text-2" id="text-org27b650a">
+<div id="outline-container-org1058651" class="outline-2">
+<h2 id="org1058651">Gerenciamento de arquivos bit-a-bit</h2>
+<div class="outline-text-2" id="text-org1058651">
 <p>
 As estruturas a serem descritas a seguir foram criadas para a escrita
 e recuperação de informações bit-a-bit.
@@ -1540,9 +1428,9 @@ arquivo.
 </p>
 </div>
 
-<div id="outline-container-org9155273" class="outline-3">
-<h3 id="org9155273">Cabeçalho do arquivo: mapa de bits</h3>
-<div class="outline-text-3" id="text-org9155273">
+<div id="outline-container-org8064f53" class="outline-3">
+<h3 id="org8064f53">Cabeçalho do arquivo: mapa de bits</h3>
+<div class="outline-text-3" id="text-org8064f53">
 <p>
 O cabeçalho de um arquivo compactado armazena o mapa de bits para as
 informações que virão de forma subsequente. Para tanto, é essencial
@@ -1550,9 +1438,9 @@ especificar o formato de tal cabeçalho.
 </p>
 </div>
 
-<div id="outline-container-org45070a2" class="outline-4">
-<h4 id="org45070a2">Definição</h4>
-<div class="outline-text-4" id="text-org45070a2">
+<div id="outline-container-orgdc1703f" class="outline-4">
+<h4 id="orgdc1703f">Definição</h4>
+<div class="outline-text-4" id="text-orgdc1703f">
 <p>
 A definição do cabeçalho envolve duas estruturas diferentes: um <i>par</i>
 (que determina a relação caractere e bits), e o cabeçalho em si.
@@ -1611,9 +1499,9 @@ no arquivo;</li>
 </div>
 </div>
 
-<div id="outline-container-org9f89bb2" class="outline-4">
-<h4 id="org9f89bb2">Criação do cabeçalho</h4>
-<div class="outline-text-4" id="text-org9f89bb2">
+<div id="outline-container-org9b9662e" class="outline-4">
+<h4 id="org9b9662e">Criação do cabeçalho</h4>
+<div class="outline-text-4" id="text-org9b9662e">
 <p>
 A função a seguir toma um mapa de bits específico e cria,
 dinamicamente, um cabeçalho pré-populado com todas as informações
@@ -1675,9 +1563,9 @@ definida com base nos dados que serão escritos no arquivo.
 </div>
 </div>
 
-<div id="outline-container-org647655a" class="outline-4">
-<h4 id="org647655a">Destruição do cabeçalho</h4>
-<div class="outline-text-4" id="text-org647655a">
+<div id="outline-container-org8804b3a" class="outline-4">
+<h4 id="org8804b3a">Destruição do cabeçalho</h4>
+<div class="outline-text-4" id="text-org8804b3a">
 <p>
 Quando um cabeçalho armazenado na memória não for mais necessário, é
 importante que esta função seja chamada para remover as alocações
@@ -1698,9 +1586,9 @@ dinâmicas em sua constituição.
 </div>
 </div>
 
-<div id="outline-container-orgcf4c32b" class="outline-4">
-<h4 id="orgcf4c32b">Mostrando o cabeçalho na tela</h4>
-<div class="outline-text-4" id="text-orgcf4c32b">
+<div id="outline-container-org05646a5" class="outline-4">
+<h4 id="org05646a5">Mostrando o cabeçalho na tela</h4>
+<div class="outline-text-4" id="text-org05646a5">
 <p>
 Esta função imprime todas as informações contidas em um certo
 cabeçalho, no console.
@@ -1748,9 +1636,9 @@ cabeçalho, no console.
 </div>
 </div>
 
-<div id="outline-container-orgd5db834" class="outline-3">
-<h3 id="orgd5db834">Escritor de arquivo</h3>
-<div class="outline-text-3" id="text-orgd5db834">
+<div id="outline-container-orgd9b9014" class="outline-3">
+<h3 id="orgd9b9014">Escritor de arquivo</h3>
+<div class="outline-text-3" id="text-orgd9b9014">
 <p>
 A estrutura a seguir é uma <i>classe</i>, capaz de imprimir informações
 bit-a-bit em um arquivo binário. A estrutura funciona utilizando uma
@@ -1792,9 +1680,9 @@ fechamento do mesmo com a escrita efetiva das informações.
 </div>
 </div>
 
-<div id="outline-container-org78d156f" class="outline-4">
-<h4 id="org78d156f">Construtor/Destrutor</h4>
-<div class="outline-text-4" id="text-org78d156f">
+<div id="outline-container-org938b3d5" class="outline-4">
+<h4 id="org938b3d5">Construtor/Destrutor</h4>
+<div class="outline-text-4" id="text-org938b3d5">
 <p>
 O <i>construtor</i> da classe inicia o <i>buffer</i> e a contagem de bits com
 zeros.
@@ -1823,9 +1711,9 @@ O <i>destrutor</i> da classe realiza o fechamento do arquivo.
 </div>
 </div>
 
-<div id="outline-container-org76a606d" class="outline-4">
-<h4 id="org76a606d">Macro para dump de variável em um stream binário</h4>
-<div class="outline-text-4" id="text-org76a606d">
+<div id="outline-container-org05593b3" class="outline-4">
+<h4 id="org05593b3">Macro para dump de variável em um stream binário</h4>
+<div class="outline-text-4" id="text-org05593b3">
 <p>
 O <i>macro</i> a seguir acelera a escrita de um certo valor em um <i>stream</i> de
 arquivo binário, reduzindo a verbosidade do código.
@@ -1839,9 +1727,9 @@ arquivo binário, reduzindo a verbosidade do código.
 </div>
 </div>
 
-<div id="outline-container-org4c73ac9" class="outline-4">
-<h4 id="org4c73ac9">Registro de bytes cheios</h4>
-<div class="outline-text-4" id="text-org4c73ac9">
+<div id="outline-container-orga403b39" class="outline-4">
+<h4 id="orga403b39">Registro de bytes cheios</h4>
+<div class="outline-text-4" id="text-orga403b39">
 <p>
 O método a seguir é um método interno que toma o <i>buffer</i> atualmente
 preenchido e coloca-o ao final do vetor de bytes a serem escritos. O
@@ -1863,9 +1751,9 @@ buffer e a contagem de bits são, por fim, zerados novamente.
 </div>
 </div>
 
-<div id="outline-container-org26b890d" class="outline-4">
-<h4 id="org26b890d">Abrir arquivo</h4>
-<div class="outline-text-4" id="text-org26b890d">
+<div id="outline-container-org366a19d" class="outline-4">
+<h4 id="org366a19d">Abrir arquivo</h4>
+<div class="outline-text-4" id="text-org366a19d">
 <p>
 Este método abre o arquivo informado para saída, especificando a
 escrita de um arquivo binário.
@@ -1881,9 +1769,9 @@ escrita de um arquivo binário.
 </div>
 </div>
 
-<div id="outline-container-orgc14e4c0" class="outline-4">
-<h4 id="orgc14e4c0">Predicado para informar status do arquivo</h4>
-<div class="outline-text-4" id="text-orgc14e4c0">
+<div id="outline-container-org498253c" class="outline-4">
+<h4 id="org498253c">Predicado para informar status do arquivo</h4>
+<div class="outline-text-4" id="text-org498253c">
 <p>
 Este método informa o <i>status</i> de abertura do arquivo.
 </p>
@@ -1898,9 +1786,9 @@ Este método informa o <i>status</i> de abertura do arquivo.
 </div>
 </div>
 
-<div id="outline-container-orgf0f7ffc" class="outline-4">
-<h4 id="orgf0f7ffc">Fechar arquivo</h4>
-<div class="outline-text-4" id="text-orgf0f7ffc">
+<div id="outline-container-org8cc1ba8" class="outline-4">
+<h4 id="org8cc1ba8">Fechar arquivo</h4>
+<div class="outline-text-4" id="text-org8cc1ba8">
 <p>
 Este método fecha o arquivo binário, desde que já esteja aberto.
 </p>
@@ -1936,9 +1824,9 @@ feitas durante o fechamento do mesmo.
 </div>
 </div>
 
-<div id="outline-container-org7a4c57c" class="outline-4">
-<h4 id="org7a4c57c">Escrever vetor de bits no arquivo</h4>
-<div class="outline-text-4" id="text-org7a4c57c">
+<div id="outline-container-orga6d5e7c" class="outline-4">
+<h4 id="orga6d5e7c">Escrever vetor de bits no arquivo</h4>
+<div class="outline-text-4" id="text-orga6d5e7c">
 <p>
 Este método toma um <i>vetor</i> de bits (representado como um <i>vetor</i> de
 valores booleanos, da mesma forma como são armazenados no <i>mapa de
@@ -1970,9 +1858,9 @@ momento do fechamento deste.
 </div>
 </div>
 
-<div id="outline-container-orgfb32f27" class="outline-4">
-<h4 id="orgfb32f27">Escrever cabeçalho informado no arquivo</h4>
-<div class="outline-text-4" id="text-orgfb32f27">
+<div id="outline-container-org3ff4ca1" class="outline-4">
+<h4 id="org3ff4ca1">Escrever cabeçalho informado no arquivo</h4>
+<div class="outline-text-4" id="text-org3ff4ca1">
 <p>
 Este método toma uma referência a uma estrutura do <i>cabeçalho</i>, e então
 escreve imediatamente esta estrutura no arquivo binário, caso este
@@ -2005,9 +1893,9 @@ esteja aberto.
 </div>
 </div>
 
-<div id="outline-container-orgaec1d94" class="outline-4">
-<h4 id="orgaec1d94">Bits sobrando</h4>
-<div class="outline-text-4" id="text-orgaec1d94">
+<div id="outline-container-org784bed6" class="outline-4">
+<h4 id="org784bed6">Bits sobrando</h4>
+<div class="outline-text-4" id="text-org784bed6">
 <p>
 Este método informa a quantidade de bits sobrando para escrita no
 <i>buffer</i>, após a última inserção de bits realizada.
@@ -2025,9 +1913,9 @@ Este método informa a quantidade de bits sobrando para escrita no
 </div>
 </div>
 
-<div id="outline-container-orgb2e0afa" class="outline-3">
-<h3 id="orgb2e0afa">Leitor do arquivo</h3>
-<div class="outline-text-3" id="text-orgb2e0afa">
+<div id="outline-container-orgfcfe40a" class="outline-3">
+<h3 id="orgfcfe40a">Leitor do arquivo</h3>
+<div class="outline-text-3" id="text-orgfcfe40a">
 <p>
 A estrutura a seguir também é uma <i>classe</i>, desta vez orientada à
 leitura de um arquivo binário bit-a-bit. Aqui também utilizamos a
@@ -2073,9 +1961,9 @@ inclui também a própria reescrita do arquivo-texto.
 </div>
 </div>
 
-<div id="outline-container-org64e9ef8" class="outline-4">
-<h4 id="org64e9ef8">Construtor/Destrutor</h4>
-<div class="outline-text-4" id="text-org64e9ef8">
+<div id="outline-container-org8493499" class="outline-4">
+<h4 id="org8493499">Construtor/Destrutor</h4>
+<div class="outline-text-4" id="text-org8493499">
 <p>
 O construtor da classe inicializa com zeros o <i>buffer</i>, a quantidade de
 bits não-lidos no buffer, e a quantidade de bits não-utilizados ao
@@ -2106,9 +1994,9 @@ O destrutor da classe fecha o arquivo.
 </div>
 </div>
 
-<div id="outline-container-org76cad05" class="outline-4">
-<h4 id="org76cad05">Macro para leitura de variável de um stream binário</h4>
-<div class="outline-text-4" id="text-org76cad05">
+<div id="outline-container-org8281a02" class="outline-4">
+<h4 id="org8281a02">Macro para leitura de variável de um stream binário</h4>
+<div class="outline-text-4" id="text-org8281a02">
 <p>
 O <i>macro</i> a seguir acelera a leitura de um certo valor em um <i>stream</i> de
 arquivo binário, reduzindo a verbosidade do código.
@@ -2122,9 +2010,9 @@ arquivo binário, reduzindo a verbosidade do código.
 </div>
 </div>
 
-<div id="outline-container-org00974b3" class="outline-4">
-<h4 id="org00974b3">Leitura de novo byte</h4>
-<div class="outline-text-4" id="text-org00974b3">
+<div id="outline-container-orgd2e7397" class="outline-4">
+<h4 id="orgd2e7397">Leitura de novo byte</h4>
+<div class="outline-text-4" id="text-orgd2e7397">
 <p>
 Quando todos os bits do <i>buffer</i> foram lidos, este método carrega um
 novo byte vindo do arquivo, e define a quantidade de bits que podem
@@ -2155,9 +2043,9 @@ que será utilizado a seguir.
 </div>
 </div>
 
-<div id="outline-container-org6620977" class="outline-4">
-<h4 id="org6620977">Abrir arquivo</h4>
-<div class="outline-text-4" id="text-org6620977">
+<div id="outline-container-orgb6c0e8c" class="outline-4">
+<h4 id="orgb6c0e8c">Abrir arquivo</h4>
+<div class="outline-text-4" id="text-orgb6c0e8c">
 <p>
 Este método abre o arquivo informado para entrada, especificando a
 leitura de um arquivo binário.
@@ -2174,9 +2062,9 @@ leitura de um arquivo binário.
 </div>
 </div>
 
-<div id="outline-container-org489de88" class="outline-4">
-<h4 id="org489de88">Predicado para informar status do arquivo</h4>
-<div class="outline-text-4" id="text-org489de88">
+<div id="outline-container-orga1793aa" class="outline-4">
+<h4 id="orga1793aa">Predicado para informar status do arquivo</h4>
+<div class="outline-text-4" id="text-orga1793aa">
 <p>
 Este método informa o <i>status</i> de abertura do arquivo.
 </p>
@@ -2192,9 +2080,9 @@ Este método informa o <i>status</i> de abertura do arquivo.
 </div>
 </div>
 
-<div id="outline-container-org7d2a0d3" class="outline-4">
-<h4 id="org7d2a0d3">Leitura de cabeçalho</h4>
-<div class="outline-text-4" id="text-org7d2a0d3">
+<div id="outline-container-org88e3146" class="outline-4">
+<h4 id="org88e3146">Leitura de cabeçalho</h4>
+<div class="outline-text-4" id="text-org88e3146">
 <p>
 O método a seguir lê um cabeçalho a partir do arquivo atualmente
 aberto no objeto atual. Adicionalmente, o número de bits
@@ -2243,9 +2131,9 @@ de bits.
 </div>
 </div>
 
-<div id="outline-container-orgffe6ed0" class="outline-4">
-<h4 id="orgffe6ed0">Geração de mapa de caracteres</h4>
-<div class="outline-text-4" id="text-orgffe6ed0">
+<div id="outline-container-orga03be91" class="outline-4">
+<h4 id="orga03be91">Geração de mapa de caracteres</h4>
+<div class="outline-text-4" id="text-orga03be91">
 <p>
 A partir de um cabeçalho carregado, este método é capaz de gerar um
 <i>mapa de caracteres</i> (mapa reverso de bits). Este mapa gerado será
@@ -2283,9 +2171,9 @@ arquivo-texto.
 </div>
 </div>
 
-<div id="outline-container-org91613d2" class="outline-4">
-<h4 id="org91613d2">Tradução de arquivo</h4>
-<div class="outline-text-4" id="text-org91613d2">
+<div id="outline-container-orga4278f1" class="outline-4">
+<h4 id="orga4278f1">Tradução de arquivo</h4>
+<div class="outline-text-4" id="text-orga4278f1">
 <p>
 O método a seguir traduz o arquivo binário atualmente aberto no objeto
 para um arquivo-texto, localizado no parâmetro informado. Este método
@@ -2357,9 +2245,9 @@ máxima de bits que serão lidos do último byte do arquivo.
 </div>
 </div>
 
-<div id="outline-container-orgb9afef6" class="outline-4">
-<h4 id="orgb9afef6">Fechamento de arquivo</h4>
-<div class="outline-text-4" id="text-orgb9afef6">
+<div id="outline-container-org2a3bc8e" class="outline-4">
+<h4 id="org2a3bc8e">Fechamento de arquivo</h4>
+<div class="outline-text-4" id="text-org2a3bc8e">
 <p>
 Este método fecha o arquivo de entrada.
 </p>
@@ -2379,9 +2267,9 @@ Este método fecha o arquivo de entrada.
 </div>
 </div>
 
-<div id="outline-container-org346eb03" class="outline-2">
-<h2 id="org346eb03">Ponto de entrada</h2>
-<div class="outline-text-2" id="text-org346eb03">
+<div id="outline-container-org1a47708" class="outline-2">
+<h2 id="org1a47708">Ponto de entrada</h2>
+<div class="outline-text-2" id="text-org1a47708">
 <p>
 As construções a seguir determinam o <i>ponto de entrada</i> do programa,
 isto é, a seção do mesmo por onde o programa começa a ser executado,
@@ -2389,9 +2277,9 @@ bem como elementos importantes para a interação com o usuário.
 </p>
 </div>
 
-<div id="outline-container-org1798333" class="outline-3">
-<h3 id="org1798333">Variáveis globais</h3>
-<div class="outline-text-3" id="text-org1798333">
+<div id="outline-container-org2a73a03" class="outline-3">
+<h3 id="org2a73a03">Variáveis globais</h3>
+<div class="outline-text-3" id="text-org2a73a03">
 <p>
 As variáveis a seguir determinam valores relacionados às entradas do
 programa via linha de comando. O programa deve ser configurado através
@@ -2415,9 +2303,9 @@ de argumentos do console, que modificarão estes valores globais.
 </div>
 </div>
 
-<div id="outline-container-org773b1e1" class="outline-3">
-<h3 id="org773b1e1">Texto de cabeçalho</h3>
-<div class="outline-text-3" id="text-org773b1e1">
+<div id="outline-container-org4d23fb4" class="outline-3">
+<h3 id="org4d23fb4">Texto de cabeçalho</h3>
+<div class="outline-text-3" id="text-org4d23fb4">
 <p>
 A função a seguir mostra um cabeçalho de informações do programa, que
 será impresso mediante pedido do usuário ou conveniência.
@@ -2438,9 +2326,9 @@ será impresso mediante pedido do usuário ou conveniência.
 </div>
 </div>
 
-<div id="outline-container-org80d7b7d" class="outline-3">
-<h3 id="org80d7b7d">Texto de ajuda</h3>
-<div class="outline-text-3" id="text-org80d7b7d">
+<div id="outline-container-org468785f" class="outline-3">
+<h3 id="org468785f">Texto de ajuda</h3>
+<div class="outline-text-3" id="text-org468785f">
 <p>
 Esta função mostra o texto de ajuda da aplicação, exibindo opções que
 podem ser repassadas via argumentos da linha de comando. Veja que
@@ -2498,9 +2386,9 @@ com suporte às mesmas.
 </div>
 </div>
 
-<div id="outline-container-org84cacb8" class="outline-3">
-<h3 id="org84cacb8">Processo de compressão</h3>
-<div class="outline-text-3" id="text-org84cacb8">
+<div id="outline-container-orgf5d85ff" class="outline-3">
+<h3 id="orgf5d85ff">Processo de compressão</h3>
+<div class="outline-text-3" id="text-orgf5d85ff">
 <p>
 A função a seguir realiza a operação de compressão de um arquivo-texto
 passo-a-passo, utilizando as estruturas programadas anteriormente.
@@ -2630,9 +2518,9 @@ passo-a-passo, utilizando as estruturas programadas anteriormente.
 </div>
 </div>
 
-<div id="outline-container-orgfb2315c" class="outline-3">
-<h3 id="orgfb2315c">Processo de extração</h3>
-<div class="outline-text-3" id="text-orgfb2315c">
+<div id="outline-container-org60f2e59" class="outline-3">
+<h3 id="org60f2e59">Processo de extração</h3>
+<div class="outline-text-3" id="text-org60f2e59">
 <p>
 A função a seguir realiza a operação de extração de um arquivo binário
 passo-a-passo, utilizando as estruturas programadas anteriormente.
@@ -2707,9 +2595,9 @@ passo-a-passo, utilizando as estruturas programadas anteriormente.
 </div>
 </div>
 
-<div id="outline-container-orgcffec86" class="outline-3">
-<h3 id="orgcffec86">Resolução de argumentos do console</h3>
-<div class="outline-text-3" id="text-orgcffec86">
+<div id="outline-container-orga109d6f" class="outline-3">
+<h3 id="orga109d6f">Resolução de argumentos do console</h3>
+<div class="outline-text-3" id="text-orga109d6f">
 <p>
 Esta função toma os argumentos do console do programa e resolve-os,
 modificando as variáveis globais segundo necessário.
@@ -2775,9 +2663,9 @@ modificando as variáveis globais segundo necessário.
 </div>
 </div>
 
-<div id="outline-container-org24b056c" class="outline-3">
-<h3 id="org24b056c">Função principal</h3>
-<div class="outline-text-3" id="text-org24b056c">
+<div id="outline-container-org524d4aa" class="outline-3">
+<h3 id="org524d4aa">Função principal</h3>
+<div class="outline-text-3" id="text-org524d4aa">
 <p>
 Esta é a função principal (<code>main</code>) da aplicação. Ela é responsável por
 invocar a resolução de argumentos e invocar os processos de compressão
@@ -2813,14 +2701,14 @@ e extração.
 </div>
 </div>
 
-<div id="outline-container-org1a837a9" class="outline-2">
-<h2 id="org1a837a9">Apêndices</h2>
-<div class="outline-text-2" id="text-org1a837a9">
+<div id="outline-container-orgd7005b5" class="outline-2">
+<h2 id="orgd7005b5">Apêndices</h2>
+<div class="outline-text-2" id="text-orgd7005b5">
 </div>
 
-<div id="outline-container-org194a6ae" class="outline-3">
-<h3 id="org194a6ae">Teste tipográfico</h3>
-<div class="outline-text-3" id="text-org194a6ae">
+<div id="outline-container-org657931b" class="outline-3">
+<h3 id="org657931b">Teste tipográfico</h3>
+<div class="outline-text-3" id="text-org657931b">
 <p>
 Os arquivos a seguir são testes tipográficos simples, criados para
 testar os algoritmos em pequenas amostras.
@@ -2860,11 +2748,11 @@ p&#245;e a&#231;&#250;car no ch&#225; de t&#226;maras do jabuti feliz.
 </div>
 </div>
 
-<div id="outline-container-org26e6c23" class="outline-3">
-<h3 id="org26e6c23">Lorem ipsum simples</h3>
-<div class="outline-text-3" id="text-org26e6c23">
+<div id="outline-container-org60eeb11" class="outline-3">
+<h3 id="org60eeb11">Lorem ipsum simples</h3>
+<div class="outline-text-3" id="text-org60eeb11">
 <p>
-<a id="orgbf00b15"></a>
+<a id="orgda4a54e"></a>
 </p>
 
 <p>
@@ -2888,11 +2776,11 @@ ac.
 </div>
 </div>
 
-<div id="outline-container-org9206c2d" class="outline-3">
-<h3 id="org9206c2d">Lorem ipsum complexo</h3>
-<div class="outline-text-3" id="text-org9206c2d">
+<div id="outline-container-orgcf7a2bd" class="outline-3">
+<h3 id="orgcf7a2bd">Lorem ipsum complexo</h3>
+<div class="outline-text-3" id="text-orgcf7a2bd">
 <p>
-<a id="org4c10649"></a>
+<a id="org00a156e"></a>
 </p>
 
 <p>
@@ -2956,9 +2844,9 @@ et ipsum velit.
 </div>
 </div>
 
-<div id="outline-container-org453d8dc" class="outline-3">
-<h3 id="org453d8dc">Makefile</h3>
-<div class="outline-text-3" id="text-org453d8dc">
+<div id="outline-container-org8459775" class="outline-3">
+<h3 id="org8459775">Makefile</h3>
+<div class="outline-text-3" id="text-org8459775">
 <p>
 O código a seguir constitui um arquivo <i>Makefile</i> para a compilação do
 arquivo em questão.
@@ -3016,9 +2904,9 @@ endif
 </div>
 </div>
 
-<div id="outline-container-org05eb7e1" class="outline-3">
-<h3 id="org05eb7e1">Sobre o licenciamento</h3>
-<div class="outline-text-3" id="text-org05eb7e1">
+<div id="outline-container-org9238c40" class="outline-3">
+<h3 id="org9238c40">Sobre o licenciamento</h3>
+<div class="outline-text-3" id="text-org9238c40">
 <p>
 Todo o código deste projeto é licenciado sob a licença MIT. Isto
 significa que qualquer pessoa pode reutilizar este programa para
@@ -3030,9 +2918,9 @@ do mesmo.
 </div>
 </div>
 
-<div id="outline-container-orgb137e59" class="outline-3">
-<h3 id="orgb137e59">Licença MIT</h3>
-<div class="outline-text-3" id="text-orgb137e59">
+<div id="outline-container-org5d88f77" class="outline-3">
+<h3 id="org5d88f77">Licença MIT</h3>
+<div class="outline-text-3" id="text-org5d88f77">
 <p>
 O texto abaixo é uma cópia completa da licença do software deste
 artigo.
