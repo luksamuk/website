@@ -1,0 +1,1020 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mais Recursos de Majestic Lisp</title>
+<meta name="author" content="Lucas S. Vieira" />
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-22RF3F5XE0"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-22RF3F5XE0');
+</script>
+<link rel="stylesheet" type="text/css" href="../css/main.css" />
+<link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="../css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="../img/cat-i-mage.jpg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:image" content="../img/cat-i-mage.jpg">
+<meta name="theme-color" content="#14171e">
+</head>
+<body>
+<div id="preamble" class="status">
+<nav><h1><a href="../">The Alchemist's Hideout</a></h1></nav><h1 class="title">Mais Recursos de Majestic Lisp</h1><p><i>Escrito em Set 30, 2020 por Lucas S. Vieira<br/><a href="mailto:lucasvieira@protonmail.com">lucasvieira@protonmail.com</a></i></p>
+</div>
+<div id="content" class="content">
+
+<div id="org5ed602d" class="figure">
+<p><img src="img/you-have-lisp.png" alt="you-have-lisp.png" />
+</p>
+<p><span class="figure-number">Figura 1: </span>Fonte: <a href="https://toggl.com/track/programming-princess/">Toggl.com</a></p>
+</div>
+
+<p>
+Minhas  aulas voltaram.  E  com  isso, alguns  dos  meus planos  (como
+acelerar  minhas  leituras  e  meus  estudos  independentes)  acabaram
+ficando  em segundo  plano. Infelizmente,  existem momentos  em que  a
+faculdade  pode  ser a  primeira  a  nos  prejudicar nos  estudos  que
+realmente sejam interessantes.
+</p>
+
+<p>
+Lamentações  irrisórias  à parte,  pretendo  dar  continuidade ao  que
+discuti  <a href="./apresentando-majestic-lisp.html">no  meu  último  post</a>,  em  comemoração  à  versão  <code>0.2.0</code>  da
+linguagem que estou projetando: Majestic  Lisp. Aqui, vou tentar falar
+de forma  leve (ou talvez  não tanto&#x2026;)  de alguns recursos  novos da
+mesma.
+</p>
+
+<p>
+Lembrando que  o desenvolvimento  de Majestic  Lisp opera  sobre cinco
+preceitos  básicos que  já discuti  anteriormente também,  e que  aqui
+resumo com muita brevidade:
+</p>
+
+<ol class="org-ol">
+<li>Performance não é um objetivo central, ainda que seja bem-vinda;</li>
+<li>A implementação almeja ser didática;</li>
+<li>A  linguagem não surpreende veteranos  de Lisp e não  tem novidades
+demais;</li>
+<li>A  obra (livro-texto  + linguagem)  deve mostrar  a criação  de uma
+linguagem e de um interpretador como sendo atividades <i>tangíveis</i>;</li>
+<li>A linguagem poderá ser  usada algebricamente, inclusive com escrita
+à mão.</li>
+</ol>
+
+<p>
+Lembro, também, que aqui usarei uma  notação que simula um <a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop">REPL</a>. Dessa
+forma,  ficará  simples acompanhar  o  que  está sendo  digitado  pelo
+usuário e o que o mesmo receberá na tela como resposta. Um exemplo:
+</p>
+
+<pre class="example" id="org8bcd470">
+&gt; entrada do usuário
+resposta do interpretador
+
+&gt; entrada do usuário
+  com múltiplas linhas
+resposta do interpretador
+</pre>
+
+<div id="outline-container-orgfe692ac" class="outline-2">
+<h2 id="orgfe692ac">Condicionais</h2>
+<div class="outline-text-2" id="text-orgfe692ac">
+<p>
+Majestic Lisp segue, em geral, algumas orientações sintáticas providas
+por Common  Lisp, Scheme e Clojure,  no que tange a  sintaxe. Por esse
+motivo,  suas  condicionais  &#x2013;   estruturas  de  controle  de  fluxo,
+presentes na maioria das linguagens &#x2013; não são nenhuma surpresa.
+</p>
+
+<p>
+O  primeiro  tipo  de  condicional   é  uma  forma  especial,  chamada
+<code>if</code><sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>.  Essa  forma é escrita  como se  fosse uma quádrupla,  com a
+seguinte sintaxe geral:
+</p>
+
+<pre class="example" id="orged06b26">
+(if &lt;condição&gt; &lt;consequência&gt; &lt;alternativa&gt;)
+</pre>
+
+<p>
+Assim, podemos por exemplo testar pela nulidade de um elemento e fazer
+algo diferente quando esse elemento é ou não é nulo:
+</p>
+
+<pre class="example" id="org18e47ab">
+&gt; (defn with-one (x)
+    (if (nilp x)
+        (cons 0 1)
+        (cons x 1)))
+with-one
+
+&gt; (with-one nil)
+(0 . 1)
+
+&gt; (with-one 5)
+(5 . 1)
+</pre>
+
+<p>
+Outro  tipo  de condicional  é  a  forma  <code>cond</code>,  que também  pode  ser
+implementada com um <i>macro</i>  (veremos isso posteriormente).  Vejamos uma
+implementação (bastante redundante) da função <code>abs</code>, que retorna o valor
+absoluto de um número:
+</p>
+
+<pre class="example" id="org4ee1d33">
+&gt; (defn abs (x)
+    (cond ((= x 0) 0)
+          ((&gt; x 0) x)
+          (t (- x))))
+abs
+
+&gt; (abs 0)
+0
+
+&gt; (abs 5)
+5
+
+&gt; (abs -5)
+5
+</pre>
+
+<p>
+<code>cond</code> possui uma sintaxe  diferente, feita especialmente para situações
+onde apenas um predicado e uma alternativa não sejam suficientes.
+</p>
+
+<p>
+Aqui temos uma condição com três  cláusulas: quando <code>x</code> é igual a zero,
+quando <code>x</code> é maior que zero, e quando <code>x</code> é menor que zero.
+</p>
+
+<p>
+Na primeira situação &#x2013; definida pelo <i>predicado</i> <code>(= x 0)</code> &#x2013;, retornamos
+o valor <code>0</code>.
+</p>
+
+<p>
+Na segunda situação &#x2013; definida pelo  <i>predicado</i> <code>(&gt; x 0)</code> &#x2013;, retornamos
+integralmente o valor de <code>x</code>.
+</p>
+
+<p>
+A terceira  situação representa o  único caso alternativo  possível: <code>x</code>
+ser menor que zero. Por isso,  podemos simplesmente cortar um atalho e
+garantir que a consequência para essa situação sempre ocorra, caso ela
+seja executada: assim, seu <i>predicado</i>  será <code>t</code>, o símbolo principal para
+a ideia de <i>verdade</i>. Em <code>cond</code>, <code>t</code>  funcionará de forma similar ao <code>else</code> de
+outras linguagens de programação.
+</p>
+
+<p>
+A título de curiosidade, eis uma forma melhor de programar <code>abs</code>:
+</p>
+
+<pre class="example" id="org736fcb1">
+&gt; (defn abs (x)
+    (if (&lt; x 0)
+        (- x)
+        x))
+abs
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org232b86c" class="outline-2">
+<h2 id="org232b86c">Quasiquoting</h2>
+<div class="outline-text-2" id="text-org232b86c">
+<p>
+Anteriormente, comentamos a ideia de <i>quoting</i>, existente na maioria dos
+Lisps.  No  caso especial  de  uma  lista  que estiver  <i>quotada</i>,  isso
+significará que essa  lista será inteiramente tratada  como <i>dados</i> pelo
+interpretador, e não  será analisada para detecção  de forma especial,
+macro, função, ou nada parecido.
+</p>
+
+<pre class="example" id="orgcd09579">
+&gt; (+ 1 2)
+3
+
+&gt; '(+ 1 2)
+(+ 1 2)
+</pre>
+
+<p>
+Todavia, há uma  forma muito vantajosa de  construir dados diretamente
+no programa: o <i>quasiquoting</i>. Esse recurso é especialmente interessante
+quando estivermos declarando <i>macros</i>.
+</p>
+
+<p>
+Uma lista <i>quasiquotada</i>  é precedida por um acento grave  (<code>`</code>), ao invés
+do apóstrofo que simboliza o <i>quote</i>  (<code>'</code>). Tudo nessa lista procederá da
+mesma  forma como  funcionaria  para uma  lista  <i>quotada</i>, <b>exceto</b>  para
+elementos marcados com caracteres especiais.
+</p>
+
+<p>
+Esses  caracteres especiais  determinam que  <i>apenas aqueles  elementos</i>
+sejam  <b>interpretados</b>, e  seus resultados  serão <b>substituídos</b>  na lista
+gerada.
+</p>
+
+<p>
+Há duas  formas de realizar  essa substituição: inserir  diretamente o
+valor de retorno &#x2013; usando o  símbolo de <i>unquote</i> (<code>,</code>) &#x2013;, ou enfileirar
+os elementos da lista retornada &#x2013; usando o símbolo <i>unquote list</i> (<code>,@</code>).
+</p>
+
+<p>
+Vejamos  a função  a seguir.  Ela toma  um símbolo  como parâmetro,  e
+retorna  uma  lista  com  os  símbolos  <code>good</code>,  <code>morning</code>,  e  o  símbolo
+fornecido.
+</p>
+
+<pre class="example" id="org0e1dd11">
+&gt; (defn hello (name-sym)
+    (list 'good 'morning name-sym))
+hello
+
+&gt; (hello 'lucas)
+(good morning lucas)
+</pre>
+
+<p>
+Podemos evitar o  uso da função <code>list</code>, e também  evitar <i>quotar</i> símbolos
+individuais, através do uso de <i>quasiquote</i> e <i>unquote</i>:
+</p>
+
+<pre class="example" id="org0c843d8">
+&gt; (defn hello (name-sym)
+    `(good morning ,name-sym))
+hello
+
+&gt; (hello 'lucas)
+(good morning lucas)
+</pre>
+
+<p>
+<i>"Mas e  se eu quisesse informar  o nome completo do  usuário?"</i>
+</p>
+
+<p>
+Bem, há várias formas de fazermos isso.  Uma delas é assumir que o que
+está sendo passado para nós, na função, seja uma <i>lista</i>; assim, podemos
+simplesmente  colocar ordenadamente  o conteúdo  dessa lista  em nosso
+<i>quasiquote</i>.
+</p>
+
+<pre class="example" id="orgc4186f0">
+&gt; (defn full-hello (names)
+    `(good morning ,@names and have a nice day))
+full-hello
+
+&gt; (full-hello '(lucas vieira))
+(good morning lucas vieira and have a nice day)
+</pre>
+
+<p>
+Podemos  combinar o  comportamento de  nossas duas  funções em  apenas
+uma.  Assim   teremos  alguma   versatilidade.  Para   isso,  usaremos
+condicionais:
+</p>
+
+<pre class="example" id="org5a12810">
+&gt; (defn hello (name)
+    (if (consp name)
+        `(good morning and have a nice day ,@name)
+        `(good morning ,name)))
+hello
+
+&gt; (hello 'lucas)
+(good morning lucas)
+
+&gt; (hello '(lucas vieira))
+(good morning and have a nice day lucas vieira)
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgab71cce" class="outline-2">
+<h2 id="orgab71cce">Macros</h2>
+<div class="outline-text-2" id="text-orgab71cce">
+<p>
+Podemos usufruir do <i>quasiquote</i> para  definir <i>macros</i>, que nada mais são
+que funções que <b>transformam o que foi escrito em outra coisa</b>, antes de
+esse resultado ser interpretado.
+</p>
+
+<p>
+Isso justifica, por exemplo, o fato de uma função como essa:
+</p>
+
+<pre class="example" id="orgdcc4aa0">
+&gt; (defn square (x)
+    (* x x))
+square
+</pre>
+
+<p>
+ser, na realidade, definida dessa forma, por baixo dos panos:
+</p>
+
+<pre class="example" id="orgbdead1d">
+&gt; (def square
+    (fn (x) (* x x)))
+square
+</pre>
+
+<p>
+O que ocorre é que <code>defn</code> em  si é um macro, responsável por transformar
+uma sintaxe como
+</p>
+
+<pre class="example" id="org3d11306">
+(defn &lt;nome&gt; &lt;lambda-list&gt; &lt;expressão&gt;)
+</pre>
+
+<p>
+em
+</p>
+
+<pre class="example" id="org7b82cdf">
+(def &lt;nome&gt; (fn &lt;lambda-list&gt; &lt;expressão&gt;))
+</pre>
+
+<p>
+Mas veja: esse é praticamente um uso direto de um <i>quasiquote</i>! Com base
+nisso, podemos  definir um  possível <i>macro</i> para  <code>defn</code>, usando  a forma
+<code>defmac</code>:
+</p>
+
+<pre class="example" id="org8e16342">
+&gt; (defmac defn (name lambda-list expr)
+    `(def ,name (fn ,lambda-list ,expr)))
+defn
+</pre>
+
+<p>
+De fato, até mesmo a forma  <code>defmac</code> é, na realidade, um <i>macro</i>. Majestic
+Lisp define <code>defmac</code> da seguinte forma:
+</p>
+
+<pre class="example" id="orgf17ad63">
+&gt; (def defmac
+    (mac (name lambda-list expr)
+      `(def ,name (mac ,lambda-list ,expr))))
+defmac
+</pre>
+
+<p>
+A forma  especial <code>mac</code> cria um  objeto de <i>macro</i> no  runtime de Majestic
+Lisp, que não é  muito diferente de uma função &#x2013;  de fato, <i>macros</i> são
+um tipo  especial de função. A  diferença é que um  <i>macro</i> não poderia,
+por exemplo,  ser aplicado diretamente  a parâmetros através  da forma
+<code>apply</code>, como se fosse uma função propriamente dita.
+</p>
+
+<p>
+Se você precisa  verificar como um <i>macro</i> se comporta  através do REPL,
+poderá usar funções como  <code>macroexpand</code> e <code>macroexpand-1</code>, como demonstrei
+no último post.
+</p>
+
+<pre class="example" id="org030567d">
+&gt; (macroexpand-1 '(defmac defn (name lambda-list expr)
+                   `(def ,name (fn ,lambda-list ,expr))))
+(def defn
+  (mac (name lambda-list body)
+    `(def ,name (fn ,lambda-list ,expr))))
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org3ffaf1f" class="outline-2">
+<h2 id="org3ffaf1f">Desestruturação em funções</h2>
+<div class="outline-text-2" id="text-org3ffaf1f">
+<p>
+Majestic  Lisp possui  uma  pequena diferença  na  declaração de  suas
+funções, o que pode ser  também algo extremamente conveniente do ponto
+de vista de linguagem. Vejamos a função a seguir:
+</p>
+
+<pre class="example" id="org5a98c33">
+&gt; (defn show-first (lst)
+    (if (nilp lst)
+        '(no elements)
+        `(the first element is ,(car lst))))
+show-first
+
+&gt; (show-first '(1 2 3))
+(the first element is 1)
+
+&gt; (show-first nil)
+(no elements)
+</pre>
+
+<p>
+A função <code>show-first</code> recebe uma  lista como parâmetro e discrimina qual
+é o primeiro elemento dessa lista.  Caso seja nula, também retorna uma
+lista de símbolos afirmando esse fato.
+</p>
+
+<p>
+Existe  uma inconveniência  nessa função,  relacionada ao  uso do  que
+normalmente chamamos de <i>sintaxe concreta</i>: ela envolve o uso de funções
+como <code>car</code>, <code>cdr</code>, <code>cadr</code>, <code>cddr</code>&#x2026; para desestruturar listas em seu corpo.
+</p>
+
+<p>
+Majestic Lisp  fornece nomes  alternativos para essas  funções (<code>first</code>,
+<code>rest</code>,  <code>second</code>, <code>rest-of-second</code>&#x2026;)  mas  à medida  que  o programa  for
+crescendo, usar uma sintaxe como essa pode virar poluição visual muito
+rapidamente.
+</p>
+
+<p>
+Por  isso,  listas  de  parâmetros  de funções  têm  a  capacidade  de
+<i>desestruturar</i> listas que sejam recebidas  por parâmetro. Isso pode ser
+feito através da  declaração de sublistas (pontuadas ou  não) na lista
+de parâmetros da função.
+</p>
+
+<p>
+A <i>desestruturação</i> de uma <i>lista adequada</i><sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup> nunca falha, uma vez que
+deriva a sintaxe concreta anteriormente  descrita, por baixo dos panos
+(por exemplo,  <code>car</code> e <code>cdr</code> de  uma lista vazia continua  sendo uma lista
+vazia).  Assim,  <i>desestruturar</i> não envolve checagem  por nulidade, por
+exemplo, mas <i>falhará</i> se o argumento em questão for um átomo, e não uma
+lista.
+</p>
+
+<p>
+Vamos  reescrever <code>show-first</code>,  desestruturando  a  lista recebida  por
+parâmetro:
+</p>
+
+<pre class="example" id="orgecbee45">
+&gt; (defn show-first ((x . xs))
+    (if (nilp x)
+        '(no elements)
+        `(the first element is ,x)))
+show-first
+</pre>
+
+<p>
+Na definição acima, não existe mais a variável <code>lst</code> no escopo da função
+<code>show-first</code>. Ao  invés disso,  temos a variável  <code>x</code>, ligada  ao primeiro
+elemento  da lista  (<i>car</i>);  os  demais elementos  da  lista (<i>cdr</i>)  são
+ligados a uma outra lista, que aqui chamamos de <code>xs</code>.
+</p>
+
+<p>
+Essa ideia  de desestruturação é  tão útil  que é também  utilizada na
+definição do macro <code>let</code>, que veremos a seguir.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf4b4cad" class="outline-2">
+<h2 id="orgf4b4cad">Variáveis locais</h2>
+<div class="outline-text-2" id="text-orgf4b4cad">
+<p>
+Há situações onde declarar uma  variável global, através da forma <code>def</code>,
+não seja algo tão pertinente.  Nessas situações, podemos criar <i>escopos</i>
+onde certas variáveis irão assumir os valores que demos a elas.
+</p>
+
+<p>
+Para criarmos esses <i>escopos</i>, basta usarmos o macro <code>let</code><sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>:
+</p>
+
+<pre class="example" id="org671385c">
+&gt; (let ((x 1)
+        (y 2))
+    (+ x y))
+3
+</pre>
+
+<p>
+O macro  <code>let</code> possui uma  sintaxe similar à  forma como é  definido nas
+linguagens Common Lisp e Scheme:
+</p>
+
+<pre class="example" id="orgf510abb">
+(let &lt;lista-de-definições&gt; &lt;expressão&gt;)
+</pre>
+
+<p>
+Onde a <code>&lt;lista-de-definições&gt;</code> possui a forma
+</p>
+
+<pre class="example" id="org4e1c3cd">
+(&lt;variável1&gt; &lt;valor1&gt;) (&lt;variável2&gt; &lt;valor2&gt;) ... (&lt;variávelN&gt; &lt;valorN&gt;)
+</pre>
+
+<p>
+<code>let</code> permite  a declaração  de qualquer número  de variáveis,  sendo os
+valores atribulados a um contexto que, após a execução de <code>&lt;expressão&gt;</code>,
+não será mais diretamente acessível&#x2026; com algumas ressalvas.
+</p>
+
+<p>
+Adicionalmente, <code>let</code> também  permite "sobrescrever temporariamente" uma
+ou  mais  variáveis  globais,  redefinindo-as   de  tal  forma  que  a
+redefinição  deixe de  valer após  a execução  do <code>let</code>.  Na literatura,
+damos a isso o nome de <i>sombreamento</i> (<i>shadowing</i>).
+</p>
+
+<pre class="example" id="org6b595bd">
+&gt; (def x 5)
+x
+
+&gt; x
+5
+
+&gt; (let ((x 6))
+    x)
+6
+
+&gt; x
+5
+</pre>
+</div>
+
+<div id="outline-container-orgc34564b" class="outline-3">
+<h3 id="orgc34564b">Implementação do macro <code>let</code></h3>
+<div class="outline-text-3" id="text-orgc34564b">
+<p>
+O macro <code>let</code> é implementado de uma forma relativamente elegante.
+</p>
+
+<p>
+A princípio, a  única estrutura de Majestic Lisp que  poderia criar um
+escopo temporário para  variáveis é a <i>função</i>.  <code>let</code>  se aproveita disso
+para  declarar e  aplicar  uma  função por  baixo  dos panos,  criando
+realmente um escopo.
+</p>
+
+<p>
+Eis a implementação de <code>let</code> em código:
+</p>
+
+<pre class="example" id="orgaabee05">
+(defn sep-pairs (pairs syms vals)
+  (if (nilp pairs)
+      (list syms vals)
+      (sep-pairs (cdr pairs)
+                 (cons (caar pairs) syms)
+                 (cons (car (cdar pairs))
+                       vals))))
+
+(defmac let (args body)
+  ((fn ((syms vals))
+     `((fn ,syms ,body)
+       ,@vals))
+   (sep-pairs args nil nil)))
+</pre>
+
+<p>
+A  função  <code>sep-pairs</code>  usa  sintaxe  concreta  por  pura  conveniência,
+portanto não convém explicar a  fundo. Basicamente, ela toma uma lista
+na forma
+</p>
+
+<pre class="example" id="org0f481c2">
+((x1 v1) (x2 v2) ... (xn vn))
+</pre>
+
+<p>
+e transforma-a em uma lista como
+</p>
+
+<pre class="example" id="orge836d91">
+((xn .. x2 x1) (vn ... v2 v1))
+</pre>
+
+<p>
+O  macro   <code>let</code>  utiliza-se   dessa  lista  retornada   por  <code>sep-pairs</code>,
+<b>desestrutura-a</b>, e  então cria uma  aplicação de função similar  a esse
+pseudocódigo:
+</p>
+
+<pre class="example" id="org4f00866">
+((fn (xn .. x2 x1) &lt;corpo-do-let&gt;)
+ vn ... v2 v1)
+</pre>
+
+<p>
+Em outras palavras, o <code>let</code> na verdade é uma aplicação de função anônima
+onde  os nomes  das  variáveis são  os parâmetros,  e  os valores  das
+variáveis  são os  valores aos  quais  a função  é aplicada.  O que  é
+colocado  para ser  executado no  <code>let</code> nada  mais é  que o  <i>corpo</i> dessa
+função anônima, declarada por baixo dos panos.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7d0cade" class="outline-2">
+<h2 id="org7d0cade">Captura de escopo</h2>
+<div class="outline-text-2" id="text-org7d0cade">
+<p>
+Como  <code>let</code> usa  uma função  para criar  um escopo,  isso significa  que
+aquela função,  tal como qualquer  outra função declarada  em Majestic
+Lisp, possui um <i>contexto léxico</i>,  onde as variáveis pertencentes a seu
+escopo estão declaradas.
+</p>
+
+<p>
+Se uma nova função for  declarada enquanto esse contexto existir, esse
+contexto  será  <b>capturado</b>. Isso  significa  que  certos valores  podem
+<i>perdurar</i> fora de funções ou do macro <code>let</code>, desde que sejam reutilizados
+em uma função ali declarada.
+</p>
+
+<p>
+Vejamos uma implementação (mais redundante) para a função <code>1+</code>, que soma
+<code>1</code> a um número passado por parâmetro:
+</p>
+
+<pre class="example" id="orga49bf74">
+&gt; (def 1+
+    (let ((x 1))
+      (fn (y) (+ x y))))
+1+
+
+&gt; (1+ 5)
+6
+</pre>
+
+<p>
+A função <code>1+</code> é  exatamente a expressão <code>(fn (y) (+ x y))</code>. Mas veja que,
+se apenas essa  expressão fosse atribuída a <code>1+</code> (através  do uso direto
+de <code>def</code> ou <code>defn</code>), a função não  saberia o que fazer quando aplicada: ao
+procurar a variável <code>x</code> para somar  ao número <code>y</code>, ela precisaria recorrer
+ao contexto global, onde <code>x</code> <b>não está definido</b>.
+</p>
+
+<p>
+Todavia,  o uso  do  <code>let</code>  muda essa  história.  Quando  a expressão  é
+declarada,  ela <b>sabe</b>  qual é  o  valor de  <code>x</code>, porque  <code>x</code> está  definido
+naquele  escopo.  Assim,  o objeto  criado pela  declaração de  função
+<b>captura</b>  aquele contexto  léxico  onde <code>x</code>  está inserido,  carregando-o
+consigo de forma "oculta".
+</p>
+
+<p>
+Assim, toda vez  que a função <code>1+</code> for aplicada,  ela ainda possuirá uma
+referência àquele  contexto léxico  onde <code>x</code> foi  definido. Por  isso, <code>x</code>
+sempre terá um valor conhecido para <code>1+</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org16b1e06" class="outline-2">
+<h2 id="org16b1e06">Aplicação parcial</h2>
+<div class="outline-text-2" id="text-org16b1e06">
+<p>
+O último tópico a ser abordado é a ideia de <i>aplicação parcial</i>, que não
+é uma ideia presente em  Lisps mais conhecidos<sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>, sendo talvez uma
+das  poucas "surpresas"  da linguagem,  para veteranos  em Lisp.
+</p>
+
+<p>
+Vejamos a função a seguir.
+</p>
+
+<pre class="example" id="orgdfa9a96">
+&gt; (defn sum (a b c)
+    (+ a b c))
+sum
+</pre>
+
+<p>
+Essa  função deve  receber exatamente  <i>três</i> argumentos  para que  seja
+executada, e  seu resultado  será a soma  desses três  argumentos, que
+assumimos serem numéricos.
+</p>
+
+<p>
+O  que normalmente  ocorreria  em outras  linguagens se  fornecêssemos
+apenas um ou  dois parâmetros? Bem, o que se  esperaria é que houvesse
+um  erro de  aplicação  de  função, tal  que  o  número de  parâmetros
+fornecidos e requeridos não seria o mesmo.
+</p>
+
+<p>
+Mas isso não ocorre em Majestic Lisp:
+</p>
+
+<pre class="example" id="org0011396">
+&gt; (sum 1)
+#&lt;function (fn (b c)) {...}&gt;
+
+&gt; (sum 1 2)
+#&lt;function (fn (c)) {...}&gt;
+</pre>
+
+<p>
+Majestic   Lisp  realiza   uma   <i>aplicação   parcial</i>  dos   parâmetros
+fornecidos. Na prática, isso significa que, se apenas um argumento for
+fornecido  a <code>sum</code>,  será retornada  uma nova  função igual  à anterior,
+exceto pelo fato de que ela espera pelos dois outros parâmetros.
+</p>
+
+<p>
+Algo parecido  também ocorre com  <code>sum</code> se fornecermos  dois argumentos:
+uma função será  retornada, e essa função retornada  ainda espera pelo
+terceiro parâmetro.
+</p>
+
+<p>
+Por baixo dos panos, a aplicação parcial faz algo parecido com a ideia
+de  captura  de contexto  &#x2013;  ela  toma  os argumentos  fornecidos,  e
+<i>estende  o  contexto  capturado   pela  função</i>,  usando  as  variáveis
+fornecidas e os valores a elas ligados.
+</p>
+
+<p>
+Isso pode ser particularmente  útil quando definimos funções derivadas
+de outras. Podemos brincar com a ideia, usando a própria função <code>sum</code>:
+</p>
+
+<pre class="example" id="org3fe7e1c">
+&gt; (def 3+ (sum 1 2))
+3+
+
+&gt; 3+
+#&lt;function (fn (c)) {...}&gt;
+
+&gt; (3+ 5)
+8
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org6b00e71" class="outline-2">
+<h2 id="org6b00e71">Conclusão</h2>
+<div class="outline-text-2" id="text-org6b00e71">
+<p>
+É  só isso  por  hoje. Imaginei  que  esse post  seria  um pouco  mais
+sucinto  mas, no  fim  das contas,  há bastante  teoria  por trás  dos
+conceitos de uma linguagem de  programação. Para completar, tudo o que
+mostrei aqui não é trivial, talvez com exceção das condicionais.
+</p>
+
+<p>
+O desenvolvimento  de Majestic Lisp  está prosseguindo bem,  apesar de
+ter agora pouco  tempo para lidar com a linguagem.  Por isso, estou me
+concentrando em usar um pouco do meu tempo livre ajeitando o texto que
+acompanha o código, dando efetivamente  o formato de livro ao programa
+instruído<sup><a id="fnr.5" class="footref" href="#fn.5" role="doc-backlink">5</a></sup>.
+</p>
+
+<p>
+No futuro pretendo  abordar mais conceitos da  linguagem, como funções
+de ordens superiores,  e até mesmo <i>macros</i> que facilitam  o processo de
+desestruturação  (e algumas  coincidências  felizes  das escolhas  que
+tenho feito para a linguagem, em outras partes dela).
+</p>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Notas de Rodap&eacute;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Estou  pensando seriamente em  adicionar formas de  Common Lisp
+como <code>when</code> e <code>unless</code>. O maior motivo  para isso é facilitar na escrita e
+na legibilidade.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Listas adequadas são listas  formadas por células <i>cons</i>, tal que
+o <i>cdr</i> da célula  <i>cons</i> seja um novo <i>cons</i>, ou o símbolo  <code>nil</code>; no caso de
+um <i>cdr</i> contendo  um <i>cons</i>, este deverá obedecer  recursivamente à mesma
+regra. Listas  terminadas com átomos que  não sejam o símbolo  <code>nil</code> são
+chamadas  de  <i>listas  pontuadas</i>,   por  envolverem  representação  com
+ponto. Para mais informações, veja o último post.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Tecnicamente,  o macro  <code>let</code>  também  pode ser  utilizado  para
+desestruturação, papel igualmente desempenhado pelo macro <code>destructure</code>,
+que não foi citado aqui. Mas esse é um recurso ainda experimental, que
+poderá ser revisto em outra ocasião.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Alguns diriam até mesmo que essa ideia não combina com Lisp. Eu
+discordo bastante, como você pode ver&#x2026;
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5" role="doc-backlink">5</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Ver  <i>literate  programming</i>,   de  Donald  Knuth.  <i>Programação
+instruída</i> é uma tradução livre minha, como explicado no post anterior.
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<h3><a href="../">De volta à página anterior</a></h3>
+</div>
+</body>
+</html>

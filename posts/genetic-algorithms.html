@@ -1,0 +1,879 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Learning Genetic Algorithms</title>
+<meta name="author" content="Lucas Vieira" />
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-22RF3F5XE0"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-22RF3F5XE0');
+</script>
+<link rel="stylesheet" type="text/css" href="../css/main.css" />
+<link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="../css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="../img/cat-i-mage.jpg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:image" content="../img/cat-i-mage.jpg">
+<meta name="theme-color" content="#14171e">
+</head>
+<body>
+<div id="preamble" class="status">
+<nav><h1><a href="../">The Alchemist's Hideout</a></h1></nav><h1 class="title">Learning Genetic Algorithms</h1><p><i>Written in Dec 27, 2018 by Lucas Vieira<br/><a href="mailto:lucasvieira@lisp.com.br">lucasvieira@lisp.com.br</a></i></p>
+</div>
+<div id="content" class="content">
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org5b505cf">Introduction</a>
+<ul>
+<li>
+<ul>
+<li><a href="#org94d86a3">ACHTUNG!</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgf5291f4">Initial population</a>
+<ul>
+<li><a href="#orga48ef8d">Proto-chromosomes</a>
+<ul>
+<li><a href="#orgce4adc2">Example: Checking zygote generation</a></li>
+</ul>
+</li>
+<li><a href="#orgf1d59ee">Generating initial chromosomes</a></li>
+</ul>
+</li>
+<li><a href="#org96360b6">Computing fitness</a>
+<ul>
+<li><a href="#orgb7c3e1a">Example: Checking generated population</a></li>
+</ul>
+</li>
+<li><a href="#org973b761">Selection</a>
+<ul>
+<li><a href="#org0f5183a">Example: Checking selected chromosomes</a></li>
+</ul>
+</li>
+<li><a href="#org1b4dadc">Crossover (Breeding)</a></li>
+<li><a href="#orgd40a42d">Mutation</a>
+<ul>
+<li><a href="#orgd04b119">Example: Testing the mutation algorithm</a></li>
+</ul>
+</li>
+<li><a href="#orga019e38">Crossover (Finalization)</a></li>
+<li><a href="#org1a67a09">Convergence</a></li>
+<li><a href="#orgec4750d">Debriefing and running the genetic algorithm</a></li>
+<li><a href="#orge8aab40">Conclusion</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5b505cf" class="outline-2">
+<h2 id="org5b505cf">Introduction</h2>
+<div class="outline-text-2" id="text-org5b505cf">
+<p>
+A teacher of mine tasked me with the challenge of building a genetic algorithm
+to solve diophantine equations. Before I jump into it, I will first attempt to
+build a simple genetic algorithm which just evolves in a very stupid manner. I
+am using a certain tutorial<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup> for that.
+</p>
+
+<p>
+The goal here is to have a minimal environment in which 32-bit numbers keep
+evolving, until they reach twenty <code>1</code>'s on their binary composition.
+</p>
+
+<p>
+This GA is built using Common Lisp, due to my distaste for Java. If you're
+allergic to parenthesis, you've been warned.
+</p>
+</div>
+
+<div id="outline-container-org94d86a3" class="outline-4">
+<h4 id="org94d86a3">ACHTUNG!</h4>
+<div class="outline-text-4" id="text-org94d86a3">
+<p>
+Since this post is the reproduction of following a tutorial and also my first
+attempt at producing a genetic algorithm, some or all of the things here might
+be inefficient or terribly wrong. I apologize in advance for the inconvenience;
+use this as didatic resource at your own risk.
+</p>
+
+<p>
+This code is distributed under the MIT License. Source code for the original
+file (<code>org-mode</code>; better viewed inside Emacs) <a href="https://raw.githubusercontent.com/luksamuk/study/master/research/ga/ga.org">can be seen here</a>, at my GitHub.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf5291f4" class="outline-2">
+<h2 id="orgf5291f4">Initial population</h2>
+<div class="outline-text-2" id="text-orgf5291f4">
+<p>
+Population is stored in a list. Unfortunately, this means that checking if a
+chromosome is in the list is <code>O(n)</code> speed at worst-case scenario (which is also a
+recurrent thing). I'll leave optimization heuristics for later, though.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defparameter</span> <span style="color: #7CF083;">*population*</span> nil<span style="color: #0D9C94;">)</span>
+<span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defparameter</span> <span style="color: #7CF083;">*fittest*</span> nil<span style="color: #0D9C94;">)</span>
+<span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defparameter</span> <span style="color: #7CF083;">*max-fitness*</span> <span style="color: #f5c791;">20</span><span style="color: #0D9C94;">)</span>
+<span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defparameter</span> <span style="color: #7CF083;">*rnd-state*</span> <span style="color: #47ba99;">(</span>make-random-state<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+Each individual on <code>*population*</code> is a different chromosome. The genes
+themselves will be the bits of each number. The two numbers of large fitness are
+stored in <code>*fittest*</code>. <code>*max-fitness*</code> tells us the least number of <code>1</code>'s we're
+expecting. And then, we have an initial <code>*rnd-state*</code> for randomization purposes.
+</p>
+</div>
+
+<div id="outline-container-orga48ef8d" class="outline-3">
+<h3 id="orga48ef8d">Proto-chromosomes</h3>
+<div class="outline-text-3" id="text-orga48ef8d">
+<p>
+Having a 32-bit number as chromosome also means that we need to look at the 16
+least significant bits at crossover phase, but the 16 most significant bits can
+be randomly generated. For that, we use the global random state which will
+provide our random numbers.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">make-proto</span> <span style="color: #47ba99;">()</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">let</span> <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span>chromosome <span style="color: #f5c791;">0</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">declare</span> <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span>unsigned-byte <span style="color: #f5c791;">32</span><span style="color: #35BF88;">)</span> chromosome<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">dotimes</span> <span style="color: #9d81ba;">(</span>i <span style="color: #f5c791;">16</span><span style="color: #9d81ba;">)</span>
+      <span style="color: #454459;">;; </span><span style="color: #454459;">Run d20 &lt; 5 to see if bit should be set</span>
+      <span style="color: #9d81ba;">(</span>setf chromosome <span style="color: #35BF88;">(</span>logior <span style="color: #687184;">(</span>ash chromosome <span style="color: #f5c791;">1</span><span style="color: #687184;">)</span>
+                               <span style="color: #687184;">(</span><span style="color: #9d81ba;">if</span> <span style="color: #d7af87;">(</span>&lt; <span style="color: #845A84;">(</span>random <span style="color: #f5c791;">20</span> *rnd-state*<span style="color: #845A84;">)</span> <span style="color: #f5c791;">5</span><span style="color: #d7af87;">)</span> <span style="color: #f5c791;">1</span> <span style="color: #f5c791;">0</span><span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span>ash chromosome <span style="color: #f5c791;">16</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+I'm calling here a chromosome in a not-ready state a <i>proto</i>, since it is still
+expecting a crossover phase. Each proto's significant genes have a chance of
+3/10 (or 6/20) to be a <code>1</code>.
+</p>
+
+<p>
+Printing any chromosome, be it a proto or not, is rather easy. We just instruct
+the <code>format</code> function to pad it with 32 positions, and fill the nonexistant
+leading positions with zeroes. We can even build a function for that:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">format-chromosome</span> <span style="color: #47ba99;">(</span>chromosome<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">declare</span> <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span>unsigned-byte <span style="color: #f5c791;">32</span><span style="color: #9d81ba;">)</span> chromosome<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>format nil <span style="color: #f5c791;">"~32,'0b"</span> chromosome<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+
+<span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">print-chromosome</span> <span style="color: #47ba99;">(</span>chromosome<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>princ <span style="color: #62D2DB;">(</span>format-chromosome chromosome<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>terpri<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgce4adc2" class="outline-4">
+<h4 id="orgce4adc2">Example: Checking zygote generation</h4>
+<div class="outline-text-4" id="text-orgce4adc2">
+<p>
+Here is an example of what happens when you print an immediately created
+proto. The first line is the actual value of the 32-bit integer, and the second
+line is the binary representation of such integer, when you call
+<code>print-chromosome</code> using its value.
+</p>
+
+<pre class="example">
+270663680
+00010000001000100000000000000000
+</pre>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgf1d59ee" class="outline-3">
+<h3 id="orgf1d59ee">Generating initial chromosomes</h3>
+<div class="outline-text-3" id="text-orgf1d59ee">
+<p>
+We generate our first ten chromosomes in a very simple way. We just generate
+them from zygotes and put them on the list. We also use a helper macro which
+will only push a new chromosome onto the list if it is not already there.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defparameter</span> <span style="color: #7CF083;">*distinction-threshold*</span>
+  <span style="color: #47ba99;">(</span>truncate <span style="color: #62D2DB;">(</span>* <span style="color: #9d81ba;">(</span>expt <span style="color: #f5c791;">2</span> <span style="color: #f5c791;">32</span><span style="color: #9d81ba;">)</span> <span style="color: #f5c791;">0.0001</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+
+<span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">recalculate-fittest</span> <span style="color: #47ba99;">(</span>chromosome fitness<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">cond</span> <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span>or <span style="color: #35BF88;">(</span>null *fittest*<span style="color: #35BF88;">)</span> <span style="color: #35BF88;">(</span>&lt; <span style="color: #687184;">(</span>length *fittest*<span style="color: #687184;">)</span> <span style="color: #f5c791;">2</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span>push chromosome *fittest*<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+        <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span>&gt; fitness <span style="color: #35BF88;">(</span>calc-fitness <span style="color: #687184;">(</span>car *fittest*<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span>setf *fittest* <span style="color: #35BF88;">(</span>list chromosome <span style="color: #687184;">(</span>car *fittest*<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+        <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span>&gt; fitness <span style="color: #35BF88;">(</span>calc-fitness <span style="color: #687184;">(</span>cadr *fittest*<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span>setf *fittest* <span style="color: #35BF88;">(</span>list <span style="color: #687184;">(</span>car *fittest*<span style="color: #687184;">)</span> chromosome<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+
+<span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defmacro</span> <span style="color: #0bc9cf;">with-distinct-chromosome</span> <span style="color: #47ba99;">(</span><span style="color: #62D2DB;">&amp;body</span> generator-thunk<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">let</span> <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span>chr-sym <span style="color: #35BF88;">(</span>gensym<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+        <span style="color: #9d81ba;">(</span>repets  <span style="color: #35BF88;">(</span>gensym<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+    `<span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">let</span> <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span>,chr-sym nil<span style="color: #35BF88;">)</span>
+           <span style="color: #35BF88;">(</span>,repets <span style="color: #f5c791;">0</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+       <span style="color: #9d81ba;">(</span><span style="color: #9d81ba;">loop</span> while <span style="color: #35BF88;">(</span>or <span style="color: #687184;">(</span>eq ,chr-sym nil<span style="color: #687184;">)</span>
+                       <span style="color: #687184;">(</span>member ,chr-sym *population*<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span>
+          do <span style="color: #35BF88;">(</span>setf ,chr-sym <span style="color: #687184;">(</span><span style="color: #9d81ba;">progn</span> ,@generator-thunk<span style="color: #687184;">)</span>
+                   ,repets  <span style="color: #687184;">(</span>1+ ,repets<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span>
+          never <span style="color: #35BF88;">(</span>&gt;= ,repets *distinction-threshold*<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+       <span style="color: #9d81ba;">(</span><span style="color: #9d81ba;">unless</span> <span style="color: #35BF88;">(</span>&gt;= ,repets *distinction-threshold*<span style="color: #35BF88;">)</span>
+         <span style="color: #35BF88;">(</span>push ,chr-sym *population*<span style="color: #35BF88;">)</span>
+         <span style="color: #35BF88;">(</span>recalculate-fittest ,chr-sym <span style="color: #687184;">(</span>calc-fitness ,chr-sym<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+
+</pre>
+</div>
+
+<p>
+The macro <code>with-distinct-chromosome</code> takes a generator thunk and performs it over
+and over again, until the generated chromosome is not a member of the population
+anymore. Since this behaviour may cause an infinite loop (or a seemingly
+infinite loop in case we get stuck for a while), we define a distinction
+threshold for this repetition.
+</p>
+
+<p>
+In case we end up stuck in what could be an infinite loop, our macro halts the
+chromosome generation, and gives up on adding the new chromosome to the
+population. Since this macro is so useful on making sure we are not testing
+again any chromosomes which we've tested on the near past, we also use it later,
+on the crossover phase.
+</p>
+
+<p>
+It is deduced that the chromosome generation is in an infinite loop if the
+repetition was performed for roughly a number of 0.01% of the distinct
+chromosomes we could generate (about 429496 numbers). We do not make
+distinctions between different numbers to count the amount of repetitions,
+though.
+</p>
+
+<p>
+The function <code>recalculate-fittest</code> compares the fitness of the newly-generated
+number. We always need to have at least two fittest chromosomes. For that, when
+we identify a chromosome which could be added to the list, we compare if its
+fitness is greater than one of the two most-fit chromosomes. If that is true,
+said chromosome will be replaced, and the newly generated chromosome will occupy
+its proper space. Fittest chromosomes are arranged in such a way that the
+fittest of the couple remains on top; which we'll discuss soon enough. This
+represents a phase called <b>selection</b>; more on it will be said later.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">make-chromosome</span> <span style="color: #47ba99;">()</span>
+  <span style="color: #47ba99;">(</span>logior <span style="color: #62D2DB;">(</span>make-proto<span style="color: #62D2DB;">)</span>
+          <span style="color: #62D2DB;">(</span>ash <span style="color: #f5c791;">1</span> <span style="color: #9d81ba;">(</span>random <span style="color: #f5c791;">16</span> *rnd-state*<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+
+<span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">initialize-population</span> <span style="color: #47ba99;">()</span>
+  <span style="color: #47ba99;">(</span>setf *population*       nil
+        *fittest*          nil<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">dotimes</span> <span style="color: #62D2DB;">(</span>i <span style="color: #f5c791;">10</span><span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">with-distinct-chromosome</span> <span style="color: #9d81ba;">(</span>make-chromosome<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+The <code>initialize</code> function makes good use of said macro, by generating ten distinct
+chromosomes: it takes a proto, then sets a random flag at one of the 16 least
+significant bits to 1, ensuring that we'll most likely have ten different
+bitmasks at the beginning.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org96360b6" class="outline-2">
+<h2 id="org96360b6">Computing fitness</h2>
+<div class="outline-text-2" id="text-org96360b6">
+<p>
+Our fitness is calculated by the amount of <code>1</code>'s in the binary representation of
+our number. The more the amount, the better.
+</p>
+
+<p>
+We define two functions: one is a predicate which, given the index of a bit,
+returns <code>t</code> if the bit is set to <code>1</code>. The other one loops through every possible bit
+and counts how many of them are <code>1</code>'s.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">bit-set-p</span> <span style="color: #47ba99;">(</span>bitmask bit-index<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">declare</span> <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span>unsigned-byte <span style="color: #f5c791;">32</span><span style="color: #9d81ba;">)</span> bitmask<span style="color: #62D2DB;">)</span>
+           <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span>unsigned-byte <span style="color: #f5c791;">8</span><span style="color: #9d81ba;">)</span> bit-index<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">if</span> <span style="color: #62D2DB;">(</span>&lt;= bit-index <span style="color: #f5c791;">31</span><span style="color: #62D2DB;">)</span>
+      <span style="color: #62D2DB;">(</span>not <span style="color: #9d81ba;">(</span>= <span style="color: #35BF88;">(</span>logand bitmask <span style="color: #687184;">(</span>ash <span style="color: #f5c791;">1</span> bit-index<span style="color: #687184;">)</span><span style="color: #35BF88;">)</span> <span style="color: #f5c791;">0</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+      nil<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+
+<span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">calc-fitness</span> <span style="color: #47ba99;">(</span>chromosome<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">loop</span> for x below <span style="color: #f5c791;">32</span>
+     when <span style="color: #62D2DB;">(</span>bit-set-p chromosome x<span style="color: #62D2DB;">)</span>
+     sum <span style="color: #f5c791;">1</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+We also add a convenient function for printing the chromosome with its fitness.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">print-chromosome-with-fitness</span> <span style="color: #47ba99;">(</span>chrm<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>format t <span style="color: #f5c791;">"~a =&gt; ~a~&amp;"</span>
+          <span style="color: #62D2DB;">(</span>format-chromosome chrm<span style="color: #62D2DB;">)</span>
+          <span style="color: #62D2DB;">(</span>calc-fitness chrm<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgb7c3e1a" class="outline-3">
+<h3 id="orgb7c3e1a">Example: Checking generated population</h3>
+<div class="outline-text-3" id="text-orgb7c3e1a">
+<p>
+We can use <code>mapc</code> along with <code>print-chromosome-with-fitness</code> to beautifully print
+all of our generated specimen, and each chromosome's fitness. Here is an
+example.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #454459;">;; </span><span style="color: #454459;">Initialize a population first</span>
+<span style="color: #0D9C94;">(</span>initialize-population<span style="color: #0D9C94;">)</span>
+
+<span style="color: #0D9C94;">(</span>mapc #'print-chromosome-with-fitness *population*<span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<pre class="example" id="orgcbd8498">
+00000001010000010000000000000100 =&gt; 4
+01000000100100010000000000100000 =&gt; 5
+00000010110100000000000010000000 =&gt; 5
+00000000000101010000100000000000 =&gt; 4
+00010110001000010000000100000000 =&gt; 6
+00001010001000010001000000000000 =&gt; 5
+10010001100000100000100000000000 =&gt; 6
+00000011110010000000001000000000 =&gt; 6
+01011000110100000000000100000000 =&gt; 7
+01010000001011110000000001000000 =&gt; 8
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org973b761" class="outline-2">
+<h2 id="org973b761">Selection</h2>
+<div class="outline-text-2" id="text-org973b761">
+<p>
+The selection phase is where the two fittest individuals are selected to pass on
+their genes to the next generation. This phase is automagically done on the
+<code>with-distinct-chromosome</code> macro.
+</p>
+</div>
+
+<div id="outline-container-org0f5183a" class="outline-3">
+<h3 id="org0f5183a">Example: Checking selected chromosomes</h3>
+<div class="outline-text-3" id="text-org0f5183a">
+<p>
+Using the same principle of printing the population, we can do the same with
+<code>*fittest*</code>, which is the variable storing the two fittest individuals. This time,
+though, their fitness values are irrelevant, so passing <code>print-chromosome</code> over
+each one with the aid of <code>mapc</code> should do the trick.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span>mapc #'print-chromosome *fittest*<span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<pre class="example">
+01111111111101100001010010011111
+01111101111101110001010010001011
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1b4dadc" class="outline-2">
+<h2 id="org1b4dadc">Crossover (Breeding)</h2>
+<div class="outline-text-2" id="text-org1b4dadc">
+<p>
+The crossover process produces two new chromosomes. We generate a new individual
+by making the parents exchange their least significant bits. Each new value is,
+then, added to the population, and the selection phase takes place.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">breed</span> <span style="color: #47ba99;">(</span>parent1 parent2<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">declare</span> <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span>unsigned-byte <span style="color: #f5c791;">32</span><span style="color: #9d81ba;">)</span> parent1 parent2<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">labels</span> <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span>swap-bit <span style="color: #35BF88;">(</span>n<span style="color: #35BF88;">)</span>
+             <span style="color: #35BF88;">(</span><span style="color: #9d81ba;">let</span> <span style="color: #687184;">(</span><span style="color: #d7af87;">(</span>bit-p1 <span style="color: #845A84;">(</span>bit-set-p parent1 n<span style="color: #845A84;">)</span><span style="color: #d7af87;">)</span>
+                   <span style="color: #d7af87;">(</span>bit-p2 <span style="color: #845A84;">(</span>bit-set-p parent2 n<span style="color: #845A84;">)</span><span style="color: #d7af87;">)</span><span style="color: #687184;">)</span>
+               <span style="color: #687184;">(</span><span style="color: #9d81ba;">when</span> <span style="color: #d7af87;">(</span>not <span style="color: #845A84;">(</span>eq bit-p1 bit-p2<span style="color: #845A84;">)</span><span style="color: #d7af87;">)</span>
+                 <span style="color: #d7af87;">(</span>setf parent1 <span style="color: #845A84;">(</span>logxor parent1 <span style="color: #47ba99;">(</span>ash <span style="color: #f5c791;">1</span> n<span style="color: #47ba99;">)</span><span style="color: #845A84;">)</span>
+                       parent2 <span style="color: #845A84;">(</span>logxor parent2 <span style="color: #47ba99;">(</span>ash <span style="color: #f5c791;">1</span> n<span style="color: #47ba99;">)</span><span style="color: #845A84;">)</span><span style="color: #d7af87;">)</span><span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">dotimes</span> <span style="color: #9d81ba;">(</span>i <span style="color: #f5c791;">16</span><span style="color: #9d81ba;">)</span>
+      <span style="color: #9d81ba;">(</span>swap-bit i<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>values parent1 parent2<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+We also define a function to ensure our population never surpasses its fixed
+size. If it does, then the individuals of least fitness are removed.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">limit-population</span> <span style="color: #47ba99;">(</span>max-num<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">let*</span> <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span>pop-len <span style="color: #35BF88;">(</span>length *population*<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span>exceed <span style="color: #35BF88;">(</span>- pop-len max-num<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">when</span> <span style="color: #9d81ba;">(</span>&gt; exceed <span style="color: #f5c791;">0</span><span style="color: #9d81ba;">)</span>
+      <span style="color: #9d81ba;">(</span><span style="color: #9d81ba;">let</span> <span style="color: #35BF88;">(</span><span style="color: #687184;">(</span>pop-fitness <span style="color: #d7af87;">(</span>mapcar #'calc-fitness *population*<span style="color: #d7af87;">)</span><span style="color: #687184;">)</span><span style="color: #35BF88;">)</span>
+        <span style="color: #35BF88;">(</span><span style="color: #9d81ba;">labels</span> <span style="color: #687184;">(</span><span style="color: #d7af87;">(</span>remove-minimum <span style="color: #845A84;">()</span>
+                   <span style="color: #845A84;">(</span><span style="color: #9d81ba;">let</span> <span style="color: #47ba99;">(</span><span style="color: #0D9C94;">(</span>min-index
+                          <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">loop</span> for i below pop-len
+                             for elt in pop-fitness
+                             with min = <span style="color: #62D2DB;">(</span>cons <span style="color: #f5c791;">32</span> nil<span style="color: #62D2DB;">)</span>
+                             when <span style="color: #62D2DB;">(</span>&lt; elt <span style="color: #9d81ba;">(</span>car min<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+                             do <span style="color: #62D2DB;">(</span>setf min <span style="color: #9d81ba;">(</span>cons elt i<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+                             finally <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">return</span> <span style="color: #9d81ba;">(</span>cdr min<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span><span style="color: #47ba99;">)</span>
+                     <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">when</span> min-index
+                       <span style="color: #0D9C94;">(</span>setf *population*
+                             <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">loop</span> for elt in *population*
+                                for i from <span style="color: #f5c791;">0</span>
+                                unless <span style="color: #62D2DB;">(</span>= i min-index<span style="color: #62D2DB;">)</span> collect elt<span style="color: #47ba99;">)</span>
+                             pop-len <span style="color: #47ba99;">(</span>1- pop-len<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span><span style="color: #47ba99;">)</span><span style="color: #845A84;">)</span><span style="color: #d7af87;">)</span><span style="color: #687184;">)</span>
+          <span style="color: #687184;">(</span><span style="color: #9d81ba;">dotimes</span> <span style="color: #d7af87;">(</span>i exceed<span style="color: #d7af87;">)</span>
+            <span style="color: #d7af87;">(</span>remove-minimum<span style="color: #d7af87;">)</span><span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd40a42d" class="outline-2">
+<h2 id="orgd40a42d">Mutation</h2>
+<div class="outline-text-2" id="text-orgd40a42d">
+<p>
+To ensure population diversity and remove the chances of early convergence, we
+mutate some genes at a low rate. By picking a maximum of 16 genes, regardless of
+significancy, at random, it is possible to roll the dice again (with little
+probability): should the odds be on favor, the specified gene will suffer a
+"flip".
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">mutate</span> <span style="color: #47ba99;">(</span>chromosome<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">declare</span> <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span>unsigned-byte <span style="color: #f5c791;">32</span><span style="color: #9d81ba;">)</span> chromosome<span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">let*</span> <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">(</span>num-mutations <span style="color: #35BF88;">(</span>random <span style="color: #f5c791;">16</span> *rnd-state*<span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+         <span style="color: #9d81ba;">(</span>mutating-indexes <span style="color: #35BF88;">(</span>remove-duplicates
+                            <span style="color: #687184;">(</span><span style="color: #9d81ba;">loop</span> for i below num-mutations
+                                collect <span style="color: #d7af87;">(</span>random <span style="color: #f5c791;">32</span> *rnd-state*<span style="color: #d7af87;">)</span><span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">labels</span> <span style="color: #9d81ba;">(</span><span style="color: #35BF88;">(</span>attempt-mutation-at <span style="color: #687184;">(</span>n<span style="color: #687184;">)</span>
+               <span style="color: #454459;">;; </span><span style="color: #454459;">Throw d20 and expect &lt; 8</span>
+               <span style="color: #687184;">(</span><span style="color: #9d81ba;">when</span> <span style="color: #d7af87;">(</span>&lt; <span style="color: #845A84;">(</span>random <span style="color: #f5c791;">20</span> *rnd-state*<span style="color: #845A84;">)</span> <span style="color: #f5c791;">7</span><span style="color: #d7af87;">)</span>
+                 <span style="color: #d7af87;">(</span>setf chromosome <span style="color: #845A84;">(</span>logxor chromosome <span style="color: #47ba99;">(</span>ash <span style="color: #f5c791;">1</span> n<span style="color: #47ba99;">)</span><span style="color: #845A84;">)</span><span style="color: #d7af87;">)</span><span style="color: #687184;">)</span><span style="color: #35BF88;">)</span><span style="color: #9d81ba;">)</span>
+      <span style="color: #9d81ba;">(</span>mapc #'attempt-mutation-at mutating-indexes<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  chromosome<span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgd04b119" class="outline-3">
+<h3 id="orgd04b119">Example: Testing the mutation algorithm</h3>
+<div class="outline-text-3" id="text-orgd04b119">
+<p>
+We can check whether this is working or not with a simple algorithm which
+generates a chromosome and its mutation; then, we just print them and see if
+they can be compared. By re-running it a couple of times, we should see a
+mutated gene here and there.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">let</span> <span style="color: #47ba99;">(</span><span style="color: #62D2DB;">(</span>chromosome <span style="color: #9d81ba;">(</span>make-chromosome<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>mapc #'print-chromosome
+        <span style="color: #62D2DB;">(</span>list chromosome <span style="color: #9d81ba;">(</span>mutate chromosome<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<pre class="example">
+00110010000000000000001000000000
+00110010000000001000000001000000
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga019e38" class="outline-2">
+<h2 id="orga019e38">Crossover (Finalization)</h2>
+<div class="outline-text-2" id="text-orga019e38">
+<p>
+Now we define our actual crossover function. The crossover function takes into
+consideration both the breeding process and the mutation.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">crossover</span> <span style="color: #47ba99;">()</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">multiple-value-bind</span> <span style="color: #62D2DB;">(</span>offspring1 offspring2<span style="color: #62D2DB;">)</span>
+      <span style="color: #62D2DB;">(</span>apply #'breed *fittest*<span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">with-distinct-chromosome</span> <span style="color: #9d81ba;">(</span>mutate offspring1<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+    <span style="color: #62D2DB;">(</span><span style="color: #9d81ba;">with-distinct-chromosome</span> <span style="color: #9d81ba;">(</span>mutate offspring2<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1a67a09" class="outline-2">
+<h2 id="org1a67a09">Convergence</h2>
+<div class="outline-text-2" id="text-org1a67a09">
+<p>
+We need a strategy to check if our population converged. For a genetic
+algorithm, a converged population usually means that we've reached a max
+fitness. Therefore, we just need to check if our fittest individual has a
+fitness greater or equal than the specified max fitness.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">population-converged-p</span> <span style="color: #47ba99;">()</span>
+  <span style="color: #47ba99;">(</span>&gt;= <span style="color: #62D2DB;">(</span>calc-fitness <span style="color: #9d81ba;">(</span>car *fittest*<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span>
+      *max-fitness*<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgec4750d" class="outline-2">
+<h2 id="orgec4750d">Debriefing and running the genetic algorithm</h2>
+<div class="outline-text-2" id="text-orgec4750d">
+<p>
+Now we can create a proper loop which will execute the steps of our algorithm
+until the population converges.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">debriefing</span> <span style="color: #47ba99;">()</span>
+  <span style="color: #47ba99;">(</span>princ <span style="color: #f5c791;">"Population converged."</span><span style="color: #47ba99;">)</span> <span style="color: #47ba99;">(</span>terpri<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>format t <span style="color: #f5c791;">"Best fitness: ~a~%~%"</span> <span style="color: #62D2DB;">(</span>calc-fitness <span style="color: #9d81ba;">(</span>car *fittest*<span style="color: #9d81ba;">)</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>princ <span style="color: #f5c791;">"Final population:"</span><span style="color: #47ba99;">)</span> <span style="color: #47ba99;">(</span>terpri<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>mapc #'print-chromosome-with-fitness *population*<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>terpri<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+
+<span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">defun</span> <span style="color: #0bc9cf;">run-genetic-algorithm</span> <span style="color: #47ba99;">()</span>
+  <span style="color: #47ba99;">(</span>initialize-population<span style="color: #47ba99;">)</span>
+   <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">loop</span> until <span style="color: #62D2DB;">(</span>population-converged-p<span style="color: #62D2DB;">)</span>
+      for i from <span style="color: #f5c791;">0</span>
+      do <span style="color: #62D2DB;">(</span>format t <span style="color: #f5c791;">"Generation: ~a~%Fittest:~%"</span> i<span style="color: #62D2DB;">)</span>
+        <span style="color: #62D2DB;">(</span>mapc #'print-chromosome *fittest*<span style="color: #62D2DB;">)</span>
+        <span style="color: #62D2DB;">(</span>terpri<span style="color: #62D2DB;">)</span>
+        <span style="color: #62D2DB;">(</span>crossover<span style="color: #62D2DB;">)</span>
+        <span style="color: #62D2DB;">(</span>limit-population <span style="color: #f5c791;">10</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>debriefing<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge8aab40" class="outline-2">
+<h2 id="orge8aab40">Conclusion</h2>
+<div class="outline-text-2" id="text-orge8aab40">
+<p>
+With everything all sorted and done, we can test our algorithm at once. Here's
+one possible output when running the function <code>run-genetic-algorithm</code>:
+</p>
+
+<pre class="example" id="orgfeb76c5">
+Generation: 0
+Fittest:
+00010010010011110001000000000000
+01011010010100010000000000001000
+
+Generation: 1
+Fittest:
+00010010010011110001000000000000
+01011010010100010000000000001000
+
+Generation: 2
+Fittest:
+01011110100100010001000101000000
+00010010010011110001000000000000
+
+Generation: 3
+Fittest:
+00011010011011110001000101000000
+01011110100100010001000101000000
+
+Generation: 4
+Fittest:
+00111010010111110000001101000000
+00011010011011110001000101000000
+
+Generation: 5
+Fittest:
+00111010010111110000001101000000
+00011010011011110001000101000000
+
+Generation: 6
+Fittest:
+00111010010111110000001101000000
+00111010010111110001000101000000
+
+Generation: 7
+Fittest:
+10111010010111110001100101000000
+00111010010111111000001101100000
+
+Generation: 8
+Fittest:
+10111010010111110001100101000000
+00111010010111111000001101100000
+
+Generation: 9
+Fittest:
+10111010010111110001100101000000
+00111010010111111000001101100000
+
+Generation: 10
+Fittest:
+10111010010111110001100101000000
+00111010010111111000001101100000
+
+Generation: 11
+Fittest:
+10110010010111111010101101101001
+10111010010111110001100101000000
+
+Population converged.
+Best fitness: 22
+
+Final population:
+10111110010111111010101101101011 =&gt; 22
+10110010010111110001100101000000 =&gt; 14
+10110010010111111010101101101001 =&gt; 19
+00011010010111110001000101000100 =&gt; 13
+00111010010111110100001001100000 =&gt; 14
+00111010010111111000001101100000 =&gt; 15
+10111010010111110001100101000000 =&gt; 15
+10011000011011110000001101001000 =&gt; 13
+00111010010111110001000101000000 =&gt; 13
+00111010010111110000001101000000 =&gt; 13
+
+</pre>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://towardsdatascience.com/introduction-to-genetic-algorithms-including-example-code-e396e98d8bf3">Introduction to Genetic Algorithms — Including Example Code</a>
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<h3><a href="../">Back to last page</a></h3>
+</div>
+</body>
+</html>

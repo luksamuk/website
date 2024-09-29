@@ -1,0 +1,1364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Plan 9: Setting up 9front on a Raspberry Pi</title>
+<meta name="author" content="Lucas S. Vieira" />
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-22RF3F5XE0"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-22RF3F5XE0');
+</script>
+<link rel="stylesheet" type="text/css" href="../css/main.css" />
+<link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="../css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="../img/cat-i-mage.jpg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:image" content="../img/cat-i-mage.jpg">
+<meta name="theme-color" content="#14171e">
+</head>
+<body>
+<div id="preamble" class="status">
+<nav><h1><a href="../">The Alchemist's Hideout</a></h1></nav><h1 class="title">Plan 9: Setting up 9front on a Raspberry Pi</h1><p><i>Written in Apr 10, 2021 by Lucas S. Vieira<br/><a href="mailto:lucasvieira@protonmail.com">lucasvieira@protonmail.com</a></i></p>
+</div>
+<div id="content" class="content">
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orge556798">Preparation</a>
+<ul>
+<li><a href="#orgc4cc3a4">A quick note on Drawterm</a></li>
+</ul>
+</li>
+<li><a href="#org57b4737">Automatic boot</a></li>
+<li><a href="#org0007c71">Configuring remote access</a></li>
+<li><a href="#org00a21c2">Connecting remotely</a></li>
+<li><a href="#org0a9c359">Logging in remotely to a graphical session</a></li>
+<li><a href="#org5672705">Binding the local filesystem</a></li>
+<li><a href="#orgf407589">Setting up the Plumber</a></li>
+<li><a href="#org31f6ac1">Extra stuff</a>
+<ul>
+<li><a href="#orgf87ba91">Setting up Git</a></li>
+<li><a href="#org5a2b5ab">Setup automatic time synchronization</a></li>
+<li><a href="#org5ffdce5">Bottom bar</a></li>
+<li><a href="#org492fe05">Lua</a></li>
+<li><a href="#org89150fa">Scheme</a></li>
+<li><a href="#org73ab083">Vim</a></li>
+<li><a href="#org2361fe7">Netsurf</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Hello, everyone.  Today I  wanted to  upgrade my  Raspberry Pi  to the
+latest release of 9front, however the source code was not compiling on
+arm64, so I decided to reinstall 9front on my Raspberry Pi.
+</p>
+
+<p>
+The following steps were built atop some  quick notes I did so I never
+forget this stuff.  There's a small chance I'll update  this post with
+more stuff.
+</p>
+
+<p>
+<i>Last updated at</i> <span class="timestamp-wrapper"><span class="timestamp">[2023-12-16 Sat 11:42]</span></span>
+</p>
+
+<div id="outline-container-orge556798" class="outline-2">
+<h2 id="orge556798">Preparation</h2>
+<div class="outline-text-2" id="text-orge556798">
+
+<div id="orgc4e6a8a" class="figure">
+<p><img src="./img/rpi.jpg" alt="rpi.jpg" width="500" />
+</p>
+<p><span class="figure-number">Figure 1: </span>My local Raspberry Pi setup.</p>
+</div>
+
+<p>
+Here's what you'll need:
+</p>
+
+<ul class="org-ul">
+<li>A Raspberry Pi (I used a Pi 3 Model B+ for this example);</li>
+<li>An SD Card which can store 9front's files (up to 2GB will do);</li>
+<li>A spare keyboard  and a spare 3-button mouse (most  wheel mouses are
+compatible);</li>
+<li><a href="http://9front.org/releases/">A 9front Raspberry Pi image</a>
+(use one compatible with your Pi);</li>
+<li>An HDMI cable (and some TV or monitor to connect your RPi to);</li>
+<li>An Ethernet cable to plug the  Pi to your router (or whatever device
+you use);</li>
+<li>A computer running a Linux distribution with the programs:
+<ul class="org-ul">
+<li><code>arp-scan</code>, for device discovery on local network;</li>
+<li>9front's spin of  the <code>drawterm</code> program, which can be  found on its
+website.</li>
+</ul></li>
+<li><a href="http://wiki.9front.org/drawterm">Drawterm</a>, specifically one compatible with changes made to 9front.</li>
+</ul>
+
+<p>
+Downloading the Linux programs and 9front  Pi image is a trivial task,
+so I'll let you figure this out.
+</p>
+
+<p>
+You'll also want to  write the SD Card image to  your SD Card. Extract
+it from  the <code>.img.gz</code>  file, and write  the <code>.img</code> file  to your  SD Card
+using <code>dd</code>. I'll let you figure this one out to.
+</p>
+
+<p>
+Plug the SD Card  to the card slot of your Raspberry  Pi, and plug the
+ethernet cable to  your Pi and to your router  (or to whatever network
+device you  have at  your disposal).  The important  thing here  is to
+ensure that  the Raspberry Pi and  your Linux computer have  access to
+the same network.
+</p>
+
+<p>
+Furthermore, plug both  the mouse, the keyboard and the  HDMI cable to
+your  Raspberry  Pi.  This  will  be necessary  only  on  the  initial
+configuration,  but if  you want  to update  9front's kernel  anytime,
+you'll need to plug these before  booting again &#x2013; the reasons will be
+described later.
+</p>
+</div>
+
+<div id="outline-container-orgc4cc3a4" class="outline-3">
+<h3 id="orgc4cc3a4">A quick note on Drawterm</h3>
+<div class="outline-text-3" id="text-orgc4cc3a4">
+<p>
+I never really got  Drawterm to work with audio on Linux  with its default build
+configuration, so I  recommend using the <code>sndio</code> driver. If  you manage to build
+it, simply run  <code>sndiod -dd</code> on a  console window and any  sound playback should
+work with  Drawterm. Notice though  that it may  affect playback on  other Linux
+programs, as it blocks audio channels for playback.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org57b4737" class="outline-2">
+<h2 id="org57b4737">Automatic boot</h2>
+<div class="outline-text-2" id="text-org57b4737">
+<p>
+Let's  start with  the basics.  Suppose you  have written  your 9front
+image to an SD  Card, plugged it in you Raspberry  Pi, and plugged the
+power in. You also have a mouse  and a keyboard connected, and the RPI
+is plugged to your TV or monitor.
+</p>
+
+<p>
+Once the RPI  boots, you'll be greeted with the  Plan 9 Console, which
+may be graphical  or not. In any  case, you'll need to  press Return a
+couple times  to enter  the bootargs,  username, etc.  Pressing Return
+will select the default option for everything.
+</p>
+
+<p>
+The first step is removing  these annoying prompts. Since the bootargs
+and the user are always the  same, we can configure the <code>plan9.ini</code> file
+so that they are not asked.
+</p>
+
+<p>
+At this point, you'll probably be  at the <code>rio</code> window manager. Remember
+that, regardless  of your  keyboard, 9front will  use the  US keyboard
+layout.
+</p>
+
+<p>
+Open up a terminal,  mount the DOS partition of the RPI  and go to its
+mount directory by using these commands:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">9fs pidos
+<span style="color: #9d81ba;">cd</span> /n/pidos
+</pre>
+</div>
+
+<p>
+On  the RPI  image  of 9front,  there  is not  <code>plan9.ini</code>  file; it  is
+actually generated on boot by taking  the commands written on the file
+<code>cmdline.txt</code>.
+</p>
+
+<p>
+You may then open the file <code>cmdline.txt</code>  with <code>sam</code> or <code>acme</code>, or even edit
+it using <code>ed</code>.
+</p>
+
+<p>
+Ensure that the following is written on the file:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">console=0 user=glenda nobootprompt=local!/dev/sdM0/fs
+</pre>
+</div>
+
+<p>
+<code>console</code> is a parameter which is already expected to be there, and <code>user</code>
+is straightforward. <code>nobootprompt</code> suppresses the query for the value of
+<code>bootargs</code> when  booting 9front.  This is because,  if we  used <code>bootargs</code>
+instead, we'd only be setting up <code>bootargs</code>'s default value, so the boot
+would hang expecting a Return key press anyway.
+</p>
+
+<p>
+Notice that the  user <code>glenda</code> is default to most  Plan 9 distributions,
+so do not change that, unless you know what you're doing.
+</p>
+
+<p>
+Make sure that there is a line break  at the end of the file, and save
+it.
+</p>
+
+<p>
+You can now reboot the RPi by  using the <code>reboot</code> command on any command
+line to  test it. Make sure  you keep keyboard, mouse  and video still
+attached.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0007c71" class="outline-2">
+<h2 id="org0007c71">Configuring remote access</h2>
+<div class="outline-text-2" id="text-org0007c71">
+<p>
+Next,  we'll  configure  9front  so   that,  after  booting,  it  will
+automatically allow other machines to connect to it remotely.
+</p>
+
+<p>
+Specifically,  what we'll  be doing  here  is starting  a CPU  Server,
+although the  RPi will still  work as other  kinds of servers  as well
+(for example, it will still provide local storage).
+</p>
+
+<p>
+Open the file <code>$home/lib/profile</code> by using <code>sam</code>, <code>acme</code> or <code>ed</code>.
+</p>
+
+<p>
+There  is  a  <code>switch</code>  structure  comparing the  value  of  a  <code>$service</code>
+environment variable, which relates to  the way the user has connected
+to the  current session.  In short, you're  currently on  the <code>terminal</code>
+case;  but we're  interested  on the  <code>cpu</code> case,  which  is the  remote
+connection of a computer to a CPU Server.
+</p>
+
+<p>
+Before this <code>switch</code> structure, add  the following lines. You may change
+them according to your needs, but <b>keep the user <code>glenda</code></b>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">auth/factotum -g <span style="color: #f5c791;">'key proto=p9sk1 dom=plan9 user=glenda !password=glenda'</span>
+aux/listen1 -t tcp<span style="color: #e55c7a;">!</span>*<span style="color: #e55c7a;">!</span>rcpu /rc/bin/service/tcp17019 -R <span style="color: #9d81ba;">&amp;</span>
+ip/ipconfig
+</pre>
+</div>
+
+<p>
+A few command line programs are used  here, so we'll take some time to
+understand what exactly are they doing  &#x2013; for further info, check out
+their  <i>manpages</i> (seriously,  please  do. Using  Plan  9 means  reading
+manpages).
+</p>
+
+<p>
+<code>factotum</code> talks  to the  Auth Servers which  are running.  The specific
+command above registers a password to a specific user <code>glenda</code> which may
+be trying  to remotely connect  to a cpu  server. The password  may be
+anything you like, and there are ways to encrypt this information, but
+we won't be doing that.
+</p>
+
+<p>
+<code>listen1</code> is  a simplified way  to open up the  current cpu server  to a
+remote connection&#x2026; and let's leave the explanation at that.
+</p>
+
+<p>
+<code>ipconfig</code> sets up  an IP address for your Raspberry  Pi on your current
+network (you  may notice that tools  such as <code>ip/ping</code> won't  work until
+this command is run!).
+</p>
+
+<p>
+These commands  are positioned in such  a way that, no  matter when or
+how  a  user  starts  a  session   in  9front,  they  will  always  be
+run.  And at  this point,  even  if the  RPi were  powered on  without
+keyboard, mouse  or video output,  it would still  log in to  the user
+<code>glenda</code>, therefore running this script.
+</p>
+
+<p>
+Luckly,  running these  commands  several times  will  not affect  the
+behaviour of our system.
+</p>
+
+<p>
+The 9front instance running on RPi  may now be remotely accessed using
+<code>drawterm</code>  from another  operating system,  or by  using <code>/bin/ncpu</code>.  We
+won't be covering the latter one in this post, though.
+</p>
+
+<p>
+You  can now  temporarily  turn  off your  RPi.  Run  <code>fshalt</code> from  any
+console, await the  "done halting" message, and unplug  it from power;
+remove all cables, except the ethernet cable to your network device.
+</p>
+
+<p>
+You can  now turn  the RPi on  again. And this  time, nothing  but the
+power chord and the Ethernet cable are needed.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org00a21c2" class="outline-2">
+<h2 id="org00a21c2">Connecting remotely</h2>
+<div class="outline-text-2" id="text-org00a21c2">
+<p>
+Now we'll connect remotely to our RPi which runs 9front.
+</p>
+
+<p>
+Note that remote  access makes you unable to access  the DOS partition
+(<code>pidos</code>),  so if  you want  to edit  <code>cmdline.txt</code> again  or update  your
+kernel,  you'll  need  to  reboot  your  RPi  with  video  output  and
+keyboard/mouse input.
+</p>
+
+<p>
+On Linux, first  find out what is  the IP of the Raspberry  Pi on your
+network.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">sudo arp-scan --local
+</pre>
+</div>
+
+<p>
+This will ask you for your password, and will show you some output:
+</p>
+
+<pre class="example" id="orgcca76a2">
+Interface: xxxx, type: xxxx, MAC: xx:xx:xx:xx:xx:xx, IPv4: 192.168.2.x
+Starting arp-scan 1.9.7 with 256 hosts (https://github.com/royhills/arp-scan)
+...
+192.168.2.7	xx:xx:xx:xx:xx:xx	Raspberry Pi Foundation
+...
+
+4 packets received by filter, 0 packets dropped by kernel
+Ending arp-scan 1.9.7: 256 hosts scanned in 1.889 seconds (135.52 hosts/sec). 4 responded
+</pre>
+
+<p>
+In my case, my rpi has an IP <code>192.168.2.7</code> on my local network.
+</p>
+
+<p>
+Let's  use drawterm  to connect.  We just  have to  run the  following
+command; the  <code>-a</code> argument should point  to a machine running  the auth
+server, and <code>-h</code> points to the machine running the CPU (host) server. In
+our case, they're  on the same machine. <code>-u</code> just  defines a user, which
+is "glenda".
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">drawterm -a <span style="color: #f5c791;">192.168.2.7</span> -h <span style="color: #f5c791;">192.168.2.7</span> -u glenda
+</pre>
+</div>
+
+<p>
+This will open a Drawterm window containing the following prompt:
+</p>
+
+<pre class="example" id="orgef12b2d">
+glenda@plan9 p9sk1 password:
+</pre>
+
+<p>
+Type the  password previously  defined with  <code>factotum</code> (<i>glenda</i>  in this
+example), then press  Return. Note that it will not  echo. You may see
+an error related to <code>ipconfig</code> (since it  is being run for a second time
+&#x2013; first time was on boot). It will then give you a prompt:
+</p>
+
+<pre class="example" id="org3342113">
+cpu%
+</pre>
+
+<p>
+From there, type <code>rio</code> and press enter to get a graphical interface.
+</p>
+
+<p>
+You'll notice that there is nothing onscreen, since we haven't started
+<code>rio</code> by  telling it to run  some script (normally <code>riostart</code>,  on a local
+terminal). Let's change that.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0a9c359" class="outline-2">
+<h2 id="org0a9c359">Logging in remotely to a graphical session</h2>
+<div class="outline-text-2" id="text-org0a9c359">
+<p>
+The <code>riostart</code> script assumes that you are booting 9front by plugging an
+HDMI  cable, a  keyboard and  a mouse  to it,  so we  need an  adapted
+version of it for a drawterm session.
+</p>
+
+<p>
+Create a  console window and  cd to <code>$home/bin/rc</code>.  You'll  notice that
+the <code>bin</code> folder on <code>$home</code> has  two subfolders, one called <code>rc</code> and another
+with the name of your architecture, probably <code>arm</code> or <code>arm64</code>.
+</p>
+
+<p>
+<code>rc</code> is where all executable <code>rc</code> scripts go.
+</p>
+
+<p>
+Let's make a new one.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">touch riostart-remote
+</pre>
+</div>
+
+<p>
+Then open  it using <code>sam</code>  or <code>acme</code>, and add  a shebang <code>#!/bin/rc</code>  at its
+beginning.
+</p>
+
+<p>
+From now on your config is related  to your taste. I like to have some
+windows opened on boot with some information, such as <code>stats</code>, <code>clock</code> and
+<code>winwatch</code>.
+</p>
+
+<p>
+Here is my config as an example.  You may even copy it from your Linux
+system and paste it to your  file (which is better done through Acme),
+although <code>faces</code> will  most likely fail since we  haven't configured the
+Plumber yet, and <code>bar</code>  is an extra util which will  be discussed at the
+end.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc"><span style="color: #454459;">#!/bin/rc</span>
+window 0,0,161,117 stats -lmisc
+window 161,0,278,117 clock
+window 278,0,478,117 winwatch -e <span style="color: #f5c791;">'^(winwatch|stats|clock|faces)'</span>
+window 478,0,877,117 faces -i
+window -scroll bar
+</pre>
+</div>
+
+<p>
+Make sure that this file <b>ends with a line break</b>.
+</p>
+
+<p>
+Now, make it executable.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">chmod +x riostart-remote
+</pre>
+</div>
+
+<p>
+Let's head back and edit <code>$home/lib/profile</code>.  Scroll to the case of the
+switch called  <code>cpu</code> &#x2013; that's the  case for a remote  connection to our
+<code>cpu</code> server.
+</p>
+
+<p>
+After the  definition of the function  <code>fn cpu%</code>, let's add  a few lines
+(make sure to add indentation):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc"><span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span> webcookies <span style="color: #9d81ba;">&gt;</span>[2]/dev/null)
+        webcookies -f /tmp/webcookies
+webfs
+plumber
+rio -i riostart-remote
+</pre>
+</div>
+
+<p>
+Make sure that these are the last lines of that case.
+</p>
+
+<p>
+<code>webcookies</code> starts  the manager for HTTP  cookies. If it fails  to run,
+then it tries running again, using the file <code>/tmp/webcookies</code> as default
+cookies file.
+</p>
+
+<p>
+<code>webfs</code> binds a web file system interface  so that we may browse the web
+using <code>abaco</code> or <code>mothra</code>.
+</p>
+
+<p>
+<code>plumber</code> binds an  interprocess messaging system to the  file system so
+that we may do interesting stuff,  e.g. open a PDF from command prompt
+by plumbing its name. We'll have a moment to set it up properly at the
+end.
+</p>
+
+<p>
+The last line  starts <code>rio</code>, and instructs it to  run <code>riostart-remote</code> on
+startup.
+</p>
+
+<p>
+You can now close drawterm after saving the file, and then login again
+through the  command above. It  will not cause instability  on 9front;
+drawterm is basically just a terminal, so it is isolated from the rest
+of the system.
+</p>
+
+<p>
+Upon  logging  in  again  through drawterm,  you'll  be  automatically
+greeted by <code>rio</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5672705" class="outline-2">
+<h2 id="org5672705">Binding the local filesystem</h2>
+<div class="outline-text-2" id="text-org5672705">
+<p>
+One interesting way to use the <code>9fs</code> protocol indirectly is to have your
+local filesystem avaiable to access on your drawterm session.
+</p>
+
+<p>
+This means  that your Linux files  can be accessed from  your drawterm
+session, in an isolated manner, so  that the files are only visible on
+said  drawterm session  &#x2013; not  for another  session, not  for another
+user.
+</p>
+
+<p>
+This is done automatically once you  log into your 9front box, and the
+root of your filesystem is then  mounted to <code>/mnt/term</code>. So all you need
+to do is create a "link" to your folder somewhere.
+</p>
+
+<p>
+On Linux, we'd think of symlinks. Here,  we just need to bind a folder
+to another.
+</p>
+
+<p>
+Edit  <code>$home/lib/profile</code> again.  Right before  starting <code>webfs</code>,  add the
+following:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">bind -a /mnt/term/home /usr <span style="color: #9d81ba;">&gt;</span>[2]/dev/null
+</pre>
+</div>
+
+<p>
+This will bind  all files in <code>/mnt/term/home/</code> to <code>/usr</code>.  So all files in
+<code>/usr</code> (e.g. your 9front home folder <code>/usr/glenda</code>) will be kept, plus all
+files in <code>/mnt/term/home/</code> will also be seen under <code>/usr</code>.
+</p>
+
+<p>
+So for example, if your user folder on Linux is at <code>/home/user</code>, it will
+now  be available  on  9front  (through a  drawterm  session only)  at
+<code>/usr/user</code>.
+</p>
+
+<p>
+Notice that, if  you wish to create new files  under <code>/usr</code>, you'll have
+to use  <code>-ac</code> instead  of <code>-a</code>  on the  <code>bind</code> command.  For more  info, see
+<code>bind(1)</code>.
+</p>
+
+<p>
+This is particularly  useful for transferring files  between Linux and
+9front, even allowing  for direct usage of remote  storage through the
+<code>9fs</code> protocol.
+</p>
+
+<p>
+You may want to experiment with binding other directories.
+</p>
+
+
+<div id="org65c5958" class="figure">
+<p><img src="./img/plan9rpi.png" alt="plan9rpi.png" />
+</p>
+<p><span class="figure-number">Figure 2: </span>An in-progress screenshot of the configuration. This screenshot was taken from Drawterm.</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf407589" class="outline-2">
+<h2 id="orgf407589">Setting up the Plumber</h2>
+<div class="outline-text-2" id="text-orgf407589">
+<p>
+The  <code>plumber(4)</code> is  a  very important  interprocess message  protocol,
+which  is initialized  by  the  command <code>plumber</code>  when  we  log onto  a
+session.
+</p>
+
+<p>
+Right now,  the <code>plumber</code>  will not work;  however, with  minimal setup,
+we'll be able to allow it to perform simple redirection defaults, such
+as opening image and  PDF files with <code>page</code>, or text  files with <code>acme</code> or
+<code>sam</code>, or opening URLs in <code>mothra</code>.
+</p>
+
+<p>
+Create a file <code>$home/lib/plumbing</code>. Then, using  Acme or Sam, edit it so
+it looks like the following:
+</p>
+
+<pre class="example" id="org4f8f67b">
+editor = sam
+include basic
+</pre>
+
+<p>
+This is  all we  need, though you  can add more  rules prior  to these
+lines. For more info on the syntax to plumbing rules, see <code>plumb(6)</code>.
+</p>
+
+<p>
+Here's my  own <code>plumbfile</code>.  Here, I  just set Acme  as my  default text
+editor,  and  made  clear  that  <code>mothra</code>  is  my  default  web  browser
+(specifically, I  state that  I want to  open webpages  using <code>mothra</code>'s
+alt  display  mode).  These  variables  are  then  used on  the  basic
+plumbing rules, which we've included at the end of the file.
+</p>
+
+<pre class="example" id="org1a83378">
+editor  = acme
+browser = 'mothra -a'
+include basic
+</pre>
+
+<p>
+Now you  can <code>cd</code> to  folders containing images/pdfs and,  after listing
+the files,  mark their  name with the  mouse, middle-click  and select
+'plumb'   to  open   them  in   a  new   window,  with   their  proper
+application. With web  links, you just have to mark  them anywhere and
+plumb them by the same means.
+</p>
+
+<p>
+This will also allow you to  open webpages by plumbing links, and will
+also affect the opening of emails once you've configured it.
+</p>
+
+<p>
+You  can update  manually the  plumbing rules  by using  the following
+command:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">cp <span style="color: #7CF083;">$home</span>/lib/plumbing /mnt/plumb/rules
+</pre>
+</div>
+
+<p>
+Or you may log in to a new session to see your changes take effect.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org31f6ac1" class="outline-2">
+<h2 id="org31f6ac1">Extra stuff</h2>
+<div class="outline-text-2" id="text-org31f6ac1">
+
+<div id="orgf83e314" class="figure">
+<p><img src="./img/plan9rpi2.png" alt="plan9rpi2.png" />
+</p>
+<p><span class="figure-number">Figure 3: </span>Another screenshot of Plan 9, this time taken directly within it. The screenshot was taken from <code>rio</code> and saved directly to my Linux hard drive</p>
+</div>
+</div>
+
+<div id="outline-container-orgf87ba91" class="outline-3">
+<h3 id="orgf87ba91">Setting up Git</h3>
+<div class="outline-text-3" id="text-orgf87ba91">
+<p>
+<a href="https://github.com/oridb/git9">Git for Plan 9</a> can be set up with easy steps, as it is stated on their
+repository. The following just repeats  the instructions on the linked
+repo.
+</p>
+
+<p>
+<i><b>NOTE:</b> As  of now  (2022-11-18), Git  for Plan  9 is  contained by  default on
+9front.</i> You shouldn't need to perform the installation steps anymore.
+</p>
+</div>
+
+<div id="outline-container-org173e1ce" class="outline-4">
+<h4 id="org173e1ce">Installation</h4>
+<div class="outline-text-4" id="text-org173e1ce">
+<p>
+First we obtain a bootstrap copy.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc"><span style="color: #9d81ba;">cd</span> /tmp
+hget https://orib.dev/git/git9/HEAD/snap.tar.gz <span style="color: #9d81ba;">|</span> tar xvz
+<span style="color: #9d81ba;">cd</span> git9
+mk all
+mk install
+</pre>
+</div>
+
+<p>
+Now we'll get a copy which can  have new updates <i>pull</i>'ed every once in
+a while. I did that by creating a <code>$home/src</code> directory, then performing
+the following operations:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc"><span style="color: #9d81ba;">cd</span> <span style="color: #7CF083;">$home</span>/src
+git/clone gits://orib.dev/git9
+<span style="color: #9d81ba;">cd</span> git9
+mk all
+mk install
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1d8da0c" class="outline-4">
+<h4 id="org1d8da0c">Setting up username</h4>
+<div class="outline-text-4" id="text-org1d8da0c">
+<p>
+The next step is setting up a  username and an email.
+</p>
+
+<p>
+Create a  file <code>$home/lib/git</code>, which can  be done with <code>touch</code>.  Then use
+Acme or Sam to edit it and add stuff like the following:
+</p>
+
+<pre class="example" id="orgb2bace5">
+[user]
+	name=Your Name
+	email=youremail@example.com
+</pre>
+
+<p>
+Make sure you add the newline at the end of the file.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5c68db4" class="outline-4">
+<h4 id="org5c68db4">Setting up an SSH key for Git</h4>
+<div class="outline-text-4" id="text-org5c68db4">
+<p>
+You might  need to create an  SSH key to  authorize your 9front box  on websites
+such as SourceHut or GitHub, which work best with SSH interaction.
+</p>
+
+<p>
+Start by creating an SSH private key,  that <b>won't be shared</b>. Notice that <i>this
+step may take a while</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">auth/rsagen -t <span style="color: #f5c791;">'service=ssh'</span> <span style="color: #9d81ba;">&gt;</span><span style="color: #7CF083;">$home</span>/lib/sshkey
+</pre>
+</div>
+
+<p>
+Now, create an SSH public key that <b>will be shared with your Git Forge</b>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">auth/rsa2ssh <span style="color: #7CF083;">$home</span>/lib/sshkey <span style="color: #9d81ba;">&gt;</span><span style="color: #7CF083;">$home</span>/lib/sshkey.pub
+</pre>
+</div>
+
+<p>
+Finally, just send the private key to <a href="http://man.9front.org/4/factotum"><code>factotum(4)</code></a> so you may now use it.
+You may also add  this line to your <code>profile</code> so that it  is always available on
+login.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">cat <span style="color: #7CF083;">$home</span>/lib/sshkey <span style="color: #9d81ba;">&gt;</span>/mnt/factotum/ctl
+</pre>
+</div>
+
+<p>
+The reference to these steps may be found <a href="http://wiki.9front.org/ssh">here</a>.
+</p>
+
+<p>
+Now you can look at the manpages <code>git(1)</code> and <code>gitfs(4)</code> to get started.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5a2b5ab" class="outline-3">
+<h3 id="org5a2b5ab">Setup automatic time synchronization</h3>
+<div class="outline-text-3" id="text-org5a2b5ab">
+<p>
+If you're  someone like me who  is not currently in  January 1st 1970,
+you may  want to  set up  Plan 9 to  fetch the  current date  from the
+internet. Luckly, that's an easy thing to do.
+</p>
+
+<p>
+This is  something that is  set up  on 9front's installation  on other
+platforms, but since our RPi  image comes with 9front preinstalled, we
+need to manually setup our timezone.
+</p>
+
+<p>
+Looking  at the  directory <code>/adm/timezone</code>,  you'll see  a list  of many
+timezones.  All you  need  to do  is  copy your  timezone  so that  it
+overwrites <code>local</code>. Here's how I did with mine:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">cp /adm/timezone/Brazil_East /adm/timezone/local
+</pre>
+</div>
+
+<p>
+Let's discuss  a manual  update of  your RPi time.   You can  just run
+something like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">aux/timesync -n pool.ntp.org
+</pre>
+</div>
+
+<p>
+Or,  if  you're in  Brazil just like me:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">aux/timesync -n pool.ntp.br
+</pre>
+</div>
+
+<p>
+Now, open  again your <code>$home/lib/profile</code>  file. Right after  setting up
+<code>ipconfig</code>, add the previous command.
+</p>
+
+<p>
+9front is supposed  to run this command on  boot through <code>/rc/bin/cpurc</code>
+or <code>/rc/bin/termrc</code>, but unfortunately, none of these will work prior to
+having an IP address.
+</p>
+
+<p>
+However, you  may want to  edit these  files to include  the following
+somewhere &#x2013; just  <b>make sure that the files end  with a newline</b>, after
+editing:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc"><span style="color: #7CF083;">TIMESYNCARGS</span><span style="color: #9d81ba;">=</span>(-n pool.ntp.org)
+</pre>
+</div>
+
+<p>
+(Or use the brazillian NTP server instead).
+</p>
+
+<p>
+Reboot to see your changes take effect.
+</p>
+
+<p>
+This info  was somewhat copied from  <a href="https://clueelf.wordpress.com/2018/06/29/clocks-time-ntp-plan9-9front/">here</a>, and I recommend  looking at
+the <a href="https://9p.io/wiki/plan9/installation_instructions/">9p.io wiki</a> as well.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5ffdce5" class="outline-3">
+<h3 id="org5ffdce5">Bottom bar</h3>
+<div class="outline-text-3" id="text-org5ffdce5">
+<p>
+There's  an <a href="https://git.sr.ht/~ft/bar">interesting  widget I  stumbled across</a>,  which shows  some
+information &#x2013; the  current date, specially, which I miss  the most.
+</p>
+
+<p>
+This widget is part of a  suite of experiments with <code>rio</code> called <a href="https://git.sr.ht/~ft/riow"><code>riow</code></a>,
+which enables keyboard window management on <code>rio</code> &#x2013; but I haven't tried
+using that yet.
+</p>
+
+<p>
+If you already installed git9, you can clone and build <code>bar</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc"><span style="color: #9d81ba;">cd</span> <span style="color: #7CF083;">$home</span>/src
+git/clone https://git.sr.ht/<span style="color: #9d81ba;">~</span>ft/bar
+<span style="color: #9d81ba;">cd</span> bar
+mk install
+</pre>
+</div>
+
+<p>
+You'll  get  a   binary  <code>/bin/bar</code>  on  your  system.   Now  edit  your
+<code>$home/bin/rc/riostart-remote</code> file,  and add the following  line at the
+end of it (remember to leave a dangling newline afterwards!):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">window bar
+</pre>
+</div>
+
+<p>
+You don't need  to specify the window size or  position, <code>bar</code> will take
+care of that.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org492fe05" class="outline-3">
+<h3 id="org492fe05">Lua</h3>
+<div class="outline-text-3" id="text-org492fe05">
+<p>
+Lua  5.4 works  fine on  Plan  9, and  there are  some libraries  that
+enhance the interoperability of Lua with Plan 9.
+</p>
+
+<p>
+Go to <code>$home/src</code> and clone the <code>lu9</code> repository:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc"><span style="color: #9d81ba;">cd</span> <span style="color: #7CF083;">$home</span>/src
+git/clone https://git.sr.ht/<span style="color: #9d81ba;">~</span>kvik/lu9
+</pre>
+</div>
+
+<p>
+Now, we need  to fetch a few dependencies, and  then build and install
+them:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc"><span style="color: #9d81ba;">cd</span> <span style="color: #7CF083;">$home</span>/src/lu9
+mk pull
+mk install
+</pre>
+</div>
+
+<p>
+To use <code>lu9</code>, you can either run a  Lua file with <code>lu9 file.lua</code> or run an
+interactive shell through <code>lu9 -i</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org89150fa" class="outline-3">
+<h3 id="org89150fa">Scheme</h3>
+<div class="outline-text-3" id="text-org89150fa">
+<p>
+There is <a href="http://www.t3x.org/s9fes/">an awesome implementation of Scheme</a> by Nils M. Holm which not
+only runs on Plan 9, but was also built for it.
+</p>
+
+<p>
+I also recommend  taking a look at <a href="http://www.t3x.org/s9book/index.html">the author's  book</a>, which basically
+teaches you to build it from scratch.
+</p>
+
+<p>
+There  is  a <a href="https://github.com/bakul/s9fes">repository  on  GitHub</a>  which runs  fine  on  any Plan  9
+architecture, plus can be installed on the system.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc"><span style="color: #9d81ba;">cd</span> <span style="color: #7CF083;">$home</span>/src
+git/clone https://github.com/bakul/s9fes
+<span style="color: #9d81ba;">cd</span> s9fes
+mk
+mk inst
+</pre>
+</div>
+
+<p>
+To use Scheme 9 from Empty Space, just run the program <code>s9</code>.
+</p>
+
+<pre class="example" id="org9c224c9">
+cpu% s9
+Scheme 9 from Empty Space (Reimagined)
+&gt; (+ 1 2 3)
+6
+&gt; ,l draw-tree
+; loading from /usr/glenda/lib/s9fes/draw-tree.scm
+&gt; (draw-tree '(a b c))
+[o|o]---[o|o]---[o|/]
+ |       |       |      
+ a       b       c      
+&gt; 
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org73ab083" class="outline-3">
+<h3 id="org73ab083">Vim</h3>
+<div class="outline-text-3" id="text-org73ab083">
+<p>
+Before anything, you seriously should be using Acme or Sam. But if you
+still insist on using  Vim, <a href="https://vmsplice.net/9vim.html">there is a way</a> to have  Vim 7.1 working on
+Plan 9.
+</p>
+
+<p>
+Run the following:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc"><span style="color: #9d81ba;">cd</span> /tmp
+hget http://vmsplice.net/vim71src.tgz <span style="color: #9d81ba;">|</span> gunzip -c <span style="color: #9d81ba;">|</span> tar x
+<span style="color: #9d81ba;">cd</span> vim71/src
+mk -f Make_plan9.mk install
+</pre>
+</div>
+
+<p>
+After  installation,  you'll  have  <code>xxd</code>  and  <code>vim</code>  installed  on  your
+system. <code>xxd</code> is useful for generating hexdumps.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2361fe7" class="outline-3">
+<h3 id="org2361fe7">Netsurf</h3>
+<div class="outline-text-3" id="text-org2361fe7">
+<p>
+Mothra is  a browser that  works for the  simplest tasks, but  you may
+want to use a browser which renders HTML properly.
+</p>
+
+<p>
+You'll want  to compile Netsurf from  source. This will take  a while,
+and I  recommend you to  use whatever external  storage you can  to do
+this.
+</p>
+
+
+<div id="org18e360f" class="figure">
+<p><img src="./img/plan9rpi-netsurf.png" alt="plan9rpi-netsurf.png" />
+</p>
+<p><span class="figure-number">Figure 4: </span>Comparison between Google.com rendering on both Mothra (left) and NetSurf (right).</p>
+</div>
+
+<p>
+Personally,  since I'm  connecting to  my  RPi from  a Linux  Drawterm
+session, I  take advantage of  that (by using the  bindings previously
+described) so that every built file  is stored on Linux instead of the
+RPi. After building, I then installed on the Plan 9 system itself.
+</p>
+
+<p>
+First of all, create a folder where you can clone Netsurf. My <code>projects</code>
+folder was previously bound using <code>bind -ac</code> to <code>$home/projects</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">mkdir <span style="color: #7CF083;">$home</span>/projects
+bind -ac /mnt/term/home/alchemist/projects <span style="color: #7CF083;">$home</span>/projects
+mkdir <span style="color: #7CF083;">$home</span>/projects/plan9
+<span style="color: #9d81ba;">cd</span> <span style="color: #7CF083;">$home</span>/projects/plan9
+</pre>
+</div>
+
+<p>
+Now, clone  the repository  which has the  proper <code>mkfile</code>  for building
+Netsurf's port. You'll  need Git9 for that; refer to  the previous Git
+configuration section.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">git/clone https://github.com/netsurf-plan9/nsport
+<span style="color: #9d81ba;">cd</span> nsport
+git/clone https://github.com/netsurf-plan9/netsurf
+</pre>
+</div>
+
+<p>
+After  that, fetch  other  libraries which  are  crucial for  building
+<code>netsurf</code>. You can use the <code>fetch</code> script on <code>nsport</code>'s repository root.
+</p>
+
+<p>
+Note that fetching all library repositories will take a while.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc"><span style="color: #9d81ba;">cd</span> nsport
+fetch clone https
+</pre>
+</div>
+
+<p>
+Every once in a while, you may  want to update the Netsurf source code
+so you can get  new patches and improvements. You can  <code>cd</code> to this same
+repo and run, before building:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">fetch pull
+</pre>
+</div>
+
+<p>
+Now all we have to do is build Netsurf and install it to our system.
+</p>
+
+<p>
+Needless  to say,  this  might take  long,  specially considering  the
+bottleneck related to file transfers between 9front's filesystem cache
+and Linux's filesystem.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-rc">mk
+mk install
+</pre>
+</div>
+
+<p>
+You may  also want to edit  your <code>$home/lib/plumbing</code> to use  Netsurf as
+your default plumbing action for  web links. Just replace your browser
+with <code>netsurf</code>.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<h3><a href="../">Back to last page</a></h3>
+</div>
+</body>
+</html>

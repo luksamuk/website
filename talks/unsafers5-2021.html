@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Plan 9 From Bell Labs: Vivo e Acordado</title>
+<meta name="author" content="Lucas S. Vieira"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/beige.css" id="theme"/>
+
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/npm/reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h3>Plan 9 From Bell Labs: Vivo e Acordado<br/></h3><p>Transcrição em texto-plano da apresentação<br/><br/>Lucas S. Vieira</h3><br/><p><a href="mailto:lucasvieira@protonmail.com">lucasvieira@protonmail.com</a><br/>01 de abril de 2021</p>
+</section>
+<style type="text/css">
+.reveal pre {
+box-shadow: 0px 0px 0px rgba(0, 0, 0, 0) !important;
+}
+</style>
+
+<section>
+<section id="slide-orgc344572">
+<h2 id="orgc344572">Achtung!</h2>
+<p style="font-size:0.6em;text-align:left;">
+Os  slides a  seguir  são uma  transcrição fiel  da  forma como  foram
+apresentados, através do editor Acme. Eles não foram feitos para serem
+vistos no Browser, então tenha paciência.
+</p>
+
+<p style="font-size:0.6em;text-align:left;">
+Para clonar os slides, veja <a href="https://github.com/luksamuk/plan9talks/tree/front/unsafers5/slides" style="font-size:0.6em;text-align:left;">este repositório</a>.
+</p>
+
+
+<div id="orgf8141bb" class="figure">
+<p><img src="./img/unsafers5.jpg" alt="unsafers5.jpg" width="400" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org496864f">
+<h2 id="org496864f"></h2>
+<pre class="example" id="orgc04f8f4">
+.		   PLAN 9 FROM BELL LABS
+.		   ---------------------
+.	   	      Vivo e Acordado
+.
+.		      Lucas S. Vieira
+.		     01 de maio de 2021
+.
+.			    (\(\
+.			   j". ..
+.			   (  . .)
+.			   |   ° ¡
+.			   ¿     ;
+.			   c?".UJ
+
+</pre>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc71a0bf">
+<h2 id="orgc71a0bf"></h2>
+<pre class="example" id="orgbe016ed">
+Objetivo
+--------
+
+	Mostrar (resumidamente) recursos do Plan 9.
+
+	Inspirado na palestra "Plan 9: Not dead, just resting"
+	do Ori Bernstein.
+
+	Mostrar tambem algumas coisas novas desde entao.
+
+
+			  PERGUNTEM, PERGUNTEM, PERGUNTEM!
+
+</pre>
+
+</section>
+</section>
+<section>
+<section id="slide-org59f2d14">
+<h2 id="org59f2d14"></h2>
+<pre class="example" id="orgc09e46a">
+O que e o Plan 9?
+-----------------
+
+	- Sistema operacional distribuido;
+	- Dos criadores de Unix, C (e Go);
+	- Vem com coelhinhos incluidos: glenda.jpg;
+	- Nao serve para voce;
+	- Nao serve para ninguem;
+	- Sim, so uso porque tenho probleminhas.
+
+
+</pre>
+
+</section>
+<section id="slide-orgf1a75b4">
+<h3 id="orgf1a75b4"><code>glenda.jpg</code></h3>
+
+<div id="orgf4916c3" class="figure">
+<p><img src="./img/glenda.jpg" alt="glenda.jpg" width="400" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orga0518d0">
+<h2 id="orga0518d0"></h2>
+<pre class="example" id="org431a499">
+Plan 9 nao e Unix
+-----------------
+	"Ola! Sou novo usando Plan 9. Estou muito animado para
+	usar esse sistema Linux.
+
+	Tenho umas perguntas.
+
+	1. Como eu executo o X11?
+	2. Cade o Emacs?
+	3. O codigo e esquisito. Nao parece nada com GNU C.
+	   Os criadores do Plan 9 sabiam programar em C?
+	4. Tentei rodar o Firefox mas nao funcionou. Por que?"
+
+...esse cara e voce?
+
+</pre>
+
+</section>
+</section>
+<section>
+<section id="slide-org13a6686">
+<h2 id="org13a6686"></h2>
+<pre class="example" id="orgea73b41">
+Plan 9 nao e Unix
+-----------------
+Algumas diferenças:
+
+	- root            -&gt; sem permissoes por padrao;
+	- sockets         -&gt; ver dial(2);
+	- symlinks        -&gt; ver bind(1);
+	- pthreads        -&gt; ver thread(2);
+	- *.so            -&gt; compilaçao estatica;
+	- emacs, vi       -&gt; acme(1), sam(1);
+	- gcc, C++, etc   -&gt; 2c(1), 2l(1);
+	- Makefile, CMake -&gt; mk(1).
+
+
+</pre>
+
+</section>
+</section>
+<section>
+<section id="slide-org65a0cef">
+<h2 id="org65a0cef"></h2>
+<pre class="example" id="orgdf828fb">
+Plan 9 nao foi feito para Web
+-----------------------------
+
+	"Se voce nao consegue imaginar o uso de um computador
+	 que nao envolva um web browser, Plan 9 pode nao ser
+	 algo para voce."
+		-- https://fqa.9front.org/fqa0.html#0.1.3
+
+
+</pre>
+
+</section>
+</section>
+<section>
+<section id="slide-org7ec8038">
+<h2 id="org7ec8038"></h2>
+<pre class="example" id="org977a2b5">
+Web para Hipsters
+-----------------
+
+	Se voce ainda assim tiver necessidade visceral
+	de usar um browser, temos placebo semi-funcional
+	para voce:
+
+	- abaco (boa sorte);
+	- mothra;
+	- netsurf (desde 2020).
+
+
+</pre>
+
+</section>
+</section>
+<section>
+<section id="slide-orga40aac2">
+<h2 id="orga40aac2"></h2>
+<pre class="example" id="orgff9a138">
+Filosofia do Sistema
+--------------------
+	Esqueça os ultimos 40 anos de legado do Unix.
+
+	- Everything is a file tree: Todos os recursos
+	  sao acessados como arquivos em um FS hierarquico;
+	- Protocolo 9P: Unico e transparente p/ acessar
+	  recursos, independente de sua localizaçao;
+	- Namespaces privados: Cada processo customiza
+	  sua "visao do mundo" dos recursos da rede.
+
+	Vide: /net, /mnt/factotum (auth), /dev/draw,
+		  /proc, /env, /mail/fs, /dev/window,
+		  /dev/screen...
+
+</pre>
+
+</section>
+</section>
+<section>
+<section id="slide-org8134d4c">
+<h2 id="org8134d4c"></h2>
+<pre class="example" id="orgec925a7">
+Exemplos
+--------
+
+-&gt; Screenshot da tela
+	cat /dev/screen | topng &gt;$home/foto.png
+
+-&gt; Requisiçao HTTP
+	#include &lt;u.h&gt;
+	#include &lt;libc.h&gt;
+	...
+	fd = dial(netmkaddr("exemplo.com", "tcp", "8080"), 0, 0, 0);
+	if(fd &lt; 0) {
+		sysfatal("dial: Impossivel conectar: %r");
+		exits("dial");
+	}
+
+</pre>
+
+</section>
+</section>
+<section>
+<section id="slide-org5bc0b72">
+<h2 id="org5bc0b72"></h2>
+<pre class="example" id="orgd90b2dc">
+Exemplos
+--------
+
+-&gt; Rio
+	- Funciona como um editor de texto.
+	- Programas usam suas features (plumber,
+	  chording, tab completion).
+
+-&gt; acme(1)
+	- Janelas stack-based.
+	- Todo o texto e editavel e executavel.
+	- Interface com o FS leva a programabilidade.
+	- Editar/visualizar email, wiki, debugger...
+
+
+</pre>
+
+</section>
+</section>
+<section>
+<section id="slide-org2f5c654">
+<h2 id="org2f5c654"></h2>
+<pre class="example" id="org7f2086d">
+Exemplos
+--------
+
+-&gt; plumber(4)
+	- Interacao interprocessos via texto;
+	- Flexivel, poderoso, programavel (via regras);
+	- Funciona atraves da rede.
+
+	Exemplo: Vamos visitar https://unsafe.rs.
+
+-&gt; Email
+	- Acessivel via nedmail(1) e acme(1);
+	- faces(1).
+
+</pre>
+
+</section>
+</section>
+<section>
+<section id="slide-org3c1bca0">
+<h2 id="org3c1bca0"></h2>
+<pre class="example" id="orga618796">
+Blue Gene[1]
+---------
+
+	Arquitetura de supercomputador em cluster.
+
+	Cinco tipos de conexoes, quatro exclusivas da arquitetura.
+
+	Protocolos de comunicacao entre vizinhos (Torus) e de
+	roteamento de mensagens em grupos (Tree) de/para servidores
+	de I/O, conectados a internet (Ethernet).
+
+	Plan 9 foi usado nos computadores do cluster (I/O usava
+	Linux).
+
+[1] bluegene.jpg
+
+
+
+</pre>
+
+</section>
+<section id="slide-org111b1a8">
+<h3 id="org111b1a8"><code>bluegene.jpg</code></h3>
+
+<div id="orgc8cec05" class="figure">
+<p><img src="./img/bluegene.jpg" alt="bluegene.jpg" width="400" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org2e0a1e1">
+<h2 id="org2e0a1e1"></h2>
+<pre class="example" id="orga902814">
+Prospectos
+----------
+
+	Plan 9 precisa de uma comunidade!
+
+	- Bootcamps do SDF.org com acesso temporario gratis;
+	- Lista de emails amigavel: plan9-l@sdf.org;
+	- Popular entre Golangueiros;
+	- Implementacoes de 9P em Rust/Tokio[1].
+
+[1] https://github.com/pfpacket/rust-9p
+
+
+</pre>
+
+</section>
+</section>
+<section>
+<section id="slide-org3129408">
+<h2 id="org3129408"></h2>
+<pre class="example" id="org04147a7">
+Conclusao
+---------
+
+	Plan 9 compartilha principios com o Unix, apesar de
+	suas enormes diferenças.
+
+	Muito pode ser aprendido com o uso e as ideias do
+	Plan 9.
+
+	Ha problemas discutidos atualmente que foram abordados
+	indiretamente no design do Plan 9.
+
+	Plan 9 pode surpreender com soluçoes simples e impensadas
+	para tais problemas.
+
+
+
+
+</pre>
+
+</section>
+</section>
+<section>
+<section id="slide-org33e0dc0">
+<h2 id="org33e0dc0"></h2>
+<pre class="example" id="org3d4e72d">
+.
+.
+.
+.
+.
+.
+.				OBRIGADO
+.				--------
+.			       Perguntas?
+.
+.
+.
+.
+.
+</pre>
+
+</section>
+</section>
+<section>
+<section id="slide-orga7cb20a">
+<h2 id="orga7cb20a"></h2>
+<pre class="example" id="org160e253">
+Referencias
+-----------
+BERNSTEIN, O. Plan 9: Not dead, just resting.
+Video: https://youtu.be/6m3GuoaxRNM
+
+FORSYTH, C; MCKIE, J.; MINNICH, R.; HENSBERGEN, E. V.
+Night of the Lepus: A Plan 9 Perspective on Blue Gene's
+Interconnects.
+Link: http://doc.cat-v.org/plan_9/blue_gene/night_of_the_lepus/
+
+PEREIRA, U. The Unix Spirit set free: Plan 9 from Bell
+Labs. FOSDEM 2006. Video: https://youtu.be/VJSlvoUFkBA.
+Slides: http://9front.org/extra/uriel.slides.tgz
+
+MYRLAND, D. Plan 9 Desktop Guide.
+Link: https://pspodcasting.net/dan/blog/2019/plan9_desktop.html
+
+BALLESTEROS, F. J. Introduction to Operating Systems Abstractions
+using Plan 9 from Bell Labs. 2007.
+
+</pre>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+transition:"none", slideNumber:true,
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+,
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } }]
+
+});
+
+</script>
+</body>
+</html>

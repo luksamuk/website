@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Early Ideas: A Modern Lisp Machine from Scratch</title>
+<meta name="author" content="Alchemist" />
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-22RF3F5XE0"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-22RF3F5XE0');
+</script>
+<link rel="stylesheet" type="text/css" href="../css/main.css" />
+<link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="../css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="../img/cat-i-mage.jpg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:image" content="../img/cat-i-mage.jpg">
+<meta name="theme-color" content="#14171e">
+</head>
+<body>
+<div id="preamble" class="status">
+<nav><h1><a href="../">The Alchemist's Hideout</a></h1></nav><h1 class="title">Early Ideas: A Modern Lisp Machine from Scratch</h1><p><i>Written in Sep 15, 2018 by Alchemist<br/><a href="mailto:alchemist@sdf.org">alchemist@sdf.org</a></i></p>
+</div>
+<div id="content" class="content">
+
+<div id="outline-container-org5db740d" class="outline-2">
+<h2 id="org5db740d">Introduction</h2>
+<div class="outline-text-2" id="text-org5db740d">
+<p>
+I am often fascinated by old tech.
+</p>
+
+<p>
+While I do not have the experience nor the expertise on the subject, in the last
+months, some very specific stuff has caught my eye, and those are the Lisp
+Machines.
+</p>
+
+<p>
+I've been using Common Lisp for about three years and a half and, though
+only now I began to make cool stuff using the language, the fact that it is not
+very used bothers me a lot. I mean, of course, it is not something as welcoming
+in terms of first impression. Lisp is known for its overwhelming parentheses,
+which often hide the true power of the language.
+</p>
+
+<p>
+But this bad first impression cloaks the possibilities  of a mature
+language such as Common Lisp, of Lisps in general, and of specialized
+hardware and systems, built to ensure performance on Lisp execution.
+</p>
+
+<p>
+On this post, I try to present very early ideas in a project of a new, modern
+Lisp Machine of sorts; one which might have the potential to make true hackers
+feel at home with the idea of running a highly customizable, but also
+efficient Unix-like system built to run Lisp on specialized, modern hardware.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8c644ea" class="outline-2">
+<h2 id="org8c644ea">Lisp Machines</h2>
+<div class="outline-text-2" id="text-org8c644ea">
+<p>
+Lisp Machines were computers specially designed to run Lisp code efficiently.
+This is justified by the way the language works: Lisp stands for
+"List Processor". Since Lisps stand over heavy usage of list data structures,
+it is only natural that someone would want fine-tuned hardware to deal with
+those, so these machines carefully reduced execution costs with specific
+hardware, CPU instructions, and specific memory management.
+</p>
+
+<p>
+The <a href="https://en.wikipedia.org/wiki/Lisp_machine">Lisp Machines</a> rose inside the MIT AI labs, which gave birth to its first
+forms, only to pretty much die after the fall of Symbolics, the company bred
+from the same labs, which produced them commercially, leaving a legacy and
+orphaned lispers who are still waiting for Lisp Machines to rise once again.
+The original Lisp Machines, as I was told, were built using processors with
+reduced instruction sets (<a href="https://en.wikipedia.org/wiki/Reduced_instruction_set_computer">RISC</a>), and a very specific way to manage memory.
+</p>
+
+<p>
+This whole story bothered me to the point which I though I should try building
+one, from scratch, since RISC processors seem to be rising once again (a little
+more on that later in this post). It is old stuff, but it seems interesting,
+given that it pretty much operates different than the way modern computers do.
+But it also needed to be something that I would be able to use, and enjoy using.
+And it might even serve as base for next projects, which I will explain in the
+following paragraphs.
+</p>
+
+<p>
+However, this "Lisp Machine" I intend to build is not the first example of
+what a fully-functional computer running an OS built using Lisp in the present
+days could be.
+<a href="https://hackaday.com/2015/09/23/old-lisp-languaged-used-for-new-raspberry-pi-os/">Lukas F. Hartmann already built something like this for the Raspberry Pi 2</a>,
+pretty much in the model which I want to follow: the resulting experiment is
+a board, attached to a custom-made keyboard. Interim OS (as the operational
+system is called) is a full-fledged Lisp system, running its own dialect
+(do not confuse with the recent <a href="https://github.com/eudoxia0/interim">Interim Lisp</a>, which is a low-level Lisp with
+compile-time memory management, much like Rust language). This OS also has
+the interesting aspect of having been inspired by <a href="https://9p.io/plan9/">Plan 9</a>, the operational
+system which is the true spiritual successor to the original Unix.
+</p>
+</div>
+
+<div id="outline-container-orgd37ded8" class="outline-3">
+<h3 id="orgd37ded8">Hardware optimizations</h3>
+<div class="outline-text-3" id="text-orgd37ded8">
+<p>
+My main concern is about the kind of hardware-level optimizations that
+such an operational system, built using Lisp, might require. Therefore, I have
+decided that I should go ahead and try building custom instructions atop a
+flexible architecture which would allow me to do so. And this is where the plain
+new RISC-V architecture comes in &#x2013; praised by media, open, hackable, exactly
+what I want. And this is what would set it apart: While Interim OS is an awesome
+project, it is built for ARM processors, therefore it is stuck to the ARM
+instruction set. With RISC-V, not only could those instructions be extended, but
+it would also be didatic enough so that hackers with sufficient knowledge could
+mess with.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgea53eb3" class="outline-2">
+<h2 id="orgea53eb3">System architecture</h2>
+<div class="outline-text-2" id="text-orgea53eb3">
+<p>
+For the user experience, my intention is to create a Unix-like
+environment, though I do not intend to follow POSIX, not even remotely. The user
+would be presented with what seems to be a Unix environment, mimicking Plan 9 as
+best as possible &#x2013; this does not only mean good old Unix experience, but also
+possibly <a href="https://en.wikipedia.org/wiki/9P_(protocol)">9p integration</a>, so that building clusters could also be possible with
+ease.
+</p>
+
+<p>
+The system, of course, would also have openness and simplicity in its code as
+fundaments. Files can be precompiled (though I still need to give it careful
+thinking, since I do not want to replicate the old MIT LispM's and <a href="https://github.com/froggey/Mezzano">Mezzano</a>'s
+mistake of taking hours to boot for the first time &#x2013; the former one requiring
+such big time every day; this goal also implies simplicity on kernel development
+itself), though hacking them should be easy: if you want to change anything,
+just go ahead and change the source code, then recompile the file, or even only
+the form. This would allow not only the
+experience of live debugging while running the code (given that I also implement
+something as powerful as Common Lisp's conditions and <a href="http://www.sbcl.org/">SBCL</a>'s debugger), but
+would also make possible to create a fun environment in which I may bootstrap
+the whole system while I'm running it! Just imagine developing a kernel atop
+itself.
+</p>
+
+<p>
+I was thinking about implementing these using some kind of layer. The very
+base of the system would be <a href="https://en.wikipedia.org/wiki/Forth_(programming_language)">implemented in Forth</a>, which could be implemented
+directly using RISC-V assembly, with minimal extra words for its dictionary,
+which harness the power of the custom processor instructions that are required
+for the Lisp Machine. From Forth, we may then bootstrap a basic Lisp
+interpreter; and from the interpreter, we bootstrap the rest of the system.
+I am not entirely sure what to make of the dialect which should be implemented
+itself, but I'm almost certain that it will be a subset of Common Lisp, which
+I believe is the descendant of the dialects used on old Lisp Machines. I am not
+naive enough to think that I will be able to implement Common Lisp on this
+system with so much to do already, but the intention is to leave the dialect
+itself somewhat open, so the features of Common Lisp may be slowly implemented
+as needed.
+</p>
+
+<p>
+I'm also thinking carefully on what to do about concurrency on this new system.
+Some folks once told me that the problem with praised systems languages such as
+C and C++ is that they still make you pretend that you're programming on a
+machine which works like a <a href="https://en.wikipedia.org/wiki/PDP-11">PDP-11</a>, something that is not justifiable given the
+current state of industry. While I like C and C++, I cannot find a
+counter-argument, therefore it is probably important that I take it seriously
+from the beginning of system development, even though the first implementation
+might be built atop a 1-core RISC-V processor. For that reason, I am carefully
+looking into the topic of coroutines, and this might even imply a scheduler for
+the system to make those work, and possibly take advantage of the processor
+as much as it can, according to its number of cores.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcf077e1" class="outline-2">
+<h2 id="orgcf077e1">Extensibility and hackability</h2>
+<div class="outline-text-2" id="text-orgcf077e1">
+<p>
+Another interesting thing which I'm giving a lot of thought is the ability to
+change dialects and paradigms in a per-app basis. Of course there would be a
+common interface for inter-application communication, but imagine a single
+directive which, when evaluated, changes the interpreter only for that
+application so you can write it in, say, Clojure, for example (minus all the
+Java bloat, of course!). This might even be a way to enforce functional
+principles such as immutability to enhance performance even more on certain
+situations.
+</p>
+
+<p>
+We would also need a basic text editor in order for all of this to happen.
+For that, the intention is to implement a small variation of Emacs or Zmacs
+editors, so that coding is made simpler. Scripting language would need to be the
+system's own dialect, although maybe Emacs Lisp support could be implemented
+using the idea from the last paragraph.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org74197ed" class="outline-2">
+<h2 id="org74197ed">Graphical interface</h2>
+<div class="outline-text-2" id="text-org74197ed">
+<p>
+Finally, as for GUI applications, Common Lisp has the fantastic <a href="https://en.wikipedia.org/wiki/Common_Lisp_Interface_Manager">CLIM</a>, which is
+very underrated and has a lot of good principles. CLIM could be implemented
+using the system's dialect, and then GUI applications could be created using it,
+much like someone would do with Qt on any platform, for example.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4aff47d" class="outline-2">
+<h2 id="org4aff47d">Internet</h2>
+<div class="outline-text-2" id="text-org4aff47d">
+<p>
+I've been discussing a lot with friends about the possibility of
+"web" pages built using S-expressions instead of HTML itself. This would
+probably be a huge break in the way a browser works, however this might be just
+perfect for a system running Lisp as its main language, since the page itself is
+already arranged as a tree. It would also be interesting to allow that same idea
+of changing dialects for a scripting language on those pages, however I would
+opt to sandbox Lisp web scripts like this so they cannot manipulate many things,
+while also using the system interpreter itself to optimize the execution of said
+scripts. With such a feature, the webpages are but lists of lists, and scripts
+could be external files written in Scheme, for example, or even lambdas attached
+directly into the document tree.
+</p>
+
+<p>
+Another interesting feature would be to support a dialect of WebAssembly of
+sorts which could compile to machine code directly, just like a Lisp file
+would. This way, the script's safety could be enforced before compilation, and
+then the page script could take full advantage of the system's native
+performance.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org74a9418" class="outline-2">
+<h2 id="org74a9418">Conclusion</h2>
+<div class="outline-text-2" id="text-org74a9418">
+<p>
+Those are ideas for something that has proven difficult to do,
+specially given the fact that I lack a lot of experience and knowledge in most
+of the things I have described above. Most of the difficult would be on actually
+learning the RISC-V low-level stuff to even begin building such a system; and
+then, implementing Forth using nothing but assembly, which will also be a pain;
+then finally, implementing Lisp atop Forth, which might also be a huge problem.
+Plus, the whole system and kernel is another big effort that will take much more
+time, and having a minimal environment for me to have fun bootstrapping the
+system as suggested (which would be crucial so I don't get bored) would also
+require that Emacs/Zmacs clone to work well.
+</p>
+
+<p>
+This is a huge project comprised, right now, mostly of ideas I've been maturing
+on the last months, and discussing with friends over the internet. I'm already
+collecting books and articles on all of those subjects to read in my free time,
+but I know it is gonna take time. However, it would be really nice to see this
+stuff working, specially if the community could make good use of it.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<h3><a href="../">Back to last page</a></h3>
+</div>
+</body>
+</html>

@@ -1,0 +1,3127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
+<head>
+<!-- 2024-09-29 Sun 16:43 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Algoritmo de Compressão de Huffman</title>
+<meta name="author" content="Lucas S. Vieira" />
+<meta name="description" content="Implementação do método de compressão de Huffman em C++.
+Programming, Tech, and occasional rant space by Lucas Vieira" />
+<meta name="keywords" content="huffman, cpp, documentação, algoritmos, estruturas de dados" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-22RF3F5XE0"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-22RF3F5XE0');
+</script>
+<link rel="stylesheet" type="text/css" href="../css/main.css" />
+<link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="../css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="../img/cat-i-mage.jpg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:image" content="../img/cat-i-mage.jpg">
+<meta name="theme-color" content="#14171e">
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<nav><h1><a href="../">The Alchemist's Hideout</a></h1></nav><h1 class="title">Algoritmo de Compressão de Huffman</h1><p><i>Escrito em 3 de janeiro de 2020 por Lucas S. Vieira<br/><a href="mailto:lucasvieira@protonmail.com">lucasvieira@protonmail.com</a></i></p>
+</div>
+<div id="content" class="content">
+<div id="table-of-contents" role="doc-toc">
+<h2>&Iacute;ndice</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgf05661b">Proposta do projeto</a></li>
+<li><a href="#orgbe483d0">Bibliotecas utilizadas</a></li>
+<li><a href="#orgb96cefa">Definições de tipos do projeto</a>
+<ul>
+<li><a href="#org6375cca">Mapa de frequências</a>
+<ul>
+<li><a href="#org4375e52">Impressão do mapa de frequências</a></li>
+</ul>
+</li>
+<li><a href="#org0d2dc24">Nó de árvore binária de Huffman</a></li>
+<li><a href="#orga505f12">Conjunto de nós-folha pré-alocados</a></li>
+<li><a href="#orgfd16063">Mapa de bits</a>
+<ul>
+<li><a href="#org1394ac4">Impressão do mapa de bits</a></li>
+</ul>
+</li>
+<li><a href="#orgead9680">Mapa de caracteres (mapa reverso de bits)</a>
+<ul>
+<li><a href="#orgadeee78">Impressão do mapa de caracteres (mapa reverso de bits)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgdc5d32d">Cálculo de frequências</a></li>
+<li><a href="#org13fb4c9">Construção do conjunto de nós com frequência</a>
+<ul>
+<li><a href="#orgad61549">Extração do elemento de menor frequência</a></li>
+</ul>
+</li>
+<li><a href="#org440f1a6">Algoritmo de Huffman</a></li>
+<li><a href="#orgabecc50">Árvore binária de Huffman</a>
+<ul>
+<li><a href="#org51bda3f">Construção da árvore</a></li>
+<li><a href="#orge237528">Destruição da árvore</a></li>
+<li><a href="#org60fd9f3">Gerar conjunto de nós-folha</a></li>
+<li><a href="#org82e4ad9">Impressão gráfica da árvore</a>
+<ul>
+<li><a href="#orgd3b18b1">Geração de código GraphViz</a></li>
+<li><a href="#org634b45b">Impressão de código GraphViz</a></li>
+<li><a href="#orgaa586c6">Salvamento temporário de código GraphViz</a></li>
+<li><a href="#org94de24a">Exibição gráfica do código GraphViz</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org04d9a1a">Criação do mapa de bits para cada caractere</a></li>
+<li><a href="#org27b650a">Gerenciamento de arquivos bit-a-bit</a>
+<ul>
+<li><a href="#org9155273">Cabeçalho do arquivo: mapa de bits</a>
+<ul>
+<li><a href="#org45070a2">Definição</a></li>
+<li><a href="#org9f89bb2">Criação do cabeçalho</a></li>
+<li><a href="#org647655a">Destruição do cabeçalho</a></li>
+<li><a href="#orgcf4c32b">Mostrando o cabeçalho na tela</a></li>
+</ul>
+</li>
+<li><a href="#orgd5db834">Escritor de arquivo</a>
+<ul>
+<li><a href="#org78d156f">Construtor/Destrutor</a></li>
+<li><a href="#org76a606d">Macro para dump de variável em um stream binário</a></li>
+<li><a href="#org4c73ac9">Registro de bytes cheios</a></li>
+<li><a href="#org26b890d">Abrir arquivo</a></li>
+<li><a href="#orgc14e4c0">Predicado para informar status do arquivo</a></li>
+<li><a href="#orgf0f7ffc">Fechar arquivo</a></li>
+<li><a href="#org7a4c57c">Escrever vetor de bits no arquivo</a></li>
+<li><a href="#orgfb32f27">Escrever cabeçalho informado no arquivo</a></li>
+<li><a href="#orgaec1d94">Bits sobrando</a></li>
+</ul>
+</li>
+<li><a href="#orgb2e0afa">Leitor do arquivo</a>
+<ul>
+<li><a href="#org64e9ef8">Construtor/Destrutor</a></li>
+<li><a href="#org76cad05">Macro para leitura de variável de um stream binário</a></li>
+<li><a href="#org00974b3">Leitura de novo byte</a></li>
+<li><a href="#org6620977">Abrir arquivo</a></li>
+<li><a href="#org489de88">Predicado para informar status do arquivo</a></li>
+<li><a href="#org7d2a0d3">Leitura de cabeçalho</a></li>
+<li><a href="#orgffe6ed0">Geração de mapa de caracteres</a></li>
+<li><a href="#org91613d2">Tradução de arquivo</a></li>
+<li><a href="#orgb9afef6">Fechamento de arquivo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org346eb03">Ponto de entrada</a>
+<ul>
+<li><a href="#org1798333">Variáveis globais</a></li>
+<li><a href="#org773b1e1">Texto de cabeçalho</a></li>
+<li><a href="#org80d7b7d">Texto de ajuda</a></li>
+<li><a href="#org84cacb8">Processo de compressão</a></li>
+<li><a href="#orgfb2315c">Processo de extração</a></li>
+<li><a href="#orgcffec86">Resolução de argumentos do console</a></li>
+<li><a href="#org24b056c">Função principal</a></li>
+</ul>
+</li>
+<li><a href="#org1a837a9">Apêndices</a>
+<ul>
+<li><a href="#org194a6ae">Teste tipográfico</a></li>
+<li><a href="#org26e6c23">Lorem ipsum simples</a></li>
+<li><a href="#org9206c2d">Lorem ipsum complexo</a></li>
+<li><a href="#org453d8dc">Makefile</a></li>
+<li><a href="#org05eb7e1">Sobre o licenciamento</a></li>
+<li><a href="#orgb137e59">Licença MIT</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-orgf05661b" class="outline-2">
+<h2 id="orgf05661b">Proposta do projeto</h2>
+<div class="outline-text-2" id="text-orgf05661b">
+<p>
+Este arquivo provê uma implementação completa para o Algoritmo de
+Compressão de Huffman para arquivos de texto. A compressão é realizada
+a cada caractere.
+</p>
+
+<p>
+A compressão envolve a criação de uma árvore binária, e o algoritmo
+utilizado para tal é baseado nas explicações e no pseudocódigo
+apresentado por [<a href="#cormen">1</a>].
+</p>
+
+<p>
+Este programa foi escrito usando <i>programação literária</i>, um conceito
+inicialmente descrito por [<a href="#knuth1984">2</a>], onde
+</p>
+
+<div class="citacao" id="org04a9eb3">
+<p>
+``Ao invés de imaginarmos que nossa tarefa principal é instruir
+um computador quanto ao que deve ser feito, vamos nos concentrar em
+explicar para humanos o que nós queremos que o computador faça.''
+[<a href="#knuth1984">2</a>]<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>
+</p>
+
+</div>
+
+<p>
+Este ideal é aqui refletido em seções com listagens, onde o código é
+isentado de comentários excessivos, sendo precedido de prosa
+explicativa.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbe483d0" class="outline-2">
+<h2 id="orgbe483d0">Bibliotecas utilizadas</h2>
+<div class="outline-text-2" id="text-orgbe483d0">
+<p>
+Abaixo, temos a inclusão de alguns cabeçalhos cruciais para a criação
+do programa. Enumerando-os, temos que:
+</p>
+
+<ul class="org-ul">
+<li><code>iostream</code> provê estruturas para entrada e saída do console;</li>
+<li><code>iomanip</code> provê estruturas para manipulação de formato na entrada e
+saída;</li>
+<li><code>fstream</code> possibilita interações com arquivos no sistema de arquivos;</li>
+<li><code>string</code> provê a estrutura de dados <code>std::string</code>;</li>
+<li><code>cstring</code> provê facilidades para manipular strings de C (<i>arrays</i> de
+<code>char</code>);</li>
+<li><code>cctype</code> provê funções para a verificação de caracteres quanto a serem
+imprimíveis, serem caracteres em branco, alfanuméricos, dentre
+outras possibilidades;</li>
+<li><code>vector</code> provê a estrutura <code>std::vector</code>, um <i>array</i> dinamicamente
+alocado e redimensionável;</li>
+<li><code>algorithm</code> provê implementações de estruturas lógicas interessantes,
+como métodos de ordenação;</li>
+<li><code>queue</code> provê a implementação de <code>std::queue</code>, correspondente a <i>filas</i>;</li>
+<li><code>map</code> provê a implementação de <code>std::map</code>, uma estrutura de associação
+entre <i>chaves</i> e <i>valores</i>;</li>
+<li><code>set</code> provê a implementação de <code>std::set</code>, uma estrutura similar ao
+conceito de <i>conjunto</i> na Matemática, e <code>std::multiset</code>, uma espécie de
+<i>conjunto</i> que permite elementos repetidos;</li>
+<li><code>cstdint</code> provê definições de tipos inteiros com tamanhos específicos,
+garantidos pela implementação do compilador (<code>uint8_t</code>, <code>int8_t</code>,
+<code>uint16_t</code>, <code>int16_t</code>, e outros);</li>
+<li><code>bitset</code> provê uma estrutura de dados para manipulação de máscaras de
+bits, sendo aqui utilizada apenas para impressão de máscaras de bits
+armazenadas em valores inteiros.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;iostream&gt;</span>
+<span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;iomanip&gt;</span>
+<span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;fstream&gt;</span>
+<span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;string&gt;</span>
+<span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;cstring&gt;</span>
+<span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;cctype&gt;</span>
+<span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;vector&gt;</span>
+<span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;algorithm&gt;</span>
+<span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;queue&gt;</span>
+<span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;map&gt;</span>
+<span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;set&gt;</span>
+<span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;cstdint&gt;</span>
+<span style="color: #e55c7a;">#include</span> <span style="color: #f5c791;">&lt;bitset&gt;</span>
+</pre>
+</div>
+
+<p>
+Para manter a clareza do uso dos elementos de algumas das bibliotecas
+citadas, não utilizaremos o <i>namespace</i> <code>std</code> por completo. Ao invés
+disso, isentaremos apenas algumas estruturas do uso do prefixo <code>std::</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">using</span> <span style="color: #0D9C94;">std</span>::<span style="color: #0D9C94;">cout</span>;
+<span style="color: #9d81ba;">using</span> <span style="color: #0D9C94;">std</span>::<span style="color: #0D9C94;">cerr</span>;
+<span style="color: #9d81ba;">using</span> <span style="color: #0D9C94;">std</span>::<span style="color: #0D9C94;">endl</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb96cefa" class="outline-2">
+<h2 id="orgb96cefa">Definições de tipos do projeto</h2>
+<div class="outline-text-2" id="text-orgb96cefa">
+<p>
+Abaixo, enumeraremos alguns tipos-padrão que serão utilizados ao longo
+da aplicação.
+</p>
+
+<p>
+Alguns destes tipos são definidos a partir de <code>typedefs</code>, para garantir
+que o código mantenha-se sucinto, uma vez que a declaração do tipo
+pode ficar extremamente longa.
+</p>
+</div>
+
+<div id="outline-container-org6375cca" class="outline-3">
+<h3 id="org6375cca">Mapa de frequências</h3>
+<div class="outline-text-3" id="text-org6375cca">
+<p>
+A estrutura a seguir implementa um <i>mapa de frequências</i>, que mapeia um
+certo caractere para a frequência de sua aparição em um certo texto.
+</p>
+
+<p>
+As frequências são salvas como <code>uint64_t</code> para possibilitar um maior
+contagem de frequências, sendo um inteiro sem sinal, de exatamente 64
+bits.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">typedef</span> <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">map</span>&lt;<span style="color: #62D2DB;">char</span>, <span style="color: #62D2DB;">uint64_t</span>&gt; <span style="color: #62D2DB;">freq_map_t</span>;
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org4375e52" class="outline-4">
+<h4 id="org4375e52">Impressão do mapa de frequências</h4>
+<div class="outline-text-4" id="text-org4375e52">
+<p>
+A função a seguir imprime um mapa de frequências no console, no
+formato de uma tabela.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">show_freq_map</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">freq_map_t</span> <span style="color: #7CF083;">freq_map</span>)
+{
+    cout &lt;&lt; <span style="color: #f5c791;">" Char        |   Freq "</span> &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"-------------+--------"</span> &lt;&lt; endl;
+    <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">pair</span> : freq_map) {
+        cout &lt;&lt; <span style="color: #f5c791;">' '</span>;
+        <span style="color: #9d81ba;">if</span>(isspace(pair.first) || <span style="color: #e55c7a;">!</span>isprint(pair.first)) {
+            cout &lt;&lt; <span style="color: #f5c791;">"0x"</span>
+                 &lt;&lt; <span style="color: #0D9C94;">std</span>::setfill(<span style="color: #f5c791;">'0'</span>)
+                 &lt;&lt; <span style="color: #0D9C94;">std</span>::setw(<span style="color: #f5c791;">8</span>)
+                 &lt;&lt; <span style="color: #0D9C94;">std</span>::hex &lt;&lt; ((<span style="color: #62D2DB;">int</span>)pair.first)
+                 &lt;&lt; <span style="color: #0D9C94;">std</span>::dec;
+        } <span style="color: #9d81ba;">else</span> {
+            cout &lt;&lt; <span style="color: #0D9C94;">std</span>::setfill(<span style="color: #f5c791;">' '</span>)
+                 &lt;&lt; <span style="color: #0D9C94;">std</span>::setw(<span style="color: #f5c791;">10</span>)
+                 &lt;&lt; pair.first;
+        }
+
+        cout &lt;&lt; <span style="color: #f5c791;">"  |  "</span>
+             &lt;&lt; <span style="color: #0D9C94;">std</span>::setfill(<span style="color: #f5c791;">' '</span>)
+             &lt;&lt; <span style="color: #0D9C94;">std</span>::setw(<span style="color: #f5c791;">5</span>)
+             &lt;&lt; <span style="color: #0D9C94;">std</span>::dec
+             &lt;&lt; pair.second &lt;&lt; endl;
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0d2dc24" class="outline-3">
+<h3 id="org0d2dc24">Nó de árvore binária de Huffman</h3>
+<div class="outline-text-3" id="text-org0d2dc24">
+<p>
+A estrutura <code>huffman_node_t</code> define um nó qualquer na árvore binária do
+algoritmo de Huffman. Este nó possui um caractere associado, uma
+frequência para a ocorrência de tal caractere no texto, ponteiros para
+filhos à esquerda e à direita e, finalmente, um ponteiro para o nó que
+seja pai do nó atual.
+</p>
+
+<p>
+Este último ponteiro para o <i>pai</i> foi fruto de uma decisão durante a
+implementação, possibilitando que a árvore pudesse ser percorrida
+desde os nós-folha (onde os caracteres ficam armazenados) até a raiz,
+com o intuito de recolher os bits utilizados para aquele caractere.
+</p>
+
+<p>
+A frequência é armazenada como <code>uint64_t</code>, em conformidade com a
+implementação de <code>freq_map_t</code>
+</p>
+
+<p>
+Não houve nenhuma diferença na implementação que interferisse com a
+didática do código em si.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">struct</span> <span style="color: #62D2DB;">huffman_node_t</span>
+{
+    <span style="color: #62D2DB;">char</span>           <span style="color: #7CF083;">c</span>;
+    <span style="color: #62D2DB;">uint64_t</span>       <span style="color: #7CF083;">freq</span>;
+    <span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">left</span>;
+    <span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">right</span>;
+    <span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">parent</span>;
+};
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga505f12" class="outline-3">
+<h3 id="orga505f12">Conjunto de nós-folha pré-alocados</h3>
+<div class="outline-text-3" id="text-orga505f12">
+<p>
+O tipo <code>node_set_t</code> determina a estrutura de dados para um <i>conjunto</i> de
+nós de uma árvore de Huffman que já estejam alocados apropriadamente
+na memória.
+</p>
+
+<p>
+A parte interessante do uso desta estrutura é que poderemos garantir
+que este <i>conjunto</i> de nós seja um contêiner <i>sempre ordenado</i>. Por isso,
+temos uma função associada a este contêiner, que serve como uma função
+de comparação.
+</p>
+
+<p>
+Aqui, podemos ver a nomenclatura de C++ 14 em ação. <code>huff_cmp</code> é uma
+<i>função lambda</i>, que não captura contexto, e recebe dois ponteiros para
+nós como entrada; sua saída é um valor booleano. Esta função retorna
+verdadeiro caso o nó <code>a</code> tenha uma frequência menor que o nó <code>b</code>.
+</p>
+
+<p>
+Veja que <code>huff_cmp</code> age como uma <i>variável</i>, que recebe como valor uma
+<i>função lambda</i>. O tipo desta estrutura é bem extenso<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>, portanto,
+utilizamos a palavra-chave <code>auto</code> para permitir que o compilador deduza
+este tipo para o programador.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">huff_cmp</span> =
+    [](<span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">a</span>, <span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">b</span>) -&gt; <span style="color: #62D2DB;">bool</span> {
+        <span style="color: #9d81ba;">return</span> (a-&gt;freq &lt; b-&gt;freq);
+    };
+</pre>
+</div>
+
+<p>
+Abaixo, declaramos o <i>conjunto</i> de nós como um <code>std::multiset</code>. O motivo
+para tal será explicado logo mais.
+</p>
+
+<p>
+Veja também que o segundo argumento do template é
+<code>decltype(huff_cmp)</code>. O operador <code>decltype</code> faz com que o compilador
+deduza, em tempo de compilação, que o tipo informado seja exatamente o
+mesmo da estrutura passada entre parênteses. Isto significa que o
+segundo tipo passado para o template é o tipo com o qual <code>huff_cmp</code> foi
+declarado.
+</p>
+
+<p>
+O uso de <code>decltype</code>, assim como <code>auto</code>, permite deixar o código sucinto,
+quando precisamos nos referir ao tipo de uma variável ou estrutura
+pré-declarada.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">typedef</span>
+    <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">multiset</span>&lt;<span style="color: #62D2DB;">huffman_node_t</span>*, <span style="color: #9d81ba;">decltype</span>(huff_cmp)&gt;
+    <span style="color: #62D2DB;">node_set_t</span>;
+</pre>
+</div>
+
+<p>
+Este é um tipo derivado do contêiner <code>std::multiset</code>, que garante um
+conjunto <i>ordenado</i> de elementos.
+</p>
+
+<p>
+Foi utilizado <code>std::multiset</code> ao invés de <code>std::set</code>, uma vez que o novo
+tipo possui a função de comparação <code>huff_cmp</code>, que apenas verifica pela
+<i>frequência</i> para a ordenação; caso <code>std::set</code> fosse utilizado, elementos
+de mesma frequência seriam removidos.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfd16063" class="outline-3">
+<h3 id="orgfd16063">Mapa de bits</h3>
+<div class="outline-text-3" id="text-orgfd16063">
+<p>
+O <i>mapa de bits</i> é uma estrutura que associa um <code>char</code> a um certo
+<code>std::vector</code> de valores booleanos e tamanho variável. Esta estrutura
+será utilizada para armazenar o mapa de bits de um certo caractere, no
+momento da criação do arquivo compactado.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">typedef</span> <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">map</span>&lt;<span style="color: #62D2DB;">char</span>, <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">vector</span>&lt;<span style="color: #62D2DB;">bool</span>&gt;&gt; <span style="color: #62D2DB;">bit_map_t</span>;
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org1394ac4" class="outline-4">
+<h4 id="org1394ac4">Impressão do mapa de bits</h4>
+<div class="outline-text-4" id="text-org1394ac4">
+<p>
+A função a seguir toma uma referência a um mapa de bits qualquer e
+imprime-o na tela, mostrando um caractere à esquerda e os bits
+associados ao mesmo à direita. Caso o caractere seja branco ou
+não-imprimível (espaços, fim-de-arquivo, etc.), a função mostrará seu
+valor em hexadecimal.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">print_bitmap</span>(<span style="color: #62D2DB;">bit_map_t</span> &amp;<span style="color: #7CF083;">bitmap</span>)
+{
+    <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">pair</span> : bitmap) {
+        <span style="color: #9d81ba;">if</span>(isspace(pair.first) || <span style="color: #e55c7a;">!</span>isprint(pair.first)) {
+            cout &lt;&lt; <span style="color: #f5c791;">"0x"</span>
+                 &lt;&lt; <span style="color: #0D9C94;">std</span>::setfill(<span style="color: #f5c791;">'0'</span>)
+                 &lt;&lt; <span style="color: #0D9C94;">std</span>::setw(<span style="color: #f5c791;">8</span>)
+                 &lt;&lt; <span style="color: #0D9C94;">std</span>::hex &lt;&lt; ((<span style="color: #62D2DB;">int</span>)pair.first)
+                 &lt;&lt; <span style="color: #0D9C94;">std</span>::dec;
+        } <span style="color: #9d81ba;">else</span> {
+            cout &lt;&lt; <span style="color: #0D9C94;">std</span>::setfill(<span style="color: #f5c791;">' '</span>)
+                 &lt;&lt; <span style="color: #0D9C94;">std</span>::setw(<span style="color: #f5c791;">10</span>)
+                 &lt;&lt; pair.first;
+        }
+        cout &lt;&lt; <span style="color: #f5c791;">" =&gt; "</span>;
+        <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">bit</span> : pair.second) {
+            cout &lt;&lt; (bit ? <span style="color: #f5c791;">'1'</span> : <span style="color: #f5c791;">'0'</span>);
+        }
+        cout &lt;&lt; endl;
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgead9680" class="outline-3">
+<h3 id="orgead9680">Mapa de caracteres (mapa reverso de bits)</h3>
+<div class="outline-text-3" id="text-orgead9680">
+<p>
+O <i>mapa de caracteres</i> é uma estrutura similar ao <i>mapa de bits</i>, porém
+invertida: temos associações entre <i>vetores de bits</i> como chaves para
+<i>caracteres</i>. Esta estrutura é utilizada ao traduzir um arquivo
+encriptado para texto novamente.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">typedef</span> <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">map</span>&lt;<span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">vector</span>&lt;<span style="color: #62D2DB;">bool</span>&gt;, <span style="color: #62D2DB;">char</span>&gt; <span style="color: #62D2DB;">char_map_t</span>;
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgadeee78" class="outline-4">
+<h4 id="orgadeee78">Impressão do mapa de caracteres (mapa reverso de bits)</h4>
+<div class="outline-text-4" id="text-orgadeee78">
+<p>
+Esta função realiza o exato mesmo trabalho de <code>print_bitmap</code>, porém de
+forma invertida, em adequação com o mapa de caracteres.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">print_charmap</span>(<span style="color: #62D2DB;">char_map_t</span> &amp;<span style="color: #7CF083;">charmap</span>)
+{
+    <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">pair</span> : charmap) {
+        <span style="color: #9d81ba;">if</span>(isspace(pair.second) || <span style="color: #e55c7a;">!</span>isprint(pair.second)) {
+            cout &lt;&lt; <span style="color: #f5c791;">"0x"</span>
+                 &lt;&lt; <span style="color: #0D9C94;">std</span>::setfill(<span style="color: #f5c791;">'0'</span>)
+                 &lt;&lt; <span style="color: #0D9C94;">std</span>::setw(<span style="color: #f5c791;">8</span>)
+                 &lt;&lt; <span style="color: #0D9C94;">std</span>::hex &lt;&lt; ((<span style="color: #62D2DB;">int</span>)pair.second)
+                 &lt;&lt; <span style="color: #0D9C94;">std</span>::dec;
+        } <span style="color: #9d81ba;">else</span> {
+            cout &lt;&lt; <span style="color: #0D9C94;">std</span>::setfill(<span style="color: #f5c791;">' '</span>)
+                 &lt;&lt; <span style="color: #0D9C94;">std</span>::setw(<span style="color: #f5c791;">10</span>)
+                 &lt;&lt; pair.second;
+        }
+        cout &lt;&lt; <span style="color: #f5c791;">" &lt;= "</span>;
+        <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">bit</span> : pair.first) {
+            cout &lt;&lt; (bit ? <span style="color: #f5c791;">'1'</span> : <span style="color: #f5c791;">'0'</span>);
+        }
+        cout &lt;&lt; endl;
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdc5d32d" class="outline-2">
+<h2 id="orgdc5d32d">Cálculo de frequências</h2>
+<div class="outline-text-2" id="text-orgdc5d32d">
+<p>
+Precisamos construir um mapa de todas as frequências de caracteres
+para o arquivo-texto lido. Para tanto, recebemos um <i>stream</i> de entrada
+qualquer (que pode ser o arquivo em questão), e lemos os caracteres
+até chegarmos ao fim do arquivo. Também recebemos um <code>freq_map_t</code> por
+<i>referência</i>, onde salvaremos nossa contagem de frequências.
+</p>
+
+<p>
+Veja que, como <code>freq_map_t</code> nada mais é que um <code>std::map</code>, podemos
+usufruir da criação de uma entrada neste mapa através do uso direto da
+chave. A entrada é inserida implicitamente, e a frequência é
+inicializada com zero.
+</p>
+
+<p>
+Esta contagem de caracteres também utiliza o caractere de
+fim-de-arquivo (<code>EOF</code>), o que auxilia no momento da descompressão.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">count_characters</span>(<span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">istream</span> &amp;<span style="color: #7CF083;">stream</span>, <span style="color: #62D2DB;">freq_map_t</span> &amp;<span style="color: #7CF083;">freq</span>)
+{
+    <span style="color: #9d81ba;">while</span>(stream.good()) {
+        <span style="color: #62D2DB;">char</span> <span style="color: #7CF083;">c</span> = stream.get();
+        freq[c]++;
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org13fb4c9" class="outline-2">
+<h2 id="org13fb4c9">Construção do conjunto de nós com frequência</h2>
+<div class="outline-text-2" id="text-org13fb4c9">
+<p>
+A função a seguir constrói um <i>conjunto de nós</i> da árvore binária de
+Huffman, baseado no <i>mapa de frequências</i> repassado. Os nós gerados são
+todos nós-folha, em preparação para a execução do Algoritmo de Huffman
+para a criação da árvore binária.
+</p>
+
+<p>
+É interessante notar que este conjunto, pela natureza de sua
+declaração, garante que o mesmo esteja sempre ordenado. Mais
+informações a respeito disto serão dadas a seguir.
+</p>
+
+<p>
+Os nós criados também tem seus ponteiros de <i>pai</i>, <i>esquerda</i> e <i>direita</i>
+inicializados como nulos. Aqui, utilizamos a estrutura <code>nullptr</code> para
+indicar a nulidade de um ponteiro, em conformidade com o padrão de C++
+moderno. O uso de <code>nullptr</code> garante que este valor seja sempre um
+<i>ponteiro</i>, enquanto o uso de <code>NULL</code> poderia ser confundido com um número
+inteiro qualquer.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">node_set_t</span>
+<span style="color: #0bc9cf;">build_freq_nodeset</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">freq_map_t</span> &amp;<span style="color: #7CF083;">freqs</span>)
+{
+    <span style="color: #62D2DB;">node_set_t</span> <span style="color: #7CF083;">freq_nodes</span>(huff_cmp);
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Percorra os pares (caractere, frequencia),</span>
+    <span style="color: #454459;">// </span><span style="color: #454459;">criando n&#243;s-folha para cada um e adicionando-os</span>
+    <span style="color: #454459;">// </span><span style="color: #454459;">ao conjunto de n&#243;s</span>
+    <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">pair</span> : freqs) {
+        <span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">node</span> = <span style="color: #9d81ba;">new</span> <span style="color: #62D2DB;">huffman_node_t</span>;
+        node-&gt;c    = pair.first;
+        node-&gt;freq = pair.second;
+        node-&gt;left = node-&gt;right = node-&gt;parent = <span style="color: #0D9C94;">nullptr</span>;
+        freq_nodes.insert(node);
+    }
+
+    <span style="color: #9d81ba;">return</span> freq_nodes;
+}
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgad61549" class="outline-3">
+<h3 id="orgad61549">Extração do elemento de menor frequência</h3>
+<div class="outline-text-3" id="text-orgad61549">
+<p>
+A função a seguir extrai o elemento de <i>menor frequência</i> no conjunto de
+nós do tipo <code>node_set_t</code>.
+</p>
+
+<p>
+Como <code>node_set_t</code> é um contêiner <i>automaticamente ordenado</i> de elementos,
+a função <code>extract_minimum</code> apenas <i>remove</i> e <i>retorna</i> o primeiro elemento
+deste contêiner.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">huffman_node_t</span>*
+<span style="color: #0bc9cf;">extract_minimum</span>(<span style="color: #62D2DB;">node_set_t</span> &amp;<span style="color: #7CF083;">freq_nodes</span>)
+{
+    <span style="color: #9d81ba;">if</span>(freq_nodes.empty())
+        <span style="color: #9d81ba;">return</span> <span style="color: #0D9C94;">nullptr</span>;
+
+    <span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">ret</span> = *freq_nodes.begin();
+    freq_nodes.erase(freq_nodes.begin());
+    <span style="color: #9d81ba;">return</span> ret;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org440f1a6" class="outline-2">
+<h2 id="org440f1a6">Algoritmo de Huffman</h2>
+<div class="outline-text-2" id="text-org440f1a6">
+<p>
+Seja <code>C</code> o conjunto de nós-folha desconexos, cada qual contendo
+informações a respeito da frequência de um certo caractere do alfabeto
+do arquivo tratado. Sendo assim, [<a href="#cormen">1</a>] institui o seguinte
+algoritmo para criação de uma árvore binária de frequências dos
+caracteres, como exposto no Listing <a href="#org613916d">1</a>.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listagem 1: </span>Algoritmo de Huffman. Fonte: <a href="cormen">cormen</a> (adaptado)</label><pre class="src src-text" id="org613916d">fun&#231;&#227;o Huffman(C)
+    n = |C|
+    Q = C
+    para i = 1 at&#233; n-1
+    |   x = Extrair-M&#237;nimo(Q)
+    |   y = Extrair-M&#237;nimo(Q)
+    |   crie um novo n&#243; z
+    |   z.esquerda = x
+    |   z.direita  = y
+    |   z.freq     = x.freq + y.freq
+    |   Inserir(Q, z)
+    fim do la&#231;o
+    retorne Extrair-M&#237;nimo(Q)
+fim da fun&#231;&#227;o
+</pre>
+</div>
+
+<p>
+Onde <code>n</code> é a cardinalidade de <code>C</code>, e <code>Q</code> é uma cópia do conjunto <code>C</code> a ser
+utilizada no algoritmo.
+</p>
+
+<p>
+Este algoritmo institui a criação da árvore binária através da junção
+dos nós de menor frequência sob novos nós-pai que não armazenam
+valores, mas armazenam a soma das frequências de seus filhos.
+</p>
+
+<p>
+O objetivo da criação desta árvore é determinar uma codificação, em
+<i>bits</i>, para cada um dos caracteres que aparecem no arquivo-texto. Para
+determinar este código, basta percorrer a árvore a partir da raiz até
+o nó do caractere em questão. Cada vez que o caminho for para a
+<i>esquerda</i>, agregue um bit <code>0</code> à codificação; caso vá para a <i>direita</i>,
+agregue um bit <code>1</code> à codificação.
+</p>
+
+
+<div id="org50083aa" class="figure">
+<p><img src="img/lipsum1_hufftree.png" alt="lipsum1_hufftree.png" />
+</p>
+<p><span class="figure-number">Figura 1: </span>Exemplo de árvore de Huffman gerada para um texto de um parágrafo.</p>
+</div>
+
+<p>
+Podemos observar, na Figura <a href="#org50083aa">1</a>, uma árvore binária de
+Huffman gerada para um único arquivo-texto de um parágrafo (este texto
+encontra-se presente na Seção <a href="#orgbf00b15">No description for this link</a> dos Apêndices). Veja que
+há, também um único nó representado em notação hexadecimal; este nó
+corresponde ao caractere de fim-de-arquivo para o arquivo em questão.
+</p>
+
+<p>
+Podemos implementar diretamente este algoritmo, usando a mesma
+nomenclatura apresentada, como pode ser visto no código a seguir.
+</p>
+
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">huffman_node_t</span>*
+<span style="color: #0bc9cf;">huffman</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">node_set_t</span> &amp;<span style="color: #7CF083;">C</span>)
+{
+    <span style="color: #62D2DB;">size_t</span>     <span style="color: #7CF083;">n</span> = C.size();
+    <span style="color: #62D2DB;">node_set_t</span> <span style="color: #7CF083;">Q</span>(C);
+
+    <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">i</span> = <span style="color: #f5c791;">1</span>; i &lt;= n - <span style="color: #f5c791;">1</span>; i++) {
+        <span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">x</span>, *<span style="color: #7CF083;">y</span>;
+        x = extract_minimum(Q);
+        y = extract_minimum(Q);
+
+        <span style="color: #454459;">// </span><span style="color: #454459;">Crie um novo n&#243; 'z'</span>
+        <span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">z</span> = <span style="color: #9d81ba;">new</span> <span style="color: #62D2DB;">huffman_node_t</span>;
+        z-&gt;c = <span style="color: #f5c791;">'\0'</span>; <span style="color: #454459;">// </span><span style="color: #454459;">Sem caractere associado</span>
+        z-&gt;parent = <span style="color: #0D9C94;">nullptr</span>;
+
+        z-&gt;left  = x;
+        z-&gt;right = y;
+        x-&gt;parent = y-&gt;parent = z;
+        z-&gt;freq = x-&gt;freq + y-&gt;freq;
+
+        Q.insert(z);
+    }
+    <span style="color: #9d81ba;">return</span> extract_minimum(Q);
+}
+</pre>
+</div>
+
+<p>
+A ordenação implícita dos conjuntos de nós <code>C</code> e <code>Q</code> garante que, na
+criação do novo nó, sua inserção no conjunto <code>Q</code> seja exatamente em sua
+posição apropriada.
+</p>
+
+<p>
+É necessário ressaltar também que, aos nós sem um caractere
+associado (que são apenas utilizados para cálculo de frequência), é
+atribuído o caractere <code>NUL</code> (<code>'\0'</code>). Como este caractere não é
+normalmente utilizado na escrita de arquivos-texto, podemos tratar
+quaisquer nós que não estejam associados a este caractere como
+nós-folha.
+</p>
+
+<p>
+Arquivos com alfabetos mais variados possuem árvores ainda maiores. A
+Figura <a href="#org044c71c">2</a> exemplifica mais uma árvore, gerada para o
+arquivo exemplificado na Seção <a href="#org4c10649">No description for this link</a> dos Apêndices. Este arquivo
+constitui-se de cinco parágrafos de texto em latim, gerado
+automaticamente para teste de tipografia.
+</p>
+
+
+<div id="org044c71c" class="figure">
+<p><img src="img/lipsum2_hufftree.png" alt="lipsum2_hufftree.png" />
+</p>
+<p><span class="figure-number">Figura 2: </span>Exemplo de árvore de Huffman gerada para um texto de cinco parágrafos.</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgabecc50" class="outline-2">
+<h2 id="orgabecc50">Árvore binária de Huffman</h2>
+<div class="outline-text-2" id="text-orgabecc50">
+<p>
+Nesta seção, discutiremos todos os processos relacionados ao
+gerenciamento da estrutura de árvore binária em si, envolvendo sua
+construção a partir da invocação do algoritmo de Huffman e outras
+operações pertinentes para a mesma.
+</p>
+</div>
+
+<div id="outline-container-org51bda3f" class="outline-3">
+<h3 id="org51bda3f">Construção da árvore</h3>
+<div class="outline-text-3" id="text-org51bda3f">
+<p>
+A seguir, temos o processo de criação da árvore de Huffman em si,
+responsável pela invocação do algoritmo de Huffman.
+</p>
+
+<p>
+Primeiramente, criamos um mapa de frequências para cada letra. Este
+algoritmo envolve nada mais que receber um <i>stream</i><sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup> de entrada,
+onde lemos os caracteres um a um, para dentro de um mapa do tipo
+<code>freq_map_t</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">freq_map_t</span>
+<span style="color: #0bc9cf;">build_frequency_map</span>(<span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">istream</span> &amp;<span style="color: #7CF083;">is</span>)
+{
+    <span style="color: #62D2DB;">freq_map_t</span> <span style="color: #7CF083;">freq</span>;
+    count_characters(is, freq);
+    <span style="color: #9d81ba;">return</span> freq;
+}
+</pre>
+</div>
+
+<p>
+Em seguida, temos uma função que retorna o ponteiro para a raiz de uma
+árvore a ser criada. Para tanto, tomamos um mapa de frequências,
+construímos um conjunto de nós-folha desconexos com este mapa, e então
+aplicamos o algoritmo de huffman neste conjunto, produzindo a raiz de
+nossa árvore.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">huffman_node_t</span>*
+<span style="color: #0bc9cf;">build_huffman_tree</span>(<span style="color: #62D2DB;">freq_map_t</span> &amp;<span style="color: #7CF083;">freq</span>)
+{
+    <span style="color: #454459;">// </span><span style="color: #454459;">Cria um conjunto de n&#243;s-folha</span>
+    <span style="color: #62D2DB;">node_set_t</span> <span style="color: #7CF083;">leaf_set</span> = build_freq_nodeset(freq);
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Execute o algoritmo de Huffman, criando</span>
+    <span style="color: #454459;">// </span><span style="color: #454459;">a &#225;rvore em si</span>
+    <span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">tree_root</span> = huffman(leaf_set);
+
+    <span style="color: #9d81ba;">return</span> tree_root;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge237528" class="outline-3">
+<h3 id="orge237528">Destruição da árvore</h3>
+<div class="outline-text-3" id="text-orge237528">
+<p>
+A destruição da árvore de Huffman, uma vez utilizada, perpassa apenas
+a deleção recursiva dos nós, a partir da raiz. Não precisamos de
+nenhum tipo de remoção especial para tal.
+</p>
+
+<p>
+Esta função foi criada apenas para que não ocorra vazamentos de
+memória durante a execução do programa.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">destroy_tree</span>(<span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">root</span>)
+{
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>root) <span style="color: #9d81ba;">return</span>;
+    destroy_tree(root-&gt;left);
+    destroy_tree(root-&gt;right);
+    <span style="color: #9d81ba;">delete</span> root;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org60fd9f3" class="outline-3">
+<h3 id="org60fd9f3">Gerar conjunto de nós-folha</h3>
+<div class="outline-text-3" id="text-org60fd9f3">
+<p>
+Esta função percorre uma árvore em nível, criando um conjunto de
+nós-folha da árvore. Um nó-folha é um nó que possui um caractere
+associado, não sendo apenas um nó de frequência.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">node_set_t</span>
+<span style="color: #0bc9cf;">find_leaves</span>(<span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">root</span>)
+{
+    <span style="color: #62D2DB;">node_set_t</span> <span style="color: #7CF083;">leaves</span>(huff_cmp);
+
+    <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">queue</span>&lt;<span style="color: #62D2DB;">huffman_node_t</span>*&gt; <span style="color: #7CF083;">node_queue</span>;
+    node_queue.push(root);
+
+    <span style="color: #9d81ba;">while</span>(<span style="color: #e55c7a;">!</span>node_queue.empty()) {
+        <span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">node</span> = node_queue.front();
+        node_queue.pop();
+
+        <span style="color: #9d81ba;">if</span>(node-&gt;c == <span style="color: #f5c791;">'\0'</span>) {
+            node_queue.push(node-&gt;left);
+            node_queue.push(node-&gt;right);
+        } <span style="color: #9d81ba;">else</span> {
+            leaves.insert(node);
+        }
+    }
+    <span style="color: #9d81ba;">return</span> leaves;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org82e4ad9" class="outline-3">
+<h3 id="org82e4ad9">Impressão gráfica da árvore</h3>
+<div class="outline-text-3" id="text-org82e4ad9">
+<p>
+Nesta seção, explanaremos alguns algoritmos para que uma árvore gerada
+possa ser mostrada na tela de forma gráfica. Para tanto, usamos a
+ferramenta GraphViz.
+</p>
+
+<p>
+O objetivo aqui é gerar o código para que esta ferramenta possa
+produzir uma visualização gráfica para a árvore.
+</p>
+
+<p>
+A geração do código para a ferramenta independe de um meio
+externo. Todavia, a visualização gráfica da árvore depende do
+compilador para o código gerado (<code>dot</code>), de um visualizador de imagens
+específico (<code>feh</code>) e de um visualizador de arquivos GraphViz
+(<code>xdot</code>). Caso estes programas não estejam em seu sistema, estes códigos
+poderão ausentar-se na compilação totalmente, como se não existissem
+no programa.
+</p>
+</div>
+
+<div id="outline-container-orgd3b18b1" class="outline-4">
+<h4 id="orgd3b18b1">Geração de código GraphViz</h4>
+<div class="outline-text-4" id="text-orgd3b18b1">
+<p>
+Esta função percorre a árvore de uma maneira específica e, neste
+processo, escreve, em um <i>stream</i> de saída, um código que represente a
+árvore em si. Assumimos que o <i>stream</i> de saída esteja aberto e seja
+válido.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">gen_graphviz</span>(<span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">ostream</span>&amp; <span style="color: #7CF083;">oss</span>, <span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">node</span>)
+{
+    <span style="color: #454459;">// </span><span style="color: #454459;">Print graphviz header</span>
+    oss &lt;&lt; <span style="color: #f5c791;">"graph G {"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::endl
+        &lt;&lt; <span style="color: #f5c791;">"\tbgcolor=\"#00000000\";"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::endl
+        &lt;&lt; <span style="color: #f5c791;">"\tgraph["</span>
+        &lt;&lt; <span style="color: #f5c791;">"ranksep = \"0.2\", "</span>
+        &lt;&lt; <span style="color: #f5c791;">"fixedsize = true];"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::endl
+        &lt;&lt; <span style="color: #f5c791;">"\tnode[shape=circle, "</span>
+        &lt;&lt; <span style="color: #f5c791;">"fontcolor=black, "</span>
+        &lt;&lt; <span style="color: #f5c791;">"fillcolor=white, "</span>
+        &lt;&lt; <span style="color: #f5c791;">"style=filled];"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+
+    <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">queue</span>&lt;<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">huffman_node_t</span>*&gt; <span style="color: #7CF083;">nodes</span>;
+    <span style="color: #9d81ba;">if</span>(node) nodes.push(node);
+
+    <span style="color: #9d81ba;">while</span>(<span style="color: #e55c7a;">!</span>nodes.empty()) {
+        <span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">front</span> = nodes.front();
+        nodes.pop();
+
+        <span style="color: #454459;">// </span><span style="color: #454459;">Print node properties</span>
+        oss &lt;&lt; <span style="color: #f5c791;">"\tp"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::hex
+            &lt;&lt; ((<span style="color: #62D2DB;">long</span> <span style="color: #62D2DB;">long</span> <span style="color: #62D2DB;">int</span>)front)
+            &lt;&lt; <span style="color: #0D9C94;">std</span>::dec;
+        <span style="color: #9d81ba;">if</span>(front-&gt;c == <span style="color: #f5c791;">'\0'</span>) {
+            oss &lt;&lt; <span style="color: #f5c791;">"[label=\""</span>
+                &lt;&lt; front-&gt;freq
+                &lt;&lt; <span style="color: #f5c791;">"\"];"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+        } <span style="color: #9d81ba;">else</span> {
+            oss &lt;&lt; <span style="color: #f5c791;">"[shape=record, "</span>
+                &lt;&lt; <span style="color: #f5c791;">"label=\""</span>;
+            <span style="color: #9d81ba;">if</span>(isspace(front-&gt;c) || <span style="color: #e55c7a;">!</span>isprint(front-&gt;c)) {
+                oss &lt;&lt; <span style="color: #f5c791;">"0x"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::hex
+                    &lt;&lt; <span style="color: #0D9C94;">std</span>::setfill(<span style="color: #f5c791;">'0'</span>)
+                    &lt;&lt; <span style="color: #0D9C94;">std</span>::setw(<span style="color: #f5c791;">2</span>)
+                    &lt;&lt; ((<span style="color: #62D2DB;">int</span>)front-&gt;c)
+                    &lt;&lt; <span style="color: #0D9C94;">std</span>::dec;
+            } <span style="color: #9d81ba;">else</span> {
+                oss &lt;&lt; <span style="color: #f5c791;">'\''</span>;
+                <span style="color: #9d81ba;">if</span>(front-&gt;c == <span style="color: #f5c791;">'\''</span>) {
+                    oss &lt;&lt; <span style="color: #f5c791;">"\\\'"</span>;
+                } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(front-&gt;c == <span style="color: #f5c791;">'\"'</span>) {
+                    oss &lt;&lt; <span style="color: #f5c791;">"\\\""</span>;
+                } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(front-&gt;c == <span style="color: #f5c791;">'&lt;'</span>) {
+                    oss &lt;&lt; <span style="color: #f5c791;">"\\&lt;"</span>;
+                } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(front-&gt;c == <span style="color: #f5c791;">'&gt;'</span>) {
+                    oss &lt;&lt; <span style="color: #f5c791;">"\\&gt;"</span>;
+                } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(front-&gt;c == <span style="color: #f5c791;">'{'</span>) {
+                    oss &lt;&lt; <span style="color: #f5c791;">"\\&lt;"</span>;
+                } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(front-&gt;c == <span style="color: #f5c791;">'}'</span>) {
+                    oss &lt;&lt; <span style="color: #f5c791;">"\\&gt;"</span>;
+                } <span style="color: #9d81ba;">else</span> {
+                    oss &lt;&lt; front-&gt;c;
+                }
+                   oss &lt;&lt; <span style="color: #f5c791;">'\''</span>;
+            }
+            oss &lt;&lt; <span style="color: #f5c791;">" | "</span> &lt;&lt; front-&gt;freq
+                &lt;&lt; <span style="color: #f5c791;">"\"];"</span> &lt;&lt; endl;
+        }
+
+        <span style="color: #454459;">// </span><span style="color: #454459;">Print node children</span>
+        <span style="color: #9d81ba;">if</span>(front-&gt;left) {
+            oss &lt;&lt; <span style="color: #f5c791;">"\tp"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::hex
+                &lt;&lt; ((<span style="color: #62D2DB;">long</span> <span style="color: #62D2DB;">long</span> <span style="color: #62D2DB;">int</span>)front)
+                &lt;&lt; <span style="color: #0D9C94;">std</span>::dec
+                &lt;&lt; <span style="color: #f5c791;">":sw -- "</span>
+                &lt;&lt; <span style="color: #f5c791;">"p"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::hex
+                &lt;&lt; ((<span style="color: #62D2DB;">long</span> <span style="color: #62D2DB;">long</span> <span style="color: #62D2DB;">int</span>)front-&gt;left)
+                &lt;&lt; <span style="color: #0D9C94;">std</span>::dec &lt;&lt; <span style="color: #f5c791;">":n"</span>
+                &lt;&lt; <span style="color: #f5c791;">"[label=\"0\"];"</span>
+                &lt;&lt; endl;
+            <span style="color: #454459;">// </span><span style="color: #454459;">Enqueue existing child</span>
+            nodes.push(front-&gt;left);
+        }
+
+        <span style="color: #9d81ba;">if</span>(front-&gt;right) {
+            oss &lt;&lt; <span style="color: #f5c791;">"\tp"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::hex
+                &lt;&lt; ((<span style="color: #62D2DB;">long</span> <span style="color: #62D2DB;">long</span> <span style="color: #62D2DB;">int</span>)front)
+                &lt;&lt; <span style="color: #0D9C94;">std</span>::dec
+                &lt;&lt; <span style="color: #f5c791;">":se -- "</span>
+                &lt;&lt; <span style="color: #f5c791;">"p"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::hex
+                &lt;&lt; ((<span style="color: #62D2DB;">long</span> <span style="color: #62D2DB;">long</span> <span style="color: #62D2DB;">int</span>)front-&gt;right)
+                &lt;&lt; <span style="color: #0D9C94;">std</span>::dec &lt;&lt; <span style="color: #f5c791;">":n"</span>
+                &lt;&lt; <span style="color: #f5c791;">"[label=\"1\"];"</span>
+                &lt;&lt; endl;
+            nodes.push(front-&gt;right);
+        }
+    }
+
+    oss &lt;&lt; <span style="color: #f5c791;">'}'</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::endl;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org634b45b" class="outline-4">
+<h4 id="org634b45b">Impressão de código GraphViz</h4>
+<div class="outline-text-4" id="text-org634b45b">
+<p>
+Esta função invoca o gerador de código anterior para o <i>stream</i> de saída
+padrão, efetivamente mostrando o código na tela.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">print_graphviz</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">node</span>)
+{
+    gen_graphviz(cout, node);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaa586c6" class="outline-4">
+<h4 id="orgaa586c6">Salvamento temporário de código GraphViz</h4>
+<div class="outline-text-4" id="text-orgaa586c6">
+<p>
+Esta função salva temporariamente o código de visualização no arquivo
+<code>/tmp/huffmantree.dot</code>.
+</p>
+
+<p>
+Veja que este código só será salvo se seu sistema possuir a ferramenta
+<code>dot</code>. Do contrário, esta função não será incluída na compilação.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #e55c7a;">#ifdef</span> USE_GRAPHVIZ
+<span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">save_graphviz</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">node</span>)
+{
+    <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">ofstream</span> <span style="color: #7CF083;">out</span>;
+    out.open(<span style="color: #f5c791;">"/tmp/huffmantree.dot"</span>);
+
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>out.is_open()) {
+        cerr &lt;&lt; <span style="color: #f5c791;">"Erro ao gerar o arquivo temporario GraphViz"</span>
+             &lt;&lt; endl;
+        <span style="color: #9d81ba;">return</span>;
+    }
+
+    gen_graphviz(out, node);
+    out.close();
+}
+<span style="color: #e55c7a;">#endif</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org94de24a" class="outline-4">
+<h4 id="org94de24a">Exibição gráfica do código GraphViz</h4>
+<div class="outline-text-4" id="text-org94de24a">
+<p>
+Esta função salva o código da árvore em um arquivo temporário e invoca
+uma das ferramentas de visualização gráfica do usuário. Veja que esta
+função só realmente fará alguma coisa caso o compilador <code>dot</code> existir no
+seu sistema.
+</p>
+
+<p>
+Se <code>interact</code> valer <code>false</code>, então uma imagem para a árvore será gerada no
+arquivo <code>/tmp/huffmantree.png</code>, e o visualizador de imagens <code>feh</code> será
+mostrado. Veja que esta visualização só estará disponível se <code>feh</code>
+existir no seu sistema.
+</p>
+
+<p>
+Caso <code>interact</code> seja <code>true</code>, então o visualizador <code>xdot</code> abrirá diretamente
+o arquivo <code>/tmp/huffmantree.dot</code>, de forma interativa. Esta visualização
+também só está disponível quando <code>xdot</code> está presente no sistema.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">show_graphviz</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">node</span>, <span style="color: #62D2DB;">bool</span> <span style="color: #7CF083;">interact</span> = <span style="color: #0D9C94;">false</span>)
+{
+<span style="color: #e55c7a;">#ifdef</span> USE_GRAPHVIZ
+    save_graphviz(node);
+
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>interact) {
+        <span style="color: #9d81ba;">if</span>(system(<span style="color: #f5c791;">"/usr/bin/dot "</span>
+                  <span style="color: #f5c791;">"/tmp/huffmantree.dot "</span>
+                  <span style="color: #f5c791;">"-Kdot "</span>
+                  <span style="color: #f5c791;">"-Tpng "</span>
+                  <span style="color: #f5c791;">"-o /tmp/huffmantree.png"</span>)) {
+            cerr &lt;&lt; <span style="color: #f5c791;">"Erro ao gerar a imagem temporaria"</span> &lt;&lt; endl;
+            <span style="color: #9d81ba;">return</span>;
+        }
+
+<span style="color: #e55c7a;">#ifdef</span> USE_FEH        
+        <span style="color: #9d81ba;">if</span>(system(<span style="color: #f5c791;">"/usr/bin/feh "</span>
+                  <span style="color: #f5c791;">"/tmp/huffmantree.png"</span>)) {
+            cerr &lt;&lt; <span style="color: #f5c791;">"Erro ao mostrar a imagem temporaria"</span> &lt;&lt; endl;
+            <span style="color: #9d81ba;">return</span>;
+        }
+<span style="color: #e55c7a;">#endif</span> <span style="color: #454459;">// </span><span style="color: #454459;">USE_FEH</span>
+    } <span style="color: #9d81ba;">else</span> {
+<span style="color: #e55c7a;">#ifdef</span> USE_XDOT
+        <span style="color: #9d81ba;">if</span>(system(<span style="color: #f5c791;">"/usr/bin/xdot "</span>
+                  <span style="color: #f5c791;">"/tmp/huffmantree.dot &amp;"</span>)) {
+            cerr &lt;&lt; <span style="color: #f5c791;">"Erro ao mostrar a arvore"</span> &lt;&lt; endl;
+            <span style="color: #9d81ba;">return</span>;
+        }
+<span style="color: #e55c7a;">#endif</span> <span style="color: #454459;">// </span><span style="color: #454459;">USE_XDOT</span>
+    }
+<span style="color: #e55c7a;">#endif</span> <span style="color: #454459;">// </span><span style="color: #454459;">USE_GRAPHVIZ</span>
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org04d9a1a" class="outline-2">
+<h2 id="org04d9a1a">Criação do mapa de bits para cada caractere</h2>
+<div class="outline-text-2" id="text-org04d9a1a">
+<p>
+A criação do mapa de bits para um caractere qualquer envolve
+determinar, a partir de trajetos para a <i>esquerda</i> e para a <i>direita</i>, a
+quantidade de bits necessários para representar um caractere
+específico, bem como quais são estes bits.
+</p>
+
+<p>
+Determinar os bits necessários para representar uma letra envolvem
+percorrer a árvore desde a raiz até o nó-objetivo e, para cada vez que
+o caminho envolver a ida para a <i>esquerda</i>, determina-se o uso de um bit
+<code>0</code>; no caso de uma ida para a <i>direita</i>, determina-se o uso de um bit <code>1</code>.
+</p>
+
+<p>
+Novos bits são adicionados ao fim da máscara representacional até que
+o nó-folha em questão seja alcançado.
+</p>
+
+
+<div id="orgbc60659" class="figure">
+<p><img src="img/teste1_hufftree.png" alt="teste1_hufftree.png" />
+</p>
+<p><span class="figure-number">Figura 3: </span>Exemplo de árvore de Huffman gerada para o texto <code>abba is bad.</code></p>
+</div>
+
+<p>
+Vejamos o exemplo da árvore na Figura <a href="#orgbc60659">3</a>. A
+representação do caractere de Espaço (<code>0x20</code>) envolve a seguinte
+trajetória a partir da raiz: <i>direita</i>, <i>esquerda</i>, <i>esquerda</i>. Portanto,
+serão necessários três bits para este caractere: <code>100</code>.
+</p>
+
+<p>
+Comparativamente, o caractere <code>i</code> necessitará de quatro bits, sendo eles
+<code>1110</code>.
+</p>
+
+<p>
+Esta dedução pode ser implementada de muitas formas. O método aqui
+escolhido envolve realizar o caminho contrário ao sugerido: começamos
+a partir das folhas, e acumulamos os bits até chegarmos à raiz. Por
+fim, a ordem dos bits acumulados é invertida. Veja o pseudocódigo a
+seguir.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">fun&#231;&#227;o Cria-Mapa-de-Bits(A)
+    crie um mapa de bits M
+    F = Encontrar-Folhas(A)
+    R = Raiz(A)
+    para cada Folha em F
+    |   Ponteiro = Folha
+    |   C = Folha.caractere
+    |   enquanto Ponteiro n&#227;o &#233; R
+    |   |   se Filho-Esquerdo(Ponteiro)
+    |   |   |   Anexa-Ao-Fim(M[C], 0)
+    |   |   sen&#227;o
+    |   |   |   Anexa-Ao-Fim(M[C], 1)
+    |   |   fim da compara&#231;&#227;o
+    |   |   Ponteiro = Ponteiro.pai
+    |   fim do la&#231;o
+    |   Inverter(M[C])
+    fim do la&#231;o
+    retorne M
+fim da fun&#231;&#227;o
+</pre>
+</div>
+
+<p>
+Implementando diretamente este algoritmo, teremos o código a seguir.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">bit_map_t</span>
+<span style="color: #0bc9cf;">make_bit_map</span>(<span style="color: #62D2DB;">huffman_node_t</span> *<span style="color: #7CF083;">root</span>)
+{
+    <span style="color: #62D2DB;">bit_map_t</span> <span style="color: #7CF083;">bitmap</span>;
+
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>root) <span style="color: #9d81ba;">return</span> bitmap;
+
+    <span style="color: #62D2DB;">node_set_t</span> <span style="color: #7CF083;">leaves</span> = find_leaves(root);
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Percorra todas as folhas, criando uma entrada no</span>
+    <span style="color: #454459;">// </span><span style="color: #454459;">charmap para cada uma delas</span>
+    <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">leaf</span> : leaves) {
+        <span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">ptr</span> = leaf;
+        <span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">c</span>   = leaf-&gt;c;
+        <span style="color: #9d81ba;">while</span>(ptr-&gt;parent) {
+            <span style="color: #454459;">// </span><span style="color: #454459;">Insira o bit apropriado no final do vetor</span>
+            <span style="color: #9d81ba;">if</span>(ptr == ptr-&gt;parent-&gt;left) {
+                bitmap[c].push_back(<span style="color: #0D9C94;">false</span>);
+            } <span style="color: #9d81ba;">else</span> {
+                bitmap[c].push_back(<span style="color: #0D9C94;">true</span>);
+            }
+            ptr = ptr-&gt;parent;
+        }
+        <span style="color: #454459;">// </span><span style="color: #454459;">Finalmente, inverta-o</span>
+        <span style="color: #0D9C94;">std</span>::reverse(bitmap[c].begin(), bitmap[c].end());
+    }
+
+    <span style="color: #9d81ba;">return</span> bitmap;
+}
+</pre>
+</div>
+
+<p>
+Após gerarmos este mapa de bits, tudo o que resta para a compactação
+de um arquivo-texto é percorrê-lo novamente do início, lendo cada um
+dos caracteres, e salvando em outro arquivo os bits correspondentes
+àquele caractere.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org27b650a" class="outline-2">
+<h2 id="org27b650a">Gerenciamento de arquivos bit-a-bit</h2>
+<div class="outline-text-2" id="text-org27b650a">
+<p>
+As estruturas a serem descritas a seguir foram criadas para a escrita
+e recuperação de informações bit-a-bit.
+</p>
+
+<p>
+Ao abrirmos um arquivo para leitura e escrita, estas operações não
+podem ser feitas bit-a-bit; a menor unidade de informação que pode ser
+recuperada ou escrita por vez em um arquivo é um byte. Portanto, estas
+estruturas lidam com estes casos e com a escrita do mapa de bits do
+arquivo.
+</p>
+</div>
+
+<div id="outline-container-org9155273" class="outline-3">
+<h3 id="org9155273">Cabeçalho do arquivo: mapa de bits</h3>
+<div class="outline-text-3" id="text-org9155273">
+<p>
+O cabeçalho de um arquivo compactado armazena o mapa de bits para as
+informações que virão de forma subsequente. Para tanto, é essencial
+especificar o formato de tal cabeçalho.
+</p>
+</div>
+
+<div id="outline-container-org45070a2" class="outline-4">
+<h4 id="org45070a2">Definição</h4>
+<div class="outline-text-4" id="text-org45070a2">
+<p>
+A definição do cabeçalho envolve duas estruturas diferentes: um <i>par</i>
+(que determina a relação caractere e bits), e o cabeçalho em si.
+</p>
+
+<p>
+Primeiramente, definimos o <i>par</i>. Este é composto das seguintes
+informações:
+</p>
+
+<ul class="org-ul">
+<li>Um <i>caractere</i>, com o tamanho padrão de um <code>char</code>;</li>
+<li>O número de bits para sua correspondência em binário;</li>
+<li>A quantidade de bits não-utilizados ao final do último byte
+utilizado para armazenar a correspondência em binário;</li>
+<li>O número mínimo de bytes para armazenar a correspondência;</li>
+<li>Um <i>array</i> dinamicamente alocado para os bytes de correspondência.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">struct</span> <span style="color: #62D2DB;">huffman_pair</span>
+{
+    <span style="color: #62D2DB;">char</span>     <span style="color: #7CF083;">letter</span>;
+    <span style="color: #62D2DB;">uint32_t</span> <span style="color: #7CF083;">num_bits</span>;
+    <span style="color: #62D2DB;">uint8_t</span>  <span style="color: #7CF083;">dangling_bits</span>;
+    <span style="color: #62D2DB;">uint32_t</span> <span style="color: #7CF083;">num_bytes</span>;
+    <span style="color: #62D2DB;">uint8_t</span>  *<span style="color: #7CF083;">bits</span>;
+};
+</pre>
+</div>
+
+<p>
+A definição do <i>cabeçalho</i> envolve mais variáveis interessantes:
+</p>
+
+<ul class="org-ul">
+<li>Uma <i>bandeira</i> de verificação do arquivo, onde espera-se os sete
+caracteres <code>HUFFMAN</code>, seguidos de um caractere <code>NUL</code> na oitava posição;</li>
+<li>O <i>tamanho do alfabeto</i> para o arquivo, indicando a quantidade de
+<i>pares</i> de correspondência a serem armazenados;</li>
+<li>A quantidade de bits não-utilizados ao final do último byte escrito
+no arquivo;</li>
+<li>Um <i>array</i> dinamicamente alocado para todos os <i>pares</i> do alfabeto.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">struct</span> <span style="color: #62D2DB;">huffman_header</span>
+{
+    <span style="color: #62D2DB;">char</span>         <span style="color: #7CF083;">flag</span>[<span style="color: #f5c791;">8</span>] = <span style="color: #f5c791;">"HUFFMAN"</span>;
+    <span style="color: #62D2DB;">uint64_t</span>     <span style="color: #7CF083;">alphabet_size</span>;
+    <span style="color: #62D2DB;">uint8_t</span>      <span style="color: #7CF083;">dangling_space</span>;
+    <span style="color: #62D2DB;">huffman_pair</span> *<span style="color: #7CF083;">letters</span>;
+};
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9f89bb2" class="outline-4">
+<h4 id="org9f89bb2">Criação do cabeçalho</h4>
+<div class="outline-text-4" id="text-org9f89bb2">
+<p>
+A função a seguir toma um mapa de bits específico e cria,
+dinamicamente, um cabeçalho pré-populado com todas as informações
+necessárias, exceto pela variável <code>dangling_space</code>, que deverá ser
+definida com base nos dados que serão escritos no arquivo.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">huffman_header</span>
+<span style="color: #0bc9cf;">make_huffman_header</span>(<span style="color: #62D2DB;">bit_map_t</span> &amp;<span style="color: #7CF083;">bitmap</span>)
+{
+    <span style="color: #62D2DB;">huffman_header</span> <span style="color: #7CF083;">h</span>;
+    h.alphabet_size = bitmap.size();
+    h.letters = <span style="color: #9d81ba;">new</span> <span style="color: #62D2DB;">huffman_pair</span>[h.alphabet_size];
+
+    <span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">itr</span> = bitmap.begin();
+    <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">i</span> = <span style="color: #f5c791;">0u</span>; i &lt; h.alphabet_size; i++) {
+        h.letters[i].letter   = itr-&gt;first;
+        h.letters[i].num_bits = itr-&gt;second.size();
+
+        <span style="color: #62D2DB;">size_t</span> <span style="color: #7CF083;">arr_size</span> = itr-&gt;second.size() / <span style="color: #f5c791;">8</span>;
+        <span style="color: #9d81ba;">if</span>(itr-&gt;second.size() % <span style="color: #f5c791;">8</span>) {
+            arr_size++;
+        }
+
+        h.letters[i].bits      = <span style="color: #9d81ba;">new</span> <span style="color: #62D2DB;">uint8_t</span>[arr_size];
+        h.letters[i].num_bytes = arr_size;
+
+        { <span style="color: #454459;">// </span><span style="color: #454459;">Dump bits</span>
+            <span style="color: #62D2DB;">size_t</span> <span style="color: #7CF083;">current_byte</span> = <span style="color: #f5c791;">0</span>;
+            <span style="color: #62D2DB;">uint8_t</span> <span style="color: #7CF083;">bit_buffer</span>  = <span style="color: #f5c791;">0u</span>;
+            <span style="color: #62D2DB;">size_t</span> <span style="color: #7CF083;">current_bit</span>  = <span style="color: #f5c791;">0</span>;
+            <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">bit</span> : itr-&gt;second) {
+                <span style="color: #9d81ba;">if</span>(current_bit == <span style="color: #f5c791;">8</span>) {
+                    h.letters[i].bits[current_byte] = bit_buffer;
+                    bit_buffer  = <span style="color: #f5c791;">0u</span>;
+                    current_bit = <span style="color: #f5c791;">0</span>;
+                    current_byte++;
+                }
+
+                <span style="color: #9d81ba;">if</span>(bit) {
+                    bit_buffer |= ((<span style="color: #62D2DB;">uint8_t</span>)(<span style="color: #f5c791;">1u</span> &lt;&lt; (<span style="color: #f5c791;">7u</span> - current_bit)));
+                }
+                current_bit++;
+            }
+            <span style="color: #454459;">// </span><span style="color: #454459;">Dump last byte</span>
+            <span style="color: #9d81ba;">if</span>(current_byte != arr_size)
+                h.letters[i].bits[current_byte] = bit_buffer;
+            <span style="color: #454459;">// </span><span style="color: #454459;">Store number of dangling bits</span>
+            h.letters[i].dangling_bits = <span style="color: #f5c791;">8u</span> - current_bit;
+        } <span style="color: #454459;">// </span><span style="color: #454459;">End of bit dump</span>
+
+        itr++;
+    }
+    <span style="color: #9d81ba;">return</span> h;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org647655a" class="outline-4">
+<h4 id="org647655a">Destruição do cabeçalho</h4>
+<div class="outline-text-4" id="text-org647655a">
+<p>
+Quando um cabeçalho armazenado na memória não for mais necessário, é
+importante que esta função seja chamada para remover as alocações
+dinâmicas em sua constituição.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">destroy_huffman_header</span>(<span style="color: #62D2DB;">huffman_header</span> &amp;<span style="color: #7CF083;">h</span>)
+{
+    <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">i</span> = <span style="color: #f5c791;">0</span>; i &lt; h.alphabet_size; i++) {
+        <span style="color: #9d81ba;">delete</span> [] h.letters[i].bits;
+    }
+    <span style="color: #9d81ba;">delete</span> [] h.letters;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcf4c32b" class="outline-4">
+<h4 id="orgcf4c32b">Mostrando o cabeçalho na tela</h4>
+<div class="outline-text-4" id="text-orgcf4c32b">
+<p>
+Esta função imprime todas as informações contidas em um certo
+cabeçalho, no console.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">print_header</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">huffman_header</span> &amp;<span style="color: #7CF083;">h</span>)
+{
+    cout &lt;&lt; <span style="color: #f5c791;">"flag:           "</span> &lt;&lt; h.flag           &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"alphabet_size:  "</span> &lt;&lt; h.alphabet_size  &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"dangling_space: "</span>
+         &lt;&lt; (<span style="color: #62D2DB;">int</span>)h.dangling_space &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"letters:"</span> &lt;&lt; endl;
+    <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">i</span> = <span style="color: #f5c791;">0</span>; i &lt; h.alphabet_size; i++) {
+        <span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">letter</span> = h.letters + i;
+        cout &lt;&lt; <span style="color: #f5c791;">"\tletter:        "</span>;
+        <span style="color: #9d81ba;">if</span>(isspace(letter-&gt;letter) || <span style="color: #e55c7a;">!</span>isprint(letter-&gt;letter)) {
+             cout &lt;&lt; <span style="color: #f5c791;">"0x"</span> &lt;&lt; <span style="color: #0D9C94;">std</span>::hex
+                  &lt;&lt; <span style="color: #0D9C94;">std</span>::setfill(<span style="color: #f5c791;">'0'</span>)
+                  &lt;&lt; <span style="color: #0D9C94;">std</span>::setw(<span style="color: #f5c791;">8</span>)
+                  &lt;&lt; ((<span style="color: #62D2DB;">int</span>)letter-&gt;letter)
+                  &lt;&lt; <span style="color: #0D9C94;">std</span>::dec;
+        } <span style="color: #9d81ba;">else</span> {
+            cout &lt;&lt; letter-&gt;letter;
+        }
+        cout &lt;&lt; endl;
+
+        cout &lt;&lt; <span style="color: #f5c791;">"\tnum_bits:      "</span> &lt;&lt; letter-&gt;num_bits      &lt;&lt; endl
+             &lt;&lt; <span style="color: #f5c791;">"\tdangling_bits: "</span>
+             &lt;&lt; (<span style="color: #62D2DB;">int</span>)letter-&gt;dangling_bits &lt;&lt; endl
+             &lt;&lt; <span style="color: #f5c791;">"\tnum_bytes:     "</span> &lt;&lt; letter-&gt;num_bytes     &lt;&lt; endl
+             &lt;&lt; <span style="color: #f5c791;">"\tbits:          "</span>;
+
+        <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">j</span> = <span style="color: #f5c791;">0</span>; j &lt; letter-&gt;num_bytes; j++) {
+            <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">bitset</span>&lt;<span style="color: #f5c791;">8</span>&gt; <span style="color: #7CF083;">x</span>(letter-&gt;bits[j]);
+            cout &lt;&lt; x &lt;&lt; <span style="color: #f5c791;">' '</span>;
+        }
+        cout &lt;&lt; <span style="color: #0D9C94;">std</span>::dec &lt;&lt; endl &lt;&lt; endl;
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd5db834" class="outline-3">
+<h3 id="orgd5db834">Escritor de arquivo</h3>
+<div class="outline-text-3" id="text-orgd5db834">
+<p>
+A estrutura a seguir é uma <i>classe</i>, capaz de imprimir informações
+bit-a-bit em um arquivo binário. A estrutura funciona utilizando uma
+variável de <i>buffer</i> com o tamanho de um byte; cada bit a ser escrito é
+armazenado no local adequado para o mesmo e, quando o byte está cheio,
+este é anexado ao final de um <code>std::vector</code> inteiro, que espera o
+momento de efetivamente escrever as informações no arquivo.
+</p>
+
+<p>
+O programador fica responsável por escrever o cabeçalho (já com o
+espaço extra ao final ajustado) no arquivo, antes de realizar o
+fechamento do mesmo com a escrita efetiva das informações.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">class</span> <span style="color: #62D2DB;">FileWriter</span>
+{
+<span style="color: #9d81ba;">private</span>:
+    <span style="color: #62D2DB;">uint8_t</span>              <span style="color: #7CF083;">bit_buffer</span>;
+    <span style="color: #62D2DB;">int</span>                  <span style="color: #7CF083;">buffered_bits</span>;
+    <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">ofstream</span>        <span style="color: #7CF083;">stream</span>;
+    <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">vector</span>&lt;<span style="color: #62D2DB;">uint8_t</span>&gt; <span style="color: #7CF083;">written_bytes</span>;
+
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">dump_bits</span>();
+
+<span style="color: #9d81ba;">public</span>:
+    <span style="color: #0bc9cf;">FileWriter</span>();
+    ~<span style="color: #0bc9cf;">FileWriter</span>();
+
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">open</span>(<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">string</span> <span style="color: #7CF083;">filename</span>);
+    <span style="color: #62D2DB;">bool</span> <span style="color: #0bc9cf;">is_open</span>() <span style="color: #9d81ba;">const</span>;
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">close</span>();
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">write_bits</span>(<span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">vector</span>&lt;<span style="color: #62D2DB;">bool</span>&gt; &amp;<span style="color: #7CF083;">bits</span>);
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">write_header</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">huffman_header</span> &amp;<span style="color: #7CF083;">head</span>);
+    <span style="color: #62D2DB;">int</span>  <span style="color: #0bc9cf;">get_dangling_space</span>() <span style="color: #9d81ba;">const</span>;
+};
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org78d156f" class="outline-4">
+<h4 id="org78d156f">Construtor/Destrutor</h4>
+<div class="outline-text-4" id="text-org78d156f">
+<p>
+O <i>construtor</i> da classe inicia o <i>buffer</i> e a contagem de bits com
+zeros.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #0D9C94;">FileWriter</span>::<span style="color: #0bc9cf;">FileWriter</span>()
+{
+    bit_buffer    = <span style="color: #f5c791;">0u</span>;
+    buffered_bits = <span style="color: #f5c791;">0</span>;
+}
+</pre>
+</div>
+
+<p>
+O <i>destrutor</i> da classe realiza o fechamento do arquivo.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #0D9C94;">FileWriter</span>::~<span style="color: #0bc9cf;">FileWriter</span>()
+{
+    <span style="color: #9d81ba;">this</span>-&gt;close();
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org76a606d" class="outline-4">
+<h4 id="org76a606d">Macro para dump de variável em um stream binário</h4>
+<div class="outline-text-4" id="text-org76a606d">
+<p>
+O <i>macro</i> a seguir acelera a escrita de um certo valor em um <i>stream</i> de
+arquivo binário, reduzindo a verbosidade do código.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #e55c7a;">#define</span> <span style="color: #0bc9cf;">bin_write</span>(<span style="color: #7CF083;">s</span>, <span style="color: #7CF083;">x</span>)                         \
+    s.write((<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">char</span>*)&amp;x, <span style="color: #9d81ba;">sizeof</span> x)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4c73ac9" class="outline-4">
+<h4 id="org4c73ac9">Registro de bytes cheios</h4>
+<div class="outline-text-4" id="text-org4c73ac9">
+<p>
+O método a seguir é um método interno que toma o <i>buffer</i> atualmente
+preenchido e coloca-o ao final do vetor de bytes a serem escritos. O
+buffer e a contagem de bits são, por fim, zerados novamente.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0D9C94;">FileWriter</span>::<span style="color: #0bc9cf;">dump_bits</span>()
+{
+    <span style="color: #9d81ba;">if</span>(buffered_bits &gt; <span style="color: #f5c791;">0</span>) {
+        written_bytes.push_back(bit_buffer);
+        buffered_bits = <span style="color: #f5c791;">0</span>;
+        bit_buffer    = <span style="color: #f5c791;">0u</span>;
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org26b890d" class="outline-4">
+<h4 id="org26b890d">Abrir arquivo</h4>
+<div class="outline-text-4" id="text-org26b890d">
+<p>
+Este método abre o arquivo informado para saída, especificando a
+escrita de um arquivo binário.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0D9C94;">FileWriter</span>::<span style="color: #0bc9cf;">open</span>(<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">string</span> <span style="color: #7CF083;">filename</span>) {
+    stream.open(filename.c_str(), <span style="color: #0D9C94;">std</span>::<span style="color: #0D9C94;">ios</span>::binary);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc14e4c0" class="outline-4">
+<h4 id="orgc14e4c0">Predicado para informar status do arquivo</h4>
+<div class="outline-text-4" id="text-orgc14e4c0">
+<p>
+Este método informa o <i>status</i> de abertura do arquivo.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">bool</span>
+<span style="color: #0D9C94;">FileWriter</span>::<span style="color: #0bc9cf;">is_open</span>() <span style="color: #9d81ba;">const</span> {
+    <span style="color: #9d81ba;">return</span> stream.is_open();
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf0f7ffc" class="outline-4">
+<h4 id="orgf0f7ffc">Fechar arquivo</h4>
+<div class="outline-text-4" id="text-orgf0f7ffc">
+<p>
+Este método fecha o arquivo binário, desde que já esteja aberto.
+</p>
+
+<p>
+O fechamento do arquivo também acarreta a adição imediata de quaisquer
+bits no <i>buffer</i> que já não tenham sido adicionados ao <i>vetor</i> de
+escrita. Logo após, todos os bytes do <i>vetor</i> de escrita serão
+sequencialmente inseridos no arquivo binário, que será então fechado.
+</p>
+
+<p>
+A escrita das informações textuais no arquivo binário são, portanto,
+feitas durante o fechamento do mesmo.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0D9C94;">FileWriter</span>::<span style="color: #0bc9cf;">close</span>() {
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>stream.is_open())
+        <span style="color: #9d81ba;">return</span>;
+
+    dump_bits();
+
+    <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">byte</span> : written_bytes) {
+        bin_write(stream, byte);
+    }
+
+    stream.close();
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7a4c57c" class="outline-4">
+<h4 id="org7a4c57c">Escrever vetor de bits no arquivo</h4>
+<div class="outline-text-4" id="text-org7a4c57c">
+<p>
+Este método toma um <i>vetor</i> de bits (representado como um <i>vetor</i> de
+valores booleanos, da mesma forma como são armazenados no <i>mapa de
+bits</i>) e "escreve-os" no arquivo.
+</p>
+
+<p>
+Os <i>bits</i> informados são colocados um a um no <i>buffer</i> de tamanho de um
+byte, até que este byte esteja cheio. Quando isto ocorre, o byte é
+colocado no <i>vetor</i> interno de bytes a serem escritos no arquivo, no
+momento do fechamento deste.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0D9C94;">FileWriter</span>::<span style="color: #0bc9cf;">write_bits</span>(<span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">vector</span>&lt;<span style="color: #62D2DB;">bool</span>&gt; &amp;<span style="color: #7CF083;">bits</span>) {
+    <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">bit</span> : bits) {
+        <span style="color: #9d81ba;">if</span>(buffered_bits == <span style="color: #f5c791;">8</span>) {
+            dump_bits();
+        }
+        <span style="color: #62D2DB;">uint8_t</span> <span style="color: #7CF083;">proper_bit</span> = bit ? <span style="color: #f5c791;">1u</span> : <span style="color: #f5c791;">0u</span>;
+        proper_bit &lt;&lt;= (<span style="color: #f5c791;">7</span> - buffered_bits);
+        bit_buffer |= proper_bit;
+        buffered_bits++;
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfb32f27" class="outline-4">
+<h4 id="orgfb32f27">Escrever cabeçalho informado no arquivo</h4>
+<div class="outline-text-4" id="text-orgfb32f27">
+<p>
+Este método toma uma referência a uma estrutura do <i>cabeçalho</i>, e então
+escreve imediatamente esta estrutura no arquivo binário, caso este
+esteja aberto.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0D9C94;">FileWriter</span>::<span style="color: #0bc9cf;">write_header</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">huffman_header</span> &amp;<span style="color: #7CF083;">head</span>) {
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>stream.is_open()) {
+        <span style="color: #9d81ba;">return</span>;
+    }
+
+    stream.write(head.flag, <span style="color: #f5c791;">8</span> * <span style="color: #9d81ba;">sizeof</span>(<span style="color: #62D2DB;">char</span>));
+    bin_write(stream, head.alphabet_size);
+    bin_write(stream, head.dangling_space);
+    <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">i</span> = <span style="color: #f5c791;">0</span>; i &lt; head.alphabet_size; i++) {
+        <span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">pair</span> = head.letters + i;
+        bin_write(stream, pair-&gt;letter);
+        bin_write(stream, pair-&gt;num_bits);
+        bin_write(stream, pair-&gt;dangling_bits);
+        bin_write(stream, pair-&gt;num_bytes);
+        <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">j</span> = <span style="color: #f5c791;">0</span>; j &lt; pair-&gt;num_bytes; j++) {
+            bin_write(stream, pair-&gt;bits[j]);
+        }
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaec1d94" class="outline-4">
+<h4 id="orgaec1d94">Bits sobrando</h4>
+<div class="outline-text-4" id="text-orgaec1d94">
+<p>
+Este método informa a quantidade de bits sobrando para escrita no
+<i>buffer</i>, após a última inserção de bits realizada.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">int</span>
+<span style="color: #0D9C94;">FileWriter</span>::<span style="color: #0bc9cf;">get_dangling_space</span>() <span style="color: #9d81ba;">const</span>
+{
+    <span style="color: #9d81ba;">return</span> (<span style="color: #f5c791;">8</span> - buffered_bits);
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb2e0afa" class="outline-3">
+<h3 id="orgb2e0afa">Leitor do arquivo</h3>
+<div class="outline-text-3" id="text-orgb2e0afa">
+<p>
+A estrutura a seguir também é uma <i>classe</i>, desta vez orientada à
+leitura de um arquivo binário bit-a-bit. Aqui também utilizamos a
+ideia do <i>buffer</i>, porém para leitura: contamos a quantidade de bits já
+lidos e, caso a leitura do <i>buffer</i> tenha se esgotado, tomamos um novo
+byte para o mesmo, para que a leitura possa continuar, até que o
+arquivo se esgote.
+</p>
+
+<p>
+Fica a critério do programador obter imediatamente o cabeçalho após a
+abertura do arquivo, e também fica a critério do mesmo gerar o <i>mapa de
+caracteres</i> (uma inversão do <i>mapa de bits</i>) a partir do cabeçalho
+obtido. Todavia, o processo de tradução do restante do arquivo pode
+ser feito de forma automática por um objeto desta classe, o que
+inclui também a própria reescrita do arquivo-texto.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #9d81ba;">class</span> <span style="color: #62D2DB;">FileReader</span>
+{
+<span style="color: #9d81ba;">private</span>:
+    <span style="color: #62D2DB;">uint8_t</span>        <span style="color: #7CF083;">bit_buffer</span>;
+    <span style="color: #62D2DB;">int</span>            <span style="color: #7CF083;">buffered_bits</span>;
+    <span style="color: #62D2DB;">uint32_t</span>       <span style="color: #7CF083;">dangling_bits</span>;
+    <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">ifstream</span>  <span style="color: #7CF083;">stream</span>;
+
+    <span style="color: #62D2DB;">void</span> <span style="color: #0bc9cf;">fetch_bits</span>();
+
+<span style="color: #9d81ba;">public</span>:
+    <span style="color: #0bc9cf;">FileReader</span>();
+    ~<span style="color: #0bc9cf;">FileReader</span>();
+
+    <span style="color: #62D2DB;">void</span>           <span style="color: #0bc9cf;">open</span>(<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">string</span> <span style="color: #7CF083;">filename</span>);
+    <span style="color: #62D2DB;">bool</span>           <span style="color: #0bc9cf;">is_open</span>() <span style="color: #9d81ba;">const</span>;
+    <span style="color: #62D2DB;">huffman_header</span> <span style="color: #0bc9cf;">read_header</span>();
+    <span style="color: #62D2DB;">char_map_t</span>     <span style="color: #0bc9cf;">make_charmap</span>(<span style="color: #62D2DB;">huffman_header</span> &amp;<span style="color: #7CF083;">h</span>);
+    <span style="color: #62D2DB;">bool</span>           <span style="color: #0bc9cf;">translate_bits</span>(<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">string</span> <span style="color: #7CF083;">outfile_name</span>,
+                                  <span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">char_map_t</span> &amp;<span style="color: #7CF083;">charmap</span>);
+    <span style="color: #62D2DB;">void</span>           <span style="color: #0bc9cf;">close</span>();
+};
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org64e9ef8" class="outline-4">
+<h4 id="org64e9ef8">Construtor/Destrutor</h4>
+<div class="outline-text-4" id="text-org64e9ef8">
+<p>
+O construtor da classe inicializa com zeros o <i>buffer</i>, a quantidade de
+bits não-lidos no buffer, e a quantidade de bits não-utilizados ao
+final do arquivo.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #0D9C94;">FileReader</span>::<span style="color: #0bc9cf;">FileReader</span>()
+{
+    bit_buffer    = <span style="color: #f5c791;">0u</span>;
+    buffered_bits = <span style="color: #f5c791;">0</span>;
+    dangling_bits = <span style="color: #f5c791;">0u</span>;
+}
+</pre>
+</div>
+
+<p>
+O destrutor da classe fecha o arquivo.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #0D9C94;">FileReader</span>::~<span style="color: #0bc9cf;">FileReader</span>()
+{
+    <span style="color: #9d81ba;">this</span>-&gt;close();
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org76cad05" class="outline-4">
+<h4 id="org76cad05">Macro para leitura de variável de um stream binário</h4>
+<div class="outline-text-4" id="text-org76cad05">
+<p>
+O <i>macro</i> a seguir acelera a leitura de um certo valor em um <i>stream</i> de
+arquivo binário, reduzindo a verbosidade do código.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #e55c7a;">#define</span> <span style="color: #0bc9cf;">bin_read</span>(<span style="color: #7CF083;">s</span>, <span style="color: #7CF083;">x</span>)                          \
+    s.read((<span style="color: #62D2DB;">char</span>*)&amp;x, <span style="color: #9d81ba;">sizeof</span> x)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org00974b3" class="outline-4">
+<h4 id="org00974b3">Leitura de novo byte</h4>
+<div class="outline-text-4" id="text-org00974b3">
+<p>
+Quando todos os bits do <i>buffer</i> foram lidos, este método carrega um
+novo byte vindo do arquivo, e define a quantidade de bits que podem
+ser lidos como sendo igual a oito.
+</p>
+
+<p>
+Caso o arquivo tenha chegado ao fim, o <i>buffer</i> e a quantidade de bits a
+serem lidos continuam nulos. Isto é um indicativo de fim-de-arquivo
+que será utilizado a seguir.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0D9C94;">FileReader</span>::<span style="color: #0bc9cf;">fetch_bits</span>()
+{
+    <span style="color: #9d81ba;">if</span>(buffered_bits == <span style="color: #f5c791;">0</span>) {
+        bin_read(stream, bit_buffer);
+        buffered_bits = <span style="color: #f5c791;">8</span>;
+        <span style="color: #9d81ba;">if</span>(stream.eof()) {
+            buffered_bits = <span style="color: #f5c791;">0</span>;
+            bit_buffer    = <span style="color: #f5c791;">0u</span>;
+        }
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6620977" class="outline-4">
+<h4 id="org6620977">Abrir arquivo</h4>
+<div class="outline-text-4" id="text-org6620977">
+<p>
+Este método abre o arquivo informado para entrada, especificando a
+leitura de um arquivo binário.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0D9C94;">FileReader</span>::<span style="color: #0bc9cf;">open</span>(<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">string</span> <span style="color: #7CF083;">filename</span>)
+{
+    stream.open(filename.c_str(), <span style="color: #0D9C94;">std</span>::<span style="color: #0D9C94;">ios</span>::binary);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org489de88" class="outline-4">
+<h4 id="org489de88">Predicado para informar status do arquivo</h4>
+<div class="outline-text-4" id="text-org489de88">
+<p>
+Este método informa o <i>status</i> de abertura do arquivo.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">bool</span>
+<span style="color: #0D9C94;">FileReader</span>::<span style="color: #0bc9cf;">is_open</span>() <span style="color: #9d81ba;">const</span>
+{
+    <span style="color: #9d81ba;">return</span> stream.is_open();
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7d2a0d3" class="outline-4">
+<h4 id="org7d2a0d3">Leitura de cabeçalho</h4>
+<div class="outline-text-4" id="text-org7d2a0d3">
+<p>
+O método a seguir lê um cabeçalho a partir do arquivo atualmente
+aberto no objeto atual. Adicionalmente, o número de bits
+não-utilizados ao final do arquivo é atribuído ao campo interno do
+objeto que armazena este valor, preparando-o para uma futura leitura
+de bits.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">huffman_header</span>
+<span style="color: #0D9C94;">FileReader</span>::<span style="color: #0bc9cf;">read_header</span>()
+{
+    <span style="color: #62D2DB;">huffman_header</span> <span style="color: #7CF083;">h</span>;
+
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>stream.is_open())
+        <span style="color: #9d81ba;">return</span> h;
+
+    stream.read(h.flag, <span style="color: #f5c791;">8</span> * <span style="color: #9d81ba;">sizeof</span>(<span style="color: #62D2DB;">char</span>));
+    h.flag[<span style="color: #f5c791;">7</span>] = <span style="color: #f5c791;">'\0'</span>;
+    <span style="color: #9d81ba;">if</span>(strcmp(h.flag, <span style="color: #f5c791;">"HUFFMAN"</span>)) {
+        <span style="color: #9d81ba;">throw</span> <span style="color: #f5c791;">"Arquivo invalido"</span>;
+    }
+
+    bin_read(stream, h.alphabet_size);
+    bin_read(stream, h.dangling_space);
+
+    h.letters = <span style="color: #9d81ba;">new</span> <span style="color: #62D2DB;">huffman_pair</span>[h.alphabet_size];
+    <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">i</span> = <span style="color: #f5c791;">0</span>; i &lt; h.alphabet_size; i++) {
+        <span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">pair</span> = h.letters + i;
+        bin_read(stream, pair-&gt;letter);
+        bin_read(stream, pair-&gt;num_bits);
+        bin_read(stream, pair-&gt;dangling_bits);
+        <span style="color: #9d81ba;">this</span>-&gt;dangling_bits = pair-&gt;dangling_bits;
+        bin_read(stream, pair-&gt;num_bytes);
+
+        pair-&gt;bits = <span style="color: #9d81ba;">new</span> <span style="color: #62D2DB;">uint8_t</span>[pair-&gt;num_bytes];
+        <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">j</span> = <span style="color: #f5c791;">0</span>; j &lt; pair-&gt;num_bytes; j++) {
+            bin_read(stream, pair-&gt;bits[j]);
+        }
+    }
+
+    <span style="color: #9d81ba;">return</span> h;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgffe6ed0" class="outline-4">
+<h4 id="orgffe6ed0">Geração de mapa de caracteres</h4>
+<div class="outline-text-4" id="text-orgffe6ed0">
+<p>
+A partir de um cabeçalho carregado, este método é capaz de gerar um
+<i>mapa de caracteres</i> (mapa reverso de bits). Este mapa gerado será
+crucial para a tradução do arquivo binário de volta para um
+arquivo-texto.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">char_map_t</span>
+<span style="color: #0D9C94;">FileReader</span>::<span style="color: #0bc9cf;">make_charmap</span>(<span style="color: #62D2DB;">huffman_header</span> &amp;<span style="color: #7CF083;">h</span>)
+{
+    <span style="color: #62D2DB;">char_map_t</span> <span style="color: #7CF083;">charmap</span>;
+
+    <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">i</span> = <span style="color: #f5c791;">0</span>; i &lt; h.alphabet_size; i++) {
+        <span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">pair</span> = h.letters + i;
+        <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">vector</span>&lt;<span style="color: #62D2DB;">bool</span>&gt; <span style="color: #7CF083;">bitvec</span>;
+        <span style="color: #9d81ba;">for</span>(<span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">j</span> = <span style="color: #f5c791;">0</span>; j &lt; pair-&gt;num_bytes; j++) {
+            <span style="color: #9d81ba;">for</span>(<span style="color: #62D2DB;">uint8_t</span> <span style="color: #7CF083;">offset</span> = <span style="color: #f5c791;">8</span>; offset &gt; <span style="color: #f5c791;">0</span>; offset--) {
+                <span style="color: #9d81ba;">if</span>((j == pair-&gt;num_bytes - <span style="color: #f5c791;">1</span>) &amp;&amp;
+                   (offset &lt;= pair-&gt;dangling_bits)) {
+                    <span style="color: #9d81ba;">break</span>;
+                }
+                <span style="color: #62D2DB;">uint8_t</span> <span style="color: #7CF083;">bit</span> =
+                    pair-&gt;bits[j] &amp; ((<span style="color: #62D2DB;">uint8_t</span>)(<span style="color: #f5c791;">1u</span> &lt;&lt; (offset - <span style="color: #f5c791;">1</span>)));
+                bitvec.push_back(bit ? <span style="color: #0D9C94;">true</span> : <span style="color: #0D9C94;">false</span>);
+            }
+        }
+        charmap[bitvec] = pair-&gt;letter;
+    }
+
+    <span style="color: #9d81ba;">return</span> charmap;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org91613d2" class="outline-4">
+<h4 id="org91613d2">Tradução de arquivo</h4>
+<div class="outline-text-4" id="text-org91613d2">
+<p>
+O método a seguir traduz o arquivo binário atualmente aberto no objeto
+para um arquivo-texto, localizado no parâmetro informado. Este método
+também recebe uma referência a um <i>mapa de caracteres</i> (mapa reverso de
+bits) que será utilizado na tradução.
+</p>
+
+<p>
+Este método tenta abrir um novo arquivo-texto localizado em
+<code>outfile_name</code>, e então escreve letra a letra traduzida, de acordo com o
+mapeamento dos bits lidos.
+</p>
+
+<p>
+A tradução assume que o cabeçalho do arquivo já tenha sido lido, e
+envolve ler bit a bit do restante do arquivo para dentro de um <i>vetor</i>
+de bits, representado como um vetor booleano. Assim que o vetor passa
+a ter um correspondente entre as chaves do <i>mapa de caracteres</i>, o
+caractere correspondente a este vetor no mapa é escrito no
+arquivo-texto, e o vetor booleano é limpado para uma novo recebimento
+de bits.
+</p>
+
+<p>
+O processo de tradução é encerrado quando o arquivo acaba ou quando
+todos os bits úteis do último byte do arquivo já foram traduzidos. No
+segundo caso, o campo interno <code>dangling_bits</code> determina a quantidade
+máxima de bits que serão lidos do último byte do arquivo.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">bool</span>
+<span style="color: #0D9C94;">FileReader</span>::<span style="color: #0bc9cf;">translate_bits</span>(<span style="color: #9d81ba;">const</span> <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">string</span> <span style="color: #7CF083;">outfile_name</span>,
+                           <span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">char_map_t</span> &amp;<span style="color: #7CF083;">charmap</span>)
+{
+    <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">ofstream</span> <span style="color: #7CF083;">ofs</span>(outfile_name.c_str());
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>ofs.is_open()) {
+        <span style="color: #9d81ba;">return</span> <span style="color: #0D9C94;">false</span>;
+    }
+
+    <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">vector</span>&lt;<span style="color: #62D2DB;">bool</span>&gt; <span style="color: #7CF083;">read_bits</span>;
+    <span style="color: #9d81ba;">while</span>(stream.good()) {
+        fetch_bits();
+        <span style="color: #9d81ba;">if</span>(buffered_bits == <span style="color: #f5c791;">0</span>) {
+            <span style="color: #9d81ba;">break</span>;
+        }
+
+        <span style="color: #9d81ba;">if</span>(stream.peek() == EOF &amp;&amp;
+           buffered_bits == dangling_bits) {
+            <span style="color: #9d81ba;">break</span>;
+        }
+
+        <span style="color: #62D2DB;">uint8_t</span> <span style="color: #7CF083;">current</span> =
+            bit_buffer &amp; ((<span style="color: #62D2DB;">uint8_t</span>)(<span style="color: #f5c791;">1u</span> &lt;&lt; (buffered_bits - <span style="color: #f5c791;">1</span>)));
+        read_bits.push_back(current ? <span style="color: #0D9C94;">true</span> : <span style="color: #0D9C94;">false</span>);
+        buffered_bits--;
+
+        <span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">itr</span> = charmap.find(read_bits);
+        <span style="color: #9d81ba;">if</span>(itr != charmap.end()) {
+            ofs &lt;&lt; itr-&gt;second;
+            read_bits.clear();
+        }
+    }
+    ofs.close();
+    <span style="color: #9d81ba;">return</span> <span style="color: #0D9C94;">true</span>;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb9afef6" class="outline-4">
+<h4 id="orgb9afef6">Fechamento de arquivo</h4>
+<div class="outline-text-4" id="text-orgb9afef6">
+<p>
+Este método fecha o arquivo de entrada.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0D9C94;">FileReader</span>::<span style="color: #0bc9cf;">close</span>()
+{
+    <span style="color: #9d81ba;">if</span>(stream.is_open()) {
+        stream.close();
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org346eb03" class="outline-2">
+<h2 id="org346eb03">Ponto de entrada</h2>
+<div class="outline-text-2" id="text-org346eb03">
+<p>
+As construções a seguir determinam o <i>ponto de entrada</i> do programa,
+isto é, a seção do mesmo por onde o programa começa a ser executado,
+bem como elementos importantes para a interação com o usuário.
+</p>
+</div>
+
+<div id="outline-container-org1798333" class="outline-3">
+<h3 id="org1798333">Variáveis globais</h3>
+<div class="outline-text-3" id="text-org1798333">
+<p>
+As variáveis a seguir determinam valores relacionados às entradas do
+programa via linha de comando. O programa deve ser configurado através
+de argumentos do console, que modificarão estes valores globais.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #454459;">// </span><span style="color: #454459;">Nomes de entrada e sa&#237;da padr&#227;o para</span>
+<span style="color: #454459;">// </span><span style="color: #454459;">compress&#227;o.</span>
+<span style="color: #9d81ba;">static</span> <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">string</span> <span style="color: #7CF083;">output_filename</span> = <span style="color: #f5c791;">"a.out"</span>;
+<span style="color: #9d81ba;">static</span> <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">string</span> <span style="color: #7CF083;">input_filename</span>;
+
+<span style="color: #454459;">// </span><span style="color: #454459;">Op&#231;&#245;es de argumentos</span>
+<span style="color: #9d81ba;">static</span> <span style="color: #62D2DB;">bool</span> <span style="color: #7CF083;">extract</span>    = <span style="color: #0D9C94;">false</span>;
+<span style="color: #9d81ba;">static</span> <span style="color: #62D2DB;">bool</span> <span style="color: #7CF083;">dbg_output</span> = <span style="color: #0D9C94;">false</span>;
+<span style="color: #9d81ba;">static</span> <span style="color: #62D2DB;">int</span>  <span style="color: #7CF083;">dbg_type</span>   = <span style="color: #f5c791;">0</span>;
+<span style="color: #9d81ba;">static</span> <span style="color: #62D2DB;">bool</span> <span style="color: #7CF083;">dbg_bits</span>   = <span style="color: #0D9C94;">false</span>;
+<span style="color: #9d81ba;">static</span> <span style="color: #62D2DB;">bool</span> <span style="color: #7CF083;">dbg_header</span> = <span style="color: #0D9C94;">false</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org773b1e1" class="outline-3">
+<h3 id="org773b1e1">Texto de cabeçalho</h3>
+<div class="outline-text-3" id="text-org773b1e1">
+<p>
+A função a seguir mostra um cabeçalho de informações do programa, que
+será impresso mediante pedido do usuário ou conveniência.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">show_info</span>()
+{
+    cout &lt;&lt; <span style="color: #f5c791;">"Huffman Compress/Decompress v1.0"</span>             &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"Copyright (c) 2020 Lucas S. Vieira"</span>           &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"Este codigo e distribuido sob a licenca MIT."</span> &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"Veja o arquivo LICENSE para mais detalhes."</span>   &lt;&lt; endl
+         &lt;&lt; endl;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org80d7b7d" class="outline-3">
+<h3 id="org80d7b7d">Texto de ajuda</h3>
+<div class="outline-text-3" id="text-org80d7b7d">
+<p>
+Esta função mostra o texto de ajuda da aplicação, exibindo opções que
+podem ser repassadas via argumentos da linha de comando. Veja que
+algumas opções só são mostradas caso o programa tenha sido compilado
+com suporte às mesmas.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">void</span>
+<span style="color: #0bc9cf;">show_help</span>()
+{
+    cout &lt;&lt; <span style="color: #f5c791;">"Uso:"</span> &lt;&lt; endl &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"\thuffman [opcoes...] &lt;entrada&gt; [-o &lt;saida&gt;]"</span>       &lt;&lt; endl
+         &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"Argumentos da linha de comando:"</span>                    &lt;&lt; endl
+         &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"  &lt;entrada&gt;  \tArquivo-texto a ser operado."</span>        &lt;&lt; endl
+         &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"  -o &lt;saida&gt; \tArquivo a ser escrito apos a"</span>        &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"             \tapos a operacao (opcional)."</span>         &lt;&lt; endl
+         &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"  -x         \tExtrai o arquivo de entrada para a"</span>  &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"             \tsaida informada."</span>                    &lt;&lt; endl
+         &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"  --dot      \tMostra codigo GraphViz da arvore"</span>    &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"             \tde Huffman."</span>                         &lt;&lt; endl
+         &lt;&lt; endl
+
+<span style="color: #e55c7a;">#ifdef</span> USE_FEH
+         &lt;&lt; <span style="color: #f5c791;">"  --image    \tMostra a arvore de Huffman no feh."</span>  &lt;&lt; endl
+         &lt;&lt; endl
+<span style="color: #e55c7a;">#endif</span> <span style="color: #454459;">// </span><span style="color: #454459;">USE_FEH</span>
+
+<span style="color: #e55c7a;">#ifdef</span> USE_XDOT
+         &lt;&lt; <span style="color: #f5c791;">"  --xdot     \tMostra arvore de Huffman no xdot."</span>   &lt;&lt; endl
+         &lt;&lt; endl
+<span style="color: #e55c7a;">#endif</span> <span style="color: #454459;">// </span><span style="color: #454459;">USE_XDOT</span>
+
+         &lt;&lt; <span style="color: #f5c791;">"  --freq     \tMostra a tabela de frequencias."</span>     &lt;&lt; endl
+         &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"  --bits     \tMostra o mapa de bits para o "</span>       &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"alfabeto."</span>                                          &lt;&lt; endl
+         &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"  --head     \tMostra o cabecalho do arquivo"</span>       &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"             \tapos comprimido."</span>                    &lt;&lt; endl
+         &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"  --help     \tMostra este texto de ajuda."</span>         &lt;&lt; endl
+         &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"  --info     \tMostra informacoes do programa e "</span>   &lt;&lt; endl
+         &lt;&lt; <span style="color: #f5c791;">"             \tencerra."</span>                            &lt;&lt; endl
+         &lt;&lt; endl;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org84cacb8" class="outline-3">
+<h3 id="org84cacb8">Processo de compressão</h3>
+<div class="outline-text-3" id="text-org84cacb8">
+<p>
+A função a seguir realiza a operação de compressão de um arquivo-texto
+passo-a-passo, utilizando as estruturas programadas anteriormente.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">int</span>
+<span style="color: #0bc9cf;">huffman_compress</span>(<span style="color: #62D2DB;">void</span>)
+{
+    <span style="color: #454459;">// </span><span style="color: #454459;">Abra o arquivo</span>
+    <span style="color: #0D9C94;">std</span>::<span style="color: #62D2DB;">ifstream</span> <span style="color: #7CF083;">ifs</span>(input_filename.c_str());
+
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>ifs.is_open()) {
+        cerr &lt;&lt; <span style="color: #f5c791;">"Impossivel abrir o arquivo de entrada "</span>
+             &lt;&lt; input_filename
+             &lt;&lt; endl;
+        <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">1</span>;
+    }
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Gere mapa de frequ&#234;ncias</span>
+    <span style="color: #62D2DB;">freq_map_t</span> <span style="color: #7CF083;">freq_map</span> = build_frequency_map(ifs);
+    ifs.clear();
+    ifs.seekg(<span style="color: #f5c791;">0</span>);
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Imprime mapa de frequ&#234;ncias, se necess&#225;rio</span>
+    <span style="color: #9d81ba;">if</span>(<span style="color: #62D2DB;">dbg_output</span> &amp;&amp; <span style="color: #7CF083;">dbg_type</span> == <span style="color: #f5c791;">3</span>) {
+        show_freq_map(freq_map);
+        ifs.close();
+        <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">0</span>;
+    }
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Construa a &#225;rvore de Huffman</span>
+    <span style="color: #9d81ba;">auto</span> <span style="color: #7CF083;">root</span> = build_huffman_tree(freq_map);
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Mais ferramentas de debug, se utilizadas</span>
+    <span style="color: #9d81ba;">if</span>(dbg_output) {
+        <span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">ret</span> = <span style="color: #f5c791;">0</span>;
+        <span style="color: #9d81ba;">switch</span>(dbg_type) {
+        <span style="color: #9d81ba;">case</span> <span style="color: #f5c791;">0</span>:
+            print_graphviz(root);
+            <span style="color: #9d81ba;">break</span>;
+<span style="color: #e55c7a;">#ifdef</span> USE_GRAPHVIZ
+<span style="color: #e55c7a;">#ifdef</span> USE_FEH
+        <span style="color: #9d81ba;">case</span> <span style="color: #f5c791;">1</span>:
+            show_graphviz(root);
+            <span style="color: #9d81ba;">break</span>;
+<span style="color: #e55c7a;">#endif</span> <span style="color: #454459;">// </span><span style="color: #454459;">USE_FEH</span>
+
+<span style="color: #e55c7a;">#ifdef</span> USE_XDOT
+        <span style="color: #9d81ba;">case</span> <span style="color: #f5c791;">2</span>:
+            show_graphviz(root, <span style="color: #0D9C94;">true</span>);
+            <span style="color: #9d81ba;">break</span>;
+<span style="color: #e55c7a;">#endif</span> <span style="color: #454459;">// </span><span style="color: #454459;">USE_XDOT</span>
+<span style="color: #e55c7a;">#endif</span> <span style="color: #454459;">// </span><span style="color: #454459;">USE_GRAPHVIZ</span>
+        <span style="color: #9d81ba;">default</span>:
+            cerr &lt;&lt; <span style="color: #f5c791;">"Opcao de visualizacao nao-suportada"</span>
+                 &lt;&lt; endl;
+            ret = <span style="color: #f5c791;">1</span>;
+            <span style="color: #9d81ba;">break</span>;
+        }
+
+        ifs.close();
+        destroy_tree(root);
+        <span style="color: #9d81ba;">return</span> ret;
+    }
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Construa o mapa de bits para os caracteres.</span>
+    <span style="color: #454459;">// </span><span style="color: #454459;">Este mapa de bits dever&#225; ser salvo</span>
+    <span style="color: #454459;">// </span><span style="color: #454459;">para descompress&#227;o</span>
+    <span style="color: #62D2DB;">bit_map_t</span> <span style="color: #7CF083;">bitmap</span> = make_bit_map(root);
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Destrua a &#225;rvore</span>
+    destroy_tree(root);
+
+    <span style="color: #9d81ba;">if</span>(dbg_bits) {
+        print_bitmap(bitmap);
+        ifs.close();
+        <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">0</span>;
+    }
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Crie o cabe&#231;alho do mapa de bits</span>
+    <span style="color: #62D2DB;">huffman_header</span> <span style="color: #7CF083;">h</span> =
+        make_huffman_header(bitmap);
+
+    <span style="color: #9d81ba;">if</span>(dbg_header) {
+        print_header(h);
+        ifs.close();
+        <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">0</span>;
+    }
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Abra o arquivo de sa&#237;da</span>
+    <span style="color: #62D2DB;">FileWriter</span> <span style="color: #7CF083;">fw</span>;
+    fw.open(output_filename);
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>fw.is_open()) {
+        cerr &lt;&lt; <span style="color: #f5c791;">"Erro ao abrir arquivo de saida "</span>
+             &lt;&lt; output_filename &lt;&lt; endl;
+        destroy_huffman_header(h);
+        ifs.close();
+        <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">1</span>;
+    }
+
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Reescreva o arquivo passo-a-passo</span>
+    <span style="color: #9d81ba;">while</span>(ifs.good()) {
+        <span style="color: #62D2DB;">char</span> <span style="color: #7CF083;">c</span> = ifs.get();
+        fw.write_bits(bitmap[c]);
+    }
+    <span style="color: #454459;">// </span><span style="color: #454459;">Feche, finalmente, o arquivo de entrada</span>
+    ifs.close();
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Recupere o espa&#231;o extra ao final, armazene no cabe&#231;alho</span>
+    h.dangling_space = fw.get_dangling_space();
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Escreva o cabe&#231;alho</span>
+    fw.write_header(h);
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Feche o arquivo, escrevendo as informa&#231;&#245;es</span>
+    fw.close();
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Destrua o cabe&#231;alho</span>
+    destroy_huffman_header(h);
+
+    <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">0</span>;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfb2315c" class="outline-3">
+<h3 id="orgfb2315c">Processo de extração</h3>
+<div class="outline-text-3" id="text-orgfb2315c">
+<p>
+A função a seguir realiza a operação de extração de um arquivo binário
+passo-a-passo, utilizando as estruturas programadas anteriormente.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">int</span>
+<span style="color: #0bc9cf;">huffman_extract</span>(<span style="color: #62D2DB;">void</span>)
+{
+    <span style="color: #9d81ba;">if</span>(dbg_output) {
+        cerr &lt;&lt; <span style="color: #f5c791;">"O processo de extracao nao remonta uma "</span>
+             &lt;&lt; <span style="color: #f5c791;">"arvore ou mapa de frequencias que possam "</span>
+             &lt;&lt; endl
+             &lt;&lt; <span style="color: #f5c791;">"ser visualizados"</span>
+             &lt;&lt; endl;
+        <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">1</span>;
+    }
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Abra o arquivo de entrada</span>
+    <span style="color: #62D2DB;">FileReader</span> <span style="color: #7CF083;">fr</span>;
+    fr.open(input_filename);
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>fr.is_open()) {
+        cerr &lt;&lt; <span style="color: #f5c791;">"Impossivel abrir o arquivo de entrada "</span>
+             &lt;&lt; input_filename &lt;&lt; endl;
+        <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">1</span>;
+    }
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Crie e popule o cabe&#231;alho</span>
+    <span style="color: #62D2DB;">huffman_header</span> <span style="color: #7CF083;">h</span>;
+
+    <span style="color: #9d81ba;">try</span> {
+        h = fr.read_header();
+    } <span style="color: #9d81ba;">catch</span>(<span style="color: #9d81ba;">const</span> <span style="color: #62D2DB;">char</span>* &amp;<span style="color: #7CF083;">e</span>) {
+        cerr &lt;&lt; <span style="color: #f5c791;">"Erro ao ler o arquivo "</span>
+             &lt;&lt; input_filename &lt;&lt; <span style="color: #f5c791;">": "</span>
+             &lt;&lt; e &lt;&lt; endl;
+        fr.close();
+        <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">1</span>;
+    }
+
+    <span style="color: #9d81ba;">if</span>(dbg_header) {
+        print_header(h);
+        destroy_huffman_header(h);
+        fr.close();
+        <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">0</span>;
+    }
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Cria mapa de caracteres</span>
+    <span style="color: #454459;">// </span><span style="color: #454459;">(Mapa reverso de bits)</span>
+    <span style="color: #62D2DB;">char_map_t</span> <span style="color: #7CF083;">charmap</span> = fr.make_charmap(h);
+    destroy_huffman_header(h);
+
+    <span style="color: #9d81ba;">if</span>(dbg_bits) {
+        print_charmap(charmap);
+        fr.close();
+        <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">0</span>;
+    }
+
+    <span style="color: #454459;">// </span><span style="color: #454459;">Reescreva o arquivo na saida</span>
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>fr.translate_bits(output_filename, charmap)) {
+        cerr &lt;&lt; <span style="color: #f5c791;">"Erro ao traduzir o arquivo "</span>
+             &lt;&lt; input_filename &lt;&lt; endl;
+        fr.close();
+        <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">1</span>;
+    }
+
+    fr.close();
+    <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">0</span>;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcffec86" class="outline-3">
+<h3 id="orgcffec86">Resolução de argumentos do console</h3>
+<div class="outline-text-3" id="text-orgcffec86">
+<p>
+Esta função toma os argumentos do console do programa e resolve-os,
+modificando as variáveis globais segundo necessário.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">int</span>
+<span style="color: #0bc9cf;">resolve_args</span>(<span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">argc</span>, <span style="color: #62D2DB;">char</span> **<span style="color: #7CF083;">argv</span>)
+{
+    <span style="color: #9d81ba;">for</span>(<span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">i</span> = <span style="color: #f5c791;">1</span>; i &lt; argc; i++) {
+        <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>strcmp(argv[i], <span style="color: #f5c791;">"-o"</span>)) {
+            i++;
+            <span style="color: #9d81ba;">if</span>(i &gt;= argc) {
+                cerr &lt;&lt; <span style="color: #f5c791;">"Nome do arquivo nao informado"</span>
+                     &lt;&lt; endl;
+                <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">1</span>;
+            }
+            output_filename = argv[i];
+        } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>strcmp(argv[i], <span style="color: #f5c791;">"-x"</span>)) {
+            extract    = <span style="color: #0D9C94;">true</span>;
+        } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>strcmp(argv[i], <span style="color: #f5c791;">"--dot"</span>)) {
+            dbg_output = <span style="color: #0D9C94;">true</span>;
+            dbg_type   = <span style="color: #f5c791;">0</span>;
+        } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>strcmp(argv[i], <span style="color: #f5c791;">"--image"</span>)) {
+            dbg_output = <span style="color: #0D9C94;">true</span>;
+            dbg_type   = <span style="color: #f5c791;">1</span>;
+        } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>strcmp(argv[i], <span style="color: #f5c791;">"--xdot"</span>)) {
+            dbg_output = <span style="color: #0D9C94;">true</span>;
+            dbg_type   = <span style="color: #f5c791;">2</span>;
+        } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>strcmp(argv[i], <span style="color: #f5c791;">"--freq"</span>)) {
+            dbg_output = <span style="color: #0D9C94;">true</span>;
+            dbg_type   = <span style="color: #f5c791;">3</span>;
+        } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>strcmp(argv[i], <span style="color: #f5c791;">"--bits"</span>)) {
+            dbg_bits   = <span style="color: #0D9C94;">true</span>;
+        } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>strcmp(argv[i], <span style="color: #f5c791;">"--head"</span>)) {
+            dbg_header = <span style="color: #0D9C94;">true</span>;
+        } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>strcmp(argv[i], <span style="color: #f5c791;">"--help"</span>)) {
+            show_help();
+            <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">0</span>;
+        } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>strcmp(argv[i], <span style="color: #f5c791;">"--info"</span>)) {
+            show_info();
+            <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">0</span>;
+        } <span style="color: #9d81ba;">else</span> {
+            <span style="color: #454459;">// </span><span style="color: #454459;">Caso haja um nome de sa&#237;da, colete-o</span>
+            input_filename = argv[i];
+        }
+    }
+
+    <span style="color: #9d81ba;">if</span>(input_filename == <span style="color: #f5c791;">""</span>) {
+        cerr &lt;&lt; <span style="color: #f5c791;">"Informe um arquivo a ser operado."</span>
+             &lt;&lt; endl;
+        <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">1</span>;
+    } <span style="color: #9d81ba;">else</span> <span style="color: #9d81ba;">if</span>(input_filename == output_filename) {
+        cerr &lt;&lt; <span style="color: #f5c791;">"Usar o mesmo arquivo para entrada e "</span>
+             &lt;&lt; <span style="color: #f5c791;">"saida nao e recomendado"</span> &lt;&lt; endl;
+        <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">1</span>;
+    }
+
+    <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">0</span>;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org24b056c" class="outline-3">
+<h3 id="org24b056c">Função principal</h3>
+<div class="outline-text-3" id="text-org24b056c">
+<p>
+Esta é a função principal (<code>main</code>) da aplicação. Ela é responsável por
+invocar a resolução de argumentos e invocar os processos de compressão
+e extração.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #62D2DB;">int</span>
+<span style="color: #0bc9cf;">main</span>(<span style="color: #62D2DB;">int</span> <span style="color: #7CF083;">argc</span>, <span style="color: #62D2DB;">char</span> **<span style="color: #7CF083;">argv</span>)
+{
+    <span style="color: #454459;">// </span><span style="color: #454459;">Parsing de argumentos do console</span>
+    <span style="color: #454459;">// </span><span style="color: #454459;">Devemos pelo menos um argumento. Lembrando</span>
+    <span style="color: #454459;">// </span><span style="color: #454459;">que argv[0] &#233; a linha de execu&#231;&#227;o do aplicativo.</span>
+    <span style="color: #9d81ba;">if</span>(argc &lt;= <span style="color: #f5c791;">1</span>) {
+        show_info();
+        show_help();
+        <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">1</span>;
+    }
+
+    <span style="color: #9d81ba;">if</span>(resolve_args(argc, argv)) {
+        <span style="color: #9d81ba;">return</span> <span style="color: #f5c791;">1</span>;
+    }
+
+    <span style="color: #9d81ba;">if</span>(<span style="color: #e55c7a;">!</span>extract) {
+        <span style="color: #9d81ba;">return</span> huffman_compress();
+    } <span style="color: #9d81ba;">else</span> {
+        <span style="color: #9d81ba;">return</span> huffman_extract();
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1a837a9" class="outline-2">
+<h2 id="org1a837a9">Apêndices</h2>
+<div class="outline-text-2" id="text-org1a837a9">
+</div>
+
+<div id="outline-container-org194a6ae" class="outline-3">
+<h3 id="org194a6ae">Teste tipográfico</h3>
+<div class="outline-text-3" id="text-org194a6ae">
+<p>
+Os arquivos a seguir são testes tipográficos simples, criados para
+testar os algoritmos em pequenas amostras.
+</p>
+
+<p>
+O primeiro teste possui uma quantidade reduzida de letras.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">abba is bad.
+</pre>
+</div>
+
+<p>
+O segundo teste repete pelo menos uma vez cada caractere de letras da
+tabela ASCII.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">The quick brown fox jumps over the lazy dog.
+</pre>
+</div>
+
+<p>
+O terceiro teste repete pelo menos uma vez cada caractere acentuado da
+língua portuguesa. Isto também envolve codificação específica de
+arquivos, mas aqui tratamos todos os elementos textuais com o tamanho
+de um único byte.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">&#192; noite, vov&#244; Kowalsky v&#234; o &#237;m&#227;  cair no p&#233; do ping&#252;im queixoso e vov&#243;
+p&#245;e a&#231;&#250;car no ch&#225; de t&#226;maras do jabuti feliz.
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org26e6c23" class="outline-3">
+<h3 id="org26e6c23">Lorem ipsum simples</h3>
+<div class="outline-text-3" id="text-org26e6c23">
+<p>
+<a id="orgbf00b15"></a>
+</p>
+
+<p>
+O texto <i>"Lorem ipsum"</i> é um texto sem sentido, gerado automaticamente
+em latim. Este texto normalmente é utilizado para testes tipográficos
+de <i>layout</i> e enquadramento.
+</p>
+
+<p>
+Aqui, utilizamos um parágrafo gerado automaticamente para testar a
+distribuição de caracteres ASCII para compressão.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">Lorem ipsum dolor sit  amet, consectetur adipiscing elit. Pellentesque
+dictum enim a metus ullamcorper,  at vestibulum nunc semper. Phasellus
+ornare eros  imperdiet purus cursus  accumsan. Nunc urna  neque, porta
+ac.
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9206c2d" class="outline-3">
+<h3 id="org9206c2d">Lorem ipsum complexo</h3>
+<div class="outline-text-3" id="text-org9206c2d">
+<p>
+<a id="org4c10649"></a>
+</p>
+
+<p>
+O texto abaixo compreende cinco parágrafos automaticamente gerados de
+<i>"Lorem ipsum"</i>, assim como o texto anterior. Pelo fato de ser mais
+extenso, começamos a ver menor ocupação de espaço em disco após a
+compressão deste texto.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">Lorem  ipsum   dolor  sit  amet,  consectetur   adipiscing  elit.  Sed
+venenatis, libero a mattis imperdiet, libero tortor fermentum arcu, et
+bibendum  sem purus  et felis.  Sed sodales  purus sed  velit pulvinar
+lacinia. Maecenas  condimentum, est eu consequat  interdum, felis nibh
+tincidunt massa, ac  ornare mi nulla at felis.  Praesent quis sagittis
+sem.  Pellentesque nec  nunc  at enim  porttitor fringilla.  Phasellus
+tristique, leo sollicitudin vehicula  euismod, magna dui cursus lacus,
+sit  amet pharetra  urna  eros  sed dui.  Ut  porttitor  dui eu  lacus
+fringilla fermentum. Morbi  id sem lacinia, congue  orci eu, efficitur
+magna. Nam  in diam ut  urna rhoncus malesuada  id non sem.  Nullam in
+vestibulum velit.
+
+Curabitur  facilisis  ultricies  diam,   eget  mattis  odio  hendrerit
+eget. Donec lacinia,  justo non luctus cursus,  velit augue vestibulum
+diam, eu  congue tortor arcu  vitae eros.  Duis et diam  aliquam nulla
+congue fermentum. Phasellus consectetur  lorem elit, sed convallis sem
+suscipit non. Suspendisse  et nulla felis. Donec ut  velit nisi. Donec
+eu tempus felis, eu laoreet dolor. Fusce facilisis nisi id condimentum
+ultricies. Phasellus mattis tempor erat, quis vulputate neque pharetra
+eu.
+
+Nunc  ligula purus,  consectetur et  augue vulputate,  accumsan semper
+dolor. Maecenas  finibus quis  tortor vitae cursus.  Pellentesque orci
+sem, accumsan ac dolor non,  dignissim vehicula odio. Vivamus pulvinar
+dictum  sem,  quis ullamcorper  nibh  tincidunt  eget. Donec  ut  nibh
+enim. Maecenas ut  dolor elit. Donec ultricies  sollicitudin est vitae
+eleifend. Ut  eleifend eu mauris  eu pretium. Sed  tincidunt fermentum
+sem sed varius.
+
+Nullam quis mi varius, molestie  diam porttitor, viverra libero. Proin
+interdum  mi  nulla,  id  varius ligula  laoreet  vel.  Nullam  varius
+fermentum orci,  in eleifend urna.  Curabitur nibh dolor,  pharetra at
+leo nec, egestas  condimentum sem. Sed eu orci eget  elit cursus porta
+sed vel  purus. Mauris finibus  eget turpis sed bibendum.  Cras luctus
+neque ac purus lacinia, laoreet fermentum risus sodales.
+
+Morbi  est est,  congue  et  mollis in,  hendrerit  nec justo.  Mauris
+accumsan auctor ex, eu porta  metus efficitur vitae. Integer auctor id
+massa  ut sodales.  Curabitur  dolor sapien,  vehicula  nec magna  ut,
+efficitur  posuere   dolor.  Pellentesque  habitant   morbi  tristique
+senectus et  netus et  malesuada fames  ac turpis  egestas. Vestibulum
+ante ipsum primis in faucibus  orci luctus et ultrices posuere cubilia
+Curae; Etiam  eget eleifend  mauris. Vestibulum  id blandit  est. Cras
+dictum  ligula at  lacinia facilisis.  Etiam facilisis  magna nisi,  a
+egestas lorem  lobortis at. Vestibulum  laoreet, urna sit  amet luctus
+ornare,  ex  sem  pretium  nisi,   iaculis  pharetra  arcu  ipsum  nec
+massa. Lorem ipsum dolor sit  amet, consectetur adipiscing elit. Proin
+et ipsum velit.
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org453d8dc" class="outline-3">
+<h3 id="org453d8dc">Makefile</h3>
+<div class="outline-text-3" id="text-org453d8dc">
+<p>
+O código a seguir constitui um arquivo <i>Makefile</i> para a compilação do
+arquivo em questão.
+</p>
+
+<p>
+Este arquivo <i>Makefile</i> garante que o programa seja compilado com a
+especificação de 2014 da linguagem C++, e também consulta o sistema
+pela existência dos programas externos que podem ser utilizados. Caso
+estes programas não existam no sistema, o suporte a eles será removido
+durante a compilação.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-makefile"><span style="color: #7CF083;">CXX</span>         := clang++ --std=c++14
+<span style="color: #7CF083;">CXXFLAGS</span>    := -Wall -pedantic -g -O2
+<span style="color: #7CF083;">EXTRA_FLAGS</span> := 
+<span style="color: #7CF083;">OUTFLAG</span>     := -o
+<span style="color: #7CF083;">BINARY</span>      := huffman
+<span style="color: #7CF083;">SRC</span>         := huffman.cpp
+
+
+<span style="color: #454459;"># </span><span style="color: #454459;">Ferramentas externas</span>
+<span style="color: #7CF083;">DOT</span>         := /usr/bin/dot
+<span style="color: #7CF083;">XDOT</span>        := /usr/bin/xdot
+<span style="color: #7CF083;">FEH</span>         := /usr/bin/feh
+
+
+<span style="color: #454459;"># </span><span style="color: #454459;">Teste pela exist&#234;ncia do bin&#225;rio GraphViz</span>
+ifeq ($(<span style="color: #7CF083;">shell</span> test -s $(<span style="color: #7CF083;">DOT</span>) &amp;&amp; echo -n ok),ok)
+        <span style="color: #7CF083;">EXTRA_FLAGS</span> += -DUSE_GRAPHVIZ
+endif
+
+<span style="color: #454459;"># </span><span style="color: #454459;">Teste pela exist&#234;ncia do bin&#225;rio xdot</span>
+ifeq ($(<span style="color: #7CF083;">shell</span> test -s $(<span style="color: #7CF083;">XDOT</span>) &amp;&amp; echo -n ok),ok)
+        <span style="color: #7CF083;">EXTRA_FLAGS</span> += -DUSE_XDOT
+endif
+
+<span style="color: #454459;"># </span><span style="color: #454459;">Teste pela exist&#234;ncia do bin&#225;rio feh</span>
+ifeq ($(<span style="color: #7CF083;">shell</span> test -s $(<span style="color: #7CF083;">FEH</span>) &amp;&amp; echo -n ok),ok)
+        <span style="color: #7CF083;">EXTRA_FLAGS</span> += -DUSE_FEH
+endif
+
+
+<span style="color: #0bc9cf;">all</span>: $(<span style="color: #7CF083;">BINARY</span>)
+
+<span style="color: #0bc9cf;">$(</span><span style="color: #0bc9cf;">BINARY</span><span style="color: #0bc9cf;">)</span>: $(<span style="color: #7CF083;">SRC</span>)
+        $(<span style="color: #7CF083;">CXX</span>) $(<span style="color: #7CF083;">CXXFLAGS</span>) $(<span style="color: #7CF083;">EXTRA_FLAGS</span>) $<span style="color: #0D9C94;">^</span> $(<span style="color: #7CF083;">OUTFLAG</span>) <span style="color: #0bc9cf;">$</span><span style="color: #0D9C94;">@</span>
+
+<span style="color: #0bc9cf;">clean</span>:
+        rm -f $(<span style="color: #7CF083;">BINARY</span>)
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org05eb7e1" class="outline-3">
+<h3 id="org05eb7e1">Sobre o licenciamento</h3>
+<div class="outline-text-3" id="text-org05eb7e1">
+<p>
+Todo o código deste projeto é licenciado sob a licença MIT. Isto
+significa que qualquer pessoa pode reutilizar este programa para
+qualquer circunstância, inclusive comercial, desde que a cópia ainda
+possua esta mesma licença ou uma compatível, e que o criador do
+programa seja isentado de quaisquer responsabilidades para com o uso
+do mesmo.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb137e59" class="outline-3">
+<h3 id="orgb137e59">Licença MIT</h3>
+<div class="outline-text-3" id="text-orgb137e59">
+<p>
+O texto abaixo é uma cópia completa da licença do software deste
+artigo.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">MIT License
+
+Copyright (c) 2020 Lucas Vieira
+
+Permission is hereby granted, free  of charge, to any person obtaining
+a  copy  of this  software  and  associated documentation  files  (the
+"Software"), to  deal in  the Software without  restriction, including
+without limitation  the rights to  use, copy, modify,  merge, publish,
+distribute, sublicense,  and/or sell  copies of  the Software,  and to
+permit persons to whom the Software  is furnished to do so, subject to
+the following conditions:
+
+The  above  copyright  notice  and this  permission  notice  shall  be
+included in all copies or substantial portions of the Software.
+
+THE  SOFTWARE IS  PROVIDED  "AS  IS", WITHOUT  WARRANTY  OF ANY  KIND,
+EXPRESS OR  IMPLIED, INCLUDING  BUT NOT LIMITED  TO THE  WARRANTIES OF
+MERCHANTABILITY,    FITNESS    FOR    A   PARTICULAR    PURPOSE    AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING  FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</pre>
+</div>
+
+<div id="bibliography">
+<h2>Refer&ecirc;ncias</h2>
+
+<table>
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a name="cormen">1</a>]
+</td>
+<td class="bibtexitem">
+Thomas&nbsp;H. Cormen, Charles&nbsp;E. Leiserson, Ronald&nbsp;R. Rivest, and Clifford Stein.
+ <em>Algoritmos</em>.
+ Elsevier, 3 edition, 2012.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a name="knuth1984">2</a>]
+</td>
+<td class="bibtexitem">
+Donald&nbsp;E. Knuth.
+ Literate programming.
+ 27(2):97--111, 1984.
+[&nbsp;<a href="http://dx.doi.org/doi:10.1093/comjnl/27.2.97">http</a>&nbsp;]
+
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Notas de Rodap&eacute;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+``Instead of imagining that our main task is to instruct a
+computer what to do, let us concentrate rather on explaining
+to human beings what we want a computer to do.''
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Especificamente, <code>std::function&lt;bool(huffman_node_t*, huffman_node_t*)&gt;</code>.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Assumimos aqui que o <i>stream</i> seja válido e esteja aberto. 
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<h3><a href="../">De volta à página anterior</a></h3>
+</div>
+</body>
+</html>
