@@ -21,6 +21,44 @@
 #+HTML_HEAD: <meta name="viewport" content="width=device-width, initial-scale=1.0">
 #+HTML_HEAD: <meta property="og:image" content="../img/cat-i-mage.jpg">
 #+HTML_HEAD: <meta name="theme-color" content="#14171e">
+
+# Disqus thread
+#+HTML_FOOTER: <div id="disqus_thread"></div>
+#+HTML_FOOTER: <script>
+#+HTML_FOOTER:   function slugify(title){
+#+HTML_FOOTER:     if(!title) return '';
+#+HTML_FOOTER:     // normalize Unicode, remove diacritics, remove non-word chars, collapse spaces -> dash
+#+HTML_FOOTER:     return title
+#+HTML_FOOTER:       .trim()
+#+HTML_FOOTER:       .toLowerCase()
+#+HTML_FOOTER:       .normalize('NFKD') // decompose accents
+#+HTML_FOOTER:       .replace(/[\u0300-\u036f]/g, '') // remove diacritic marks
+#+HTML_FOOTER:       .replace(/[^\w\s-]/g, '') // remove non-word chars
+#+HTML_FOOTER:       .replace(/\s+/g, '-') // spaces -> dashes
+#+HTML_FOOTER:       .replace(/^-+|-+$/g, ''); // trim leading/trailing dashes
+#+HTML_FOOTER:   }
+#+HTML_FOOTER:
+#+HTML_FOOTER:   var pageTitle = document.title || '';
+#+HTML_FOOTER:   var rawPath = (window.location.pathname || '/').replace(/\/index\.html$/, '/');
+#+HTML_FOOTER:   // canonical URL without query string or hash
+#+HTML_FOOTER:   var canonicalUrl = window.location.origin + rawPath.replace(/\/*$/, '/');
+#+HTML_FOOTER:   var pageIdentifier = slugify(pageTitle) || slugify(rawPath);
+#+HTML_FOOTER:
+#+HTML_FOOTER:   var disqus_config = function () {
+#+HTML_FOOTER:     this.page.url = canonicalUrl;
+#+HTML_FOOTER:     this.page.identifier = pageIdentifier;
+#+HTML_FOOTER:   };
+#+HTML_FOOTER:
+#+HTML_FOOTER:   (function(){
+#+HTML_FOOTER:   var d = document, s = d.createElement('script');
+#+HTML_FOOTER:   s.src = 'https://luksamuk-codes.disqus.com/embed.js';
+#+HTML_FOOTER:   s.setAttribute('data-timestamp', +new Date());
+#+HTML_FOOTER:   (d.head || d.body).appendChild(s);
+#+HTML_FOOTER:   })();
+#+HTML_FOOTER: </script>
+#+HTML_FOOTER: <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
 #+DESCRIPTION: Programming, Tech, and occasional rant space by Lucas Vieira
 
 #+ATTR_ASCII: :width 80
@@ -29,9 +67,11 @@
 #+OPTIONS: html-preamble:t author:t date:t html-scripts:nil
 #+OPTIONS: title:nil
 
+# NOTE: THESE VARIABLES SHOULD BE SET IN BINDINGS.EL. DON'T FORGET THAT.
+
 #+BIND: org-html-preamble-format (("en" "<nav><h1><a href=\"../\">The Alchemist's Hideout</a></h1></nav><h1 class=\"title\">%t</h1>" "<p><i>Written in %d by %a<br/>%e</i></p>") ("pt_BR" "<nav><h1><a href=\"../\">The Alchemist's Hideout</a></h1></nav><h1 class=\"title\">%t</h1><p><i>Escrito em %d por %a<br/>%e</i></p>"))
 
-#+BIND: org-html-postamble-format (("en" "<h3><a href=\"../\">Back to last page</a></h3>") ("pt_BR" "<h3><a href=\"../\">De volta à página anterior</a></h3>"))
+#+BIND: org-html-postamble-format (("en" "<div id=\"disqus_thread\"></div><script src=\"../js/disqus.js\"></script><noscript>Please enable JavaScript to view the <a href=\"https://disqus.com/?ref_noscript\">comments powered by Disqus.</a></noscript><h3><a href=\"../\">Back to last page</a></h3>") ("pt_BR" "<div id=\"disqus_thread\"></div><script src=\"../js/disqus.js\"></script><noscript>Habilite o JavaScript para ver os <a href=\"https://disqus.com/?ref_noscript\">comentários do Disqus.</a></noscript><h3><a href=\"../\">De volta à página anterior</a></h3>"))
 
 #+BEGIN_SRC elisp :eval no :exports none
 (setq org-html-preamble-format
@@ -50,9 +90,15 @@
 
 (setq org-html-postamble-format
       (list (list "en"
-		  "<h3><a href=\"../\">Back to last page</a></h3>")
+                  (concat "<div id=\"disqus_thread\"></div>"
+                          "<script src=\"../js/disqus.js\"></script>"
+                          "<noscript>Please enable JavaScript to view the <a href=\"https://disqus.com/?ref_noscript\">comments powered by Disqus.</a></noscript>"
+                          "<h3><a href=\"../\">Back to last page</a></h3>"))
 	    (list "pt_BR"
-		  "<h3><a href=\"../\">De volta à página anterior</a></h3>")))
+                  (concat "<div id=\"disqus_thread\"></div>"
+                          "<script src=\"../js/disqus.js\"></script>"
+                          "<noscript>Habilite o JavaScript para ver os <a href=\"https://disqus.com/?ref_noscript\">comentários do Disqus.</a></noscript>"
+                          "<h3><a href=\"../\">De volta à página anterior</a></h3>"))))
 #+END_SRC
 
 

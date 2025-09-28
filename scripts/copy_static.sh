@@ -5,7 +5,7 @@ cp -r src/posts/img \
    src/posts/win98 \
    docs/posts/
 
-cp -r src/css src/files docs/
+cp -r src/css src/js src/files docs/
 
 cp -r \
    src/pages/images \
