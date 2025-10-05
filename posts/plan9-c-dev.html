@@ -208,15 +208,18 @@ gtag('config', 'G-22RF3F5XE0');
 <link rel="icon" type="image/jpg" href="../img/cat-i-mage.jpg" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#14171e">
+<meta property="og:url" content="https://luksamuk.codes/posts/plan9-c-dev.html">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Desenvolvimento em C no &amp;lt;i&amp;gt;Plan 9 From Bell Labs&amp;lt;/i&amp;gt;">
 <meta property="og:description" content="Programming, Tech, and occasional rant space by Lucas Vieira">
 <meta property="og:image" content="https://luksamuk.codes/img/banner-full.png">
-<meta property="og:type" content="article">
 <meta property="article:author" content="Lucas Vieira">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:domain" content="luksamuk.codes">
+<meta name="twitter:url" content="https://luksamuk.codes/posts/plan9-c-dev.html">
 <meta name="twitter:title" content="Desenvolvimento em C no &amp;lt;i&amp;gt;Plan 9 From Bell Labs&amp;lt;/i&amp;gt;">
 <meta name="twitter:description" content="Programming, Tech, and occasional rant space by Lucas Vieira">
 <meta name="twitter:image" content="https://luksamuk.codes/img/banner.png">
-<meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 <div id="preamble" class="status">
@@ -227,57 +230,57 @@ gtag('config', 'G-22RF3F5XE0');
 <h2>&Iacute;ndice</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org092c5b3">Introdução</a>
+<li><a href="#org421723a">Introdução</a>
 <ul>
-<li><a href="#org7f912b5">O que é Plan 9?</a></li>
-<li><a href="#orgd2afb30">Forks do Plan 9</a></li>
-<li><a href="#org6caeece">Uso e escolha do 9front</a></li>
+<li><a href="#orga08ae63">O que é Plan 9?</a></li>
+<li><a href="#org15d2013">Forks do Plan 9</a></li>
+<li><a href="#orgc5a508a">Uso e escolha do 9front</a></li>
 </ul>
 </li>
-<li><a href="#org0d66929">Ferramentas de desenvolvimento</a>
+<li><a href="#org794833c">Ferramentas de desenvolvimento</a>
 <ul>
-<li><a href="#org2b63ac9">Desenvolvimento no Linux</a></li>
-<li><a href="#org72bf4a8">Desenvolvimento no <i>9front</i></a></li>
+<li><a href="#orgbc470ea">Desenvolvimento no Linux</a></li>
+<li><a href="#orgf65513f">Desenvolvimento no <i>9front</i></a></li>
 </ul>
 </li>
-<li><a href="#org7ae56cc">Estrutura do projeto</a>
+<li><a href="#org9eb01cd">Estrutura do projeto</a>
 <ul>
-<li><a href="#org47fd669">Arquivos</a></li>
-<li><a href="#org190802a">Método de compilação</a>
+<li><a href="#orgebac023">Arquivos</a></li>
+<li><a href="#orge3ca25a">Método de compilação</a>
 <ul>
-<li><a href="#org9695773"><code>make</code></a></li>
-<li><a href="#org47682ea"><code>mk</code></a></li>
+<li><a href="#orgec63be4"><code>make</code></a></li>
+<li><a href="#orgb26ed58"><code>mk</code></a></li>
 </ul>
 </li>
-<li><a href="#orgb12e6ab">Controle de versão e manutenção de patches do sistema</a></li>
+<li><a href="#orgcd5ca7d">Controle de versão e manutenção de patches do sistema</a></li>
 </ul>
 </li>
-<li><a href="#org636b7cf">Diferenças cruciais ao programar</a>
+<li><a href="#orgde818ca">Diferenças cruciais ao programar</a>
 <ul>
-<li><a href="#orgcd3cecb">Anatomia básica de um programa em C</a></li>
-<li><a href="#org885cae9">Entrada via console</a></li>
-<li><a href="#org9637bb4"><i>Parsing</i> de argumentos de linha de comando</a></li>
+<li><a href="#org2ead65d">Anatomia básica de um programa em C</a></li>
+<li><a href="#org350abe3">Entrada via console</a></li>
+<li><a href="#org70d0f34"><i>Parsing</i> de argumentos de linha de comando</a></li>
 </ul>
 </li>
-<li><a href="#org747677b">Processo de compilação</a>
+<li><a href="#org287b017">Processo de compilação</a>
 <ul>
-<li><a href="#orgb0dcaca">O arquivo <code>mkfile</code></a></li>
+<li><a href="#orgb14077d">O arquivo <code>mkfile</code></a></li>
 </ul>
 </li>
-<li><a href="#org251d331">Conclusão</a></li>
+<li><a href="#org471af4c">Conclusão</a></li>
 </ul>
 </div>
 </div>
 
-<div id="orge338235" class="figure">
+<div id="org7e9f92e" class="figure">
 <p><img src="./img/space-glenda.png" alt="space-glenda.png" />
 </p>
 <p><span class="figure-number">Figura 1: </span>Glenda, mascote do Plan 9, em seu traje espacial para navegar na web.</p>
 </div>
 
-<div id="outline-container-org092c5b3" class="outline-2">
-<h2 id="org092c5b3">Introdução</h2>
-<div class="outline-text-2" id="text-org092c5b3">
+<div id="outline-container-org421723a" class="outline-2">
+<h2 id="org421723a">Introdução</h2>
+<div class="outline-text-2" id="text-org421723a">
 <p>
 Olá. Neste post, pretendo explorar os aspectos e as dificuldades que obtive ao
 programar um pequeno jogo na linguagem C; todavia, este post diz pouco respeito
@@ -315,11 +318,11 @@ verdadeira pioneira com este projeto.
 </p>
 </div>
 
-<div id="outline-container-org7f912b5" class="outline-3">
-<h3 id="org7f912b5">O que é Plan 9?</h3>
-<div class="outline-text-3" id="text-org7f912b5">
+<div id="outline-container-orga08ae63" class="outline-3">
+<h3 id="orga08ae63">O que é Plan 9?</h3>
+<div class="outline-text-3" id="text-orga08ae63">
 
-<div id="orge3bc5a9" class="figure">
+<div id="org41ac36b" class="figure">
 <p><img src="./img/plan9.png" alt="plan9.png" />
 </p>
 <p><span class="figure-number">Figura 2: </span>Screenshot do sistema em operação.</p>
@@ -363,9 +366,9 @@ a design de sistemas operacionais.
 </div>
 </div>
 
-<div id="outline-container-orgd2afb30" class="outline-3">
-<h3 id="orgd2afb30">Forks do Plan 9</h3>
-<div class="outline-text-3" id="text-orgd2afb30">
+<div id="outline-container-org15d2013" class="outline-3">
+<h3 id="org15d2013">Forks do Plan 9</h3>
+<div class="outline-text-3" id="text-org15d2013">
 <p>
 O <i>Plan 9</i> ainda possui alguns <i>forks</i> (ou distribuições) notórios em
 funcionamento. Como exemplo, temos:
@@ -399,9 +402,9 @@ da atualidade.
 </div>
 </div>
 
-<div id="outline-container-org6caeece" class="outline-3">
-<h3 id="org6caeece">Uso e escolha do 9front</h3>
-<div class="outline-text-3" id="text-org6caeece">
+<div id="outline-container-orgc5a508a" class="outline-3">
+<h3 id="orgc5a508a">Uso e escolha do 9front</h3>
+<div class="outline-text-3" id="text-orgc5a508a">
 <p>
 Neste projeto, como apontado anteriormente, utilizei o <i>9front</i> para testes,
 porque também tenho-o instalado em uma partição extra na minha máquina. A beleza
@@ -429,13 +432,13 @@ proverá, imediatamente, um sistema completo e pronto para o funcionamento.
 </div>
 </div>
 
-<div id="outline-container-org0d66929" class="outline-2">
-<h2 id="org0d66929">Ferramentas de desenvolvimento</h2>
-<div class="outline-text-2" id="text-org0d66929">
+<div id="outline-container-org794833c" class="outline-2">
+<h2 id="org794833c">Ferramentas de desenvolvimento</h2>
+<div class="outline-text-2" id="text-org794833c">
 </div>
-<div id="outline-container-org2b63ac9" class="outline-3">
-<h3 id="org2b63ac9">Desenvolvimento no Linux</h3>
-<div class="outline-text-3" id="text-org2b63ac9">
+<div id="outline-container-orgbc470ea" class="outline-3">
+<h3 id="orgbc470ea">Desenvolvimento no Linux</h3>
+<div class="outline-text-3" id="text-orgbc470ea">
 <p>
 A maior parte do desenvolvimento foi feita em meu sistema Void Linux x86<sub>64</sub>, sob
 o editor de texto Emacs; afinal, ninguém precisa de algum editor de texto
@@ -460,9 +463,9 @@ adiante.
 </div>
 </div>
 
-<div id="outline-container-org72bf4a8" class="outline-3">
-<h3 id="org72bf4a8">Desenvolvimento no <i>9front</i></h3>
-<div class="outline-text-3" id="text-org72bf4a8">
+<div id="outline-container-orgf65513f" class="outline-3">
+<h3 id="orgf65513f">Desenvolvimento no <i>9front</i></h3>
+<div class="outline-text-3" id="text-orgf65513f">
 <p>
 Tenho o <i>9front</i> instalado tanto de forma nativa quanto em um drive virtual,
 bootável via QEMU dentro do Void Linux<sup><a id="fnr.6" class="footref" href="#fn.6" role="doc-backlink">6</a></sup>. Após o final do desenvolvimento
@@ -476,25 +479,25 @@ este arquivo será dito a seguir).
 </div>
 </div>
 
-<div id="outline-container-org7ae56cc" class="outline-2">
-<h2 id="org7ae56cc">Estrutura do projeto</h2>
-<div class="outline-text-2" id="text-org7ae56cc">
+<div id="outline-container-org9eb01cd" class="outline-2">
+<h2 id="org9eb01cd">Estrutura do projeto</h2>
+<div class="outline-text-2" id="text-org9eb01cd">
 <p>
 Neste momento, destacarei alguns pontos com relação aos arquivos de projeto
 criados, e também da organização em termos de hierarquia e uso dos mesmos.
 </p>
 
 
-<div id="org1857ac4" class="figure">
+<div id="org4357ce3" class="figure">
 <p><img src="./img/9mine.gif" alt="9mine.gif" />
 </p>
 <p><span class="figure-number">Figura 3: </span>O jogo em funcionamento, no Linux, sob o plan9port.</p>
 </div>
 </div>
 
-<div id="outline-container-org47fd669" class="outline-3">
-<h3 id="org47fd669">Arquivos</h3>
-<div class="outline-text-3" id="text-org47fd669">
+<div id="outline-container-orgebac023" class="outline-3">
+<h3 id="orgebac023">Arquivos</h3>
+<div class="outline-text-3" id="text-orgebac023">
 <p>
 O projeto possui apenas três arquivos relevantes:
 </p>
@@ -512,18 +515,18 @@ Onde <code>9mine.c</code> é o arquivo de código em C, <code>mkfile</code> é o
 </div>
 </div>
 
-<div id="outline-container-org190802a" class="outline-3">
-<h3 id="org190802a">Método de compilação</h3>
-<div class="outline-text-3" id="text-org190802a">
+<div id="outline-container-orge3ca25a" class="outline-3">
+<h3 id="orge3ca25a">Método de compilação</h3>
+<div class="outline-text-3" id="text-orge3ca25a">
 <p>
 Para compilar o projeto, foram utilizados tanto <code>make</code> (Linux/plan9port) quanto
 <code>mk</code> (Plan 9).
 </p>
 </div>
 
-<div id="outline-container-org9695773" class="outline-4">
-<h4 id="org9695773"><code>make</code></h4>
-<div class="outline-text-4" id="text-org9695773">
+<div id="outline-container-orgec63be4" class="outline-4">
+<h4 id="orgec63be4"><code>make</code></h4>
+<div class="outline-text-4" id="text-orgec63be4">
 <p>
 Inicialmente, meu objetivo era utilizar apenas ferramentas do <code>plan9port</code> no
 Linux, de forma a emular completamente um ambiente de compilação para o
@@ -543,9 +546,9 @@ para build padrão do Linux, o programa <code>make</code>.
 </div>
 </div>
 
-<div id="outline-container-org47682ea" class="outline-4">
-<h4 id="org47682ea"><code>mk</code></h4>
-<div class="outline-text-4" id="text-org47682ea">
+<div id="outline-container-orgb26ed58" class="outline-4">
+<h4 id="orgb26ed58"><code>mk</code></h4>
+<div class="outline-text-4" id="text-orgb26ed58">
 <p>
 Esta é a ferramenta padrão para facilitação de builds no Plan 9, e também é
 ostensivamente utilizada na manutenção de arquivos e na hierarquia do
@@ -565,9 +568,9 @@ compilar quanto instalar o jogo aqui discutido.
 </div>
 </div>
 
-<div id="outline-container-orgb12e6ab" class="outline-3">
-<h3 id="orgb12e6ab">Controle de versão e manutenção de patches do sistema</h3>
-<div class="outline-text-3" id="text-orgb12e6ab">
+<div id="outline-container-orgcd5ca7d" class="outline-3">
+<h3 id="orgcd5ca7d">Controle de versão e manutenção de patches do sistema</h3>
+<div class="outline-text-3" id="text-orgcd5ca7d">
 <p>
 Na realidade, nenhum fork do <i>Plan 9</i> possui um bom sistema de controle de
 versão. Há um script comunitário que funciona de forma similar ao <code>git</code> mas que,
@@ -604,9 +607,9 @@ infelizmente, não vou me aprofundar aqui<sup><a id="fnr.9" class="footref" href
 </div>
 </div>
 
-<div id="outline-container-org636b7cf" class="outline-2">
-<h2 id="org636b7cf">Diferenças cruciais ao programar</h2>
-<div class="outline-text-2" id="text-org636b7cf">
+<div id="outline-container-orgde818ca" class="outline-2">
+<h2 id="orgde818ca">Diferenças cruciais ao programar</h2>
+<div class="outline-text-2" id="text-orgde818ca">
 <p>
 O sistema é radicalmente diferente na forma como sugere a interação do
 programador com a biblioteca-padrão de C. Nesta seção, mostrarei alguns
@@ -614,9 +617,9 @@ programas básicos com algumas <i>features</i> que julguei serem relevantes.
 </p>
 </div>
 
-<div id="outline-container-orgcd3cecb" class="outline-3">
-<h3 id="orgcd3cecb">Anatomia básica de um programa em C</h3>
-<div class="outline-text-3" id="text-orgcd3cecb">
+<div id="outline-container-org2ead65d" class="outline-3">
+<h3 id="org2ead65d">Anatomia básica de um programa em C</h3>
+<div class="outline-text-3" id="text-org2ead65d">
 <p>
 Como antes dito, um programa básico em C para o <i>Plan 9</i> pode ser dramaticamente
 diferente do que vemos hoje para Windows, Linux e OS X. Abaixo, temos um "Hello,
@@ -670,9 +673,9 @@ normalmente.
 </div>
 </div>
 
-<div id="outline-container-org885cae9" class="outline-3">
-<h3 id="org885cae9">Entrada via console</h3>
-<div class="outline-text-3" id="text-org885cae9">
+<div id="outline-container-org350abe3" class="outline-3">
+<h3 id="org350abe3">Entrada via console</h3>
+<div class="outline-text-3" id="text-org350abe3">
 <p>
 <i>Plan 9</i> não possui um equivalente direto a <code>scanf(3)</code><sup><a id="fnr.13" class="footref" href="#fn.13" role="doc-backlink">13</a></sup>. Ao invés disso,
 entrada a partir do console é uma atividade delegada à biblioteca
@@ -729,9 +732,9 @@ alocado na estrutura <code>Biobuf</code>. Basta abrir o <i>buffer</i> para leitu
 </div>
 </div>
 
-<div id="outline-container-org9637bb4" class="outline-3">
-<h3 id="org9637bb4"><i>Parsing</i> de argumentos de linha de comando</h3>
-<div class="outline-text-3" id="text-org9637bb4">
+<div id="outline-container-org70d0f34" class="outline-3">
+<h3 id="org70d0f34"><i>Parsing</i> de argumentos de linha de comando</h3>
+<div class="outline-text-3" id="text-org70d0f34">
 <p>
 Normalmente, quando escrevemos uma aplicação em C/C++, sabemos que podemos
 utilizar <code>argc</code> e <code>argv</code>, passáveis como parâmetro para <code>main</code>, para recuperar os
@@ -797,11 +800,11 @@ lidar com este problema. Deixo a interpretação para o leitor:
 </div>
 </div>
 
-<div id="outline-container-org747677b" class="outline-2">
-<h2 id="org747677b">Processo de compilação</h2>
-<div class="outline-text-2" id="text-org747677b">
+<div id="outline-container-org287b017" class="outline-2">
+<h2 id="org287b017">Processo de compilação</h2>
+<div class="outline-text-2" id="text-org287b017">
 
-<div id="org89635a0" class="figure">
+<div id="orgbe75f2d" class="figure">
 <p><img src="./img/9front-qemu.png" alt="9front-qemu.png" />
 </p>
 <p><span class="figure-number">Figura 4: </span>9front sob o QEMU, executando o projeto 9mine no console.</p>
@@ -823,9 +826,9 @@ invocável no console, com o comando <code>games/9mine</code><sup><a id="fnr.15"
 </p>
 </div>
 
-<div id="outline-container-orgb0dcaca" class="outline-3">
-<h3 id="orgb0dcaca">O arquivo <code>mkfile</code></h3>
-<div class="outline-text-3" id="text-orgb0dcaca">
+<div id="outline-container-orgb14077d" class="outline-3">
+<h3 id="orgb14077d">O arquivo <code>mkfile</code></h3>
+<div class="outline-text-3" id="text-orgb14077d">
 <p>
 O arquivo <code>mkfile</code> não é particularmente complicado ou muito diferente de um
 arquivo <code>Makefile</code> como conhecemos; porém, seu design foi feito sob uma premissa
@@ -895,9 +898,9 @@ diz respeito à arquitetura-alvo<sup><a id="fnr.19" class="footref" href="#fn.19
 </div>
 </div>
 
-<div id="outline-container-org251d331" class="outline-2">
-<h2 id="org251d331">Conclusão</h2>
-<div class="outline-text-2" id="text-org251d331">
+<div id="outline-container-org471af4c" class="outline-2">
+<h2 id="org471af4c">Conclusão</h2>
+<div class="outline-text-2" id="text-org471af4c">
 <p>
 Certa vez, um contato me disse que seria interessante, ao longo da minha vida,
 absorver conhecimento sobre diversos sistemas UNIX-like, sempre procurando saber

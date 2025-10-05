@@ -208,15 +208,18 @@ gtag('config', 'G-22RF3F5XE0');
 <link rel="icon" type="image/jpg" href="../img/cat-i-mage.jpg" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#14171e">
+<meta property="og:url" content="https://luksamuk.codes/posts/oop-java-vs-cl.html">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Orientação a Objetos: Java &amp;lt;i&amp;gt;versus&amp;lt;/i&amp;gt; Common Lisp">
 <meta property="og:description" content="Programming, Tech, and occasional rant space by Lucas Vieira">
 <meta property="og:image" content="https://luksamuk.codes/img/banner-full.png">
-<meta property="og:type" content="article">
 <meta property="article:author" content="Lucas Vieira">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:domain" content="luksamuk.codes">
+<meta name="twitter:url" content="https://luksamuk.codes/posts/oop-java-vs-cl.html">
 <meta name="twitter:title" content="Orientação a Objetos: Java &amp;lt;i&amp;gt;versus&amp;lt;/i&amp;gt; Common Lisp">
 <meta name="twitter:description" content="Programming, Tech, and occasional rant space by Lucas Vieira">
 <meta name="twitter:image" content="https://luksamuk.codes/img/banner.png">
-<meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 <div id="preamble" class="status">
@@ -227,65 +230,65 @@ gtag('config', 'G-22RF3F5XE0');
 <h2>&Iacute;ndice</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org0745e80">Introdução</a>
+<li><a href="#org7993349">Introdução</a>
 <ul>
-<li><a href="#org71152fe">História da concepção da <i>orientação a objetos</i></a></li>
-<li><a href="#orge19a38d">O que será feito?</a>
+<li><a href="#org19795db">História da concepção da <i>orientação a objetos</i></a></li>
+<li><a href="#orgf2090ef">O que será feito?</a>
 <ul>
-<li><a href="#orgbc911ae">ACHTUNG!</a></li>
+<li><a href="#org81eadca">ACHTUNG!</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgd02f7eb">OO do "jeito Java"</a>
+<li><a href="#orgf4ddb61">OO do "jeito Java"</a>
 <ul>
-<li><a href="#orgbc57244">Inicialização</a></li>
-<li><a href="#org853e970">Interface para as formas</a></li>
-<li><a href="#org8c6a76c">Implementação das formas</a>
+<li><a href="#org4d432c2">Inicialização</a></li>
+<li><a href="#orgc562fc5">Interface para as formas</a></li>
+<li><a href="#org4e62c37">Implementação das formas</a>
 <ul>
-<li><a href="#orge33135d">Círculo</a></li>
-<li><a href="#org88324e2">Quadrado</a></li>
-<li><a href="#org615aa5a">Pentágono</a></li>
+<li><a href="#org5031335">Círculo</a></li>
+<li><a href="#org91ebc57">Quadrado</a></li>
+<li><a href="#org32a3cff">Pentágono</a></li>
 </ul>
 </li>
-<li><a href="#org0959926">Utilitários</a></li>
-<li><a href="#orgdcef2af">Ponto de entrada do programa</a></li>
+<li><a href="#org58cab0b">Utilitários</a></li>
+<li><a href="#orgdde77af">Ponto de entrada do programa</a></li>
 </ul>
 </li>
-<li><a href="#org400b989">OO do "jeito Common Lisp"</a>
+<li><a href="#org09ea4a3">OO do "jeito Common Lisp"</a>
 <ul>
-<li><a href="#orgdb5e6de">Inicialização</a></li>
-<li><a href="#org91028cb">Operações genéricas</a></li>
-<li><a href="#org9f2b202">Classes</a></li>
-<li><a href="#org0ac39b5">Métodos</a>
+<li><a href="#orgca9435d">Inicialização</a></li>
+<li><a href="#org06de90b">Operações genéricas</a></li>
+<li><a href="#orgb157e78">Classes</a></li>
+<li><a href="#orgfa474a3">Métodos</a>
 <ul>
-<li><a href="#org0dabc0c">Perímetro</a></li>
-<li><a href="#org875f8de">Área</a></li>
-<li><a href="#org3090305">Quadrado do lado</a></li>
+<li><a href="#org9ee1a69">Perímetro</a></li>
+<li><a href="#orgf4c7c17">Área</a></li>
+<li><a href="#org08a9385">Quadrado do lado</a></li>
 </ul>
 </li>
-<li><a href="#org11c7139">Utilitários</a>
+<li><a href="#orga02cd74">Utilitários</a>
 <ul>
-<li><a href="#org5cf9c48">Soma dos quadrados dos lados</a></li>
+<li><a href="#orgd50d31e">Soma dos quadrados dos lados</a></li>
 </ul>
 </li>
-<li><a href="#orgd5ecf14">Função principal para testes</a></li>
+<li><a href="#orgfb3e8f8">Função principal para testes</a></li>
 </ul>
 </li>
-<li><a href="#orgf297267">Conclusão</a>
+<li><a href="#orgfb0873b">Conclusão</a>
 <ul>
-<li><a href="#org6fae0e1">Comparação</a></li>
-<li><a href="#orgc9bf9ba"><i>Tangling</i> dos arquivos</a></li>
-<li><a href="#org563d235">Licenciamento</a></li>
+<li><a href="#org84569c8">Comparação</a></li>
+<li><a href="#org1b5437b"><i>Tangling</i> dos arquivos</a></li>
+<li><a href="#org462cd10">Licenciamento</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org0745e80" class="outline-2">
-<h2 id="org0745e80">Introdução</h2>
-<div class="outline-text-2" id="text-org0745e80">
+<div id="outline-container-org7993349" class="outline-2">
+<h2 id="org7993349">Introdução</h2>
+<div class="outline-text-2" id="text-org7993349">
 <p>
 Este é mais um post envolvendo programação literada no meu blog &#x2013; desta vez, em
 Português mesmo.
@@ -297,7 +300,7 @@ apresentando um paralelo entre a forma como este paradigma foi adotado pela
 indústria e a forma como foi originalmente concebido por Alan Kay<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>.
 </p>
 
-<div class="NOTES" id="org7b20bf7">
+<div class="NOTES" id="orgc683354">
 <p>
 <b>NOTA:</b> Este post foi escrito para meu blog utilizando <code>org-mode</code> no Emacs, o que
  possibilita a extração do código, na ordem apresentada, e salvamento do mesmo
@@ -309,9 +312,9 @@ indústria e a forma como foi originalmente concebido por Alan Kay<sup><a id="fn
 </div>
 </div>
 
-<div id="outline-container-org71152fe" class="outline-3">
-<h3 id="org71152fe">História da concepção da <i>orientação a objetos</i></h3>
-<div class="outline-text-3" id="text-org71152fe">
+<div id="outline-container-org19795db" class="outline-3">
+<h3 id="org19795db">História da concepção da <i>orientação a objetos</i></h3>
+<div class="outline-text-3" id="text-org19795db">
 <p>
 Segundo Alan Kay, o paradigma de orientação a objetos foi inspirado pela antiga
 linguagem <i>Simula</i>, que realizava certas operações (definidas por procedimentos)
@@ -364,9 +367,9 @@ tornando-se um assunto controverso entre os puristas e estudiosos do assunto.
 </div>
 </div>
 
-<div id="outline-container-orge19a38d" class="outline-3">
-<h3 id="orge19a38d">O que será feito?</h3>
-<div class="outline-text-3" id="text-orge19a38d">
+<div id="outline-container-orgf2090ef" class="outline-3">
+<h3 id="orgf2090ef">O que será feito?</h3>
+<div class="outline-text-3" id="text-orgf2090ef">
 <p>
 Neste post, pretendo mostrar implementações em Java e Common Lisp,
 respectivamente, como representantes de dois modos de pensar a respeito de
@@ -387,9 +390,9 @@ cada forma, caso seja possível.
 </blockquote>
 </div>
 
-<div id="outline-container-orgbc911ae" class="outline-4">
-<h4 id="orgbc911ae">ACHTUNG!</h4>
-<div class="outline-text-4" id="text-orgbc911ae">
+<div id="outline-container-org81eadca" class="outline-4">
+<h4 id="org81eadca">ACHTUNG!</h4>
+<div class="outline-text-4" id="text-org81eadca">
 <p>
 O objetivo deste exercício não é destacar uma linguagem ou uma visão do
 paradigma como melhor que o outro, mas sim demonstrar a diferença no raciocínio
@@ -417,9 +420,9 @@ texto e notas de rodapé, e vice-versa.
 </div>
 </div>
 
-<div id="outline-container-orgd02f7eb" class="outline-2">
-<h2 id="orgd02f7eb">OO do "jeito Java"</h2>
-<div class="outline-text-2" id="text-orgd02f7eb">
+<div id="outline-container-orgf4ddb61" class="outline-2">
+<h2 id="orgf4ddb61">OO do "jeito Java"</h2>
+<div class="outline-text-2" id="text-orgf4ddb61">
 <p>
 O "jeito Java" consiste na declaração de uma abstração-mor, e então
 na criação de sub-abstrações, para a resolução do problema.
@@ -438,9 +441,9 @@ calcular as três operações requisitadas pelo enunciado.
 </p>
 </div>
 
-<div id="outline-container-orgbc57244" class="outline-3">
-<h3 id="orgbc57244">Inicialização</h3>
-<div class="outline-text-3" id="text-orgbc57244">
+<div id="outline-container-org4d432c2" class="outline-3">
+<h3 id="org4d432c2">Inicialização</h3>
+<div class="outline-text-3" id="text-org4d432c2">
 <p>
 Um programa Java é inicializado com a declaração do pacote que conterá as
 estruturas a serem utilizadas. Logo em seguida, importamos outros pacotes (ou
@@ -457,7 +460,7 @@ programa.
 </pre>
 </div>
 
-<div class="NOTES" id="orgd1b658b">
+<div class="NOTES" id="orgcef38f6">
 <p>
 <b>NOTA:</b> Nenhuma das estruturas a seguir será declarada com acesso público, uma vez
 que o objetivo do programa é criar uma aplicação auto-contida e simples, não um
@@ -469,9 +472,9 @@ seus próprios arquivos.
 </div>
 </div>
 
-<div id="outline-container-org853e970" class="outline-3">
-<h3 id="org853e970">Interface para as formas</h3>
-<div class="outline-text-3" id="text-org853e970">
+<div id="outline-container-orgc562fc5" class="outline-3">
+<h3 id="orgc562fc5">Interface para as formas</h3>
+<div class="outline-text-3" id="text-orgc562fc5">
 <p>
 Implementamos uma interface chamada <code>IShape</code>, que descreve valores básicos, que
 podem ser obtidos proceduralmente para uma forma qualquer: <i>perímetro</i>, <i>área</i> e
@@ -489,18 +492,18 @@ podem ser obtidos proceduralmente para uma forma qualquer: <i>perímetro</i>, <i
 </div>
 </div>
 
-<div id="outline-container-org8c6a76c" class="outline-3">
-<h3 id="org8c6a76c">Implementação das formas</h3>
-<div class="outline-text-3" id="text-org8c6a76c">
+<div id="outline-container-org4e62c37" class="outline-3">
+<h3 id="org4e62c37">Implementação das formas</h3>
+<div class="outline-text-3" id="text-org4e62c37">
 <p>
 Uma vez declarada a interface a ser implementada por cada forma, podemos
 declarar as classes para as formas em si.
 </p>
 </div>
 
-<div id="outline-container-orge33135d" class="outline-4">
-<h4 id="orge33135d">Círculo</h4>
-<div class="outline-text-4" id="text-orge33135d">
+<div id="outline-container-org5031335" class="outline-4">
+<h4 id="org5031335">Círculo</h4>
+<div class="outline-text-4" id="text-org5031335">
 <p>
 A classe <code>Circle</code> implementa a forma de um círculo. Como atributos próprios da
 classe, temos um valor decimal especificando o raio do círculo, chamado <code>radius</code>,
@@ -538,7 +541,7 @@ mesmo, mas este seria seu perímetro; ao invés disso, vamos assumir que esta
 operação é impossível, uma vez que um círculo, tecnicamente, não possui lados.
 </p>
 
-<div class="NOTES" id="org8b3f7eb">
+<div class="NOTES" id="org46bb491">
 <p>
 <b>NOTA:</b> Veja que o método que implementa o quadrado do lado de um círculo levanta
  uma exceção do tipo <code>UnsupportedOperationException</code>, com uma mensagem específica
@@ -551,9 +554,9 @@ operação é impossível, uma vez que um círculo, tecnicamente, não possui la
 </div>
 </div>
 
-<div id="outline-container-org88324e2" class="outline-4">
-<h4 id="org88324e2">Quadrado</h4>
-<div class="outline-text-4" id="text-org88324e2">
+<div id="outline-container-org91ebc57" class="outline-4">
+<h4 id="org91ebc57">Quadrado</h4>
+<div class="outline-text-4" id="text-org91ebc57">
 <p>
 O quadrado é, provavelmente, a classe de mais simples implementação: todas as
 suas operações são triviais, e o quadrado do seu lado é idêntico à sua área.
@@ -590,9 +593,9 @@ adequadamente a classe.
 </div>
 </div>
 
-<div id="outline-container-org615aa5a" class="outline-4">
-<h4 id="org615aa5a">Pentágono</h4>
-<div class="outline-text-4" id="text-org615aa5a">
+<div id="outline-container-org32a3cff" class="outline-4">
+<h4 id="org32a3cff">Pentágono</h4>
+<div class="outline-text-4" id="text-org32a3cff">
 <p>
 O pentágono possui as mesmas características do quadrado com relação ao seu
 construtor, seu perímetro, e o quadrado do seu lado. Mas o cálculo da área do
@@ -636,9 +639,9 @@ baseada no comprimento do apótema e no seu perímetro.
 </div>
 </div>
 
-<div id="outline-container-org0959926" class="outline-3">
-<h3 id="org0959926">Utilitários</h3>
-<div class="outline-text-3" id="text-org0959926">
+<div id="outline-container-org58cab0b" class="outline-3">
+<h3 id="org58cab0b">Utilitários</h3>
+<div class="outline-text-3" id="text-org58cab0b">
 <p>
 A geração de uma quantidade arbitrária de formas e o cálculo das operações (soma
 dos perímetros, soma das áreas, soma dos quadrados dos lados) são encapsulados
@@ -717,9 +720,9 @@ quadrado do lado para a forma atual será apenas ignorada.
 </div>
 </div>
 
-<div id="outline-container-orgdcef2af" class="outline-3">
-<h3 id="orgdcef2af">Ponto de entrada do programa</h3>
-<div class="outline-text-3" id="text-orgdcef2af">
+<div id="outline-container-orgdde77af" class="outline-3">
+<h3 id="orgdde77af">Ponto de entrada do programa</h3>
+<div class="outline-text-3" id="text-orgdde77af">
 <p>
 Enfim, podemos executar nosso programa. Para tanto, precisamos de mais uma
 classe, que aqui chamamos <code>Program</code>, com um método estático chamado <code>main</code>. Aqui,
@@ -744,9 +747,9 @@ conjunto de dez formas que criamos arbitrariamente.
 </div>
 </div>
 
-<div id="outline-container-org400b989" class="outline-2">
-<h2 id="org400b989">OO do "jeito Common Lisp"</h2>
-<div class="outline-text-2" id="text-org400b989">
+<div id="outline-container-org09ea4a3" class="outline-2">
+<h2 id="org09ea4a3">OO do "jeito Common Lisp"</h2>
+<div class="outline-text-2" id="text-org09ea4a3">
 <p>
 O "jeito Common Lisp" consiste no uso da forma "original" de orientação a
 objetos, mencionada anteriormente.
@@ -765,9 +768,9 @@ posteriormente viria a ser incluída na especificação da linguagem<sup><a id="
 </p>
 </div>
 
-<div id="outline-container-orgdb5e6de" class="outline-3">
-<h3 id="orgdb5e6de">Inicialização</h3>
-<div class="outline-text-3" id="text-orgdb5e6de">
+<div id="outline-container-orgca9435d" class="outline-3">
+<h3 id="orgca9435d">Inicialização</h3>
+<div class="outline-text-3" id="text-orgca9435d">
 <p>
 Primeiramente, vamos iniciar nosso projeto através da criação de um pacote em
 Common Lisp. Aqui estarei utilizando, também, o <i>system</i> <code>iterate</code>, que substitui o
@@ -794,7 +797,7 @@ adentrar o pacote e definir símbolos logo dentro dele.
 </pre>
 </div>
 
-<div class="NOTES" id="orgbcca0ec">
+<div class="NOTES" id="orgbdf18a8">
 <p>
 <b>NOTA:</b> Caso você já possua o arquivo de código deste programa e esteja
 simplesmente tentando revisitar o que foi feito neste pacote, basta executar a
@@ -808,9 +811,9 @@ que posso vir a fazer no futuro.
 </div>
 </div>
 
-<div id="outline-container-org91028cb" class="outline-3">
-<h3 id="org91028cb">Operações genéricas</h3>
-<div class="outline-text-3" id="text-org91028cb">
+<div id="outline-container-org06de90b" class="outline-3">
+<h3 id="org06de90b">Operações genéricas</h3>
+<div class="outline-text-3" id="text-org06de90b">
 <p>
 Baseado no que foi dito na introdução, precisamos de um vocabulário inicial
 de mensagens que podemos passar para alguns objetos, como uma espécie de lista
@@ -845,9 +848,9 @@ para "marcar lugares" de argumentos em métodos &#x2013; isto será entendido lo
 </div>
 </div>
 
-<div id="outline-container-org9f2b202" class="outline-3">
-<h3 id="org9f2b202">Classes</h3>
-<div class="outline-text-3" id="text-org9f2b202">
+<div id="outline-container-orgb157e78" class="outline-3">
+<h3 id="orgb157e78">Classes</h3>
+<div class="outline-text-3" id="text-orgb157e78">
 <p>
 Em CLOS, classes são definidas a partir de duas coisas: uma lista de
 superclasses das quais derivam, e uma lista de <i>slots</i>, cada qual com suas
@@ -898,9 +901,9 @@ instancia)</code>. Situações similares ocorrerão para os lados de <code>squar
 </div>
 </div>
 
-<div id="outline-container-org0ac39b5" class="outline-3">
-<h3 id="org0ac39b5">Métodos</h3>
-<div class="outline-text-3" id="text-org0ac39b5">
+<div id="outline-container-orgfa474a3" class="outline-3">
+<h3 id="orgfa474a3">Métodos</h3>
+<div class="outline-text-3" id="text-orgfa474a3">
 <p>
 <i>Métodos</i>, em Common Lisp, nada mais são que especificações das <i>operações
 genéricas</i>.<sup><a id="fnr.9" class="footref" href="#fn.9" role="doc-backlink">9</a></sup> Ao definirmos o método, normalmente teremos um ou mais
@@ -921,9 +924,9 @@ implementarmos todos os métodos para cada classe, por vez.
 </p>
 </div>
 
-<div id="outline-container-org0dabc0c" class="outline-4">
-<h4 id="org0dabc0c">Perímetro</h4>
-<div class="outline-text-4" id="text-org0dabc0c">
+<div id="outline-container-org9ee1a69" class="outline-4">
+<h4 id="org9ee1a69">Perímetro</h4>
+<div class="outline-text-4" id="text-org9ee1a69">
 <p>
 A implementação das operações de perímetro são simples. A passagem da mensagem
 <code>perimeter</code> para cada uma das instâncias das três classes realizará o despacho
@@ -946,9 +949,9 @@ para o método relativo ao tipo da classe.
 </div>
 </div>
 
-<div id="outline-container-org875f8de" class="outline-4">
-<h4 id="org875f8de">Área</h4>
-<div class="outline-text-4" id="text-org875f8de">
+<div id="outline-container-orgf4c7c17" class="outline-4">
+<h4 id="orgf4c7c17">Área</h4>
+<div class="outline-text-4" id="text-orgf4c7c17">
 <p>
 O cálculo da área para um círculo e um quadrado também não é diferente, nem
 envolve complexidade extra alguma.
@@ -996,9 +999,9 @@ do perímetro do pentágono, calculamos a área.
 </div>
 </div>
 
-<div id="outline-container-org3090305" class="outline-4">
-<h4 id="org3090305">Quadrado do lado</h4>
-<div class="outline-text-4" id="text-org3090305">
+<div id="outline-container-org08a9385" class="outline-4">
+<h4 id="org08a9385">Quadrado do lado</h4>
+<div class="outline-text-4" id="text-org08a9385">
 <p>
 Aqui, definimos o cálculo do quadrado dos lados para o quadrado e para o
 pentágono. <b>Note que, no caso do círculo, simplesmente não definimos o método</b>.
@@ -1017,9 +1020,9 @@ pentágono. <b>Note que, no caso do círculo, simplesmente não definimos o mét
 </div>
 </div>
 
-<div id="outline-container-org11c7139" class="outline-3">
-<h3 id="org11c7139">Utilitários</h3>
-<div class="outline-text-3" id="text-org11c7139">
+<div id="outline-container-orga02cd74" class="outline-3">
+<h3 id="orga02cd74">Utilitários</h3>
+<div class="outline-text-3" id="text-orga02cd74">
 <p>
 Da mesma forma como fizemos no "jeito" anterior, definiremos alguns
 procedimentos como utilitários, tanto para gerar nosso contêiner de instâncias
@@ -1052,9 +1055,9 @@ definidas nos <code>:initarg</code> dos <i>slots</i> de cada classe).
 </div>
 </div>
 
-<div id="outline-container-org5cf9c48" class="outline-4">
-<h4 id="org5cf9c48">Soma dos quadrados dos lados</h4>
-<div class="outline-text-4" id="text-org5cf9c48">
+<div id="outline-container-orgd50d31e" class="outline-4">
+<h4 id="orgd50d31e">Soma dos quadrados dos lados</h4>
+<div class="outline-text-4" id="text-orgd50d31e">
 <p>
 Temos um pequeno problema ao calcularmos as somas dos quadrados dos lados:
 alguns de nossos objetos (mais especificamente, aqueles que sejam instâncias de
@@ -1112,9 +1115,9 @@ se absolutamente nenhuma inconsistência pudesse acontecer antes.
 </div>
 
 
-<div id="outline-container-orgd5ecf14" class="outline-3">
-<h3 id="orgd5ecf14">Função principal para testes</h3>
-<div class="outline-text-3" id="text-orgd5ecf14">
+<div id="outline-container-orgfb3e8f8" class="outline-3">
+<h3 id="orgfb3e8f8">Função principal para testes</h3>
+<div class="outline-text-3" id="text-orgfb3e8f8">
 <p>
 Definamos uma função qualquer, incumbida de gerar nossa sequência de dez formas,
 e então imprimir os resultados das operações na tela. O uso do nome <code>main</code> aqui é
@@ -1135,9 +1138,9 @@ arbitrário, podendo ser substituído por qualquer outra coisa.
 </div>
 </div>
 
-<div id="outline-container-orgf297267" class="outline-2">
-<h2 id="orgf297267">Conclusão</h2>
-<div class="outline-text-2" id="text-orgf297267">
+<div id="outline-container-orgfb0873b" class="outline-2">
+<h2 id="orgfb0873b">Conclusão</h2>
+<div class="outline-text-2" id="text-orgfb0873b">
 <p>
 Chegamos ao fim de ambas as implementações do mesmo problema. Possuimos duas
 formas de resolução, sob o que outrora seria o mesmo paradigma, porém estas duas
@@ -1145,9 +1148,9 @@ formas mostraram-se bem diferentes.
 </p>
 </div>
 
-<div id="outline-container-org6fae0e1" class="outline-3">
-<h3 id="org6fae0e1">Comparação</h3>
-<div class="outline-text-3" id="text-org6fae0e1">
+<div id="outline-container-org84569c8" class="outline-3">
+<h3 id="org84569c8">Comparação</h3>
+<div class="outline-text-3" id="text-org84569c8">
 <p>
 Podemos montar um pequeno quadro, destacando as partes mais relevantes das
 implementações e estabelecendo um paralelo entre elas.
@@ -1222,9 +1225,9 @@ situações específicas exigem ferramentas específicas.
 </div>
 </div>
 
-<div id="outline-container-orgc9bf9ba" class="outline-3">
-<h3 id="orgc9bf9ba"><i>Tangling</i> dos arquivos</h3>
-<div class="outline-text-3" id="text-orgc9bf9ba">
+<div id="outline-container-org1b5437b" class="outline-3">
+<h3 id="org1b5437b"><i>Tangling</i> dos arquivos</h3>
+<div class="outline-text-3" id="text-org1b5437b">
 <p>
 Como este artigo foi escrito no Emacs, em <code>org-mode</code>, você poderá obter o código
 do mesmo a seguir. Os arquivos das linguagens Java e Common Lisp,
@@ -1241,9 +1244,9 @@ cursor sobre o bloco de código a seguir, e utilizando o atalho <code>C-c C-c</c
 </div>
 </div>
 
-<div id="outline-container-org563d235" class="outline-3">
-<h3 id="org563d235">Licenciamento</h3>
-<div class="outline-text-3" id="text-org563d235">
+<div id="outline-container-org462cd10" class="outline-3">
+<h3 id="org462cd10">Licenciamento</h3>
+<div class="outline-text-3" id="text-org462cd10">
 <p>
 Todo e qualquer código descrito aqui é disponibilizado sob a licença BSD
 2-Clause. Para mais informação, veja <a href="https://opensource.org/licenses/BSD-2-Clause">este link.</a>
