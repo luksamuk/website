@@ -210,7 +210,7 @@ gtag('config', 'G-22RF3F5XE0');
 <meta name="theme-color" content="#14171e">
 <meta property="og:title" content="Reading E-mail from Gmail on Plan 9 from Bell Labs">
 <meta property="og:description" content="Programming, Tech, and occasional rant space by Lucas Vieira">
-<meta property="og:image" content="../img/cat-i-mage.jpg">
+<meta property="og:image" content="https://luksamuk.codes/img/banner-full.png">
 <meta property="og:type" content="article">
 <meta property="article:author" content="Lucas S. Vieira">
 <meta name="twitter:title" content="Reading E-mail from Gmail on Plan 9 from Bell Labs">
@@ -227,47 +227,47 @@ gtag('config', 'G-22RF3F5XE0');
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org5848290">Introduction</a>
+<li><a href="#org1b9f39b">Introduction</a>
 <ul>
-<li><a href="#org61b67c2">Before going forward</a></li>
-<li><a href="#org8ae43b4">Achtung!</a></li>
+<li><a href="#org2280119">Before going forward</a></li>
+<li><a href="#org7222ed4">Achtung!</a></li>
 </ul>
 </li>
-<li><a href="#orgdf19832">Configuring Gmail</a></li>
-<li><a href="#org6a46781">Configuring passwords</a></li>
-<li><a href="#org8361952">Starting <code>upasfs</code> and receiving mail over IMAP</a>
+<li><a href="#orgf5f158d">Configuring Gmail</a></li>
+<li><a href="#orga6658d6">Configuring passwords</a></li>
+<li><a href="#orgace1df4">Starting <code>upasfs</code> and receiving mail over IMAP</a>
 <ul>
-<li><a href="#org3255355">Caveats on the <code>profile</code> script</a></li>
+<li><a href="#org704cbb3">Caveats on the <code>profile</code> script</a></li>
 </ul>
 </li>
-<li><a href="#org66eaaa0">Running <code>faces</code> to see user icons</a>
+<li><a href="#org06ab06a">Running <code>faces</code> to see user icons</a>
 <ul>
-<li><a href="#org25281f9">Enabling <code>riostart</code></a></li>
+<li><a href="#org6187a05">Enabling <code>riostart</code></a></li>
 </ul>
 </li>
-<li><a href="#orge8112cc">Sending e-mail over SMTP</a>
+<li><a href="#orgdf1ce72">Sending e-mail over SMTP</a>
 <ul>
-<li><a href="#org2790d87">Setting up <code>/mail/lib/rewrite</code></a></li>
-<li><a href="#org9162726">Setting up SMTP server variable</a></li>
-<li><a href="#org77e8a60">Setting up <code>/mail/lib/remotemail</code></a></li>
-<li><a href="#orgd49c315">Fixing SMTP certificates</a></li>
-<li><a href="#org41b5117">Configuring mail headers</a></li>
+<li><a href="#orgacf5b6f">Setting up <code>/mail/lib/rewrite</code></a></li>
+<li><a href="#org4baf10f">Setting up SMTP server variable</a></li>
+<li><a href="#org35a3969">Setting up <code>/mail/lib/remotemail</code></a></li>
+<li><a href="#org8b6b5f5">Fixing SMTP certificates</a></li>
+<li><a href="#org7875efe">Configuring mail headers</a></li>
 </ul>
 </li>
-<li><a href="#org5c8e812">Using Acme Mail</a></li>
-<li><a href="#org2d7b3b1">Conclusion</a></li>
+<li><a href="#org6c73318">Using Acme Mail</a></li>
+<li><a href="#org85511b7">Conclusion</a></li>
 </ul>
 </div>
 </div>
 
-<div id="orgbc1f354" class="figure">
+<div id="orgcce4c4f" class="figure">
 <p><img src="img/desktop_bootcamp.png" alt="desktop_bootcamp.png" />
 </p>
 </div>
 
-<div id="outline-container-org5848290" class="outline-2">
-<h2 id="org5848290">Introduction</h2>
-<div class="outline-text-2" id="text-org5848290">
+<div id="outline-container-org1b9f39b" class="outline-2">
+<h2 id="org1b9f39b">Introduction</h2>
+<div class="outline-text-2" id="text-org1b9f39b">
 <p>
 Over the last  days, a Plan 9  bootcamp is taking place  at SDF.org. I
 was one of the lucky people who got in, and so I and a bunch of people
@@ -292,9 +292,9 @@ do that through Acme.
 </p>
 </div>
 
-<div id="outline-container-org61b67c2" class="outline-3">
-<h3 id="org61b67c2">Before going forward</h3>
-<div class="outline-text-3" id="text-org61b67c2">
+<div id="outline-container-org2280119" class="outline-3">
+<h3 id="org2280119">Before going forward</h3>
+<div class="outline-text-3" id="text-org2280119">
 <p>
 This is not an introduction to Plan 9. This post is mostly directed to
 hackers that may be struggling with mail support in it.
@@ -314,9 +314,9 @@ enjoyable to use from a graphical terminal, with a 3-button mouse.
 </div>
 </div>
 
-<div id="outline-container-org8ae43b4" class="outline-3">
-<h3 id="org8ae43b4">Achtung!</h3>
-<div class="outline-text-3" id="text-org8ae43b4">
+<div id="outline-container-org7222ed4" class="outline-3">
+<h3 id="org7222ed4">Achtung!</h3>
+<div class="outline-text-3" id="text-org7222ed4">
 <p>
 This post is heavily inspired by the links below. They contain most of
 the information to come.
@@ -340,9 +340,9 @@ Let's get started.
 </div>
 </div>
 
-<div id="outline-container-orgdf19832" class="outline-2">
-<h2 id="orgdf19832">Configuring Gmail</h2>
-<div class="outline-text-2" id="text-orgdf19832">
+<div id="outline-container-orgf5f158d" class="outline-2">
+<h2 id="orgf5f158d">Configuring Gmail</h2>
+<div class="outline-text-2" id="text-orgf5f158d">
 <p>
 First of  all, you  need to  configure your  Gmail account  for remote
 access.
@@ -369,9 +369,9 @@ tutorials setting up Gmail for  other programs such as <code>offlineimap</code> 
 </div>
 </div>
 
-<div id="outline-container-org6a46781" class="outline-2">
-<h2 id="org6a46781">Configuring passwords</h2>
-<div class="outline-text-2" id="text-org6a46781">
+<div id="outline-container-orga6658d6" class="outline-2">
+<h2 id="orga6658d6">Configuring passwords</h2>
+<div class="outline-text-2" id="text-orga6658d6">
 <p>
 We need to configure  passwords so that they can be  used for IMAP and
 SMTP authentication. Running these  commands instructs <code>factotum</code> to ask
@@ -428,9 +428,9 @@ only that, and preferably using an encrypted file.
 </div>
 </div>
 
-<div id="outline-container-org8361952" class="outline-2">
-<h2 id="org8361952">Starting <code>upasfs</code> and receiving mail over IMAP</h2>
-<div class="outline-text-2" id="text-org8361952">
+<div id="outline-container-orgace1df4" class="outline-2">
+<h2 id="orgace1df4">Starting <code>upasfs</code> and receiving mail over IMAP</h2>
+<div class="outline-text-2" id="text-orgace1df4">
 <p>
 <code>upas/fs</code> effectively mounts  a remote mailbox so that you  can see your
 email locally. It supports POP3 and IMAP, with or without SSL.
@@ -451,7 +451,7 @@ This  command is  supposed to  <b>fail</b>, giving  you an  error related  to
 server certificate, more or less like this:
 </p>
 
-<pre class="example" id="orgb4f862e">
+<pre class="example" id="orgcef6871">
 upas/fs imap: server certificate sha256=xxxx not recognized
 </pre>
 
@@ -473,9 +473,9 @@ beginning of every session.
 </p>
 </div>
 
-<div id="outline-container-org3255355" class="outline-3">
-<h3 id="org3255355">Caveats on the <code>profile</code> script</h3>
-<div class="outline-text-3" id="text-org3255355">
+<div id="outline-container-org704cbb3" class="outline-3">
+<h3 id="org704cbb3">Caveats on the <code>profile</code> script</h3>
+<div class="outline-text-3" id="text-org704cbb3">
 <p>
 If  you are  using the  default <code>profile</code>  script, the  <code>upas/fs</code> starting
 command can  be put at  both <code>terminal</code> and  <code>cpu</code> cases.  They  relate to
@@ -492,9 +492,9 @@ and you should not use anyways.
 </div>
 </div>
 
-<div id="outline-container-org66eaaa0" class="outline-2">
-<h2 id="org66eaaa0">Running <code>faces</code> to see user icons</h2>
-<div class="outline-text-2" id="text-org66eaaa0">
+<div id="outline-container-org06ab06a" class="outline-2">
+<h2 id="org06ab06a">Running <code>faces</code> to see user icons</h2>
+<div class="outline-text-2" id="text-org06ab06a">
 <p>
 We can check if it works by running <code>faces</code> on console:
 </p>
@@ -511,7 +511,7 @@ you.
 </p>
 
 
-<div id="orgf8ae8a7" class="figure">
+<div id="orga458ca6" class="figure">
 <p><img src="img/faces_bootcamp.png" alt="faces_bootcamp.png" />
 </p>
 </div>
@@ -534,9 +534,9 @@ on my box:
 </div>
 </div>
 
-<div id="outline-container-org25281f9" class="outline-3">
-<h3 id="org25281f9">Enabling <code>riostart</code></h3>
-<div class="outline-text-3" id="text-org25281f9">
+<div id="outline-container-org6187a05" class="outline-3">
+<h3 id="org6187a05">Enabling <code>riostart</code></h3>
+<div class="outline-text-3" id="text-org6187a05">
 <p>
 It may  be the  case that  <code>riostart</code> is  disabled for  connections from
 <code>drawterm</code> into you CPU server.
@@ -556,9 +556,9 @@ If it doesn't, you may want to replace <code>rio</code>'s startup command with:
 </div>
 </div>
 
-<div id="outline-container-orge8112cc" class="outline-2">
-<h2 id="orge8112cc">Sending e-mail over SMTP</h2>
-<div class="outline-text-2" id="text-orge8112cc">
+<div id="outline-container-orgdf1ce72" class="outline-2">
+<h2 id="orgdf1ce72">Sending e-mail over SMTP</h2>
+<div class="outline-text-2" id="text-orgdf1ce72">
 <p>
 Before enjoying  our mail service,  we need to  make sure that  we can
 <i>send</i> mail.   For that, some extra  configuration is needed so  that we
@@ -566,9 +566,9 @@ can set up SMTP.
 </p>
 </div>
 
-<div id="outline-container-org2790d87" class="outline-3">
-<h3 id="org2790d87">Setting up <code>/mail/lib/rewrite</code></h3>
-<div class="outline-text-3" id="text-org2790d87">
+<div id="outline-container-orgacf5b6f" class="outline-3">
+<h3 id="orgacf5b6f">Setting up <code>/mail/lib/rewrite</code></h3>
+<div class="outline-text-3" id="text-orgacf5b6f">
 <p>
 You will  need to setup  <code>/mail/lib/rewrite</code>. When opening it,  the text
 already written there  will instruct you to copy and  paste one of the
@@ -586,7 +586,7 @@ Now,  wherever the  address  <code>YOURDOMAIN.DOM</code> is  listed  on that  fi
 replace it with <code>gmail.com</code>. For example:
 </p>
 
-<pre class="example" id="orgc231ce4">
+<pre class="example" id="orgbf994a2">
 # append the local domain to addresses without a domain
 local!"(.+)" 	   alias     \1@gmail.com
 local!(.*)	   alias     \1@gmail.com
@@ -598,9 +598,9 @@ For more information on those files and what they do, see <code>man rewrite</cod
 </div>
 </div>
 
-<div id="outline-container-org9162726" class="outline-3">
-<h3 id="org9162726">Setting up SMTP server variable</h3>
-<div class="outline-text-3" id="text-org9162726">
+<div id="outline-container-org4baf10f" class="outline-3">
+<h3 id="org4baf10f">Setting up SMTP server variable</h3>
+<div class="outline-text-3" id="text-org4baf10f">
 <p>
 Now open <code>/lib/ndb/local</code>. At its end, define the <code>$smtp</code> variable:
 </p>
@@ -612,9 +612,9 @@ Now open <code>/lib/ndb/local</code>. At its end, define the <code>$smtp</code> 
 </div>
 </div>
 
-<div id="outline-container-org77e8a60" class="outline-3">
-<h3 id="org77e8a60">Setting up <code>/mail/lib/remotemail</code></h3>
-<div class="outline-text-3" id="text-org77e8a60">
+<div id="outline-container-org35a3969" class="outline-3">
+<h3 id="org35a3969">Setting up <code>/mail/lib/remotemail</code></h3>
+<div class="outline-text-3" id="text-org35a3969">
 <p>
 Finally, open <code>/mail/lib/remotemail</code>. This will  allow you to gateway to
 your Gmail  account. This is  the script which effectively  sends your
@@ -641,9 +641,9 @@ e-mail.
 </div>
 </div>
 
-<div id="outline-container-orgd49c315" class="outline-3">
-<h3 id="orgd49c315">Fixing SMTP certificates</h3>
-<div class="outline-text-3" id="text-orgd49c315">
+<div id="outline-container-org8b6b5f5" class="outline-3">
+<h3 id="org8b6b5f5">Fixing SMTP certificates</h3>
+<div class="outline-text-3" id="text-org8b6b5f5">
 <p>
 We are  almost done. The  only problem is that  Plan 9 still  does not
 trust Gmail's SMTP server.
@@ -664,7 +664,7 @@ can see when you <code>cat</code> the file  <code>/sys/log/smtp</code>. It will 
 the current date, and then a message like this will follow:
 </p>
 
-<pre class="example" id="orgc9d71e2">
+<pre class="example" id="org643804b">
 cert for smtp.gmail.com not recognized: sha=xxxx
 </pre>
 
@@ -684,25 +684,25 @@ You can try the command to send an e-mail again now. It should work.
 </div>
 </div>
 
-<div id="outline-container-org41b5117" class="outline-3">
-<h3 id="org41b5117">Configuring mail headers</h3>
-<div class="outline-text-3" id="text-org41b5117">
+<div id="outline-container-org7875efe" class="outline-3">
+<h3 id="org7875efe">Configuring mail headers</h3>
+<div class="outline-text-3" id="text-org7875efe">
 <p>
 It is interesting  to have a header set up  with your information when
 sending   a    mail.   This   can    be   done   through    the   file
 <code>/mail/box/$user/headers</code>. Here is an example of what can be put there:
 </p>
 
-<pre class="example" id="org758e3af">
+<pre class="example" id="orgf6aa7d3">
 From: "Glenda" &lt;your.username@gmail.com&gt;
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org5c8e812" class="outline-2">
-<h2 id="org5c8e812">Using Acme Mail</h2>
-<div class="outline-text-2" id="text-org5c8e812">
+<div id="outline-container-org6c73318" class="outline-2">
+<h2 id="org6c73318">Using Acme Mail</h2>
+<div class="outline-text-2" id="text-org6c73318">
 <p>
 Now that  everything is set up,  we just need  to use Acme to  run its
 mail client. Once  it is run, right clicks on  <code>faces</code>'s icons will just
@@ -716,7 +716,7 @@ e-mails.
 </p>
 
 
-<div id="org5494874" class="figure">
+<div id="org5599f57" class="figure">
 <p><img src="img/acme_bootcamp.png" alt="acme_bootcamp.png" />
 </p>
 </div>
@@ -747,7 +747,7 @@ Composing  mail is  just  a matter  of typing  stuff  directly in  the
 buffer. For example, typing this:
 </p>
 
-<pre class="example" id="orgde6cea9">
+<pre class="example" id="org7170d85">
 To: &lt;someone@example.com&gt;
 Subject: Testing mail
 
@@ -764,9 +764,9 @@ When you are done, middle-click <code>"Post"</code>, or click <code>"Del"</code>
 </div>
 </div>
 
-<div id="outline-container-org2d7b3b1" class="outline-2">
-<h2 id="org2d7b3b1">Conclusion</h2>
-<div class="outline-text-2" id="text-org2d7b3b1">
+<div id="outline-container-org85511b7" class="outline-2">
+<h2 id="org85511b7">Conclusion</h2>
+<div class="outline-text-2" id="text-org85511b7">
 <p>
 That's it  for now. This is  supposed to be a  concise tutorial; there
 may be errors here and things I  did not explore. For that, I count on
