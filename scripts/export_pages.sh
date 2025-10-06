@@ -4,6 +4,7 @@ for f in `find src/pages -name "*.org"`; do
     if [ -f "${f%%.org}-bindings.el" ]; then
 	emacs --batch \
 	      -l "/root/.emacs.d/init.el" \
+	      -l "./src/macros.el" \
 	      -l "${f%%.org}-bindings.el" \
 	      --kill \
 	      "$f" \
@@ -11,6 +12,7 @@ for f in `find src/pages -name "*.org"`; do
     else
 	emacs --batch \
 	      -l "/root/.emacs.d/init.el" \
+	      -l "./src/macros.el" \
 	      -l "./src/pages/bindings.el" \
 	      --kill \
 	      "$f" \
