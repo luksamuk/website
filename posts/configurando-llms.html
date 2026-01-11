@@ -227,7 +227,7 @@ gtag('config', 'G-22RF3F5XE0');
 </div>
 <div id="content" class="content">
 
-<div id="org4e750b2" class="figure">
+<div id="org3c9414c" class="figure">
 <p><img src="img/thumb-configurando-llms.png" alt="thumb-configurando-llms.png" />
 </p>
 </div>
@@ -256,29 +256,33 @@ também decidi uma coisa: só iria na onda dessas novidades se fosse do meu jeit
 Eu acredito que  é responsabilidade das pessoas mais versadas  em tecnologia que
 elas  compreendam  e não  fiquem  reféns  das  soluções  de mercado.  Por  isso,
 compreensão e uma análise educada  são coisas extremamente importantes para mim,
-e era chegada a hora de eu praticar  o que acredito quando o assunto fosse LLMs,
-para não me  tornar apenas mais um programador velho  e mal-humorado achando que
-tinha que fazer tudo em C e Lisp (apesar de que sou exatamente assim).
+e era chegada a  hora de eu praticar o que acredito para  o assunto das LLMs, ou
+eu iria me  tornar mais um programador  ranzinza que acha que  precisa que fazer
+tudo em C e Lisp (apesar de que sou exatamente assim).
 </p>
 
 <p>
-Meu lema é:  "Por que facilitar se posso complicar?".  E aplicando isso, resolvi
+Meu lema é:  <i>"Por que facilitar se posso complicar?"</i>.  E aplicando isso, resolvi
 aproveitar  meu computador  novo,  com  uma GPU  novinha,  para executar  alguns
-modelos de linguagem localmente usando Ollama, em vez de gastar rios de dinheiro
-com as soluções pagas do mercado. Eis  aqui os passos que segui e algumas coisas
-mais interessantes.
+modelos  de linguagem  localmente, em  vez  de gastar  rios de  dinheiro com  as
+soluções pagas do  mercado. Eis aqui os  passos que segui para essa façanha.
 </p>
 
-<div id="outline-container-orgd2ca147" class="outline-2">
-<h2 id="orgd2ca147">Objetivo desse artigo</h2>
-<div class="outline-text-2" id="text-orgd2ca147">
+<div id="outline-container-orgade834e" class="outline-2">
+<h2 id="orgade834e">Antes de mais nada&#x2026;</h2>
+<div class="outline-text-2" id="text-orgade834e">
 <p>
 Eu  queria inicialmente  que esse  artigo fosse  mais extenso,  mas vou  me ater
 apenas a  explicar o meu  <i>setup</i> local para  uso de LLMs.  Meus casos de  uso são
 principalmente questão de  pesquisa, e em geral uso-as no  trabalho para geração
 de pequeníssimos blocos de código (quando  trata-se de <i>boilerplate</i> que faço todo
 dia e que não  demanda raciocínio ou regra de negócio),  ou para um tira-dúvidas
-geral de Python e/ou Django e afins.
+geral de Python  e/ou Django, SQL, e  afins.
+</p>
+
+<p>
+Aliás,  até   para  ajustar   um  pouco  a   exportação  desse   artigo,  estive
+consultando-as, então Emacs Lisp também entra nos casos de uso.
 </p>
 
 <p>
@@ -289,17 +293,17 @@ interessantes.
 </div>
 </div>
 
-<div id="outline-container-org3ef33d7" class="outline-2">
-<h2 id="org3ef33d7">Ferramentas que utilizei</h2>
-<div class="outline-text-2" id="text-org3ef33d7">
+<div id="outline-container-orgb31b8c6" class="outline-2">
+<h2 id="orgb31b8c6">Ferramentas que utilizei</h2>
+<div class="outline-text-2" id="text-orgb31b8c6">
 <p>
 Não vou entrar em  muitos detalhes aqui a respeito de  hardware, até porque esse
-não  é muito  meu forte.  Mas recentemente  adquiri um  "laptop gamer",  um Dell
+não é muito  o meu forte.  Mas  recentemente adquiri um "laptop  gamer", um Dell
 G15. E  como não queria passar  muita raiva com drivers  da NVIDIA, simplesmente
 desabilitei  os  gráficos integrados  e  estou  usando  a GPU  diretamente  para
 absolutamente tudo que for exigido.  Meu sistema operacional é Arch Linux<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>,
-e tenho  vivido bem sem  um sistema  que quebra toda  hora, ao contrário  do que
-dizem as más línguas<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>.
+e tenho  vivido bem, sem um  sistema que quebra  toda hora, ao contrário  do que
+dizem as más-línguas<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>.
 </p>
 
 <p>
@@ -315,9 +319,16 @@ Em termos de software e serviços, o que utilizei foi:
 </ul>
 </div>
 
-<div id="outline-container-org0bd9421" class="outline-3">
-<h3 id="org0bd9421">Ollama</h3>
-<div class="outline-text-3" id="text-org0bd9421">
+<div id="outline-container-org5a25779" class="outline-3">
+<h3 id="org5a25779">Ollama</h3>
+<div class="outline-text-3" id="text-org5a25779">
+
+<div id="org7e3ddbb" class="figure">
+<p><img src="img/llms1-ollama.png" alt="llms1-ollama.png" />
+</p>
+<p><span class="figure-number">Figura 1: </span>Logomarca da Ollama.</p>
+</div>
+
 <p>
 Tudo   começa   com   uma   aplicação   que  seja   capaz   de   executar   LLMs
 localmente.  Existem  várias  aplicações  e serviços  que  fazem  isso.  Resolvi
@@ -336,9 +347,9 @@ ataques ou qualquer coisa que o valha, através de substituição de texto.
 </p>
 </div>
 
-<div id="outline-container-orga14eb4b" class="outline-4">
-<h4 id="orga14eb4b">Modelos</h4>
-<div class="outline-text-4" id="text-orga14eb4b">
+<div id="outline-container-orgacac7bd" class="outline-4">
+<h4 id="orgacac7bd">Modelos</h4>
+<div class="outline-text-4" id="text-orgacac7bd">
 <p>
 O Ollama não faz  nada sozinho, é necessário que você  baixe alguns modelos para
 fazer alguma coisa. E aqui entra o pulo  do gato: os modelos variam em termos de
@@ -399,10 +410,10 @@ preliminar de <i>embedding</i>.</li>
 </ul>
 
 
-<div id="orgd9b198a" class="figure">
+<div id="orgb0589c9" class="figure">
 <p><img src="img/llms1-ollama-list.png" alt="llms1-ollama-list.png" />
 </p>
-<p><span class="figure-number">Figura 1: </span>Lista de modelos locais no meu Ollama.</p>
+<p><span class="figure-number">Figura 2: </span>Lista de modelos locais no meu Ollama.</p>
 </div>
 
 <p>
@@ -414,9 +425,16 @@ informação e talvez ela seja útil para mais alguém.
 </div>
 </div>
 
-<div id="outline-container-org876996a" class="outline-3">
-<h3 id="org876996a">Ellama no Emacs</h3>
-<div class="outline-text-3" id="text-org876996a">
+<div id="outline-container-org1364cdc" class="outline-3">
+<h3 id="org1364cdc">Ellama, extensão para Emacs</h3>
+<div class="outline-text-3" id="text-org1364cdc">
+
+<div id="org73d31c2" class="figure">
+<p><img src="img/llms1-emacs.png" alt="llms1-emacs.png" />
+</p>
+<p><span class="figure-number">Figura 3: </span>Logomarca do Emacs.</p>
+</div>
+
 <p>
 Usar  as LLMs  através do  terminal é  bem possível,  mas queremos  um pouco  de
 comodidade.
@@ -436,16 +454,16 @@ Ellama, que fornece muita integração, inclusive com Org Mode.
 </p>
 
 
-<div id="orgad6a125" class="figure">
+<div id="org3f1c321" class="figure">
 <p><img src="img/llms1-ellama.png" alt="llms1-ellama.png" />
 </p>
-<p><span class="figure-number">Figura 2: </span>Menu do Ellama enquanto edito este mesmo <i>post</i>, no Emacs.</p>
+<p><span class="figure-number">Figura 4: </span>Menu do Ellama enquanto edito este mesmo <i>post</i>, no Emacs.</p>
 </div>
 </div>
 
-<div id="outline-container-orge5f2a38" class="outline-4">
-<h4 id="orge5f2a38">Configuração do Ellama</h4>
-<div class="outline-text-4" id="text-orge5f2a38">
+<div id="outline-container-orgcb51179" class="outline-4">
+<h4 id="orgcb51179">Configuração do Ellama</h4>
+<div class="outline-text-4" id="text-orgcb51179">
 <p>
 A configuração  do Ellama é totalmente  em Emacs Lisp, e  compartilho ela abaixo
 para referência. Na sequência, vou discutir algumas características importantes.
@@ -537,42 +555,50 @@ mostrar algumas depois.
 </div>
 </div>
 
-<div id="outline-container-orgddb6613" class="outline-3">
-<h3 id="orgddb6613">Open WebUI</h3>
-<div class="outline-text-3" id="text-orgddb6613">
+<div id="outline-container-orgeb086c2" class="outline-3">
+<h3 id="orgeb086c2">Open WebUI</h3>
+<div class="outline-text-3" id="text-orgeb086c2">
+
+<div id="orgc1c8962" class="figure">
+<p><img src="img/llms1-open-webui-logo.png" alt="llms1-open-webui-logo.png" />
+</p>
+<p><span class="figure-number">Figura 5: </span>Logomarca do Open WebUI.</p>
+</div>
+
 <p>
-Outra coisa legal de se ter é, também, uma interface gráfica de alguma forma. Eu
-acabei optando por usar o Open WebUI,  que aparentemente é extensível a ponto de
-tolerar mais  ferramentas caso você  queira partir  para coisas como  geração de
-imagens,  por exemplo.  Mas como  não é  meu objetivo,  realizei um  deploy mais
-simples.
+Outra coisa legal de se ter, também,  é uma interface gráfica para interagir com
+os  modelos. Eu  acabei  optando por  usar  o Open  WebUI,  que aparentemente  é
+extensível a  ponto de  tolerar mais  ferramentas caso  você queira  partir para
+coisas  como geração  de imagens,  por exemplo.   Mas como  não é  meu objetivo,
+realizei um deploy mais simples.
 </p>
 
 <p>
 Isso talvez soe um  pouco invasivo, mas o Open WebUI  é melhor executado através
 de Docker<sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>. Isso é  um pouco chato pensando do ponto de  vista de que estou
 servindo  uma aplicação  no meu  próprio computador  só para  ter uma  interface
-gráfica, mas depois de reclamar um pouco, eu só aceitei.
+gráfica, mas depois de resmungar um pouco, eu só aceitei, mesmo.
 </p>
 
 
-<div id="org3350c15" class="figure">
+<div id="orga259dea" class="figure">
 <p><img src="img/llms1-openui.png" alt="llms1-openui.png" />
 </p>
-<p><span class="figure-number">Figura 3: </span>Interface do Open WebUI no Google Chrome do Linux.</p>
+<p><span class="figure-number">Figura 6: </span>Interface do Open WebUI no Google Chrome do Linux.</p>
 </div>
 
 <p>
 O  único   ponto  de   atenção  aqui   é  que  o   Open  WebUI   deve  conseguir
 acessar&#x2026; advinhe só&#x2026; o seu Ollama.  Existe inclusive uma versão do contêiner
-já com o Ollama embutido, caso você queira algo mais unificado e não vá depender
-do Ollama para outros serviços.
+já  com o  Ollama embutido,  caso  você queira  algo  mais unificado,  e não  vá
+depender do  Ollama para outros  serviços (o  que não é  meu caso, já  que estou
+acessando também via Emacs).
 </p>
 
 <p>
 Esse ponto não  é um grande problema  caso você esteja usando  Docker Desktop no
-Windows<sup><a id="fnr.5" class="footref" href="#fn.5" role="doc-backlink">5</a></sup>, porque  ele já exporta  um <i>host</i>  customizado para que  você tenha
-acesso às portas do seu computador.
+Windows<sup><a id="fnr.5" class="footref" href="#fn.5" role="doc-backlink">5</a></sup>, porque  ele já exporta um  <i>host</i> customizado para que  o contêiner
+tenha acesso às portas do seu computador.
 </p>
 
 <p>
@@ -600,8 +626,8 @@ reiniciar o computador), a não ser que você destrua o contêiner:
 <p>
 O  comando acima  "quebra  um galho",  mas eu  achei  particularmente ruim  para
 substituir o contêiner  em caso de atualização, porque eu  precisaria dar <code>docker
-pull</code> na  imagem novamente. Então  acabei montando um <code>docker-compose.yml</code>  para me
-ajudar com isso:
+pull</code>  na imagem  novamente,  e precisaria  ficar copiando  e  colando o  comando
+acima. Então acabei montando um <code>docker-compose.yml</code> para me ajudar com isso:
 </p>
 
 <div class="org-src-container">
@@ -628,16 +654,21 @@ volumes:
 Veja que eu marquei o volume  <code>open-webui</code> com <code>external: true</code> unicamente porque eu
 já havia  executado a ferramenta com  Docker "puro", e queria  manter meu volume
 que já estava com várias  configurações. Caso você esteja executando diretamente
-no Docker Compose, pode remover isso. Vai dar bom.
+no Docker Compose, pode remover isso sem problemas.
 </p>
 
 <p>
 Veja  também que  eu  estou  rodando o  contêiner  em  <code>network_mode: host</code>.  Isso
 significa que  ele basicamente não  passa pelo  processo de mapeamento  da porta
-padrão da  aplicação para o  computador. Em vez  disso, eu estou  configurando a
-aplicação diretamente (através da variável de ambiente <code>PORT</code>) para rodar na porta
-<code>3111</code>. Esse detalhe do modo de  networking do contêiner pode ser importante, caso
-você precise alterar esse arquivo do Compose.
+padrão da aplicação para o computador,  e caso eu tivesse mais contêineres, eles
+não estariam em uma única malha capaz de fazer com que eles comuniquem entre si.
+</p>
+
+<p>
+Em vez disso, eu estou configurando a aplicação diretamente (através da variável
+de ambiente <code>PORT</code>) para  rodar na porta <code>3111</code>. Esse detalhe  do modo de networking
+do contêiner  pode ser  importante, caso  você precise  alterar esse  arquivo do
+Docker Compose.
 </p>
 
 <p>
@@ -652,20 +683,33 @@ preocupar.
 </div>
 </div>
 
-<div id="outline-container-org07e2f95" class="outline-3">
-<h3 id="org07e2f95">Acesso remoto com Tailscale</h3>
-<div class="outline-text-3" id="text-org07e2f95">
+<div id="outline-container-orgcc68597" class="outline-3">
+<h3 id="orgcc68597">Acesso remoto com Tailscale</h3>
+<div class="outline-text-3" id="text-orgcc68597">
+
+<div id="org82ab2cb" class="figure">
+<p><img src="img/llms1-tailscale.png" alt="llms1-tailscale.png" />
+</p>
+<p><span class="figure-number">Figura 7: </span>Logomarca do Tailscale</p>
+</div>
+
 <p>
-Tudo agora funcionou  muito bem, mas estamos  em um ponto crítico:  Tudo isso só
-funciona localmente.  E se  você for  como eu, muito  provavelmente você  tem um
-<i>firewall</i>  bem-configurado  no  seu  computador que  não  esteja  permitindo,  no
-momento, acesso a nenhuma porta sua. Correto? Correto.
+Tudo funcionou  muito bem, mas agora estamos  em um ponto crítico:  Tudo isso só
+funciona no meu computador.  E se você for como eu, muito provavelmente você tem
+um  <i>firewall</i> bem-configurado  no seu  computador que  não esteja  permitindo, no
+momento,  acesso  externo a  nenhuma  porta  sua.  Espera&#x2026; Não?!  Então  vamos
+instalar o <code>ufw</code> primeiro.
 </p>
 
 <p>
-No meu  caso, eu instalei  o Uncomplicated Firewall (UFW).  Ele é uma  camada em
-cima  do <code>iptables</code>  que garante  certa simplicidade.  Depois de  instalar o  <code>ufw</code>,
-ative-o através do <code>systemd</code>.
+O Uncomplicated  Firewall (UFW)  é uma  camada em cima  do <code>iptables</code>  que garante
+certa simplicidade ao configurar regras de firewall. Por padrão, ele não permite
+nenhuma entrada, em nenhuma porta.
+</p>
+
+<p>
+Depois de instalar o <code>ufw</code> na  sua distribuição Linux, ative-o através do <code>systemd</code>,
+caso você também use esse sistema de inicialização.
 </p>
 
 <div class="org-src-container">
@@ -676,27 +720,34 @@ sudo systemctl start ufw
 
 <p>
 Para  o meu  caso de  uso, eu  me  concentrei em  dois acessos  externos no  meu
-computador.  O primeiro  é que  eu  precisava acessar  o Open  WebUI pelo  menos
-no  meu celular;  o segundo,  é que  eu precisava  acessar o  Ollama diretamente
-através do meu laptop de trabalho,  um sistema com Ubuntu, que eu potencialmente
-levaria para fora da minha casa.
+computador.  O primeiro seria o acesso ao  Open WebUI pelo menos no meu celular,
+mas desejavelmente no meu laptop de trabalho também; o segundo seria o acesso ao
+Ollama  (via Emacs  e  Ellama  também), diretamente  através  do  meu laptop  de
+trabalho, um  sistema com  Ubuntu, que  eu potencialmente  levaria para  fora da
+minha casa.
 </p>
 
 <p>
 Esse  é o  caso para  alguma aplicação  que permita  o tunelamento  entre vários
-dispositivos.  Fortunadamente,  existe  uma  solução muito  legal  pra  isso:  o
+dispositivos.  Por sorte,  existe  uma  solução muito  legal  pra  isso:  o
 Tailscale<sup><a id="fnr.8" class="footref" href="#fn.8" role="doc-backlink">8</a></sup>, que  eu já  uso desde que  surgiu, inclusive  para experimentos
 envolvendo Kubernetes,  e que agora  eu posso  usar para garantir  a comunicação
-segura entre os  três dispositivos. Então, a princípio, bastou  seguir os passos
-de instalação para Android e para os dois Linux, e fazer login na rede.
+segura entre os  três dispositivos.
+</p>
+
+<p>
+A princípio, bastou seguir  os passos de instalação para Android  e para os dois
+Linux, como  orientado no site  oficial, e fazer login  na minha rede  privada e
+pessoal.
 </p>
 
 <p>
 Uma vez na rede,  do ponto de vista do meu computador,  pude executar o seguinte
-comando e obter saídas como essas:
+comando e obter saídas  como essas (<code>navi</code> é o meu laptop executando  o Ollama e o
+Open WebUI):
 </p>
 
-<pre class="example" id="orgf62cfad">
+<pre class="example" id="orgebefb18">
 ➜  ~ tailscale status
 100.65.xx.xx    navi              luksamuk@  linux    -
 100.117.xx.xx   &lt;pc-de-trabalho&gt;  luksamuk@  linux    offline, last seen 6h ago
@@ -710,10 +761,18 @@ Para garantir uma boa segurança, criei as seguintes regras no UFW:
 <ol class="org-ol">
 <li>Meu computador  de trabalho deve ser  capaz de se conectar às  portas <code>11434</code> e
 <code>3111</code>, porque quero  acessar tanto o Open WebUI, quanto  acessar diretamente o
-Ollama através do Emacs<sup><a id="fnr.9" class="footref" href="#fn.9" role="doc-backlink">9</a></sup></li>
+Ollama através do Emacs<sup><a id="fnr.9" class="footref" href="#fn.9" role="doc-backlink">9</a></sup>.</li>
 <li>Meu  celular deve ser capaz  de se conectar  apenas à porta <code>3111</code>,  porque ele
 será capaz de acessar apenas a Open WebUI.</li>
 </ol>
+
+<p>
+Só  precisamos  traduzir   essas  duas  ideias  em  três   simples  comandos  de
+configuração do UFW.  No caso, especifico os IPs dos  dispositivos para garantir
+que eles  só consigam  acessar meu  computador através  da rede  Tailscale (essa
+configuração  não é  exaustiva porque  eu poderia  usar a  interface de  rede da
+aplicação, mas é suficiente).
+</p>
 
 <div class="org-src-container">
 <pre class="src src-bash">sudo ufw allow from <span style="color: #f5c791;">100.117.xx.xx</span> to any port <span style="color: #f5c791;">11434</span> proto tcp
@@ -726,7 +785,7 @@ sudo ufw allow from <span style="color: #f5c791;">100.117.xx.xx</span> to any po
 Para checar se deu tudo certo<sup><a id="fnr.10" class="footref" href="#fn.10" role="doc-backlink">10</a></sup>:
 </p>
 
-<pre class="example" id="org10941c9">
+<pre class="example" id="orgd413345">
 ➜  ~ sudo ufw status numbered
 Status: active
 
@@ -738,29 +797,31 @@ Status: active
 </pre>
 
 
-<div id="org34f0724" class="figure">
+<div id="orgaf25281" class="figure">
 <p><img src="img/llms1-android.jpg" alt="llms1-android.jpg" height="500" />
 </p>
-<p><span class="figure-number">Figura 4: </span>Interface do Open WebUI no Google Chrome do Android.</p>
+<p><span class="figure-number">Figura 8: </span>Interface do Open WebUI no Google Chrome do Android.</p>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org5381aeb" class="outline-2">
-<h2 id="org5381aeb">Script de interação no terminal</h2>
-<div class="outline-text-2" id="text-org5381aeb">
+<div id="outline-container-orgefa6ea8" class="outline-2">
+<h2 id="orgefa6ea8">Script de interação no terminal</h2>
+<div class="outline-text-2" id="text-orgefa6ea8">
 <p>
 Uma última coisa: às vezes, quando estou  usando o terminal do Linux, eu esqueço
 algumas coisas bobas e,  antes, eu precisava ir até o Google  e pesquisar. O que
 comecei a  me dar conta é  que, tendo modelos ao  alcance dos meus dedos  com um
-comando, eu poderia inclusive criar um script para facilitar esse tipo de coisa.
+comando,  eu poderia  inclusive  criar um  script para  facilitar  esse tipo  de
+coisa. E que inclusive, esse script funcionaria também offline.
 </p>
 
 <p>
 Então eu  criei um  script chamado <code>ask-ai</code>  que eu poderia  invocar via  linha de
 comando. E como meu caso de uso principal é desenvolvimento, linha de comando, e
-problemas similares, eu resolvi colocar o <code>devstral-small-2</code> como modelo padrão.
+problemas similares,  eu resolvi colocar  o <code>devstral-small-2</code> como  modelo padrão
+utilizado.
 </p>
 
 <div class="org-src-container">
@@ -780,8 +841,8 @@ problemas similares, eu resolvi colocar o <code>devstral-small-2</code> como mod
 
 <p>
 Eu escrevi o script em  si do zero e só pedi para o  Ellama melhorar para que eu
-não necessariamente  precise colocar os  argumentos entre parênteses (a  não ser
-quando  eu  estiver  usando  comandos).  A  saída  é  roteada  para  o  programa
+não necessariamente precisasse colocar os argumentos entre parênteses (a não ser
+quando  eu  estiver  usando  comandos).   A saída  é  roteada  para  o  programa
 Glow<sup><a id="fnr.11" class="footref" href="#fn.11" role="doc-backlink">11</a></sup>, que  dá uma visualização bonita  para Markdown no terminal,  mas ao
 mesmo tempo  não mostra nada enquanto  a resposta estiver sendo  gerada, então o
 prompt  da  variável  <code>BLUEPRINT</code>  é  importante  para  garantir  respostas  muito
@@ -789,22 +850,22 @@ sucintas.
 </p>
 
 
-<div id="org1f82188" class="figure">
+<div id="orgbef5c33" class="figure">
 <p><img src="img/llms1-ask-ai.png" alt="llms1-ask-ai.png" />
 </p>
-<p><span class="figure-number">Figura 5: </span>Exemplo de uso do script <code>ask-ai</code>. Repare o uso do comando <code>time</code> para mostrar o tempo que levou.</p>
+<p><span class="figure-number">Figura 9: </span>Exemplo de uso do script <code>ask-ai</code>. Repare o uso do comando <code>time</code> para mostrar o tempo que levou.</p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org8b07316" class="outline-2">
-<h2 id="org8b07316">Conclusão</h2>
-<div class="outline-text-2" id="text-org8b07316">
+<div id="outline-container-org72b0ffc" class="outline-2">
+<h2 id="org72b0ffc">Conclusão</h2>
+<div class="outline-text-2" id="text-org72b0ffc">
 <p>
 Esse  foi o  guia  prático do  que  fiz, mas  ainda não  explorei  com vocês  os
 resultados que tive com todo esse processo.  Faz menos de uma semana que comecei
-a usar esse processo para trabalhar,  mas certamente já tenho algumas opiniões a
-respeito de como tudo isso funciona.
+a usar essa configuração até mesmo para programar no trabalho, mas certamente já
+tenho algumas opiniões a respeito de como tudo isso funciona.
 </p>
 
 <p>
@@ -819,7 +880,7 @@ modelos locais.
 Como disse anteriormente, em breve vou fazer outro artigo, um pouco mais formal,
 apresentando alguns dos meus usos, o que  eu esperava, e como escolhi os modelos
 que usei. Não quero  dar grandes spoilers, mas posso adiantar  desde já que LLMs
-são excelente ferramentas de apoio, mas não  são balas de prata, e certamente me
+são excelentes ferramentas de apoio, mas não são balas de prata, e certamente me
 parecem ter  sua funcionalidade  inflada por  conta de todo  o marketing,  o que
 inclusive ofusca o quão úteis elas podem ser em determinadas situações.
 </p>
@@ -852,14 +913,14 @@ interesse em estudo que em propaganda.
 Vou  me dar o luxo  de não explicar o  que é Docker e  nem Docker Compose
 aqui, porque  essas são ferramentas  extremamente utilizadas na indústria,  e se
 você for  um programador trabalhando  com web,  já deve estar  familiarizado com
-elas. Então não me leve a mal, caso  você ainda não sabe o que é&#x2026; corra atrás,
+elas. Então não me leve a mal, caso você ainda não saiba o que é&#x2026; corra atrás,
 o mais rápido possível.
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5" role="doc-backlink">5</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 Se você está usando Docker  Desktop no Windows, você automaticamente está
 errado, e não quero argumentação contrária. Se você estiver rodando Linux dentro
-do WSL  e instalar  Docker dentro  dele, é  um pouco  melhor, mas  você continua
+do WSL e instalar Docker "por dentro" dele, é um pouco melhor, mas você continua
 errado do mesmo jeito.
 </p></div></div>
 
@@ -883,22 +944,25 @@ porque é bom demais.
 
 <div class="footdef"><sup><a id="fn.9" class="footnum" href="#fnr.9" role="doc-backlink">9</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 Veja que,  em parte, isso abre o pressuposto  para eu conseguir inclusive
-instalar o <code>ollama</code> no  Ubuntu, sem rodar o serviço em si, e  usar uma variável de
-ambiente para se  conectar ao meu computador  e gerenciar modelos, mas  não é um
-grande problema  porque só eu  tenho acesso a  esse computador, e  se porventura
-perder o acesso, posso "chutá-lo" da minha rede pessoal.
+instalar o <code>ollama</code> no  computador de trabalho, sem rodar o serviço  em si, e usar
+uma variável de ambiente para se conectar ao meu computador e gerenciar modelos.
+Mas isso não é um grande problema porque só eu tenho acesso a esse computador, e
+se porventura perdesse o acesso, posso "chutá-lo" da minha rede pessoal.
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.10" class="footnum" href="#fnr.10" role="doc-backlink">10</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
-Aqui eu  usei a opção <code>status  numbered</code> para que você veja  que as regras
-sempre estão numeradas  na ordem em que  se apresentam. Se por  acaso você tiver
-regras a mais  ou a menos que queira  remover, é só uma questão de  usar um <code>sudo
-ufw delete &lt;número&gt;</code>.
+Aqui  eu usei  a opção  <code>ufw status numbered</code>  para que  você veja  que as
+regras sempre estão numeradas  na ordem em que se apresentam.  Se por acaso você
+tiver regras  a mais que queira  remover, é só uma  questão de usar um  <code>sudo ufw
+delete &lt;número&gt;</code>. Mas&#x2026; saiba bem o que estiver fazendo aqui. Ok?
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.11" class="footnum" href="#fnr.11" role="doc-backlink">11</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
-<a href="https://github.com/charmbracelet/glow">Glow</a> é  uma ferramenta de renderização de Markdown  para terminal. Estou
-usando para que a saída fique "bonitinha", mesmo.
+<a href="https://github.com/charmbracelet/glow">Glow</a> é  uma ferramenta de renderização de Markdown  para terminal. Ela é
+construída  com  bibliotecas  muito  interessantes  para  Golang,  que  permitem
+construir  aplicações TUI  (Terminal  User Interface).   Ou seja&#x2026;   interfaces
+bonitinhas para  terminal. Quem disse que  ambientes de texto não  podem ter uma
+interface com frufrus?
 </p></div></div>
 
 
