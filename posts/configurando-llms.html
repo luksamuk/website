@@ -1,0 +1,911 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Configurando LLMs localmente para uso pessoal</title>
+<meta name="author" content="Lucas S. Vieira" />
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-22RF3F5XE0"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-22RF3F5XE0');
+</script>
+<link rel="stylesheet" type="text/css" href="../css/main.css" />
+<link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="../css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="../img/cat-i-mage.jpg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#14171e">
+<meta property="og:url" content="https://luksamuk.codes/posts/configurando-llms.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Configurando LLMs localmente para uso pessoal">
+<meta property="og:description" content="Programming, Tech, and occasional rant space by Lucas Vieira">
+<meta property="og:image" content="https://luksamuk.codes/posts/img/thumb-configurando-llms.png">
+<meta property="article:author" content="Lucas S. Vieira">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:domain" content="luksamuk.codes">
+<meta name="twitter:url" content="https://luksamuk.codes/posts/configurando-llms.html">
+<meta name="twitter:title" content="Configurando LLMs localmente para uso pessoal">
+<meta name="twitter:description" content="Programming, Tech, and occasional rant space by Lucas Vieira">
+<meta name="twitter:image" content="https://luksamuk.codes/posts/img/thumb-configurando-llms.png">
+</head>
+<body>
+<div id="preamble" class="status">
+<nav><h1><a href="../">The Alchemist's Hideout</a></h1></nav><h1 class="title">Configurando LLMs localmente para uso pessoal</h1><p><i>Escrito em Jan 11, 2026 por Lucas S. Vieira<br/><a href="mailto:&#108;&#117;&#99;&#97;&#115;&#118;&#105;&#101;&#105;&#114;&#97;&#64;&#112;&#114;&#111;&#116;&#111;&#110;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#108;&#117;&#99;&#97;&#115;&#118;&#105;&#101;&#105;&#114;&#97;&#64;&#112;&#114;&#111;&#116;&#111;&#110;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></i></p>
+</div>
+<div id="content" class="content">
+
+<div id="org4e750b2" class="figure">
+<p><img src="img/thumb-configurando-llms.png" alt="thumb-configurando-llms.png" />
+</p>
+</div>
+
+<p>
+Os  textos que  escrevo por  aqui  em geral  são  pouco opinativos,  e por  isso
+acredito que não  transparece muito a visão um pouco  pessimista que tenho sobre
+tecnologia. E é claro, isso se estenderia para o assunto da moda: a ascensão das
+IAs,  o termo  guarda-chuva que  utilizam para  designar os  grandes modelos  de
+linguagem  (LLMs) que  se tornaram  ferramentas marketeadas  com uma  gigantesca
+economia por trás delas.
+</p>
+
+<p>
+Não adianta fugir. Tem muito dinheiro  rolando, e vão tentar enfiar esse negócio
+goela abaixo em você.
+</p>
+
+<p>
+Sou  uma pessoa  totalmente do  contra e  que detesta  marketing excessivo,  mas
+resolvi parar de  nadar demais contra a  corrente para não sofrer  muito. Só que
+também decidi uma coisa: só iria na onda dessas novidades se fosse do meu jeito.
+</p>
+
+<p>
+Eu acredito que  é responsabilidade das pessoas mais versadas  em tecnologia que
+elas  compreendam  e não  fiquem  reféns  das  soluções  de mercado.  Por  isso,
+compreensão e uma análise educada  são coisas extremamente importantes para mim,
+e era chegada a hora de eu praticar  o que acredito quando o assunto fosse LLMs,
+para não me  tornar apenas mais um programador velho  e mal-humorado achando que
+tinha que fazer tudo em C e Lisp (apesar de que sou exatamente assim).
+</p>
+
+<p>
+Meu lema é:  "Por que facilitar se posso complicar?".  E aplicando isso, resolvi
+aproveitar  meu computador  novo,  com  uma GPU  novinha,  para executar  alguns
+modelos de linguagem localmente usando Ollama, em vez de gastar rios de dinheiro
+com as soluções pagas do mercado. Eis  aqui os passos que segui e algumas coisas
+mais interessantes.
+</p>
+
+<div id="outline-container-orgd2ca147" class="outline-2">
+<h2 id="orgd2ca147">Objetivo desse artigo</h2>
+<div class="outline-text-2" id="text-orgd2ca147">
+<p>
+Eu  queria inicialmente  que esse  artigo fosse  mais extenso,  mas vou  me ater
+apenas a  explicar o meu  <i>setup</i> local para  uso de LLMs.  Meus casos de  uso são
+principalmente questão de  pesquisa, e em geral uso-as no  trabalho para geração
+de pequeníssimos blocos de código (quando  trata-se de <i>boilerplate</i> que faço todo
+dia e que não  demanda raciocínio ou regra de negócio),  ou para um tira-dúvidas
+geral de Python e/ou Django e afins.
+</p>
+
+<p>
+Eu tenho críticas  e elogios a fazer ao  uso das LLMs, mas vou fazer  isso em um
+outro artigo futuro, inclusive usando alguns casos de exemplo que acredito serem
+interessantes.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3ef33d7" class="outline-2">
+<h2 id="org3ef33d7">Ferramentas que utilizei</h2>
+<div class="outline-text-2" id="text-org3ef33d7">
+<p>
+Não vou entrar em  muitos detalhes aqui a respeito de  hardware, até porque esse
+não  é muito  meu forte.  Mas recentemente  adquiri um  "laptop gamer",  um Dell
+G15. E  como não queria passar  muita raiva com drivers  da NVIDIA, simplesmente
+desabilitei  os  gráficos integrados  e  estou  usando  a GPU  diretamente  para
+absolutamente tudo que for exigido.  Meu sistema operacional é Arch Linux<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>,
+e tenho  vivido bem sem  um sistema  que quebra toda  hora, ao contrário  do que
+dizem as más línguas<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>.
+</p>
+
+<p>
+Em termos de software e serviços, o que utilizei foi:
+</p>
+
+<ul class="org-ul">
+<li>Ollama, para baixar e gerenciar modelos;</li>
+<li>Emacs, com a extensão Ellama, como principal meio de utilização dos modelos;</li>
+<li>Open WebUI (via Docker) para interface web e mobile de uso dos modelos;</li>
+<li>Tailscale para tunelamento entre dispositivos;</li>
+<li>UFW para facilitar a configuração de firewall.</li>
+</ul>
+</div>
+
+<div id="outline-container-org0bd9421" class="outline-3">
+<h3 id="org0bd9421">Ollama</h3>
+<div class="outline-text-3" id="text-org0bd9421">
+<p>
+Tudo   começa   com   uma   aplicação   que  seja   capaz   de   executar   LLMs
+localmente.  Existem  várias  aplicações  e serviços  que  fazem  isso.  Resolvi
+utilizar Ollama  por pura conveniência, mas  fui agraciado com um  bom suporte a
+ele também.
+</p>
+
+<p>
+A configuração do Ollama no Arch Linux é extremamente simples, basta utilizar um
+script de instalação que eles mesmos fornecem.
+</p>
+
+<p>
+<a href="https://ollama.com/download">Você pode ver  o script aqui</a>. Estou evitando escrevê-lo  diretamente para evitar
+ataques ou qualquer coisa que o valha, através de substituição de texto.
+</p>
+</div>
+
+<div id="outline-container-orga14eb4b" class="outline-4">
+<h4 id="orga14eb4b">Modelos</h4>
+<div class="outline-text-4" id="text-orga14eb4b">
+<p>
+O Ollama não faz  nada sozinho, é necessário que você  baixe alguns modelos para
+fazer alguma coisa. E aqui entra o pulo  do gato: os modelos variam em termos de
+tamanho e em termos de uso de hardware e processamento.
+</p>
+
+<p>
+Depois de  um pouco  de curadoria,  separei alguns  modelos que  mantenho sempre
+atualizados  por aqui.  O processo  de download  ou atualização  pode ser  feito
+através do comando <code>ollama pull &lt;modelo&gt;</code>,  ou, se você quiser um chat diretamente
+no terminal,  você poderá usar  <code>ollama run &lt;modelo&gt;</code>,  que baixará e  executará o
+modelo.
+</p>
+
+<p>
+Você vai ver também que esses modelos  têm uma espécie de sistema de <i>taggeamento</i>
+parecido com imagens  para Docker. Para encontrar modelos, veja  a biblioteca de
+modelos no mesmo site do Ollama.
+</p>
+
+<p>
+Estes são os modelos que estou utilizando, com seus respectivos tamanhos:
+</p>
+
+<ul class="org-ul">
+<li><code>llama3.1:latest</code> (4.9GB): O modelo Llama, da Meta. Útil para interações rápidas
+e usos de propósito geral (como por  exemplo, gerar títulos para os meus chats
+com outras LLMs&#x2026;). Em geral, é  o meu fallback, caso algum modelo específico
+falhe.</li>
+<li><code>devstral-small-2:latest</code>   (15GB):  O   modelo  que   uso  para   trabalho  com
+programação,  geração de  código,  e  também dúvidas  técnicas  a respeito  de
+qualquer coisa. É praticamente meu Google offline. A grande maioria das minhas
+dúvidas são técnicas, então é o que mais uso, apesar de ser um pouquinho lento
+com relação ao resto.</li>
+<li><code>deepseek-r1:32b</code> (19GB): Modelo  de "pensamento" que uso para  resumos e outras
+coisas.  Estou  fazendo  experimentos  com  ele  principalmente  ao  retirar
+informações  de PDFs  através  da aplicação  Tesseract. É  o  único modelo  de
+"raciocínio" que tenho  aqui; ele sempre emite o texto  de "thinking" antes de
+qualquer  interação,  então  tende  a   ser  muuuuuuito  lento.  Estou  usando
+exclusivamente a  versão com 32 bilhões  de parâmetros, que me  pareceu ter um
+tamanho razoável.</li>
+<li><code>brunoconterato/Gemma-3-Gaia-PT-BR-4b-it:f16</code> (7.8GB):  O modelo que  uso quando
+preciso de algo  que envolva especificamente o uso  de Português. Sinceramente
+estou considerando  removê-lo, mas ele é  melhor do que outros  modelos que já
+testei. Basicamente é o Gemma 3, só que voltado para o Português. Eu diria que
+ele sabe mais de gramática do que qualquer outra coisa&#x2026;&#x2026;</li>
+<li><code>samantha-mistral:latest</code> (4.1GB): É um excelente modelo para conversar e passar
+o tempo, apesar de que me sinto estranho fazendo isso. Instalei esse modelo no
+dia da  escrita desse artigo. Por  enquanto, ainda não tive  grandes usos para
+ele.  É um  modelo treinado  em  psicologia, sociologia  e  etc, e  que tem  o
+objetivo de ser um assistente pessoal e um "amigo".</li>
+<li><code>nomic-embed-text:latest</code> (274MB): Não é bem  um modelo de propósito geral, essa
+LLM serve especificamente para <i>text embedding</i>,  o processo de digerir um texto
+e  "cuspi-lo" como  um vetor  numérico  em que  relacionamentos semânticos  se
+tornem   relacionamentos   matemáticos<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>.    Isso   vai   ser   necessário
+principalmente  na extensão  Ellama,  que  passa os  prompts  por um  processo
+preliminar de <i>embedding</i>.</li>
+</ul>
+
+
+<div id="orgd9b198a" class="figure">
+<p><img src="img/llms1-ollama-list.png" alt="llms1-ollama-list.png" />
+</p>
+<p><span class="figure-number">Figura 1: </span>Lista de modelos locais no meu Ollama.</p>
+</div>
+
+<p>
+O  Ollama   basicamente  é   um  serviço   que  roda,   por  padrão,   na  porta
+<code>11434</code>.  Por  aqui,  estou  executando  ele via  <code>systemd</code>  mesmo.  Precisei  dessa
+informação e talvez ela seja útil para mais alguém.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org876996a" class="outline-3">
+<h3 id="org876996a">Ellama no Emacs</h3>
+<div class="outline-text-3" id="text-org876996a">
+<p>
+Usar  as LLMs  através do  terminal é  bem possível,  mas queremos  um pouco  de
+comodidade.
+</p>
+
+<p>
+Acho que  a maioria  das pessoas  na área  da tecnologia  e da  programação iria
+querer utilizar  essas LLMs com  editores de texto  e ferramentas que  as deixam
+mais confortáveis como o VSCode, mas no meu  caso, sou um <i>heavy user</i> de Emacs, e
+preciso que essas ferramentas funcionem com ele.
+</p>
+
+<p>
+Surpreendentemente,  parece que  as  extensões para  Emacs  são inclusive  muito
+flexíveis e  extensíveis, talvez mais do  que muitas por aí.  Escolhi utilizar o
+Ellama, que fornece muita integração, inclusive com Org Mode.
+</p>
+
+
+<div id="orgad6a125" class="figure">
+<p><img src="img/llms1-ellama.png" alt="llms1-ellama.png" />
+</p>
+<p><span class="figure-number">Figura 2: </span>Menu do Ellama enquanto edito este mesmo <i>post</i>, no Emacs.</p>
+</div>
+</div>
+
+<div id="outline-container-orge5f2a38" class="outline-4">
+<h4 id="orge5f2a38">Configuração do Ellama</h4>
+<div class="outline-text-4" id="text-orge5f2a38">
+<p>
+A configuração  do Ellama é totalmente  em Emacs Lisp, e  compartilho ela abaixo
+para referência. Na sequência, vou discutir algumas características importantes.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #0D9C94;">(</span><span style="color: #9d81ba;">use-package</span> <span style="color: #0D9C94;">ellama</span>
+  <span style="color: #9d81ba;">:init</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">setopt</span> ellama-keymap-prefix <span style="color: #f5c791;">"C-x E"</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>global-set-key <span style="color: #62D2DB;">(</span>kbd <span style="color: #f5c791;">"C-x e"</span><span style="color: #62D2DB;">)</span> 'ellama<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">setopt</span> ellama-language <span style="color: #f5c791;">"Portuguese"</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">setopt</span> ellama-auto-scroll t<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">require</span> '<span style="color: #0D9C94;">llm-ollama</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">setopt</span> ellama-naming-scheme 'ellama-generate-name-by-llm<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">setopt</span> ellama-provider
+          <span style="color: #62D2DB;">(</span>make-llm-ollama
+           <span style="color: #9d81ba;">:chat-model</span> <span style="color: #f5c791;">"devstral-small-2"</span>
+           <span style="color: #9d81ba;">:embedding-model</span> <span style="color: #f5c791;">"nomic-embed-text"</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">setopt</span> ellama-translation-provider
+          <span style="color: #62D2DB;">(</span>make-llm-ollama
+           <span style="color: #9d81ba;">:chat-model</span> <span style="color: #f5c791;">"deepseek-r1:32b"</span>
+           <span style="color: #9d81ba;">:embedding-model</span> <span style="color: #f5c791;">"nomic-embed-text"</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">setopt</span> ellama-naming-provider
+          <span style="color: #62D2DB;">(</span>make-llm-ollama
+           <span style="color: #9d81ba;">:chat-model</span> <span style="color: #f5c791;">"llama3.1:latest"</span>
+           <span style="color: #9d81ba;">:embedding-model</span> <span style="color: #f5c791;">"nomic-embed-text"</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">setopt</span> ellama-summarization-provider
+          <span style="color: #62D2DB;">(</span>make-llm-ollama
+           <span style="color: #9d81ba;">:chat-model</span> <span style="color: #f5c791;">"deepseek-r1:32b"</span>
+           <span style="color: #9d81ba;">:embedding-model</span> <span style="color: #f5c791;">"nomic-embed-text"</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">setopt</span> ellama-coding-provider
+          <span style="color: #62D2DB;">(</span>make-llm-ollama
+           <span style="color: #9d81ba;">:chat-model</span> <span style="color: #f5c791;">"devstral-small-2"</span>
+           <span style="color: #9d81ba;">:embedding-model</span> <span style="color: #f5c791;">"nomic-embed-text"</span><span style="color: #62D2DB;">)</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">setopt</span> ellama-chat-display-action-function #'display-buffer-full-frame<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span><span style="color: #9d81ba;">setopt</span> ellama-instant-display-action-function #'display-buffer-at-bottom<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>ellama-context-header-line-global-mode <span style="color: #f5c791;">+1</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>ellama-session-header-line-global-mode <span style="color: #f5c791;">+1</span><span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>advice-add 'pixel-scroll-precision <span style="color: #9d81ba;">:before</span> #'ellama-disable-scroll<span style="color: #47ba99;">)</span>
+  <span style="color: #47ba99;">(</span>advice-add 'end-of-buffer <span style="color: #9d81ba;">:after</span> #'ellama-enable-scroll<span style="color: #47ba99;">)</span><span style="color: #0D9C94;">)</span>
+</pre>
+</div>
+
+<p>
+Essa configuração instala o Ellama e define o seguinte:
+</p>
+
+<ul class="org-ul">
+<li>Prefixo do keymap:  O atalho <code>Ctrl+x, E</code>. Possibilita  que eu escolha alguma
+das opções  do Ellama pela  combinação de letras de  atalho, caso eu  as tenha
+memorizado. Ainda não uso tanto assim.</li>
+<li>Atalho global  do submenu:  <code>Ctrl+x, e</code>. Abre  o submenu que  pode ser  visto na
+figura logo acima, com as várias opções ao dispor.</li>
+<li>Linguagem  padrão  definida  como  Português. Aparentemente  o  Ellama  injeta
+prompts para  ajudar com  isso em  determinadas situações,  mas não  os tentei
+modificar, nem nada disso.</li>
+<li>Auto-scroll: Enquanto  houver geração de  texto, a  extensão rola o  buffer de
+saída para baixo,  para que o cursor  e a visão do usuário  sempre acompanhe a
+saída.</li>
+<li>Esquema  de  nomes dos  buffers:  Em  toda situação  que  abrir  um buffer  de
+resposta, o nome  do buffer será gerado  através de uma LLM  auxiliar que fará
+uma análise do texto pra isso.</li>
+<li>Outras configurações como mostra do nome do buffer da sessão no topo do Emacs,
+bem como arquivos que tenham sido injetados como contexto para os prompts.</li>
+</ul>
+
+<p>
+Também são definidos modelos que são "provedores" para certos tipos de ações:
+</p>
+
+<ul class="org-ul">
+<li>Provedor geral e fallback: <code>devstral-small-2</code> (Usado  no chat geral e quando não
+houver modelo definido para alguma das outras tarefas).</li>
+<li>Provedor de tradução de textos: <code>deepseek-r1:32b</code> (mas também já utilizei o Gemma 3
+e o Llama 3.1 para isso, depende do meu humor no dia).</li>
+<li>Provedor de  nomeação: <code>llama3.1:latest</code> (para dar  nomes aos buffers em  que os
+chats ocorrerão).</li>
+<li>Provedor de resumos: <code>deepseek-r1:32b</code> (cria resumos, realiza um "thinking" mais
+pesado, enfim,  esse é  o modelo  que estou  usando para  leitura e  resumo de
+textos mais densos).</li>
+<li>Provedor de código: <code>devstral-small-2</code> (acho que não preciso explicar).</li>
+</ul>
+
+<p>
+Uma coisa interessante do Ellama é que  ele faz MUITA coisa, mas vou deixar para
+mostrar algumas depois.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgddb6613" class="outline-3">
+<h3 id="orgddb6613">Open WebUI</h3>
+<div class="outline-text-3" id="text-orgddb6613">
+<p>
+Outra coisa legal de se ter é, também, uma interface gráfica de alguma forma. Eu
+acabei optando por usar o Open WebUI,  que aparentemente é extensível a ponto de
+tolerar mais  ferramentas caso você  queira partir  para coisas como  geração de
+imagens,  por exemplo.  Mas como  não é  meu objetivo,  realizei um  deploy mais
+simples.
+</p>
+
+<p>
+Isso talvez soe um  pouco invasivo, mas o Open WebUI  é melhor executado através
+de Docker<sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>. Isso é  um pouco chato pensando do ponto de  vista de que estou
+servindo  uma aplicação  no meu  próprio computador  só para  ter uma  interface
+gráfica, mas depois de reclamar um pouco, eu só aceitei.
+</p>
+
+
+<div id="org3350c15" class="figure">
+<p><img src="img/llms1-openui.png" alt="llms1-openui.png" />
+</p>
+<p><span class="figure-number">Figura 3: </span>Interface do Open WebUI no Google Chrome do Linux.</p>
+</div>
+
+<p>
+O  único   ponto  de   atenção  aqui   é  que  o   Open  WebUI   deve  conseguir
+acessar&#x2026; advinhe só&#x2026; o seu Ollama.  Existe inclusive uma versão do contêiner
+já com o Ollama embutido, caso você queira algo mais unificado e não vá depender
+do Ollama para outros serviços.
+</p>
+
+<p>
+Esse ponto não  é um grande problema  caso você esteja usando  Docker Desktop no
+Windows<sup><a id="fnr.5" class="footref" href="#fn.5" role="doc-backlink">5</a></sup>, porque  ele já exporta  um <i>host</i>  customizado para que  você tenha
+acesso às portas do seu computador.
+</p>
+
+<p>
+No caso do Linux, você precisa adicionar esse host manualmente<sup><a id="fnr.6" class="footref" href="#fn.6" role="doc-backlink">6</a></sup>.
+</p>
+
+<p>
+Uma das  formas de rodar  o contêiner  é através da  linha de comando,  usando o
+Docker "puro". O comando a seguir vai executar o Open WebUI com uma configuração
+para sempre  reiniciar o contêiner  caso ele  seja encerrado (inclusive  se você
+reiniciar o computador), a não ser que você destrua o contêiner:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">docker run -d <span style="color: #f5c791;">\</span>
+       -p <span style="color: #f5c791;">3111:8080</span> <span style="color: #f5c791;">\</span>
+       --add-host=host.docker.internal:host-gateway <span style="color: #f5c791;">\</span>
+       -v open-webui:/app/backend/data <span style="color: #f5c791;">\</span>
+       --name open-webui <span style="color: #f5c791;">\</span>
+       --restart always <span style="color: #f5c791;">\</span>
+       ghcr.io/open-webui/open-webui:main
+</pre>
+</div>
+
+<p>
+O  comando acima  "quebra  um galho",  mas eu  achei  particularmente ruim  para
+substituir o contêiner  em caso de atualização, porque eu  precisaria dar <code>docker
+pull</code> na  imagem novamente. Então  acabei montando um <code>docker-compose.yml</code>  para me
+ajudar com isso:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml">services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: always
+    environment:
+      PORT: "3111"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - open-webui:/app/backend/data
+    network_mode: host
+
+volumes:
+  open-webui:
+    external: true
+</pre>
+</div>
+
+<p>
+Veja que eu marquei o volume  <code>open-webui</code> com <code>external: true</code> unicamente porque eu
+já havia  executado a ferramenta com  Docker "puro", e queria  manter meu volume
+que já estava com várias  configurações. Caso você esteja executando diretamente
+no Docker Compose, pode remover isso. Vai dar bom.
+</p>
+
+<p>
+Veja  também que  eu  estou  rodando o  contêiner  em  <code>network_mode: host</code>.  Isso
+significa que  ele basicamente não  passa pelo  processo de mapeamento  da porta
+padrão da  aplicação para o  computador. Em vez  disso, eu estou  configurando a
+aplicação diretamente (através da variável de ambiente <code>PORT</code>) para rodar na porta
+<code>3111</code>. Esse detalhe do modo de  networking do contêiner pode ser importante, caso
+você precise alterar esse arquivo do Compose.
+</p>
+
+<p>
+Depois  de  toda  essa configuração,  eu  tenho  o  Open  WebUI rodando  no  meu
+computador na  porta <code>3111</code>, e tudo  o que preciso fazer  é ir até o  diretório da
+configuração e  executar um <code>docker  compose up  -d</code>. Se eu  precisar atualizar&#x2026;
+<code>docker compose  down</code>, <code>docker pull</code> na  imagem, <code>docker image prune</code>  para remover o
+lixo (ou  deletar direto via  <code>lazydocker</code><sup><a id="fnr.7" class="footref" href="#fn.7" role="doc-backlink">7</a></sup>), e subir  o serviço de  novo. Já
+está com o <code>restart:  always</code>, então se eu reiniciar o  computador, nem preciso me
+preocupar.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org07e2f95" class="outline-3">
+<h3 id="org07e2f95">Acesso remoto com Tailscale</h3>
+<div class="outline-text-3" id="text-org07e2f95">
+<p>
+Tudo agora funcionou  muito bem, mas estamos  em um ponto crítico:  Tudo isso só
+funciona localmente.  E se  você for  como eu, muito  provavelmente você  tem um
+<i>firewall</i>  bem-configurado  no  seu  computador que  não  esteja  permitindo,  no
+momento, acesso a nenhuma porta sua. Correto? Correto.
+</p>
+
+<p>
+No meu  caso, eu instalei  o Uncomplicated Firewall (UFW).  Ele é uma  camada em
+cima  do <code>iptables</code>  que garante  certa simplicidade.  Depois de  instalar o  <code>ufw</code>,
+ative-o através do <code>systemd</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">sudo systemctl enable ufw
+sudo systemctl start ufw
+</pre>
+</div>
+
+<p>
+Para  o meu  caso de  uso, eu  me  concentrei em  dois acessos  externos no  meu
+computador.  O primeiro  é que  eu  precisava acessar  o Open  WebUI pelo  menos
+no  meu celular;  o segundo,  é que  eu precisava  acessar o  Ollama diretamente
+através do meu laptop de trabalho,  um sistema com Ubuntu, que eu potencialmente
+levaria para fora da minha casa.
+</p>
+
+<p>
+Esse  é o  caso para  alguma aplicação  que permita  o tunelamento  entre vários
+dispositivos.  Fortunadamente,  existe  uma  solução muito  legal  pra  isso:  o
+Tailscale<sup><a id="fnr.8" class="footref" href="#fn.8" role="doc-backlink">8</a></sup>, que  eu já  uso desde que  surgiu, inclusive  para experimentos
+envolvendo Kubernetes,  e que agora  eu posso  usar para garantir  a comunicação
+segura entre os  três dispositivos. Então, a princípio, bastou  seguir os passos
+de instalação para Android e para os dois Linux, e fazer login na rede.
+</p>
+
+<p>
+Uma vez na rede,  do ponto de vista do meu computador,  pude executar o seguinte
+comando e obter saídas como essas:
+</p>
+
+<pre class="example" id="orgf62cfad">
+➜  ~ tailscale status
+100.65.xx.xx    navi              luksamuk@  linux    -
+100.117.xx.xx   &lt;pc-de-trabalho&gt;  luksamuk@  linux    offline, last seen 6h ago
+100.82.xx.xx    &lt;celular&gt;         luksamuk@  android  idle, tx 5374104 rx 948116
+</pre>
+
+<p>
+Para garantir uma boa segurança, criei as seguintes regras no UFW:
+</p>
+
+<ol class="org-ol">
+<li>Meu computador  de trabalho deve ser  capaz de se conectar às  portas <code>11434</code> e
+<code>3111</code>, porque quero  acessar tanto o Open WebUI, quanto  acessar diretamente o
+Ollama através do Emacs<sup><a id="fnr.9" class="footref" href="#fn.9" role="doc-backlink">9</a></sup></li>
+<li>Meu  celular deve ser capaz  de se conectar  apenas à porta <code>3111</code>,  porque ele
+será capaz de acessar apenas a Open WebUI.</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-bash">sudo ufw allow from <span style="color: #f5c791;">100.117.xx.xx</span> to any port <span style="color: #f5c791;">11434</span> proto tcp
+sudo ufw allow from <span style="color: #f5c791;">100.82.xx.xx</span> to any port <span style="color: #f5c791;">3111</span> proto tcp
+sudo ufw allow from <span style="color: #f5c791;">100.117.xx.xx</span> to any port <span style="color: #f5c791;">3111</span> proto tcp
+</pre>
+</div>
+
+<p>
+Para checar se deu tudo certo<sup><a id="fnr.10" class="footref" href="#fn.10" role="doc-backlink">10</a></sup>:
+</p>
+
+<pre class="example" id="org10941c9">
+➜  ~ sudo ufw status numbered
+Status: active
+
+     To                         Action      From
+     --                         ------      ----
+[ 1] 11434/tcp                  ALLOW IN    100.117.xx.xx
+[ 2] 3111/tcp                   ALLOW IN    100.82.xx.xx
+[ 3] 3111/tcp                   ALLOW IN    100.117.xx.xx
+</pre>
+
+
+<div id="org34f0724" class="figure">
+<p><img src="img/llms1-android.jpg" alt="llms1-android.jpg" height="500" />
+</p>
+<p><span class="figure-number">Figura 4: </span>Interface do Open WebUI no Google Chrome do Android.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5381aeb" class="outline-2">
+<h2 id="org5381aeb">Script de interação no terminal</h2>
+<div class="outline-text-2" id="text-org5381aeb">
+<p>
+Uma última coisa: às vezes, quando estou  usando o terminal do Linux, eu esqueço
+algumas coisas bobas e,  antes, eu precisava ir até o Google  e pesquisar. O que
+comecei a  me dar conta é  que, tendo modelos ao  alcance dos meus dedos  com um
+comando, eu poderia inclusive criar um script para facilitar esse tipo de coisa.
+</p>
+
+<p>
+Então eu  criei um  script chamado <code>ask-ai</code>  que eu poderia  invocar via  linha de
+comando. E como meu caso de uso principal é desenvolvimento, linha de comando, e
+problemas similares, eu resolvi colocar o <code>devstral-small-2</code> como modelo padrão.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #454459;">#</span><span style="color: #454459;">!/bin/</span><span style="color: #9d81ba;">bash</span><span style="color: #454459;">
+</span>
+<span style="color: #7CF083;">MODEL</span>=<span style="color: #f5c791;">"devstral-small-2"</span>
+<span style="color: #7CF083;">BLUEPRINT</span>=<span style="color: #f5c791;">"Seja extremamente sucinto, quero ver s&#243; c&#243;digo, exceto quando for necess&#225;rio usar uma resposta discursiva, ou se eu pedir. Se voc&#234; puder me responder s&#243; mostrando c&#243;digo mesmo quando parecer que eu quero uma resposta discursiva, fa&#231;a isso. N&#227;o termine suas respostas com perguntas, esta &#233; uma sess&#227;o ef&#234;mera de pergunta &#250;nica, eu n&#227;o vou conseguir te responder."</span>
+
+<span style="color: #9d81ba;">if</span> [[ -z <span style="color: #f5c791;">"$*"</span> ]]; <span style="color: #9d81ba;">then</span>
+    <span style="color: #9d81ba;">echo</span> <span style="color: #f5c791;">"Erro: Nenhum argumento fornecido"</span> &gt;&amp;<span style="color: #f5c791;">2</span>
+    <span style="color: #9d81ba;">exit</span> <span style="color: #f5c791;">1</span>
+<span style="color: #9d81ba;">fi</span>
+
+<span style="color: #9d81ba;">exec</span> ollama run <span style="color: #f5c791;">"$MODEL"</span> <span style="color: #f5c791;">"$(printf "%s\n\n%s" "$*" "$BLUEPRINT")"</span> | glow
+</pre>
+</div>
+
+<p>
+Eu escrevi o script em  si do zero e só pedi para o  Ellama melhorar para que eu
+não necessariamente  precise colocar os  argumentos entre parênteses (a  não ser
+quando  eu  estiver  usando  comandos).  A  saída  é  roteada  para  o  programa
+Glow<sup><a id="fnr.11" class="footref" href="#fn.11" role="doc-backlink">11</a></sup>, que  dá uma visualização bonita  para Markdown no terminal,  mas ao
+mesmo tempo  não mostra nada enquanto  a resposta estiver sendo  gerada, então o
+prompt  da  variável  <code>BLUEPRINT</code>  é  importante  para  garantir  respostas  muito
+sucintas.
+</p>
+
+
+<div id="org1f82188" class="figure">
+<p><img src="img/llms1-ask-ai.png" alt="llms1-ask-ai.png" />
+</p>
+<p><span class="figure-number">Figura 5: </span>Exemplo de uso do script <code>ask-ai</code>. Repare o uso do comando <code>time</code> para mostrar o tempo que levou.</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8b07316" class="outline-2">
+<h2 id="org8b07316">Conclusão</h2>
+<div class="outline-text-2" id="text-org8b07316">
+<p>
+Esse  foi o  guia  prático do  que  fiz, mas  ainda não  explorei  com vocês  os
+resultados que tive com todo esse processo.  Faz menos de uma semana que comecei
+a usar esse processo para trabalhar,  mas certamente já tenho algumas opiniões a
+respeito de como tudo isso funciona.
+</p>
+
+<p>
+Você vai  observar também  que não  fiz menção  ao uso  de nenhuma  solução paga
+ainda. Não é que eu  seja do contra, é que eu não sinto  que seja o momento para
+eu gastar  dinheiro com  modelos de  forma pessoal ainda,  até porque  não tenho
+casos de uso na minha "computação  pessoal" que não estejam sendo resolvidos com
+modelos locais.
+</p>
+
+<p>
+Como disse anteriormente, em breve vou fazer outro artigo, um pouco mais formal,
+apresentando alguns dos meus usos, o que  eu esperava, e como escolhi os modelos
+que usei. Não quero  dar grandes spoilers, mas posso adiantar  desde já que LLMs
+são excelente ferramentas de apoio, mas não  são balas de prata, e certamente me
+parecem ter  sua funcionalidade  inflada por  conta de todo  o marketing,  o que
+inclusive ofusca o quão úteis elas podem ser em determinadas situações.
+</p>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Notas de Rodap&eacute;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<i>I use Arch btw.</i>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Talvez porque uso Linux há uns treze anos e já me acostumei com a maioria
+dos problemas. Se o Xorg e o Wayland quebrarem, eu sei me virar.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Esse processo pode  parecer complexo, mas não é tanto.   <a href="https://huggingface.co/spaces/hesamation/primer-llm-embedding">Tem um artigo no
+HuggingFace muito legal</a> explicando isso. Foi  uma das primeiras coisas que vi no
+assunto  das  LLMs  que me  pareceu  pouco  trivial  a  ponto de  despertar  meu
+interesse. Curiosamente,  os marketeiros de  IA não vão  te falar desse  tipo de
+coisa&#x2026; Talvez só os versados em machine learning, ciência de dados, cientistas
+envolvidos com processamento de linguagem natural&#x2026; enfim, pessoas que têm mais
+interesse em estudo que em propaganda.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Vou  me dar o luxo  de não explicar o  que é Docker e  nem Docker Compose
+aqui, porque  essas são ferramentas  extremamente utilizadas na indústria,  e se
+você for  um programador trabalhando  com web,  já deve estar  familiarizado com
+elas. Então não me leve a mal, caso  você ainda não sabe o que é&#x2026; corra atrás,
+o mais rápido possível.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5" role="doc-backlink">5</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Se você está usando Docker  Desktop no Windows, você automaticamente está
+errado, e não quero argumentação contrária. Se você estiver rodando Linux dentro
+do WSL  e instalar  Docker dentro  dele, é  um pouco  melhor, mas  você continua
+errado do mesmo jeito.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6" role="doc-backlink">6</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Preciso falar dos pressupostos de  segurança que isso abre? Acho que não,
+né? Cuide bem das suas aplicações. Mais  à frente vou falar um pouco de <i>firewall</i>
+para ajudar.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.7" class="footnum" href="#fnr.7" role="doc-backlink">7</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+O <a href="https://github.com/jesseduffield/lazydocker">Lazydocker</a>  é  uma das  melhores  ferramenta CLI  para  Docker que  já
+usei. Uso no trabalho e inclusive recomendo que todos usem também.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.8" class="footnum" href="#fnr.8" role="doc-backlink">8</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+O  <a href="https://tailscale.com/">Tailscale</a>  é um  excelente  serviço,  tem  um  plano grátis  com  uma
+quantidade  limitada de  dispositivos caso  você esteja  fazendo uso  pessoal, e
+sinceramente, se eu  tivesse um uso maior, certamente estaria  pagando um plano,
+porque é bom demais.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.9" class="footnum" href="#fnr.9" role="doc-backlink">9</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Veja que,  em parte, isso abre o pressuposto  para eu conseguir inclusive
+instalar o <code>ollama</code> no  Ubuntu, sem rodar o serviço em si, e  usar uma variável de
+ambiente para se  conectar ao meu computador  e gerenciar modelos, mas  não é um
+grande problema  porque só eu  tenho acesso a  esse computador, e  se porventura
+perder o acesso, posso "chutá-lo" da minha rede pessoal.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.10" class="footnum" href="#fnr.10" role="doc-backlink">10</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Aqui eu  usei a opção <code>status  numbered</code> para que você veja  que as regras
+sempre estão numeradas  na ordem em que  se apresentam. Se por  acaso você tiver
+regras a mais  ou a menos que queira  remover, é só uma questão de  usar um <code>sudo
+ufw delete &lt;número&gt;</code>.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.11" class="footnum" href="#fnr.11" role="doc-backlink">11</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://github.com/charmbracelet/glow">Glow</a> é  uma ferramenta de renderização de Markdown  para terminal. Estou
+usando para que a saída fique "bonitinha", mesmo.
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<h3><a href="../">< De volta à página anterior</a></h3><div id="disqus_thread"></div><script src="../js/disqus.js"></script><noscript>Habilite o JavaScript para ver os <a href="https://disqus.com/?ref_noscript">comentários do Disqus.</a></noscript>
+</div>
+</body>
+</html>
