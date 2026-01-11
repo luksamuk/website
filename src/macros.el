@@ -1,8 +1,8 @@
 ;; --- Vibe-coded stuff so we can generate og: and twitter: meta tags ---
 
 (defun my/org-expand-head-macros-after-export (output backend info)
-  "Replace {{{title}}}, {{{author}}}, {{{date}}}, {{{description}}}, {{{email}}} in final HTML head.
-The {{{email}}} macro is obfuscated as HTML entities."
+  "Replace {{{title}}}, {{{author}}}, {{{date}}}, {{{description}}}, {{{email}}}, and {{{thumbnail}}} in final HTML head.
+The {{{email}}} macro is obfuscated as HTML entities. The {{{thumbnail}}} macro looks for a thumbnail image."
   (when (org-export-derived-backend-p backend 'html)
     (let* ((escape-html
             (lambda (s)
@@ -26,13 +26,21 @@ The {{{email}}} macro is obfuscated as HTML entities."
            (date   (funcall escape-html (org-export-data (plist-get info :date) info)))
            (desc   (funcall escape-html (org-export-data (plist-get info :description) info)))
            (email  (funcall obfuscate-email "lucasvieira@protonmail.com"))
-           (filename (file-name-base (plist-get info :input-file))))
+           (filename (file-name-sans-extension
+                      (file-name-nondirectory (plist-get info :input-file))))
+           (thumbnail
+            (let ((thumbnail-path (expand-file-name (format "img/thumb-%s.png" filename)
+                                                    (file-name-directory (plist-get info :input-file)))))
+              (if (file-exists-p thumbnail-path)
+                  (concat "https://luksamuk.codes/posts/img/thumb-" filename ".png")
+                "https://luksamuk.codes/img/banner-full.png"))))
       (dolist (pair `(("{{{title}}}" . ,title)
                       ("{{{author}}}" . ,author)
                       ("{{{date}}}" . ,date)
                       ("{{{description}}}" . ,desc)
                       ("{{{filename}}}" . ,filename)
-                      ("{{{email}}}" . ,email)))
+                      ("{{{email}}}" . ,email)
+                      ("{{{thumbnail}}}" . ,thumbnail)))
         (setq output (replace-regexp-in-string (car pair) (or (cdr pair) "") output t t)))
       output)))
 
