@@ -24,24 +24,26 @@ também decidi uma coisa: só iria na onda dessas novidades se fosse do meu jeit
 Eu acredito que  é responsabilidade das pessoas mais versadas  em tecnologia que
 elas  compreendam  e não  fiquem  reféns  das  soluções  de mercado.  Por  isso,
 compreensão e uma análise educada  são coisas extremamente importantes para mim,
-e era chegada a hora de eu praticar  o que acredito quando o assunto fosse LLMs,
-para não me  tornar apenas mais um programador velho  e mal-humorado achando que
-tinha que fazer tudo em C e Lisp (apesar de que sou exatamente assim).
+e era chegada a  hora de eu praticar o que acredito para  o assunto das LLMs, ou
+eu iria me  tornar mais um programador  ranzinza que acha que  precisa que fazer
+tudo em C e Lisp (apesar de que sou exatamente assim).
 
-Meu lema é:  "Por que facilitar se posso complicar?".  E aplicando isso, resolvi
+Meu lema é:  /"Por que facilitar se posso complicar?"/.  E aplicando isso, resolvi
 aproveitar  meu computador  novo,  com  uma GPU  novinha,  para executar  alguns
-modelos de linguagem localmente usando Ollama, em vez de gastar rios de dinheiro
-com as soluções pagas do mercado. Eis  aqui os passos que segui e algumas coisas
-mais interessantes.
+modelos  de linguagem  localmente, em  vez  de gastar  rios de  dinheiro com  as
+soluções pagas do  mercado. Eis aqui os  passos que segui para essa façanha.
 
-* Objetivo desse artigo
+* Antes de mais nada...
 
 Eu  queria inicialmente  que esse  artigo fosse  mais extenso,  mas vou  me ater
 apenas a  explicar o meu  /setup/ local para  uso de LLMs.  Meus casos de  uso são
 principalmente questão de  pesquisa, e em geral uso-as no  trabalho para geração
 de pequeníssimos blocos de código (quando  trata-se de /boilerplate/ que faço todo
 dia e que não  demanda raciocínio ou regra de negócio),  ou para um tira-dúvidas
-geral de Python e/ou Django e afins.
+geral de Python  e/ou Django, SQL, e  afins.
+
+Aliás,  até   para  ajustar   um  pouco  a   exportação  desse   artigo,  estive
+consultando-as, então Emacs Lisp também entra nos casos de uso.
 
 Eu tenho críticas  e elogios a fazer ao  uso das LLMs, mas vou fazer  isso em um
 outro artigo futuro, inclusive usando alguns casos de exemplo que acredito serem
@@ -50,12 +52,12 @@ interessantes.
 * Ferramentas que utilizei
 
 Não vou entrar em  muitos detalhes aqui a respeito de  hardware, até porque esse
-não  é muito  meu forte.  Mas recentemente  adquiri um  "laptop gamer",  um Dell
+não é muito  o meu forte.  Mas  recentemente adquiri um "laptop  gamer", um Dell
 G15. E  como não queria passar  muita raiva com drivers  da NVIDIA, simplesmente
 desabilitei  os  gráficos integrados  e  estou  usando  a GPU  diretamente  para
 absolutamente tudo que for exigido.  Meu sistema operacional é Arch Linux[fn:1],
-e tenho  vivido bem sem  um sistema  que quebra toda  hora, ao contrário  do que
-dizem as más línguas[fn:2].
+e tenho  vivido bem, sem um  sistema que quebra  toda hora, ao contrário  do que
+dizem as más-línguas[fn:2].
 
 Em termos de software e serviços, o que utilizei foi:
 
@@ -66,6 +68,9 @@ Em termos de software e serviços, o que utilizei foi:
 - UFW para facilitar a configuração de firewall.
 
 ** Ollama
+
+#+CAPTION: Logomarca da Ollama.
+[[file:img/llms1-ollama.png]]
 
 Tudo   começa   com   uma   aplicação   que  seja   capaz   de   executar   LLMs
 localmente.  Existem  várias  aplicações  e serviços  que  fazem  isso.  Resolvi
@@ -136,7 +141,10 @@ O  Ollama   basicamente  é   um  serviço   que  roda,   por  padrão,   na  po
 ~11434~.  Por  aqui,  estou  executando  ele via  ~systemd~  mesmo.  Precisei  dessa
 informação e talvez ela seja útil para mais alguém.
 
-** Ellama no Emacs
+** Ellama, extensão para Emacs
+
+#+CAPTION: Logomarca do Emacs.
+[[file:img/llms1-emacs.png]]
 
 Usar  as LLMs  através do  terminal é  bem possível,  mas queremos  um pouco  de
 comodidade.
@@ -232,28 +240,32 @@ mostrar algumas depois.
 
 ** Open WebUI
 
-Outra coisa legal de se ter é, também, uma interface gráfica de alguma forma. Eu
-acabei optando por usar o Open WebUI,  que aparentemente é extensível a ponto de
-tolerar mais  ferramentas caso você  queira partir  para coisas como  geração de
-imagens,  por exemplo.  Mas como  não é  meu objetivo,  realizei um  deploy mais
-simples.
+#+CAPTION: Logomarca do Open WebUI.
+[[file:img/llms1-open-webui-logo.png]]
+
+Outra coisa legal de se ter, também,  é uma interface gráfica para interagir com
+os  modelos. Eu  acabei  optando por  usar  o Open  WebUI,  que aparentemente  é
+extensível a  ponto de  tolerar mais  ferramentas caso  você queira  partir para
+coisas  como geração  de imagens,  por exemplo.   Mas como  não é  meu objetivo,
+realizei um deploy mais simples.
 
 Isso talvez soe um  pouco invasivo, mas o Open WebUI  é melhor executado através
 de Docker[fn:4]. Isso é  um pouco chato pensando do ponto de  vista de que estou
 servindo  uma aplicação  no meu  próprio computador  só para  ter uma  interface
-gráfica, mas depois de reclamar um pouco, eu só aceitei.
+gráfica, mas depois de resmungar um pouco, eu só aceitei, mesmo.
 
 #+CAPTION: Interface do Open WebUI no Google Chrome do Linux.
 [[file:img/llms1-openui.png]]
 
 O  único   ponto  de   atenção  aqui   é  que  o   Open  WebUI   deve  conseguir
 acessar... advinhe só... o seu Ollama.  Existe inclusive uma versão do contêiner
-já com o Ollama embutido, caso você queira algo mais unificado e não vá depender
-do Ollama para outros serviços.
+já  com o  Ollama embutido,  caso  você queira  algo  mais unificado,  e não  vá
+depender do  Ollama para outros  serviços (o  que não é  meu caso, já  que estou
+acessando também via Emacs).
 
 Esse ponto não  é um grande problema  caso você esteja usando  Docker Desktop no
-Windows[fn:5], porque  ele já exporta  um /host/  customizado para que  você tenha
-acesso às portas do seu computador.
+Windows[fn:5], porque  ele já exporta um  /host/ customizado para que  o contêiner
+tenha acesso às portas do seu computador.
 
 No caso do Linux, você precisa adicionar esse host manualmente[fn:6].
 
@@ -274,8 +286,8 @@ docker run -d \
 
 O  comando acima  "quebra  um galho",  mas eu  achei  particularmente ruim  para
 substituir o contêiner  em caso de atualização, porque eu  precisaria dar ~docker
-pull~ na  imagem novamente. Então  acabei montando um ~docker-compose.yml~  para me
-ajudar com isso:
+pull~  na imagem  novamente,  e precisaria  ficar copiando  e  colando o  comando
+acima. Então acabei montando um ~docker-compose.yml~ para me ajudar com isso:
 
 #+begin_src yaml
 services:
@@ -299,14 +311,17 @@ volumes:
 Veja que eu marquei o volume  ~open-webui~ com ~external: true~ unicamente porque eu
 já havia  executado a ferramenta com  Docker "puro", e queria  manter meu volume
 que já estava com várias  configurações. Caso você esteja executando diretamente
-no Docker Compose, pode remover isso. Vai dar bom.
+no Docker Compose, pode remover isso sem problemas.
 
 Veja  também que  eu  estou  rodando o  contêiner  em  ~network_mode: host~.  Isso
 significa que  ele basicamente não  passa pelo  processo de mapeamento  da porta
-padrão da  aplicação para o  computador. Em vez  disso, eu estou  configurando a
-aplicação diretamente (através da variável de ambiente ~PORT~) para rodar na porta
-~3111~. Esse detalhe do modo de  networking do contêiner pode ser importante, caso
-você precise alterar esse arquivo do Compose.
+padrão da aplicação para o computador,  e caso eu tivesse mais contêineres, eles
+não estariam em uma única malha capaz de fazer com que eles comuniquem entre si.
+
+Em vez disso, eu estou configurando a aplicação diretamente (através da variável
+de ambiente ~PORT~) para  rodar na porta ~3111~. Esse detalhe  do modo de networking
+do contêiner  pode ser  importante, caso  você precise  alterar esse  arquivo do
+Docker Compose.
 
 Depois  de  toda  essa configuração,  eu  tenho  o  Open  WebUI rodando  no  meu
 computador na  porta ~3111~, e tudo  o que preciso fazer  é ir até o  diretório da
@@ -318,14 +333,21 @@ preocupar.
 
 ** Acesso remoto com Tailscale
 
-Tudo agora funcionou  muito bem, mas estamos  em um ponto crítico:  Tudo isso só
-funciona localmente.  E se  você for  como eu, muito  provavelmente você  tem um
-/firewall/  bem-configurado  no  seu  computador que  não  esteja  permitindo,  no
-momento, acesso a nenhuma porta sua. Correto? Correto.
+#+CAPTION: Logomarca do Tailscale
+[[file:img/llms1-tailscale.png]]
 
-No meu  caso, eu instalei  o Uncomplicated Firewall (UFW).  Ele é uma  camada em
-cima  do ~iptables~  que garante  certa simplicidade.  Depois de  instalar o  ~ufw~,
-ative-o através do ~systemd~.
+Tudo funcionou  muito bem, mas agora estamos  em um ponto crítico:  Tudo isso só
+funciona no meu computador.  E se você for como eu, muito provavelmente você tem
+um  /firewall/ bem-configurado  no seu  computador que  não esteja  permitindo, no
+momento,  acesso  externo a  nenhuma  porta  sua.  Espera... Não?!  Então  vamos
+instalar o ~ufw~ primeiro.
+
+O Uncomplicated  Firewall (UFW)  é uma  camada em cima  do ~iptables~  que garante
+certa simplicidade ao configurar regras de firewall. Por padrão, ele não permite
+nenhuma entrada, em nenhuma porta.
+
+Depois de instalar o ~ufw~ na  sua distribuição Linux, ative-o através do ~systemd~,
+caso você também use esse sistema de inicialização.
 
 #+begin_src bash
 sudo systemctl enable ufw
@@ -333,20 +355,25 @@ sudo systemctl start ufw
 #+end_src
 
 Para  o meu  caso de  uso, eu  me  concentrei em  dois acessos  externos no  meu
-computador.  O primeiro  é que  eu  precisava acessar  o Open  WebUI pelo  menos
-no  meu celular;  o segundo,  é que  eu precisava  acessar o  Ollama diretamente
-através do meu laptop de trabalho,  um sistema com Ubuntu, que eu potencialmente
-levaria para fora da minha casa.
+computador.  O primeiro seria o acesso ao  Open WebUI pelo menos no meu celular,
+mas desejavelmente no meu laptop de trabalho também; o segundo seria o acesso ao
+Ollama  (via Emacs  e  Ellama  também), diretamente  através  do  meu laptop  de
+trabalho, um  sistema com  Ubuntu, que  eu potencialmente  levaria para  fora da
+minha casa.
 
 Esse  é o  caso para  alguma aplicação  que permita  o tunelamento  entre vários
-dispositivos.  Fortunadamente,  existe  uma  solução muito  legal  pra  isso:  o
+dispositivos.  Por sorte,  existe  uma  solução muito  legal  pra  isso:  o
 Tailscale[fn:8], que  eu já  uso desde que  surgiu, inclusive  para experimentos
 envolvendo Kubernetes,  e que agora  eu posso  usar para garantir  a comunicação
-segura entre os  três dispositivos. Então, a princípio, bastou  seguir os passos
-de instalação para Android e para os dois Linux, e fazer login na rede.
+segura entre os  três dispositivos.
+
+A princípio, bastou seguir  os passos de instalação para Android  e para os dois
+Linux, como  orientado no site  oficial, e fazer login  na minha rede  privada e
+pessoal.
 
 Uma vez na rede,  do ponto de vista do meu computador,  pude executar o seguinte
-comando e obter saídas como essas:
+comando e obter saídas  como essas (~navi~ é o meu laptop executando  o Ollama e o
+Open WebUI):
 
 #+begin_example
 ➜  ~ tailscale status
@@ -359,9 +386,15 @@ Para garantir uma boa segurança, criei as seguintes regras no UFW:
 
 1. Meu computador  de trabalho deve ser  capaz de se conectar às  portas ~11434~ e
    ~3111~, porque quero  acessar tanto o Open WebUI, quanto  acessar diretamente o
-   Ollama através do Emacs[fn:9]
+   Ollama através do Emacs[fn:9].
 2. Meu  celular deve ser capaz  de se conectar  apenas à porta ~3111~,  porque ele
    será capaz de acessar apenas a Open WebUI.
+
+Só  precisamos  traduzir   essas  duas  ideias  em  três   simples  comandos  de
+configuração do UFW.  No caso, especifico os IPs dos  dispositivos para garantir
+que eles  só consigam  acessar meu  computador através  da rede  Tailscale (essa
+configuração  não é  exaustiva porque  eu poderia  usar a  interface de  rede da
+aplicação, mas é suficiente).
 
 #+begin_src bash
 sudo ufw allow from 100.117.xx.xx to any port 11434 proto tcp
@@ -391,11 +424,13 @@ Status: active
 Uma última coisa: às vezes, quando estou  usando o terminal do Linux, eu esqueço
 algumas coisas bobas e,  antes, eu precisava ir até o Google  e pesquisar. O que
 comecei a  me dar conta é  que, tendo modelos ao  alcance dos meus dedos  com um
-comando, eu poderia inclusive criar um script para facilitar esse tipo de coisa.
+comando,  eu poderia  inclusive  criar um  script para  facilitar  esse tipo  de
+coisa. E que inclusive, esse script funcionaria também offline.
 
 Então eu  criei um  script chamado ~ask-ai~  que eu poderia  invocar via  linha de
 comando. E como meu caso de uso principal é desenvolvimento, linha de comando, e
-problemas similares, eu resolvi colocar o ~devstral-small-2~ como modelo padrão.
+problemas similares,  eu resolvi colocar  o ~devstral-small-2~ como  modelo padrão
+utilizado.
 
 #+begin_src bash
 #!/bin/bash
@@ -412,8 +447,8 @@ exec ollama run "$MODEL" "$(printf "%s\n\n%s" "$*" "$BLUEPRINT")" | glow
 #+end_src
 
 Eu escrevi o script em  si do zero e só pedi para o  Ellama melhorar para que eu
-não necessariamente  precise colocar os  argumentos entre parênteses (a  não ser
-quando  eu  estiver  usando  comandos).  A  saída  é  roteada  para  o  programa
+não necessariamente precisasse colocar os argumentos entre parênteses (a não ser
+quando  eu  estiver  usando  comandos).   A saída  é  roteada  para  o  programa
 Glow[fn:11], que  dá uma visualização bonita  para Markdown no terminal,  mas ao
 mesmo tempo  não mostra nada enquanto  a resposta estiver sendo  gerada, então o
 prompt  da  variável  ~BLUEPRINT~  é  importante  para  garantir  respostas  muito
@@ -426,8 +461,8 @@ sucintas.
 
 Esse  foi o  guia  prático do  que  fiz, mas  ainda não  explorei  com vocês  os
 resultados que tive com todo esse processo.  Faz menos de uma semana que comecei
-a usar esse processo para trabalhar,  mas certamente já tenho algumas opiniões a
-respeito de como tudo isso funciona.
+a usar essa configuração até mesmo para programar no trabalho, mas certamente já
+tenho algumas opiniões a respeito de como tudo isso funciona.
 
 Você vai  observar também  que não  fiz menção  ao uso  de nenhuma  solução paga
 ainda. Não é que eu  seja do contra, é que eu não sinto  que seja o momento para
@@ -438,24 +473,27 @@ modelos locais.
 Como disse anteriormente, em breve vou fazer outro artigo, um pouco mais formal,
 apresentando alguns dos meus usos, o que  eu esperava, e como escolhi os modelos
 que usei. Não quero  dar grandes spoilers, mas posso adiantar  desde já que LLMs
-são excelente ferramentas de apoio, mas não  são balas de prata, e certamente me
+são excelentes ferramentas de apoio, mas não são balas de prata, e certamente me
 parecem ter  sua funcionalidade  inflada por  conta de todo  o marketing,  o que
 inclusive ofusca o quão úteis elas podem ser em determinadas situações.
 
 * Footnotes
-[fn:11] [[https://github.com/charmbracelet/glow][Glow]] é  uma ferramenta de renderização de Markdown  para terminal. Estou
-usando para que a saída fique "bonitinha", mesmo.
+[fn:11] [[https://github.com/charmbracelet/glow][Glow]] é  uma ferramenta de renderização de Markdown  para terminal. Ela é
+construída  com  bibliotecas  muito  interessantes  para  Golang,  que  permitem
+construir  aplicações TUI  (Terminal  User Interface).   Ou seja...   interfaces
+bonitinhas para  terminal. Quem disse que  ambientes de texto não  podem ter uma
+interface com frufrus?
 
-[fn:10] Aqui eu  usei a opção ~status  numbered~ para que você veja  que as regras
-sempre estão numeradas  na ordem em que  se apresentam. Se por  acaso você tiver
-regras a mais  ou a menos que queira  remover, é só uma questão de  usar um ~sudo
-ufw delete <número>~.
+[fn:10] Aqui  eu usei  a opção  ~ufw status numbered~  para que  você veja  que as
+regras sempre estão numeradas  na ordem em que se apresentam.  Se por acaso você
+tiver regras  a mais que queira  remover, é só uma  questão de usar um  ~sudo ufw
+delete <número>~. Mas... saiba bem o que estiver fazendo aqui. Ok?
 
 [fn:9] Veja que,  em parte, isso abre o pressuposto  para eu conseguir inclusive
-instalar o ~ollama~ no  Ubuntu, sem rodar o serviço em si, e  usar uma variável de
-ambiente para se  conectar ao meu computador  e gerenciar modelos, mas  não é um
-grande problema  porque só eu  tenho acesso a  esse computador, e  se porventura
-perder o acesso, posso "chutá-lo" da minha rede pessoal.
+instalar o ~ollama~ no  computador de trabalho, sem rodar o serviço  em si, e usar
+uma variável de ambiente para se conectar ao meu computador e gerenciar modelos.
+Mas isso não é um grande problema porque só eu tenho acesso a esse computador, e
+se porventura perdesse o acesso, posso "chutá-lo" da minha rede pessoal.
 
 [fn:8]  O  [[https://tailscale.com/][Tailscale]]  é um  excelente  serviço,  tem  um  plano grátis  com  uma
 quantidade  limitada de  dispositivos caso  você esteja  fazendo uso  pessoal, e
@@ -471,13 +509,13 @@ para ajudar.
 
 [fn:5] Se você está usando Docker  Desktop no Windows, você automaticamente está
 errado, e não quero argumentação contrária. Se você estiver rodando Linux dentro
-do WSL  e instalar  Docker dentro  dele, é  um pouco  melhor, mas  você continua
+do WSL e instalar Docker "por dentro" dele, é um pouco melhor, mas você continua
 errado do mesmo jeito.
 
 [fn:4] Vou  me dar o luxo  de não explicar o  que é Docker e  nem Docker Compose
 aqui, porque  essas são ferramentas  extremamente utilizadas na indústria,  e se
 você for  um programador trabalhando  com web,  já deve estar  familiarizado com
-elas. Então não me leve a mal, caso  você ainda não sabe o que é... corra atrás,
+elas. Então não me leve a mal, caso você ainda não saiba o que é... corra atrás,
 o mais rápido possível.
 
 [fn:3] Esse processo pode  parecer complexo, mas não é tanto.   [[https://huggingface.co/spaces/hesamation/primer-llm-embedding][Tem um artigo no
