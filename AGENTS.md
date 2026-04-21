@@ -2,16 +2,12 @@
 
 ## NÃO MEXER
 
-### docs/ — NUNCA adicione ao .gitignore
-- A pasta `docs/` contém o site gerado e **DEVE** ser trackeada pelo Git.
-- O pipeline de deploy faz deploy DIRETAMENTE desta pasta. Se ela estiver no `.gitignore`, o site quebra.
-- **NUNCA** adicione `docs/` ao `.gitignore**. Isso é uma regra absoluta.
-
-### docs/ — NÃO inclua em commits de rotina
-- `docs/` é regenerado automaticamente pelo build (`./hermes-build.sh`).
-- Ao fazer commit, faça staging **seletivo** — only source files (`src/`, scripts, etc).
-- Use `git add src/` ou liste arquivos específicos. **NÃO** use `git add -A` ou `git add .`, pois isso inclui `docs/` com mudanças de build que poluem o diff.
-- Se `docs/` aparecer no staged, use `git reset HEAD docs/` para remover antes de commitar.
+### docs/ — Build output, NÃO commitar
+- A pasta `docs/` contém o site gerado e **NÃO** deve ser commitada.
+- O pipeline de deploy (`JamesIves/github-pages-deploy-action`) faz deploy de `docs/` para a branch `gh-pages`.
+- `docs/` está no `.gitignore` — **NUNCA** remova do `.gitignore`.
+- Após o build local (`./hermes-build.sh`), faça staging **seletivo** — only `src/`, scripts, etc.
+- Use `git add src/` ou liste arquivos específicos. **NÃO** use `git add -A` ou `git add .`.
 
 ## Build
 
@@ -50,11 +46,11 @@ Arquivos com `#+BIND:` inline (setupfiles .org, avltree, huffman, psx-homebrew, 
 - Script usa `DOMContentLoaded` — não roda antes do DOM estar pronto
 - Navbar começa expandida (não chama onScroll no load)
 
-## Paleta de Cores (baseada no avatar cyberpunk)
+## Paleta de Cores
 
-- Links: `#59c5ee` (cyan suave), hover: `#39b8e5`
-- Acentos verdes sutis: `#2a5a3a` (borders), `#1a3a2a` (code borders)
-- Essas cores são ecoadas do avatar — não usar neon puro no site
+- **Dark theme**: bg `#1e1e2e`, body `#12121e5e`, cards `#282a3a`, border `#33334a`
+- **Light theme**: bg `#faf8f0`, cards `#fffdf7`, nav `#e8e6def8`, text `#1F1F1F`
+- **Accent**: `#7dd89a` (dark) / `#2a8a4e` (light), hover: `#5abf7a` / `#1f7a3f`
 
 ## Links Sociais
 
