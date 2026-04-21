@@ -1,0 +1,946 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Primeira Ferramenta: O Agente Faz Algo</title>
+<meta name="author" content="Lucas S. Vieira" />
+<meta name="description" content="Semana 7 - Guilda de IA: Criando a primeira ferramenta para o agente
+Material didático do curso de IA Generativa da Guilda de IA" />
+<meta name="generator" content="Org Mode" />
+<style type="text/css">
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-22RF3F5XE0"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-22RF3F5XE0');
+</script>
+<link rel="stylesheet" type="text/css" href="/css/main.css" />
+<link rel="stylesheet" type="text/css" href="/css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="/css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="/img/cat-i-mage.jpg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#14171e">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="/js/theme-toggle.js"></script>
+<script src="/js/nav-scroll.js"></script>
+<meta property="og:url" content="https://luksamuk.codes/pages/guilda-ia/06-primeira-ferramenta.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Primeira Ferramenta: O Agente Faz Algo">
+<meta property="og:description" content="Semana 7 - Guilda de IA: Criando a primeira ferramenta para o agente
+Material didático do curso de IA Generativa da Guilda de IA">
+<meta property="og:image" content="https://luksamuk.codes/img/banner-full.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:domain" content="luksamuk.codes">
+<meta name="twitter:url" content="https://luksamuk.codes/pages/guilda-ia/06-primeira-ferramenta.html">
+<meta name="twitter:title" content="Primeira Ferramenta: O Agente Faz Algo">
+<meta name="twitter:description" content="Semana 7 - Guilda de IA: Criando a primeira ferramenta para o agente
+Material didático do curso de IA Generativa da Guilda de IA">
+<meta name="twitter:image" content="https://luksamuk.codes/img/banner.png">
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">Primeira Ferramenta: O Agente Faz Algo</h1>
+</div>
+<div id="content" class="content">
+<div id="outline-container-org0a75f6f" class="outline-2">
+<h2 id="org0a75f6f">O problema do LLM puro</h2>
+<div class="outline-text-2" id="text-org0a75f6f">
+<p>
+LLMs são modelos de linguagem. Eles <b>preveem</b> texto, não calculam.
+</p>
+
+<p>
+Pergunta: "Quanto é 234 × 987?"
+</p>
+
+<p>
+O modelo não calcula. Ele prevê a resposta baseado em padrões do treinamento. Pode acertar (se viu esse cálculo antes), mas geralmente erra em números grandes.
+</p>
+
+
+<div id="org1486f94" class="figure">
+<p><img src="img/problema-llm.svg" alt="problema-llm.svg" class="org-svg" />
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org4f4646b" class="outline-2">
+<h2 id="org4f4646b">A solução: ferramentas (Tools)</h2>
+<div class="outline-text-2" id="text-org4f4646b">
+<p>
+Ferramenta = função Python que o agente pode chamar.
+</p>
+</div>
+<div id="outline-container-orge0fe67f" class="outline-3">
+<h3 id="orge0fe67f">Como funciona o ciclo:</h3>
+<div class="outline-text-3" id="text-orge0fe67f">
+
+<div id="orga307829" class="figure">
+<p><img src="img/ciclo-ferramenta.svg" alt="ciclo-ferramenta.svg" class="org-svg" />
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org35539dd" class="outline-2">
+<h2 id="org35539dd">Arquitetura de Ferramentas</h2>
+<div class="outline-text-2" id="text-org35539dd">
+</div>
+<div id="outline-container-org8831674" class="outline-3">
+<h3 id="org8831674">Diagrama de Componentes</h3>
+<div class="outline-text-3" id="text-org8831674">
+
+<div id="org0593469" class="figure">
+<p><img src="img/agente-ferramentas.svg" alt="agente-ferramentas.svg" class="org-svg" />
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgddc7c54" class="outline-2">
+<h2 id="orgddc7c54">Referências Importantes</h2>
+<div class="outline-text-2" id="text-orgddc7c54">
+</div>
+<div id="outline-container-org145c7c2" class="outline-3">
+<h3 id="org145c7c2">Paper: Toolformer</h3>
+<div class="outline-text-3" id="text-org145c7c2">
+<p>
+<b>Título:</b> "Toolformer: Language Models Can Teach Themselves to Use Tools"  
+<b>Autores:</b> Timo Schick, Jane Dwivedi-Yu, Roberto Dessì, et al.  
+<b>Ano:</b> 2023  
+<b>Link:</b> <a href="https://arxiv.org/abs/2302.04761">arXiv:2302.04761</a>
+</p>
+</div>
+</div>
+<div id="outline-container-orgeedb9a1" class="outline-3">
+<h3 id="orgeedb9a1">Paper: ReAct</h3>
+<div class="outline-text-3" id="text-orgeedb9a1">
+<p>
+<b>Título:</b> "ReAct: Synergistic Reasoning and Acting in Language Models"  
+<b>Autores:</b> Shunyu Yao, et al.  
+<b>Ano:</b> 2022  
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf849b59" class="outline-2">
+<h2 id="orgf849b59">O segredo: descrição clara</h2>
+<div class="outline-text-2" id="text-orgf849b59">
+<p>
+O modelo decide baseado na descrição.
+</p>
+</div>
+<div id="outline-container-org79e6959" class="outline-3">
+<h3 id="org79e6959">Descrição RUIM:</h3>
+<div class="outline-text-3" id="text-org79e6959">
+<div class="org-src-container">
+<pre class="src src-text">Nome: calculadora
+Descri&#231;&#227;o: Calculadora.
+</pre>
+</div>
+
+<p>
+→ Modelo não sabe QUANDO usar.
+</p>
+</div>
+</div>
+<div id="outline-container-org732e676" class="outline-3">
+<h3 id="org732e676">Descrição BOA:</h3>
+<div class="outline-text-3" id="text-org732e676">
+<div class="org-src-container">
+<pre class="src src-text">Nome: calculadora
+Descri&#231;&#227;o: Resolve express&#245;es matem&#225;ticas e retorna o resultado exato.
+            Use quando precisar fazer c&#225;lculos num&#233;ricos.
+            Entrada: string com express&#227;o matem&#225;tica (ex: "2 + 2", "10 * 5", "(5 + 3) / 2")
+            Sa&#237;da: string com o resultado num&#233;rico
+</pre>
+</div>
+
+<p>
+→ Modelo entende quando E como usar.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org1b06c3d" class="outline-2">
+<h2 id="org1b06c3d">Implementação Real</h2>
+<div class="outline-text-2" id="text-org1b06c3d">
+</div>
+<div id="outline-container-org5f4ffb5" class="outline-3">
+<h3 id="org5f4ffb5">Código: Calculadora Segura</h3>
+<div class="outline-text-3" id="text-org5f4ffb5">
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-doc">"""
+Implementa&#231;&#227;o segura de uma calculadora para agentes.
+Usa AST parsing para evitar inje&#231;&#227;o de c&#243;digo.
+"""</span>
+
+<span class="org-keyword">import</span> re
+<span class="org-keyword">import</span> ast
+<span class="org-keyword">import</span> operator
+<span class="org-keyword">from</span> typing <span class="org-keyword">import</span> Union
+
+
+<span class="org-variable-name">OPERADORES_PERMITIDOS</span> <span class="org-operator">=</span> {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.FloorDiv: operator.floordiv,
+    ast.Mod: operator.mod,
+    ast.Pow: operator.<span class="org-builtin">pow</span>,
+    ast.USub: operator.neg,
+    ast.UAdd: operator.pos,
+}
+
+
+<span class="org-keyword">def</span> <span class="org-function-name">calculadora_segura</span>(expressao: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> Union[<span class="org-builtin">int</span>, <span class="org-builtin">float</span>, <span class="org-builtin">str</span>]:
+    <span class="org-doc">"""
+    Avalia uma express&#227;o matem&#225;tica de forma segura.
+
+    Args:
+        expressao: String com a express&#227;o matem&#225;tica (ex: "2 + 2", "10 * 5")
+
+    Returns:
+        Resultado da express&#227;o como n&#250;mero ou mensagem de erro
+
+    Exemplos:
+        &gt;&gt;&gt; calculadora_segura("2 + 2")
+        4
+        &gt;&gt;&gt; calculadora_segura("10 * 5")
+        50
+        &gt;&gt;&gt; calculadora_segura("(5 + 3) / 2")
+        4.0
+    """</span>
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Valida&#231;&#227;o de entrada
+</span>    <span class="org-keyword">if</span> <span class="org-keyword">not</span> expressao <span class="org-keyword">or</span> <span class="org-keyword">not</span> <span class="org-builtin">isinstance</span>(expressao, <span class="org-builtin">str</span>):
+        <span class="org-keyword">return</span> <span class="org-string">"Erro: express&#227;o n&#227;o pode estar vazia"</span>
+
+    <span class="org-variable-name">expressao</span> <span class="org-operator">=</span> expressao.strip()
+
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Verificar caracteres v&#225;lidos
+</span>    <span class="org-keyword">if</span> <span class="org-keyword">not</span> re.<span class="org-keyword">match</span>(r<span class="org-string">'^[\d\s\+\-\*\/\%\(\)\.\^]+$'</span>, expressao):
+        <span class="org-keyword">return</span> f<span class="org-string">"Erro: caracteres inv&#225;lidos em '</span>{expressao}<span class="org-string">'"</span>
+
+    <span class="org-keyword">try</span>:
+        <span class="org-variable-name">node</span> <span class="org-operator">=</span> ast.parse(expressao, mode<span class="org-operator">=</span><span class="org-string">'eval'</span>)
+
+        <span class="org-keyword">def</span> <span class="org-function-name">avaliar</span>(node):
+            <span class="org-doc">"""Avalia recursivamente a AST de forma segura."""</span>
+            <span class="org-keyword">if</span> <span class="org-builtin">isinstance</span>(node, ast.Num):
+                <span class="org-keyword">return</span> node.n
+            <span class="org-keyword">elif</span> <span class="org-builtin">isinstance</span>(node, ast.Constant):
+                <span class="org-keyword">if</span> <span class="org-builtin">isinstance</span>(node.value, (<span class="org-builtin">int</span>, <span class="org-builtin">float</span>)):
+                    <span class="org-keyword">return</span> node.value
+                <span class="org-keyword">raise</span> <span class="org-type">ValueError</span>(f<span class="org-string">"Tipo n&#227;o suportado: </span>{<span class="org-builtin">type</span>(node.value)}<span class="org-string">"</span>)
+            <span class="org-keyword">elif</span> <span class="org-builtin">isinstance</span>(node, ast.BinOp):
+                <span class="org-variable-name">left</span> <span class="org-operator">=</span> avaliar(node.left)
+                <span class="org-variable-name">right</span> <span class="org-operator">=</span> avaliar(node.right)
+                <span class="org-variable-name">op_type</span> <span class="org-operator">=</span> <span class="org-builtin">type</span>(node.op)
+                <span class="org-keyword">if</span> op_type <span class="org-keyword">in</span> OPERADORES_PERMITIDOS:
+                    <span class="org-keyword">return</span> OPERADORES_PERMITIDOS[op_type](left, right)
+                <span class="org-keyword">raise</span> <span class="org-type">ValueError</span>(f<span class="org-string">"Operador n&#227;o permitido: </span>{op_type.<span class="org-builtin">__name__</span>}<span class="org-string">"</span>)
+            <span class="org-keyword">elif</span> <span class="org-builtin">isinstance</span>(node, ast.UnaryOp):
+                <span class="org-variable-name">operand</span> <span class="org-operator">=</span> avaliar(node.operand)
+                <span class="org-variable-name">op_type</span> <span class="org-operator">=</span> <span class="org-builtin">type</span>(node.op)
+                <span class="org-keyword">if</span> op_type <span class="org-keyword">in</span> OPERADORES_PERMITIDOS:
+                    <span class="org-keyword">return</span> OPERADORES_PERMITIDOS[op_type](operand)
+                <span class="org-keyword">raise</span> <span class="org-type">ValueError</span>(f<span class="org-string">"Operador un&#225;rio n&#227;o permitido: </span>{op_type.<span class="org-builtin">__name__</span>}<span class="org-string">"</span>)
+            <span class="org-keyword">else</span>:
+                <span class="org-keyword">raise</span> <span class="org-type">ValueError</span>(f<span class="org-string">"N&#243; n&#227;o suportado: </span>{<span class="org-builtin">type</span>(node).<span class="org-builtin">__name__</span>}<span class="org-string">"</span>)
+
+        <span class="org-variable-name">resultado</span> <span class="org-operator">=</span> avaliar(node.body)
+
+        <span class="org-comment-delimiter"># </span><span class="org-comment">Formatar resultado
+</span>        <span class="org-keyword">if</span> <span class="org-builtin">isinstance</span>(resultado, <span class="org-builtin">float</span>):
+            <span class="org-keyword">if</span> resultado <span class="org-operator">==</span> <span class="org-builtin">int</span>(resultado):
+                <span class="org-keyword">return</span> <span class="org-builtin">int</span>(resultado)
+            <span class="org-keyword">return</span> <span class="org-builtin">round</span>(resultado, 10)
+
+        <span class="org-keyword">return</span> resultado
+
+    <span class="org-keyword">except</span> <span class="org-type">SyntaxError</span>:
+        <span class="org-keyword">return</span> f<span class="org-string">"Erro: express&#227;o inv&#225;lida '</span>{expressao}<span class="org-string">'"</span>
+    <span class="org-keyword">except</span> <span class="org-type">ZeroDivisionError</span>:
+        <span class="org-keyword">return</span> <span class="org-string">"Erro: divis&#227;o por zero"</span>
+    <span class="org-keyword">except</span> <span class="org-type">Exception</span> <span class="org-keyword">as</span> e:
+        <span class="org-keyword">return</span> f<span class="org-string">"Erro: </span>{<span class="org-builtin">str</span>(e)}<span class="org-string">"</span>
+
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Testes
+</span><span class="org-keyword">if</span> <span class="org-builtin">__name__</span> <span class="org-operator">==</span> <span class="org-string">"__main__"</span>:
+    <span class="org-variable-name">testes</span> <span class="org-operator">=</span> [
+        (<span class="org-string">"2 + 2"</span>, 4),
+        (<span class="org-string">"10 * 5"</span>, 50),
+        (<span class="org-string">"(5 + 3) / 2"</span>, 4.0),
+        (<span class="org-string">"2 ** 10"</span>, 1024),
+        (<span class="org-string">"100 / 0"</span>, <span class="org-string">"Erro"</span>),
+    ]
+
+    <span class="org-keyword">for</span> expr, esperado <span class="org-keyword">in</span> testes:
+        <span class="org-variable-name">resultado</span> <span class="org-operator">=</span> calculadora_segura(expr)
+        <span class="org-builtin">print</span>(f<span class="org-string">"</span>{expr}<span class="org-string"> = </span>{resultado}<span class="org-string">"</span>)
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org88b33ff" class="outline-2">
+<h2 id="org88b33ff">Exercícios Práticos</h2>
+<div class="outline-text-2" id="text-org88b33ff">
+</div>
+<div id="outline-container-org3db2962" class="outline-3">
+<h3 id="org3db2962">Exercício 1: Ferramenta de Horário</h3>
+<div class="outline-text-3" id="text-org3db2962">
+<p>
+Implemente uma ferramenta que retorna a data e hora atual formatadas.
+</p>
+
+<div class="DETAILS" id="org79a3a74">
+<p>
+📝 Gabarito
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> datetime <span class="org-keyword">import</span> datetime
+
+<span class="org-keyword">def</span> <span class="org-function-name">obter_horario</span>(formato: <span class="org-builtin">str</span> <span class="org-operator">=</span> <span class="org-string">"%d/%m/%Y %H:%M:%S"</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""
+    Retorna a data e hora atual formatada.
+
+    Args:
+        formato: String de formato (default: dd/mm/yyyy HH:MM:SS)
+
+    Returns:
+        String com data/hora formatada
+
+    Exemplos:
+        &gt;&gt;&gt; obter_horario()
+        "26/03/2025 14:30:00"
+        &gt;&gt;&gt; obter_horario("%Y-%m-%d")
+        "2025-03-26"
+    """</span>
+    <span class="org-keyword">return</span> datetime.now().strftime(formato)
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Descri&#231;&#227;o para o agente
+</span><span class="org-variable-name">DESCRICAO_HORARIO</span> <span class="org-operator">=</span> <span class="org-string">"""
+Nome: obter_horario
+Descri&#231;&#227;o: Retorna a data e hora atual.
+           Use quando o usu&#225;rio perguntar sobre data, hora, ou necessidade de saber "agora".
+           Par&#226;metros:
+             - formato (opcional): formato da sa&#237;da (default: dd/mm/yyyy HH:MM:SS)
+           Sa&#237;da: string com data/hora formatada
+"""</span>
+</pre>
+</div>
+
+</div>
+</div>
+</div>
+<div id="outline-container-org93579b6" class="outline-3">
+<h3 id="org93579b6">Exercício 2: Ferramenta de Contagem de Palavras</h3>
+<div class="outline-text-3" id="text-org93579b6">
+<p>
+Implemente uma ferramenta que conta palavras, caracteres e frases de um texto.
+</p>
+
+<div class="DETAILS" id="org7f4277e">
+<p>
+📝 Gabarito
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">import</span> re
+
+<span class="org-keyword">def</span> <span class="org-function-name">contar_texto</span>(texto: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">dict</span>:
+    <span class="org-doc">"""
+    Conta palavras, caracteres e frases de um texto.
+
+    Args:
+        texto: Texto a ser analisado
+
+    Returns:
+        Dicion&#225;rio com contagens
+
+    Exemplos:
+        &gt;&gt;&gt; contar_texto("Ol&#225; mundo. Como vai?")
+        {"palavras": 4, "caracteres": 18, "frases": 2}
+    """</span>
+    <span class="org-keyword">if</span> <span class="org-keyword">not</span> texto:
+        <span class="org-keyword">return</span> {<span class="org-string">"palavras"</span>: 0, <span class="org-string">"caracteres"</span>: 0, <span class="org-string">"frases"</span>: 0}
+
+    <span class="org-variable-name">palavras</span> <span class="org-operator">=</span> <span class="org-builtin">len</span>(texto.split())
+    <span class="org-variable-name">caracteres</span> <span class="org-operator">=</span> <span class="org-builtin">len</span>(texto)
+    <span class="org-variable-name">frases</span> <span class="org-operator">=</span> <span class="org-builtin">len</span>(re.split(r<span class="org-string">'[.!?]+'</span>, texto))
+    <span class="org-keyword">if</span> texto.strip()[<span class="org-operator">-</span>1] <span class="org-keyword">not</span> <span class="org-keyword">in</span> <span class="org-string">'.!?'</span>:
+        <span class="org-variable-name">frases</span> <span class="org-operator">-=</span> 1
+    <span class="org-variable-name">frases</span> <span class="org-operator">=</span> <span class="org-builtin">max</span>(0, frases)
+
+    <span class="org-keyword">return</span> {
+        <span class="org-string">"palavras"</span>: palavras,
+        <span class="org-string">"caracteres"</span>: caracteres,
+        <span class="org-string">"frases"</span>: frases
+    }
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Descri&#231;&#227;o para o agente
+</span><span class="org-variable-name">DESCRICAO_CONTADOR</span> <span class="org-operator">=</span> <span class="org-string">"""
+Nome: contar_texto
+Descri&#231;&#227;o: Analisa um texto e retorna estat&#237;sticas sobre ele.
+           Use quando o usu&#225;rio quiser saber o tamanho de um texto.
+           Par&#226;metros:
+             - texto: texto a ser analisado (obrigat&#243;rio)
+           Sa&#237;da: JSON com palavras, caracteres e frases
+"""</span>
+</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org40f33f3" class="outline-2">
+<h2 id="org40f33f3">Provedores Gratuitos para Google Colab</h2>
+<div class="outline-text-2" id="text-org40f33f3">
+<p>
+Para testar agentes de IA no Google Colab sem gastar dinheiro, você tem várias opções gratuitas.
+</p>
+
+<p>
+<b><b>Comparação rápida:</b></b>
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Provedor</th>
+<th scope="col" class="org-left">Custo</th>
+<th scope="col" class="org-left">Limites</th>
+<th scope="col" class="org-left">Modelos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Google Gemini</td>
+<td class="org-left">Gratuito</td>
+<td class="org-left">15 RPM, 1M tokens/dia</td>
+<td class="org-left">Gemini Flash, Gemini Pro</td>
+</tr>
+
+<tr>
+<td class="org-left">Hugging Face</td>
+<td class="org-left">Gratuito</td>
+<td class="org-left">Rate limit variável</td>
+<td class="org-left">Modelos open-source</td>
+</tr>
+
+<tr>
+<td class="org-left">Ollama + Colab</td>
+<td class="org-left">Gratuito</td>
+<td class="org-left">GPU do Colab</td>
+<td class="org-left">Qwen, Llama, etc.</td>
+</tr>
+
+<tr>
+<td class="org-left">LM Studio</td>
+<td class="org-left">Gratuito</td>
+<td class="org-left">GPU local</td>
+<td class="org-left">Qual modelo baixar</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<b><b>Importante:</b></b> Sempre use <code>getpass</code> para API keys no Colab!
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">import</span> getpass
+<span class="org-keyword">import</span> os
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">NUNCA coloque a key direto no c&#243;digo!
+</span>os.<span class="org-variable-name">environ</span>[<span class="org-string">"MINHA_API_KEY"</span>] <span class="org-operator">=</span> getpass.getpass(<span class="org-string">"Digite sua API key: "</span>)
+</pre>
+</div>
+</div>
+<div id="outline-container-orgc0976b0" class="outline-3">
+<h3 id="orgc0976b0">Google Gemini API</h3>
+<div class="outline-text-3" id="text-orgc0976b0">
+<p>
+O Gemini é gratuito com limite generoso. Perfeito para começar.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Instala&#231;&#227;o no Colab
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">!pip install google-genai
+</span>
+<span class="org-keyword">from</span> google <span class="org-keyword">import</span> genai
+<span class="org-keyword">from</span> google.genai <span class="org-keyword">import</span> types
+<span class="org-keyword">import</span> getpass
+<span class="org-keyword">import</span> os
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Configurar API key (novo SDK: usar Client)
+</span><span class="org-variable-name">api_key</span> <span class="org-operator">=</span> getpass.getpass(<span class="org-string">"Digite sua Google API key: "</span>)
+<span class="org-variable-name">client</span> <span class="org-operator">=</span> genai.Client(api_key<span class="org-operator">=</span>api_key)
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Chat com mem&#243;ria (novo SDK)
+</span><span class="org-variable-name">chat</span> <span class="org-operator">=</span> client.chats.create(model<span class="org-operator">=</span><span class="org-string">"gemini-2.0-flash"</span>)
+
+<span class="org-variable-name">response</span> <span class="org-operator">=</span> chat.send_message(<span class="org-string">"Ol&#225;! Qual &#233; a capital do Brasil?"</span>)
+<span class="org-builtin">print</span>(response.text)
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Continuar conversa
+</span><span class="org-variable-name">response</span> <span class="org-operator">=</span> chat.send_message(<span class="org-string">"E quantos habitantes ela tem?"</span>)
+<span class="org-builtin">print</span>(response.text)
+</pre>
+</div>
+
+<p>
+<b><b>Vantagens do Gemini:</b></b>
+</p>
+<ul class="org-ul">
+<li>1 milhão de tokens/dia gratuito</li>
+<li>API estável e bem documentada</li>
+<li>Funciona bem no Colab</li>
+<li>flash é rápido e barato</li>
+</ul>
+
+<p>
+<b><b>Desvantagens:</b></b>
+</p>
+<ul class="org-ul">
+<li>Rate limiting (15 requests/minuto)</li>
+<li>Precisa de conta Google</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org43b74db" class="outline-3">
+<h3 id="org43b74db">Hugging Face Inference API</h3>
+<div class="outline-text-3" id="text-org43b74db">
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Instala&#231;&#227;o no Colab
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">!pip install huggingface-hub
+</span>
+<span class="org-keyword">from</span> huggingface_hub <span class="org-keyword">import</span> InferenceClient
+<span class="org-keyword">import</span> getpass
+<span class="org-keyword">import</span> os
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Token gratuito em: https://huggingface.co/settings/tokens
+</span><span class="org-variable-name">hf_token</span> <span class="org-operator">=</span> getpass.getpass(<span class="org-string">"Digite seu Hugging Face token: "</span>)
+
+<span class="org-variable-name">client</span> <span class="org-operator">=</span> InferenceClient(token<span class="org-operator">=</span>hf_token)
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Usar modelo gratuito
+</span><span class="org-variable-name">response</span> <span class="org-operator">=</span> client.chat.completions.create(
+    model<span class="org-operator">=</span><span class="org-string">"Qwen/Qwen2.5-72B-Instruct"</span>,
+    messages<span class="org-operator">=</span>[
+        {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til."</span>},
+        {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Qual &#233; a capital da Fran&#231;a?"</span>}
+    ]
+)
+
+<span class="org-builtin">print</span>(response.choices[0].message.content)
+</pre>
+</div>
+
+<p>
+<b><b>Modelos gratuitos populares no HF:</b></b>
+</p>
+<ul class="org-ul">
+<li><code>Qwen/Qwen2.5-72B-Instruct</code> - Rápido e capaz</li>
+<li><code>meta-llama/Llama-3.2-3B-Instruct</code> - Compacto</li>
+<li><code>microsoft/Phi-3-mini-4k-instruct</code> - Muito pequeno</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org2c29093" class="outline-3">
+<h3 id="org2c29093">Ollama no Google Colab</h3>
+<div class="outline-text-3" id="text-org2c29093">
+<p>
+Roda modelos localmente usando GPU do Colab (gratuito).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Instalar Ollama no Colab
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">!curl -fsSL https://ollama.com/install.sh | sh
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">!ollama serve &amp;
+</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">Baixar modelo
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">!ollama pull qwen3.5:4b
+</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">Usar via API
+</span><span class="org-keyword">import</span> requests
+<span class="org-keyword">import</span> json
+
+<span class="org-keyword">def</span> <span class="org-function-name">ollama_chat</span>(mensagem: <span class="org-builtin">str</span>, modelo: <span class="org-builtin">str</span> <span class="org-operator">=</span> <span class="org-string">"qwen3.5:4b"</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""Envia mensagem para Ollama local."""</span>
+    <span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(
+        <span class="org-string">"http://localhost:11434/api/chat"</span>,
+        json<span class="org-operator">=</span>{
+            <span class="org-string">"model"</span>: modelo,
+            <span class="org-string">"messages"</span>: [{<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: mensagem}],
+            <span class="org-string">"stream"</span>: <span class="org-constant">False</span>
+        }
+    )
+    <span class="org-keyword">return</span> response.json()[<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Uso
+</span><span class="org-variable-name">resposta</span> <span class="org-operator">=</span> ollama_chat(<span class="org-string">"Ol&#225;! Qual &#233; a capital do Brasil?"</span>)
+<span class="org-builtin">print</span>(resposta)
+</pre>
+</div>
+
+<p>
+<b><b>Modelos recomendados para Ollama:</b></b>
+</p>
+<ul class="org-ul">
+<li><code>qwen3.5:4b</code> - Rápido, bom para testes</li>
+<li><code>qwen3.5:9b</code> - Mais capaz, ainda rápido</li>
+<li><code>llama3.2:3b</code> - Alternativa compacta</li>
+</ul>
+
+<p>
+<b><b>Lista completa:</b></b> <code>ollama list</code> no terminal
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Ollama com hist&#243;rico de conversa
+</span><span class="org-keyword">def</span> <span class="org-function-name">ollama_chat_com_memoria</span>(
+    mensagens: <span class="org-builtin">list</span>,
+    nova_mensagem: <span class="org-builtin">str</span>,
+    modelo: <span class="org-builtin">str</span> <span class="org-operator">=</span> <span class="org-string">"qwen3.5:4b"</span>
+) <span class="org-operator">-&gt;</span> <span class="org-builtin">tuple</span>[<span class="org-builtin">str</span>, <span class="org-builtin">list</span>]:
+    <span class="org-doc">"""
+    Chat com mem&#243;ria no Ollama.
+
+    Returns:
+        Tupla (resposta, hist&#243;rico_atualizado)
+    """</span>
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Adiciona nova mensagem ao hist&#243;rico
+</span>    mensagens.append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: nova_mensagem})
+
+    <span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(
+        <span class="org-string">"http://localhost:11434/api/chat"</span>,
+        json<span class="org-operator">=</span>{
+            <span class="org-string">"model"</span>: modelo,
+            <span class="org-string">"messages"</span>: mensagens,
+            <span class="org-string">"stream"</span>: <span class="org-constant">False</span>
+        }
+    )
+
+    <span class="org-variable-name">resposta</span> <span class="org-operator">=</span> response.json()[<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]
+
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Adiciona resposta ao hist&#243;rico
+</span>    mensagens.append({<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: resposta})
+
+    <span class="org-keyword">return</span> resposta, mensagens
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Uso com hist&#243;rico
+</span><span class="org-variable-name">historico</span> <span class="org-operator">=</span> [{<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til."</span>}]
+<span class="org-variable-name">r1</span>, <span class="org-variable-name">historico</span> <span class="org-operator">=</span> ollama_chat_com_memoria(historico, <span class="org-string">"Oi!"</span>)
+<span class="org-variable-name">r2</span>, <span class="org-variable-name">historico</span> <span class="org-operator">=</span> ollama_chat_com_memoria(historico, <span class="org-string">"Qual meu nome se eu disse antes?"</span>)
+<span class="org-builtin">print</span>(r2)  <span class="org-comment-delimiter"># </span><span class="org-comment">Vai lembrar que voc&#234; disse "Oi!"</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org4a323d3" class="outline-3">
+<h3 id="org4a323d3">LM Studio</h3>
+<div class="outline-text-3" id="text-org4a323d3">
+<p>
+LM Studio é uma interface gráfica para rodar modelos locais. Não roda direto no Colab, mas é ótimo para desenvolvimento local.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">LM Studio serve uma API compat&#237;vel com OpenAI
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">em localhost:1234
+</span>
+<span class="org-keyword">from</span> openai <span class="org-keyword">import</span> OpenAI
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Conectar ao LM Studio local
+</span><span class="org-variable-name">client</span> <span class="org-operator">=</span> OpenAI(
+    base_url<span class="org-operator">=</span><span class="org-string">"http://localhost:1234/v1"</span>,
+    api_key<span class="org-operator">=</span><span class="org-string">"not-needed"</span>  <span class="org-comment-delimiter"># </span><span class="org-comment">LM Studio n&#227;o precisa de key
+</span>)
+
+<span class="org-variable-name">response</span> <span class="org-operator">=</span> client.chat.completions.create(
+    model<span class="org-operator">=</span><span class="org-string">"local-model"</span>,  <span class="org-comment-delimiter"># </span><span class="org-comment">LM Studio escolhe o modelo carregado
+</span>    messages<span class="org-operator">=</span>[
+        {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Ol&#225;!"</span>}
+    ]
+)
+
+<span class="org-builtin">print</span>(response.choices[0].message.content)
+</pre>
+</div>
+
+<p>
+<b><b>Interface Genérica para Todos os Provedores</b></b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-doc">"""Interface unificada para m&#250;ltiplos provedores LLM."""</span>
+
+<span class="org-keyword">from</span> typing <span class="org-keyword">import</span> List, Dict
+<span class="org-keyword">from</span> abc <span class="org-keyword">import</span> ABC, abstractmethod
+<span class="org-keyword">import</span> getpass
+<span class="org-keyword">import</span> os
+
+
+<span class="org-keyword">def</span> <span class="org-function-name">criar_cliente</span>(provedor: <span class="org-builtin">str</span> <span class="org-operator">=</span> <span class="org-string">"gemini"</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">object</span>:
+    <span class="org-doc">"""
+    Cria um cliente para o provedor especificado.
+
+    Args:
+        provedor: "gemini", "huggingface", "ollama", ou "lmstudio"
+
+    Returns:
+        Objeto cliente configurado
+    """</span>
+    <span class="org-keyword">if</span> provedor <span class="org-operator">==</span> <span class="org-string">"gemini"</span>:
+        <span class="org-keyword">from</span> google <span class="org-keyword">import</span> genai
+        <span class="org-variable-name">api_key</span> <span class="org-operator">=</span> getpass.getpass(<span class="org-string">"Google API key: "</span>)
+        <span class="org-keyword">return</span> genai.Client(api_key<span class="org-operator">=</span>api_key)
+
+    <span class="org-keyword">elif</span> provedor <span class="org-operator">==</span> <span class="org-string">"huggingface"</span>:
+        <span class="org-keyword">from</span> huggingface_hub <span class="org-keyword">import</span> InferenceClient
+        <span class="org-variable-name">token</span> <span class="org-operator">=</span> getpass.getpass(<span class="org-string">"HF Token: "</span>)
+        <span class="org-keyword">return</span> InferenceClient(token<span class="org-operator">=</span>token)
+
+    <span class="org-keyword">elif</span> provedor <span class="org-operator">==</span> <span class="org-string">"ollama"</span>:
+        <span class="org-keyword">import</span> requests
+        <span class="org-keyword">return</span> <span class="org-string">"ollama"</span>  <span class="org-comment-delimiter"># </span><span class="org-comment">Ollama n&#227;o precisa de cliente
+</span>
+    <span class="org-keyword">elif</span> provedor <span class="org-operator">==</span> <span class="org-string">"lmstudio"</span>:
+        <span class="org-keyword">from</span> openai <span class="org-keyword">import</span> OpenAI
+        <span class="org-keyword">return</span> OpenAI(base_url<span class="org-operator">=</span><span class="org-string">"http://localhost:1234/v1"</span>, api_key<span class="org-operator">=</span><span class="org-string">"not-needed"</span>)
+
+    <span class="org-keyword">else</span>:
+        <span class="org-keyword">raise</span> <span class="org-type">ValueError</span>(f<span class="org-string">"Provedor desconhecido: </span>{provedor}<span class="org-string">"</span>)
+
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Uso
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">cliente = criar_cliente("gemini")
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">cliente = criar_cliente("ollama")
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">cliente = criar_cliente("lmstudio")</span>
+</pre>
+</div>
+
+<p>
+<b><b>Qual escolher?</b></b>
+</p>
+
+<ul class="org-ul">
+<li><b>Começando:</b> Use Gemini no Colab - mais fácil e estável</li>
+<li><b>Sem internet:</b> Use Ollama com modelos baixados</li>
+<li><b>Desenvolvimento local:</b> Use LM Studio com interface gráfica</li>
+<li><b>Modelos específicos:</b> Use Hugging Face API</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<h3><a href="/pages/guilda-ia/">&#8592; Voltar para Guilda de IA</a></h3>
+</div>
+</body>
+</html>

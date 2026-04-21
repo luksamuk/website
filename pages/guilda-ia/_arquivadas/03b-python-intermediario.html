@@ -1,0 +1,854 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Python Intermediário: Além do Básico</title>
+<meta name="author" content="Lucas S. Vieira" />
+<meta name="description" content="Semana 5 - Guilda de IA: Python intermediário para agentes de IA
+Material didático do curso de IA Generativa da Guilda de IA" />
+<meta name="generator" content="Org Mode" />
+<style type="text/css">
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-22RF3F5XE0"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-22RF3F5XE0');
+</script>
+<link rel="stylesheet" type="text/css" href="/css/main.css" />
+<link rel="stylesheet" type="text/css" href="/css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="/css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="/img/cat-i-mage.jpg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#14171e">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="/js/theme-toggle.js"></script>
+<script src="/js/nav-scroll.js"></script>
+<meta property="og:url" content="https://luksamuk.codes/pages/guilda-ia/03b-python-intermediario.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Python Intermediário: Além do Básico">
+<meta property="og:description" content="Semana 5 - Guilda de IA: Python intermediário para agentes de IA
+Material didático do curso de IA Generativa da Guilda de IA">
+<meta property="og:image" content="https://luksamuk.codes/img/banner-full.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:domain" content="luksamuk.codes">
+<meta name="twitter:url" content="https://luksamuk.codes/pages/guilda-ia/03b-python-intermediario.html">
+<meta name="twitter:title" content="Python Intermediário: Além do Básico">
+<meta name="twitter:description" content="Semana 5 - Guilda de IA: Python intermediário para agentes de IA
+Material didático do curso de IA Generativa da Guilda de IA">
+<meta name="twitter:image" content="https://luksamuk.codes/img/banner.png">
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">Python Intermediário: Além do Básico</h1>
+</div>
+<div id="content" class="content">
+<div id="outline-container-orgfd5f066" class="outline-2">
+<h2 id="orgfd5f066">Semana 4 - Python Intermediário</h2>
+</div>
+
+<div id="outline-container-orgba3f884" class="outline-2">
+<h2 id="orgba3f884">Por que continuar com Python?</h2>
+<div class="outline-text-2" id="text-orgba3f884">
+<p>
+Na semana anterior, vimos o mínimo necessário para usar APIs de LLM. Agora vamos além:
+</p>
+
+<ol class="org-ol">
+<li><b>Estruturas de dados mais complexas</b></li>
+<li><b>Classes e orientação a objetos</b></li>
+<li><b>Tratamento de erros robusto</b></li>
+<li><b>Organização de código</b></li>
+</ol>
+
+<p>
+Esses conceitos são fundamentais para construir agentes mais sofisticados.
+</p>
+</div>
+</div>
+<div id="outline-container-orge66bc91" class="outline-2">
+<h2 id="orge66bc91">Estruturas de Dados Avançadas</h2>
+<div class="outline-text-2" id="text-orge66bc91">
+</div>
+<div id="outline-container-org35ae518" class="outline-3">
+<h3 id="org35ae518">Comprehensions</h3>
+<div class="outline-text-3" id="text-org35ae518">
+<p>
+Forma concisa de criar listas, dicionários e sets.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">List comprehension
+</span><span class="org-variable-name">numeros</span> <span class="org-operator">=</span> [1, 2, 3, 4, 5]
+<span class="org-variable-name">quadrados</span> <span class="org-operator">=</span> [n <span class="org-operator">**</span> 2 <span class="org-keyword">for</span> n <span class="org-keyword">in</span> numeros]  <span class="org-comment-delimiter"># </span><span class="org-comment">[1, 4, 9, 16, 25]
+</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">Com condi&#231;&#227;o
+</span><span class="org-variable-name">pares</span> <span class="org-operator">=</span> [n <span class="org-keyword">for</span> n <span class="org-keyword">in</span> numeros <span class="org-keyword">if</span> n <span class="org-operator">%</span> 2 <span class="org-operator">==</span> 0]  <span class="org-comment-delimiter"># </span><span class="org-comment">[2, 4]
+</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">Dict comprehension
+</span><span class="org-variable-name">palavras</span> <span class="org-operator">=</span> [<span class="org-string">"gato"</span>, <span class="org-string">"cachorro"</span>, <span class="org-string">"p&#225;ssaro"</span>]
+<span class="org-variable-name">tamanhos</span> <span class="org-operator">=</span> {p: <span class="org-builtin">len</span>(p) <span class="org-keyword">for</span> p <span class="org-keyword">in</span> palavras}  <span class="org-comment-delimiter"># </span><span class="org-comment">{"gato": 4, "cachorro": 8, ...}</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org7aa8b62" class="outline-3">
+<h3 id="org7aa8b62">Generators</h3>
+<div class="outline-text-3" id="text-org7aa8b62">
+<p>
+Funções que produzem valores sob demanda, economizando memória.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Generator function
+</span><span class="org-keyword">def</span> <span class="org-function-name">contar_ate</span>(n):
+    <span class="org-keyword">for</span> i <span class="org-keyword">in</span> <span class="org-builtin">range</span>(n):
+        <span class="org-keyword">yield</span> i
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Uso
+</span><span class="org-keyword">for</span> num <span class="org-keyword">in</span> contar_ate(5):
+    <span class="org-builtin">print</span>(num)  <span class="org-comment-delimiter"># </span><span class="org-comment">0, 1, 2, 3, 4
+</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">Generator expression
+</span><span class="org-variable-name">quadrados_gen</span> <span class="org-operator">=</span> (n <span class="org-operator">**</span> 2 <span class="org-keyword">for</span> n <span class="org-keyword">in</span> <span class="org-builtin">range</span>(1000000))  <span class="org-comment-delimiter"># </span><span class="org-comment">N&#227;o cria lista na mem&#243;ria</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org552ed19" class="outline-3">
+<h3 id="org552ed19">Quando usar Generator vs Lista</h3>
+<div class="outline-text-3" id="text-org552ed19">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Situação</th>
+<th scope="col" class="org-left">Use Lista</th>
+<th scope="col" class="org-left">Use Generator</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Precisa acessar múltiplas vezes</td>
+<td class="org-left">✓</td>
+<td class="org-left">✗</td>
+</tr>
+
+<tr>
+<td class="org-left">Precisa de len() ou indexação</td>
+<td class="org-left">✓</td>
+<td class="org-left">✗</td>
+</tr>
+
+<tr>
+<td class="org-left">Grande volume de dados</td>
+<td class="org-left">✗</td>
+<td class="org-left">✓</td>
+</tr>
+
+<tr>
+<td class="org-left">Pipeline de processamento</td>
+<td class="org-left">✗</td>
+<td class="org-left">✓</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="outline-container-org74a96db" class="outline-2">
+<h2 id="org74a96db">Orientação a Objetos</h2>
+<div class="outline-text-2" id="text-org74a96db">
+</div>
+<div id="outline-container-org9e6b4fa" class="outline-3">
+<h3 id="org9e6b4fa">Classes Básicas</h3>
+<div class="outline-text-3" id="text-org9e6b4fa">
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">class</span> <span class="org-type">Agente</span>:
+    <span class="org-doc">"""Representa um agente de IA com mem&#243;ria."""</span>
+
+    <span class="org-keyword">def</span> <span class="org-function-name">__init__</span>(<span class="org-keyword">self</span>, nome: <span class="org-builtin">str</span>, sistema: <span class="org-builtin">str</span> <span class="org-operator">=</span> <span class="org-string">"Voc&#234; &#233; um assistente."</span>):
+        <span class="org-doc">"""
+        Inicializa o agente.
+
+        Args:
+            nome: Nome identificador do agente
+            sistema: System prompt do agente
+        """</span>
+        <span class="org-keyword">self</span>.<span class="org-variable-name">nome</span> <span class="org-operator">=</span> nome
+        <span class="org-keyword">self</span>.<span class="org-variable-name">sistema</span> <span class="org-operator">=</span> sistema
+        <span class="org-keyword">self</span>.<span class="org-variable-name">historico</span> <span class="org-operator">=</span> []
+
+    <span class="org-keyword">def</span> <span class="org-function-name">conversar</span>(<span class="org-keyword">self</span>, mensagem: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+        <span class="org-doc">"""Processa uma mensagem e retorna resposta."""</span>
+        <span class="org-keyword">self</span>.historico.append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: mensagem})
+        <span class="org-comment-delimiter"># </span><span class="org-comment">... l&#243;gica de processamento ...
+</span>        <span class="org-variable-name">resposta</span> <span class="org-operator">=</span> f<span class="org-string">"[</span>{<span class="org-keyword">self</span>.nome}<span class="org-string">] Resposta simulada"</span>
+        <span class="org-keyword">self</span>.historico.append({<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: resposta})
+        <span class="org-keyword">return</span> resposta
+
+    <span class="org-keyword">def</span> <span class="org-function-name">limpar_memoria</span>(<span class="org-keyword">self</span>) <span class="org-operator">-&gt;</span> <span class="org-constant">None</span>:
+        <span class="org-doc">"""Limpa o hist&#243;rico de conversa."""</span>
+        <span class="org-keyword">self</span>.<span class="org-variable-name">historico</span> <span class="org-operator">=</span> []
+        <span class="org-keyword">return</span> <span class="org-string">"Mem&#243;ria limpa"</span>
+
+    <span class="org-keyword">def</span> <span class="org-function-name">__repr__</span>(<span class="org-keyword">self</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+        <span class="org-keyword">return</span> f<span class="org-string">"Agente(nome='</span>{<span class="org-keyword">self</span>.nome}<span class="org-string">', mensagens=</span>{<span class="org-builtin">len</span>(<span class="org-keyword">self</span>.historico)}<span class="org-string">)"</span>
+
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Uso
+</span><span class="org-variable-name">agente</span> <span class="org-operator">=</span> Agente(<span class="org-string">"Assistente"</span>, <span class="org-string">"Voc&#234; &#233; um tutor de Python."</span>)
+<span class="org-builtin">print</span>(agente.conversar(<span class="org-string">"Ol&#225;!"</span>))  <span class="org-comment-delimiter"># </span><span class="org-comment">[Assistente] Resposta simulada
+</span><span class="org-builtin">print</span>(agente)  <span class="org-comment-delimiter"># </span><span class="org-comment">Agente(nome='Assistente', mensagens=2)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org444c8ad" class="outline-3">
+<h3 id="org444c8ad">Herança</h3>
+<div class="outline-text-3" id="text-org444c8ad">
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">class</span> <span class="org-type">AgenteComFerramentas</span>(Agente):
+    <span class="org-doc">"""Agente que pode usar ferramentas externas."""</span>
+
+    <span class="org-keyword">def</span> <span class="org-function-name">__init__</span>(<span class="org-keyword">self</span>, nome: <span class="org-builtin">str</span>, sistema: <span class="org-builtin">str</span> <span class="org-operator">=</span> <span class="org-string">"Voc&#234; &#233; um assistente."</span>, ferramentas: <span class="org-builtin">dict</span> <span class="org-operator">=</span> <span class="org-constant">None</span>):
+        <span class="org-builtin">super</span>().__init__(nome, sistema)
+        <span class="org-keyword">self</span>.<span class="org-variable-name">ferramentas</span> <span class="org-operator">=</span> ferramentas <span class="org-keyword">or</span> {}
+
+    <span class="org-keyword">def</span> <span class="org-function-name">adicionar_ferramenta</span>(<span class="org-keyword">self</span>, nome: <span class="org-builtin">str</span>, funcao: <span class="org-builtin">callable</span>) <span class="org-operator">-&gt;</span> <span class="org-constant">None</span>:
+        <span class="org-doc">"""Registra uma nova ferramenta."""</span>
+        <span class="org-keyword">self</span>.<span class="org-variable-name">ferramentas</span>[nome] <span class="org-operator">=</span> funcao
+
+    <span class="org-keyword">def</span> <span class="org-function-name">usar_ferramenta</span>(<span class="org-keyword">self</span>, nome: <span class="org-builtin">str</span>, <span class="org-operator">*</span>args, <span class="org-operator">**</span>kwargs):
+        <span class="org-doc">"""Executa uma ferramenta pelo nome."""</span>
+        <span class="org-keyword">if</span> nome <span class="org-keyword">not</span> <span class="org-keyword">in</span> <span class="org-keyword">self</span>.ferramentas:
+            <span class="org-keyword">raise</span> <span class="org-type">ValueError</span>(f<span class="org-string">"Ferramenta '</span>{nome}<span class="org-string">' n&#227;o encontrada"</span>)
+        <span class="org-keyword">return</span> <span class="org-keyword">self</span>.ferramentas[nome](<span class="org-operator">*</span>args, <span class="org-operator">**</span>kwargs)
+
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Uso
+</span><span class="org-keyword">def</span> <span class="org-function-name">calculadora</span>(expr: <span class="org-builtin">str</span>):
+    <span class="org-keyword">return</span> <span class="org-builtin">eval</span>(expr)  <span class="org-comment-delimiter"># </span><span class="org-comment">Simplificado - n&#227;o usar em produ&#231;&#227;o!
+</span>
+<span class="org-variable-name">agente</span> <span class="org-operator">=</span> AgenteComFerramentas(<span class="org-string">"Calc"</span>, ferramentas<span class="org-operator">=</span>{<span class="org-string">"calc"</span>: calculadora})
+<span class="org-builtin">print</span>(agente.usar_ferramenta(<span class="org-string">"calc"</span>, <span class="org-string">"2 + 2"</span>))  <span class="org-comment-delimiter"># </span><span class="org-comment">4</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgaffba20" class="outline-3">
+<h3 id="orgaffba20">@property e Encapsulamento</h3>
+<div class="outline-text-3" id="text-orgaffba20">
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">class</span> <span class="org-type">AgenteProtegido</span>:
+    <span class="org-keyword">def</span> <span class="org-function-name">__init__</span>(<span class="org-keyword">self</span>, nome: <span class="org-builtin">str</span>):
+        <span class="org-keyword">self</span>.<span class="org-variable-name">_nome</span> <span class="org-operator">=</span> nome  <span class="org-comment-delimiter"># </span><span class="org-comment">"Privado" por conven&#231;&#227;o
+</span>        <span class="org-keyword">self</span>.<span class="org-variable-name">__historico</span> <span class="org-operator">=</span> []  <span class="org-comment-delimiter"># </span><span class="org-comment">Name-mangled (mais privado)
+</span>
+    @<span class="org-builtin">property</span>
+    <span class="org-keyword">def</span> <span class="org-function-name">nome</span>(<span class="org-keyword">self</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+        <span class="org-doc">"""Getter para nome."""</span>
+        <span class="org-keyword">return</span> <span class="org-keyword">self</span>._nome
+
+    <span class="org-type">@nome.setter</span>
+    <span class="org-keyword">def</span> <span class="org-function-name">nome</span>(<span class="org-keyword">self</span>, valor: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-constant">None</span>:
+        <span class="org-doc">"""Setter com valida&#231;&#227;o."""</span>
+        <span class="org-keyword">if</span> <span class="org-keyword">not</span> valor.strip():
+            <span class="org-keyword">raise</span> <span class="org-type">ValueError</span>(<span class="org-string">"Nome n&#227;o pode ser vazio"</span>)
+        <span class="org-keyword">self</span>.<span class="org-variable-name">_nome</span> <span class="org-operator">=</span> valor
+
+    @<span class="org-builtin">property</span>
+    <span class="org-keyword">def</span> <span class="org-function-name">total_mensagens</span>(<span class="org-keyword">self</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">int</span>:
+        <span class="org-doc">"""Propriedade calculada."""</span>
+        <span class="org-keyword">return</span> <span class="org-builtin">len</span>(<span class="org-keyword">self</span>.__historico)
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgfcc2e34" class="outline-2">
+<h2 id="orgfcc2e34">Tratamento de Erros Robusto</h2>
+<div class="outline-text-2" id="text-orgfcc2e34">
+</div>
+<div id="outline-container-orge54b3f0" class="outline-3">
+<h3 id="orge54b3f0">Hierarquia de Exceções</h3>
+<div class="outline-text-3" id="text-orge54b3f0">
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Exce&#231;&#245;es embutidas comuns
+</span><span class="org-keyword">try</span>:
+    <span class="org-variable-name">resultado</span> <span class="org-operator">=</span> fazer_algo()
+<span class="org-keyword">except</span> <span class="org-type">ValueError</span> <span class="org-keyword">as</span> e:
+    <span class="org-builtin">print</span>(f<span class="org-string">"Valor inv&#225;lido: </span>{e}<span class="org-string">"</span>)
+<span class="org-keyword">except</span> <span class="org-type">TypeError</span> <span class="org-keyword">as</span> e:
+    <span class="org-builtin">print</span>(f<span class="org-string">"Tipo errado: </span>{e}<span class="org-string">"</span>)
+<span class="org-keyword">except</span> <span class="org-type">KeyError</span> <span class="org-keyword">as</span> e:
+    <span class="org-builtin">print</span>(f<span class="org-string">"Chave n&#227;o encontrada: </span>{e}<span class="org-string">"</span>)
+<span class="org-keyword">except</span> <span class="org-type">Exception</span> <span class="org-keyword">as</span> e:
+    <span class="org-builtin">print</span>(f<span class="org-string">"Erro inesperado: </span>{e}<span class="org-string">"</span>)
+    <span class="org-keyword">raise</span>  <span class="org-comment-delimiter"># </span><span class="org-comment">Re-lan&#231;a para debug</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org2bf052e" class="outline-3">
+<h3 id="org2bf052e">Criando Exceções Customizadas</h3>
+<div class="outline-text-3" id="text-org2bf052e">
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">class</span> <span class="org-type">ErroAgente</span>(<span class="org-type">Exception</span>):
+    <span class="org-doc">"""Exce&#231;&#227;o base para erros de agente."""</span>
+    <span class="org-keyword">pass</span>
+
+<span class="org-keyword">class</span> <span class="org-type">ErroFerramentaNaoEncontrada</span>(ErroAgente):
+    <span class="org-doc">"""Ferramenta solicitada n&#227;o existe."""</span>
+    <span class="org-keyword">pass</span>
+
+<span class="org-keyword">class</span> <span class="org-type">ErroLimiteTokens</span>(ErroAgente):
+    <span class="org-doc">"""Limite de tokens excedido."""</span>
+    <span class="org-keyword">pass</span>
+
+
+<span class="org-keyword">class</span> <span class="org-type">AgenteSeguro</span>:
+    <span class="org-keyword">def</span> <span class="org-function-name">usar_ferramenta</span>(<span class="org-keyword">self</span>, nome: <span class="org-builtin">str</span>):
+        <span class="org-keyword">if</span> nome <span class="org-keyword">not</span> <span class="org-keyword">in</span> <span class="org-keyword">self</span>.ferramentas:
+            <span class="org-keyword">raise</span> ErroFerramentaNaoEncontrada(f<span class="org-string">"Ferramenta '</span>{nome}<span class="org-string">' n&#227;o registrada"</span>)
+        <span class="org-comment-delimiter"># </span><span class="org-comment">... resto da l&#243;gica</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org4f17392" class="outline-3">
+<h3 id="org4f17392">Context Managers</h3>
+<div class="outline-text-3" id="text-org4f17392">
+<p>
+Padrão para gerenciar recursos automaticamente.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> contextlib <span class="org-keyword">import</span> contextmanager
+
+<span class="org-type">@contextmanager</span>
+<span class="org-keyword">def</span> <span class="org-function-name">agente_contexto</span>(nome: <span class="org-builtin">str</span>):
+    <span class="org-doc">"""Context manager para agente com cleanup autom&#225;tico."""</span>
+    <span class="org-variable-name">agente</span> <span class="org-operator">=</span> Agente(nome)
+    <span class="org-builtin">print</span>(f<span class="org-string">"[</span>{nome}<span class="org-string">] Iniciando sess&#227;o..."</span>)
+    <span class="org-keyword">try</span>:
+        <span class="org-keyword">yield</span> agente
+    <span class="org-keyword">finally</span>:
+        <span class="org-builtin">print</span>(f<span class="org-string">"[</span>{nome}<span class="org-string">] Encerrando sess&#227;o..."</span>)
+        agente.limpar_memoria()
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Uso
+</span><span class="org-keyword">with</span> agente_contexto(<span class="org-string">"TestBot"</span>) <span class="org-keyword">as</span> agente:
+    agente.conversar(<span class="org-string">"Ol&#225;!"</span>)
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Automaticamente faz cleanup ao sair</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgfc07d10" class="outline-2">
+<h2 id="orgfc07d10">Organização de Código</h2>
+<div class="outline-text-2" id="text-orgfc07d10">
+</div>
+<div id="outline-container-org8e5bbf5" class="outline-3">
+<h3 id="org8e5bbf5">Type Hints</h3>
+<div class="outline-text-3" id="text-org8e5bbf5">
+<p>
+Documentação de tipos para melhor legibilidade e debug.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> typing <span class="org-keyword">import</span> List, Dict, Optional, Union, Callable
+
+<span class="org-keyword">def</span> <span class="org-function-name">processar_mensagens</span>(
+    mensagens: List[Dict[<span class="org-builtin">str</span>, <span class="org-builtin">str</span>]],
+    max_tokens: <span class="org-builtin">int</span> <span class="org-operator">=</span> 1000,
+    modelo: <span class="org-builtin">str</span> <span class="org-operator">=</span> <span class="org-string">"gpt-4o-mini"</span>
+) <span class="org-operator">-&gt;</span> Dict[<span class="org-builtin">str</span>, Union[<span class="org-builtin">str</span>, <span class="org-builtin">int</span>]]:
+    <span class="org-doc">"""
+    Processa uma lista de mensagens.
+
+    Args:
+        mensagens: Lista de mensagens no formato OpenAI
+        max_tokens: M&#225;ximo de tokens na resposta
+        modelo: ID do modelo a usar
+
+    Returns:
+        Dicion&#225;rio com resposta e metadados
+    """</span>
+    <span class="org-comment-delimiter"># </span><span class="org-comment">...
+</span>    <span class="org-keyword">return</span> {<span class="org-string">"resposta"</span>: <span class="org-string">"..."</span>, <span class="org-string">"tokens_usados"</span>: 150}
+
+
+<span class="org-keyword">def</span> <span class="org-function-name">buscar_ferramenta</span>(
+    nome: <span class="org-builtin">str</span>,
+    registro: Dict[<span class="org-builtin">str</span>, Callable]
+) <span class="org-operator">-&gt;</span> Optional[Callable]:
+    <span class="org-doc">"""Busca uma ferramenta pelo nome. Retorna None se n&#227;o encontrar."""</span>
+    <span class="org-keyword">return</span> registro.get(nome)
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org51f20ac" class="outline-3">
+<h3 id="org51f20ac">Dataclasses</h3>
+<div class="outline-text-3" id="text-org51f20ac">
+<p>
+Classes focadas em dados com menos boilerplate.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> dataclasses <span class="org-keyword">import</span> dataclass, field
+<span class="org-keyword">from</span> typing <span class="org-keyword">import</span> List, Dict
+
+<span class="org-type">@dataclass</span>
+<span class="org-keyword">class</span> <span class="org-type">Mensagem</span>:
+    role: <span class="org-builtin">str</span>
+    content: <span class="org-builtin">str</span>
+
+    <span class="org-keyword">def</span> <span class="org-function-name">to_dict</span>(<span class="org-keyword">self</span>) <span class="org-operator">-&gt;</span> Dict[<span class="org-builtin">str</span>, <span class="org-builtin">str</span>]:
+        <span class="org-keyword">return</span> {<span class="org-string">"role"</span>: <span class="org-keyword">self</span>.role, <span class="org-string">"content"</span>: <span class="org-keyword">self</span>.content}
+
+<span class="org-type">@dataclass</span>
+<span class="org-keyword">class</span> <span class="org-type">AgenteConfig</span>:
+    nome: <span class="org-builtin">str</span>
+    <span class="org-variable-name">sistema</span>: <span class="org-builtin">str</span> <span class="org-operator">=</span> <span class="org-string">"Voc&#234; &#233; um assistente."</span>
+    <span class="org-variable-name">max_historico</span>: <span class="org-builtin">int</span> <span class="org-operator">=</span> 20
+    <span class="org-variable-name">ferramentas</span>: <span class="org-type">List</span>[<span class="org-builtin">str</span>] <span class="org-operator">=</span> field(default_factory<span class="org-operator">=</span><span class="org-builtin">list</span>)
+
+    <span class="org-keyword">def</span> <span class="org-function-name">__post_init__</span>(<span class="org-keyword">self</span>):
+        <span class="org-doc">"""Valida&#231;&#227;o ap&#243;s inicializa&#231;&#227;o."""</span>
+        <span class="org-keyword">if</span> <span class="org-keyword">not</span> <span class="org-keyword">self</span>.nome.strip():
+            <span class="org-keyword">raise</span> <span class="org-type">ValueError</span>(<span class="org-string">"Nome n&#227;o pode ser vazio"</span>)
+
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Uso
+</span><span class="org-variable-name">msg</span> <span class="org-operator">=</span> Mensagem(role<span class="org-operator">=</span><span class="org-string">"user"</span>, content<span class="org-operator">=</span><span class="org-string">"Ol&#225;!"</span>)
+<span class="org-variable-name">config</span> <span class="org-operator">=</span> AgenteConfig(<span class="org-string">"Bot"</span>, ferramentas<span class="org-operator">=</span>[<span class="org-string">"calc"</span>, <span class="org-string">"wiki"</span>])
+<span class="org-builtin">print</span>(config)  <span class="org-comment-delimiter"># </span><span class="org-comment">AgenteConfig(nome='Bot', sistema='...', max_historico=20, ferramentas=['calc', 'wiki'])</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgfd92e66" class="outline-3">
+<h3 id="orgfd92e66">Modularização</h3>
+<div class="outline-text-3" id="text-orgfd92e66">
+<p>
+Estrutura recomendada para projetos maiores:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">meu_agente/
+&#9500;&#9472;&#9472; __init__.py
+&#9500;&#9472;&#9472; agente.py          # Classe principal Agente
+&#9500;&#9472;&#9472; ferramentas/
+&#9474;   &#9500;&#9472;&#9472; __init__.py
+&#9474;   &#9500;&#9472;&#9472; calculadora.py
+&#9474;   &#9500;&#9472;&#9472; wikipedia.py
+&#9474;   &#9492;&#9472;&#9472; horario.py
+&#9500;&#9472;&#9472; memoria.py         # Gerenciamento de hist&#243;rico
+&#9500;&#9472;&#9472; config.py          # Configura&#231;&#245;es centralizadas
+&#9492;&#9472;&#9472; main.py            # Ponto de entrada
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgdf5366f" class="outline-2">
+<h2 id="orgdf5366f">Padrões Úteis para Agentes</h2>
+<div class="outline-text-2" id="text-orgdf5366f">
+</div>
+<div id="outline-container-orgfef3fe8" class="outline-3">
+<h3 id="orgfef3fe8">Singleton para Memória Compartilhada</h3>
+<div class="outline-text-3" id="text-orgfef3fe8">
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">class</span> <span class="org-type">MemoriaGlobal</span>:
+    <span class="org-variable-name">_instancia</span> <span class="org-operator">=</span> <span class="org-constant">None</span>
+
+    <span class="org-keyword">def</span> <span class="org-function-name">__new__</span>(cls):
+        <span class="org-keyword">if</span> cls._instancia <span class="org-keyword">is</span> <span class="org-constant">None</span>:
+            cls.<span class="org-variable-name">_instancia</span> <span class="org-operator">=</span> <span class="org-builtin">super</span>().__new__(cls)
+            cls._instancia.<span class="org-variable-name">_dados</span> <span class="org-operator">=</span> {}
+        <span class="org-keyword">return</span> cls._instancia
+
+    <span class="org-keyword">def</span> <span class="org-function-name">salvar</span>(<span class="org-keyword">self</span>, chave: <span class="org-builtin">str</span>, valor: <span class="org-builtin">any</span>) <span class="org-operator">-&gt;</span> <span class="org-constant">None</span>:
+        <span class="org-keyword">self</span>.<span class="org-variable-name">_dados</span>[chave] <span class="org-operator">=</span> valor
+
+    <span class="org-keyword">def</span> <span class="org-function-name">recuperar</span>(<span class="org-keyword">self</span>, chave: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">any</span>:
+        <span class="org-keyword">return</span> <span class="org-keyword">self</span>._dados.get(chave)
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Uso
+</span><span class="org-variable-name">mem1</span> <span class="org-operator">=</span> MemoriaGlobal()
+<span class="org-variable-name">mem2</span> <span class="org-operator">=</span> MemoriaGlobal()
+mem1.salvar(<span class="org-string">"teste"</span>, 123)
+<span class="org-builtin">print</span>(mem2.recuperar(<span class="org-string">"teste"</span>))  <span class="org-comment-delimiter"># </span><span class="org-comment">123 - mesma inst&#226;ncia!</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org0cfd735" class="outline-3">
+<h3 id="org0cfd735">Factory Pattern para Agentes</h3>
+<div class="outline-text-3" id="text-org0cfd735">
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">class</span> <span class="org-type">AgenteFactory</span>:
+    <span class="org-doc">"""Factory para criar diferentes tipos de agentes."""</span>
+
+    @<span class="org-builtin">staticmethod</span>
+    <span class="org-keyword">def</span> <span class="org-function-name">criar_assistente</span>() <span class="org-operator">-&gt;</span> AgenteComFerramentas:
+        <span class="org-keyword">return</span> AgenteComFerramentas(
+            nome<span class="org-operator">=</span><span class="org-string">"Assistente"</span>,
+            sistema<span class="org-operator">=</span><span class="org-string">"Voc&#234; &#233; um assistente &#250;til e educado."</span>,
+            ferramentas<span class="org-operator">=</span>{<span class="org-string">"calc"</span>: calculadora, <span class="org-string">"horario"</span>: obter_horario}
+        )
+
+    @<span class="org-builtin">staticmethod</span>
+    <span class="org-keyword">def</span> <span class="org-function-name">criar_tutor_python</span>() <span class="org-operator">-&gt;</span> AgenteComFerramentas:
+        <span class="org-keyword">return</span> AgenteComFerramentas(
+            nome<span class="org-operator">=</span><span class="org-string">"TutorPython"</span>,
+            sistema<span class="org-operator">=</span><span class="org-string">"Voc&#234; &#233; um professor de Python paciente e did&#225;tico."</span>,
+            ferramentas<span class="org-operator">=</span>{<span class="org-string">"calc"</span>: calculadora}
+        )
+
+    @<span class="org-builtin">staticmethod</span>
+    <span class="org-keyword">def</span> <span class="org-function-name">criar_do_tipo</span>(tipo: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> AgenteComFerramentas:
+        <span class="org-doc">"""Cria agente baseado em string."""</span>
+        <span class="org-variable-name">criadores</span> <span class="org-operator">=</span> {
+            <span class="org-string">"assistente"</span>: AgenteFactory.criar_assistente,
+            <span class="org-string">"tutor_python"</span>: AgenteFactory.criar_tutor_python,
+        }
+        <span class="org-keyword">if</span> tipo <span class="org-keyword">not</span> <span class="org-keyword">in</span> criadores:
+            <span class="org-keyword">raise</span> <span class="org-type">ValueError</span>(f<span class="org-string">"Tipo de agente desconhecido: </span>{tipo}<span class="org-string">"</span>)
+        <span class="org-keyword">return</span> criadores[tipo]()
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Uso
+</span><span class="org-variable-name">agente</span> <span class="org-operator">=</span> AgenteFactory.criar_do_tipo(<span class="org-string">"tutor_python"</span>)
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgd608b51" class="outline-2">
+<h2 id="orgd608b51">Exercícios Práticos</h2>
+<div class="outline-text-2" id="text-orgd608b51">
+</div>
+<div id="outline-container-org669f7c8" class="outline-3">
+<h3 id="org669f7c8">Exercício 1: Agente com Config</h3>
+<div class="outline-text-3" id="text-org669f7c8">
+<p>
+Crie uma classe AgenteConfiguravel que aceita configurações via dataclass:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-type">@dataclass</span>
+<span class="org-keyword">class</span> <span class="org-type">Config</span>:
+    nome: <span class="org-builtin">str</span>
+    sistema: <span class="org-builtin">str</span>
+    <span class="org-variable-name">max_tokens</span>: <span class="org-builtin">int</span> <span class="org-operator">=</span> 1000
+    <span class="org-variable-name">temperatura</span>: <span class="org-builtin">float</span> <span class="org-operator">=</span> 0.7
+
+<span class="org-keyword">class</span> <span class="org-type">AgenteConfiguravel</span>:
+    <span class="org-keyword">def</span> <span class="org-function-name">__init__</span>(<span class="org-keyword">self</span>, config: Config):
+        <span class="org-comment-delimiter"># </span><span class="org-comment">Implemente
+</span>        <span class="org-keyword">pass</span>
+
+    <span class="org-keyword">def</span> <span class="org-function-name">conversar</span>(<span class="org-keyword">self</span>, mensagem: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+        <span class="org-comment-delimiter"># </span><span class="org-comment">Implemente
+</span>        <span class="org-keyword">pass</span>
+</pre>
+</div>
+
+<div class="DETAILS" id="orge36c6b0">
+<p>
+📝 Gabarito
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> dataclasses <span class="org-keyword">import</span> dataclass
+
+<span class="org-type">@dataclass</span>
+<span class="org-keyword">class</span> <span class="org-type">Config</span>:
+    nome: <span class="org-builtin">str</span>
+    sistema: <span class="org-builtin">str</span>
+    <span class="org-variable-name">max_tokens</span>: <span class="org-builtin">int</span> <span class="org-operator">=</span> 1000
+    <span class="org-variable-name">temperatura</span>: <span class="org-builtin">float</span> <span class="org-operator">=</span> 0.7
+
+<span class="org-keyword">class</span> <span class="org-type">AgenteConfiguravel</span>:
+    <span class="org-keyword">def</span> <span class="org-function-name">__init__</span>(<span class="org-keyword">self</span>, config: Config):
+        <span class="org-keyword">if</span> <span class="org-keyword">not</span> config.nome.strip():
+            <span class="org-keyword">raise</span> <span class="org-type">ValueError</span>(<span class="org-string">"Nome n&#227;o pode ser vazio"</span>)
+        <span class="org-keyword">self</span>.<span class="org-variable-name">config</span> <span class="org-operator">=</span> config
+        <span class="org-keyword">self</span>.<span class="org-variable-name">historico</span>: <span class="org-builtin">list</span> <span class="org-operator">=</span> []
+
+    <span class="org-keyword">def</span> <span class="org-function-name">conversar</span>(<span class="org-keyword">self</span>, mensagem: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+        <span class="org-keyword">self</span>.historico.append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: mensagem})
+        <span class="org-variable-name">resposta</span> <span class="org-operator">=</span> f<span class="org-string">"[</span>{<span class="org-keyword">self</span>.config.nome}<span class="org-string">] Processando com temp=</span>{<span class="org-keyword">self</span>.config.temperatura}<span class="org-string">"</span>
+        <span class="org-keyword">self</span>.historico.append({<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: resposta})
+        <span class="org-keyword">return</span> resposta
+
+    @<span class="org-builtin">property</span>
+    <span class="org-keyword">def</span> <span class="org-function-name">total_mensagens</span>(<span class="org-keyword">self</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">int</span>:
+        <span class="org-keyword">return</span> <span class="org-builtin">len</span>(<span class="org-keyword">self</span>.historico)
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Uso
+</span><span class="org-variable-name">config</span> <span class="org-operator">=</span> Config(nome<span class="org-operator">=</span><span class="org-string">"TestBot"</span>, sistema<span class="org-operator">=</span><span class="org-string">"Seja &#250;til."</span>, temperatura<span class="org-operator">=</span>0.5)
+<span class="org-variable-name">agente</span> <span class="org-operator">=</span> AgenteConfiguravel(config)
+<span class="org-builtin">print</span>(agente.conversar(<span class="org-string">"Ol&#225;!"</span>))
+</pre>
+</div>
+
+</div>
+</div>
+</div>
+<div id="outline-container-orgf4035ec" class="outline-3">
+<h3 id="orgf4035ec">Exercício 2: Repository Pattern para Histórico</h3>
+<div class="outline-text-3" id="text-orgf4035ec">
+<p>
+Implemente um RepositorioHistorico que salva/recupera mensagens:
+</p>
+
+<div class="DETAILS" id="orga344537">
+<p>
+📝 Gabarito
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">import</span> json
+<span class="org-keyword">from</span> pathlib <span class="org-keyword">import</span> Path
+<span class="org-keyword">from</span> typing <span class="org-keyword">import</span> List, Dict
+
+<span class="org-keyword">class</span> <span class="org-type">RepositorioHistorico</span>:
+    <span class="org-keyword">def</span> <span class="org-function-name">__init__</span>(<span class="org-keyword">self</span>, arquivo: <span class="org-builtin">str</span> <span class="org-operator">=</span> <span class="org-string">"historico.json"</span>):
+        <span class="org-keyword">self</span>.<span class="org-variable-name">arquivo</span> <span class="org-operator">=</span> Path(arquivo)
+
+    <span class="org-keyword">def</span> <span class="org-function-name">salvar</span>(<span class="org-keyword">self</span>, mensagens: List[Dict[<span class="org-builtin">str</span>, <span class="org-builtin">str</span>]]) <span class="org-operator">-&gt;</span> <span class="org-constant">None</span>:
+        <span class="org-keyword">with</span> <span class="org-builtin">open</span>(<span class="org-keyword">self</span>.arquivo, <span class="org-string">'w'</span>, encoding<span class="org-operator">=</span><span class="org-string">'utf-8'</span>) <span class="org-keyword">as</span> f:
+            json.dump(mensagens, f, ensure_ascii<span class="org-operator">=</span><span class="org-constant">False</span>, indent<span class="org-operator">=</span>2)
+
+    <span class="org-keyword">def</span> <span class="org-function-name">carregar</span>(<span class="org-keyword">self</span>) <span class="org-operator">-&gt;</span> List[Dict[<span class="org-builtin">str</span>, <span class="org-builtin">str</span>]]:
+        <span class="org-keyword">if</span> <span class="org-keyword">not</span> <span class="org-keyword">self</span>.arquivo.exists():
+            <span class="org-keyword">return</span> []
+        <span class="org-keyword">with</span> <span class="org-builtin">open</span>(<span class="org-keyword">self</span>.arquivo, <span class="org-string">'r'</span>, encoding<span class="org-operator">=</span><span class="org-string">'utf-8'</span>) <span class="org-keyword">as</span> f:
+            <span class="org-keyword">return</span> json.load(f)
+
+    <span class="org-keyword">def</span> <span class="org-function-name">limpar</span>(<span class="org-keyword">self</span>) <span class="org-operator">-&gt;</span> <span class="org-constant">None</span>:
+        <span class="org-keyword">if</span> <span class="org-keyword">self</span>.arquivo.exists():
+            <span class="org-keyword">self</span>.arquivo.unlink()
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Uso
+</span><span class="org-variable-name">repo</span> <span class="org-operator">=</span> RepositorioHistorico()
+repo.salvar([{<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Ol&#225;"</span>}])
+<span class="org-variable-name">mensagens</span> <span class="org-operator">=</span> repo.carregar()
+<span class="org-builtin">print</span>(mensagens)
+</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgcdac434" class="outline-2">
+<h2 id="orgcdac434">Próxima Semana</h2>
+<div class="outline-text-2" id="text-orgcdac434">
+<p>
+<b><b>Estrutura de Agente:</b></b> Vamos aprender a montar a arquitetura completa de um agente, conectando LLM, memória e ferramentas.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

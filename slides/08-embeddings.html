@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Embeddings e Similaridade</title>
+<meta name="author" content="Lucas S. Vieira"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/theme/night.css" id="theme"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/npm/reveal.js@4/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide" data-background="./slide_08.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Embeddings e Similaridade</h2><br/><p style="font-size:0.85em;opacity:0.8;">Texto como números</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+</section>
+<section>
+<section id="slide-orge904aeb">
+<h2 id="orge904aeb">O que são Embeddings?</h2>
+<p class="fragment (appear)">
+Imagine que cada palavra ou texto pode ser representado por uma lista de números.
+Esses números capturam o <b>significado</b> do texto.
+</p>
+
+<blockquote  class="fragment (appear)">
+<p>
+"Embeddings são como coordenadas num mapa de significados."
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org5633746">
+<h2 id="org5633746">Exemplo visual</h2>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Texto</th>
+<th scope="col" class="org-left">Vetor (simplificado)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">"gato"</td>
+<td class="org-left">[0.2, 0.8, 0.1]</td>
+</tr>
+
+<tr>
+<td class="org-left">"cachorro"</td>
+<td class="org-left">[0.3, 0.7, 0.2]</td>
+</tr>
+
+<tr>
+<td class="org-left">"carro"</td>
+<td class="org-left">[0.9, 0.1, 0.3]</td>
+</tr>
+</tbody>
+</table>
+
+<p class="fragment (appear)">
+"gato" e "cachorro" são mais próximos!
+"carro" está longe.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgd4b8266">
+<h2 id="orgd4b8266">Similaridade por Cosseno</h2>
+<p class="fragment (appear)">
+<b>Conexão com Geometria Analítica!</b>
+</p>
+
+<p>
+Você já estudou ângulos entre vetores?
+A similaridade por cosseno usa exatamente isso.
+</p>
+</section>
+<section id="slide-orgf8331cb">
+<h3 id="orgf8331cb">Fórmula:</h3>
+<p>
+\[\cos(\theta) = \frac{\vec{A} \cdot \vec{B}}{|\vec{A}| \cdot |\vec{B}|}\]
+</p>
+</section>
+<section id="slide-org361f2a1">
+<h3 id="org361f2a1">Interpretação:</h3>
+<ul>
+<li class="fragment appear">ângulo = 0° → vetores iguais → cosseno = 1 → <b>muito similares</b></li>
+<li class="fragment appear">ângulo = 90° → vetores perpendiculares → cosseno = 0 → <b>nada similares</b></li>
+<li class="fragment appear">ângulo = 180° → vetores opostos → cosseno = -1 → <b>opostos</b></li>
+
+</ul>
+</section>
+<section id="slide-orga5b8421">
+<h3 id="orga5b8421">Por que funciona?</h3>
+<ul>
+<li class="fragment appear">Textos com significado parecido = vetores na mesma direção</li>
+<li class="fragment appear">Textos com significado diferente = vetores em direções diferentes</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org534d367">
+<h2 id="org534d367">Por que isso importa?</h2>
+<p class="fragment (appear)">
+Embeddings são a base para:
+</p>
+
+<ul>
+<li><b><b>Busca semântica:</b></b> encontrar textos parecidos</li>
+<li><b><b>RAG:</b></b> buscar documentos relevantes</li>
+<li><b><b>Tradução:</b></b> entender significados entre idiomas</li>
+<li><b><b>Classificação:</b></b> agrupar textos por tema</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org3ab2c7a">
+<h2 id="org3ab2c7a">Prática</h2>
+<div class="org-src-container">
+
+<pre   ><code class="python" >from sentence_transformers import SentenceTransformer
+
+# Carregar modelo
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+# Converter textos em embeddings
+textos = ["Eu amo gatos", "Eu adoro cachorros", "O carro é vermelho"]
+embeddings = model.encode(textos)
+
+# Calcular similaridade
+from numpy import dot
+from numpy.linalg import norm
+
+cos_sim = lambda a, b: dot(a, b) / (norm(a) * norm(b))
+</code></pre>
+</div>
+</section>
+<section id="slide-org4790bb3">
+<h3 id="org4790bb3">Resultado esperado:</h3>
+<div class="org-src-container">
+
+<pre   ><code class="python" >print(f"gatos vs cachorros: {cos_sim(embeddings[0], embeddings[1]):.3f}")
+# ~0.7 (parecidos)
+
+print(f"gatos vs carro: {cos_sim(embeddings[0], embeddings[2]):.3f}")
+# ~0.1 (diferentes)
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org724293f">
+<h2 id="org724293f">Para lembrar</h2>
+<ol>
+<li class="fragment appear">Embeddings = texto transformado em números</li>
+<li class="fragment appear">Similaridade por cosseno = ângulo entre vetores</li>
+<li class="fragment appear">Textos parecidos = vetores na mesma direção</li>
+<li class="fragment appear">Conexão com geometria analítica no seu curso</li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-orgb3b08e5">
+<h2 id="orgb3b08e5">Próxima semana</h2>
+<p class="fragment (appear)">
+<b><b>RAG:</b></b> vamos usar embeddings para criar
+um agente que "lê" documentos!
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org59d59f9">
+<h2 id="org59d59f9">Perguntas?</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
+
+});
+
+</script>
+</body>
+</html>

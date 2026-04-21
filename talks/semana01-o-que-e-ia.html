@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>O que é IA hoje?</title>
+<meta name="author" content="Lucas S. Vieira"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/serif.css" id="theme"/>
+
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/npm/reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1>O que é IA hoje?</h1><br/><h2>Guilda de IA - Semana 1</h2><br/><h3>Introdução à IA Generativa</h3>
+</section>
+<section>
+<section id="slide-org3395b24">
+<h2 id="org3395b24">Quem sou eu?</h2>
+<ul>
+<li class="fragment appear">Lucas S. Vieira</li>
+<li class="fragment appear">Desenvolvedor, pesquisador, entusiasta de IA</li>
+<li class="fragment appear">Vou facilitar essa jornada com vocês</li>
+
+</ul>
+
+<p class="fragment (appear)">
+<span class="underline">Esta aula é para iniciantes. Nenhum pré-requisito técnico.</span>
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org7c10ef7">
+<h2 id="org7c10ef7">O que vamos aprender hoje?</h2>
+<ul>
+<li class="fragment appear">O que é IA generativa (e o que NÃO é)</li>
+<li class="fragment appear">LLMs vs Machine Learning tradicional</li>
+<li class="fragment appear">Alucinações: a IA inventa coisas</li>
+<li class="fragment appear">Limites: a IA não sabe de tudo</li>
+<li class="fragment appear">Demo: ask-ai no terminal</li>
+
+</ul>
+
+</section>
+<section id="slide-org7c10ef7-split">
+
+<p class="fragment (appear)">
+<b>Objetivo:</b> Entender o que é essa "IA" que todo mundo fala
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgdba928b">
+<h2 id="orgdba928b">IA Generativa: O que é?</h2>
+<blockquote  class="fragment (appear)">
+<p>
+"IA que CRIA coisas"
+</p>
+</blockquote>
+
+<ul>
+<li class="fragment appear">Texto (ChatGPT, Claude, Gemini)</li>
+<li class="fragment appear">Imagens (DALL-E, Midjourney, Stable Diffusion)</li>
+<li class="fragment appear">Código (Copilot, Cursor)</li>
+<li class="fragment appear">Áudio, vídeo, música&#x2026;</li>
+
+</ul>
+
+</section>
+<section id="slide-orgdba928b-split">
+
+<p class="fragment (appear)">
+<span class="underline">Mas espera&#x2026; como isso funciona?</span>
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org651411f">
+<h2 id="org651411f">LLM: Large Language Model</h2>
+<p class="fragment (appear)">
+LLM = Modelo de Linguagem Grande
+</p>
+
+<blockquote  class="fragment (appear)">
+<p>
+"Um LLM é como um bibliotecário que leu toda a internet e tenta adivinhar a próxima palavra."
+</p>
+</blockquote>
+
+<p class="fragment (appear)">
+Não é mágica. É <b>probabilidade</b>.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org5f52e2b">
+<h2 id="org5f52e2b">Como funciona (simplificado)</h2>
+<ol>
+<li class="fragment appear">Tokenização: texto vira números</li>
+<li class="fragment appear">Embeddings: cada palavra vira um vetor</li>
+<li class="fragment appear">Attention: o modelo "presta atenção" nas relações</li>
+<li class="fragment appear">Predição: qual a próxima palavra mais provável?</li>
+
+</ol>
+
+</section>
+<section id="slide-org5f52e2b-split">
+
+<pre  class="fragment (appear)" >
+Input: "O céu é"
+
+[processa bilhões de parâmetros]
+
+Output: "azul" (com 94% de probabilidade)
+</pre>
+</section>
+</section>
+<section>
+<section id="slide-orga16b2ef">
+<h2 id="orga16b2ef">LLM vs Machine Learning Tradicional</h2>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="fragment (appear)">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Machine Learning Clássico</th>
+<th scope="col" class="org-left">LLM (Generativo)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Classifica dados</td>
+<td class="org-left">Gera conteúdo</td>
+</tr>
+
+<tr>
+<td class="org-left">Treinado para UMA tarefa</td>
+<td class="org-left">Treinado para TUDO</td>
+</tr>
+
+<tr>
+<td class="org-left">Precisa de dados rotulados</td>
+<td class="org-left">Aprende sozinho</td>
+</tr>
+
+<tr>
+<td class="org-left">Explicável</td>
+<td class="org-left">Caixa preta</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section id="slide-orga16b2ef-split">
+
+<blockquote  class="fragment (appear)">
+<p>
+"ML clássico: detector de spam\nLLM: escreve um email"
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org676e337">
+<h2 id="org676e337">Alucinações: A IA inventa coisas</h2>
+<p class="fragment (appear)">
+<span class="underline">Demo ao vivo</span>
+</p>
+
+<p class="fragment (appear)">
+Vamos perguntar sobre algo que não existe:
+</p>
+
+<pre  class="fragment (appear)" >
+"Quem é João da Silva Pereira Costa,
+o inventor do motor a vapor brasileiro?"
+</pre>
+
+</section>
+<section id="slide-org676e337-split">
+
+<p class="fragment (appear)">
+O que acontece?
+</p>
+
+<ul>
+<li class="fragment appear">A IA <b>vai responder</b></li>
+<li class="fragment appear">Com detalhes convincentes</li>
+<li class="fragment appear">Mas a pessoa <b>não existe</b></li>
+
+</ul>
+
+<blockquote  class="fragment (appear)">
+<p>
+"Alucinação = respostas confiantes, mas inventadas"
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org897c0fc">
+<h2 id="org897c0fc">Por que isso acontece?</h2>
+<p class="fragment (appear)">
+LLMs não sabem "verdade" — sabem <b>probabilidade</b>.
+</p>
+
+<ul>
+<li class="fragment appear">Treinado para completar texto</li>
+<li class="fragment appear">Não tem acesso à realidade</li>
+<li class="fragment appear">"João Costa" parece uma resposta plausível</li>
+
+</ul>
+
+</section>
+<section id="slide-org897c0fc-split">
+
+<blockquote  class="fragment (appear)">
+<p>
+"LLMs não mentem. Eles <b>confabulam</b>."
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-orge95623c">
+<h2 id="orge95623c">Limites da IA</h2>
+<p class="fragment (appear)">
+A IA NÃO sabe:
+</p>
+<ul>
+<li>O que é verdade ou mentira</li>
+<li>Seu contexto (a menos que você fale)</li>
+<li>Coisas que não estavam no treino</li>
+<li>Matemática complexa (confia na probabilidade)</li>
+
+</ul>
+
+</section>
+<section id="slide-orge95623c-split">
+
+<blockquote  class="fragment (appear)">
+<p>
+"IA é um estudante que leu tudo, mas não entende tudo."
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org93128b3">
+<h2 id="org93128b3">Como testar?</h2>
+<p class="fragment (appear)">
+<span class="underline">Sempre verifique:</span>
+</p>
+<ul>
+<li>Fontes confiáveis</li>
+<li>Cross-check com outras fontes</li>
+<li>Se importa se está certo</li>
+
+</ul>
+
+<blockquote  class="fragment (appear)">
+<p>
+"IA é ferramenta, não oráculo."
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org33488df">
+<h2 id="org33488df">Demo: ask-ai</h2>
+<p class="fragment (appear)">
+Vou mostrar um agente rodando local no terminal.
+</p>
+
+<pre  class="fragment (appear)" >
+$ ask-ai "O que é um agente de IA?"
+
+Um agente de IA é um sistema que pode tomar decisões
+autônomas e executar ações para alcançar um objetivo...
+</pre>
+
+</section>
+<section id="slide-org33488df-split">
+
+<p class="fragment (appear)">
+<span class="underline">Esse curso vai ensinar vocês a construir isso.</span>
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org7eac562">
+<h2 id="org7eac562">Modelos públicos para experimentar</h2>
+<p class="fragment (appear)">
+Sem login:
+</p>
+<ul>
+<li><a href="https://huggingface.co/chat/">Hugging Face Chat</a> - modelos open-source</li>
+<li><a href="https://poe.com/">Poe</a> - vários modelos</li>
+
+</ul>
+
+<p class="fragment (appear)">
+Com login gratuito:
+</p>
+<ul>
+<li><a href="https://chat.openai.com/">ChatGPT</a> - GPT</li>
+<li><a href="https://gemini.google.com/">Gemini</a> - Google</li>
+<li><a href="https://claude.ai/">Claude</a> - Anthropic</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org5b4696b">
+<h2 id="org5b4696b">Experimentação livre</h2>
+<p class="fragment (appear)">
+<span class="underline">15 minutos para explorar</span>
+</p>
+
+<p class="fragment (appear)">
+Tentem:
+</p>
+<ol>
+<li>Perguntas factuais</li>
+<li>Perguntas criativas</li>
+<li>Perguntas sobre algo que não existe (alucinação!)</li>
+<li>Peçam resumos, traduções, código</li>
+
+</ol>
+
+<p class="fragment (appear)">
+Anotem suas observações. Vamos discutir depois.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orge02101b">
+<h2 id="orge02101b">Resumo da aula</h2>
+<ol>
+<li class="fragment appear"><b>IA Generativa</b> = IA que cria</li>
+<li class="fragment appear"><b>LLM</b> = modelo que prediz próximas palavras</li>
+<li class="fragment appear"><b>Alucinação</b> = respostas inventadas com confiança</li>
+<li class="fragment appear"><b>Sempre verifique</b> = IA não sabe verdade</li>
+<li class="fragment appear"><b>Modelos públicos</b> = experimentem!</li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-org5caa228">
+<h2 id="org5caa228">Para a próxima aula</h2>
+<ul>
+<li class="fragment appear">Tentem usar pelo menos 2 modelos diferentes</li>
+<li class="fragment appear">Anotem: 1 acerto, 1 erro, 1 alucinação</li>
+<li class="fragment appear">Pensem: o que vocês querem que a IA ajude?</li>
+
+</ul>
+
+</section>
+<section id="slide-org5caa228-split">
+
+<p class="fragment (appear)">
+<b>Semana 2:</b> Prompting — como falar com IA
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org9e6b08c">
+<h2 id="org9e6b08c">Perguntas?</h2>
+<p class="fragment (appear)">
+É agora. Perguntem tudo.
+</p>
+
+</section>
+<section id="slide-org9e6b08c-split">
+
+<div class="org-center">
+<p>
+Obrigado!
+</p>
+
+<p>
+<a href="https://luksamuk.codes">luksamuk.codes</a>
+</p>
+</div>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+,
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } }]
+
+});
+
+</script>
+</body>
+</html>

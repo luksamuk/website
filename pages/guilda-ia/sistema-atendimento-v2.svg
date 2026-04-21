@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 520" font-family="'Segoe UI', system-ui, sans-serif">
+<defs>
+  <style>
+    .title { font-size: 18px; fill: #e0e0e0; font-weight: bold; }
+    .subtitle { font-size: 11px; fill: #b0b0c0; }
+    .node-title { font-size: 12px; fill: #e0e0e0; font-weight: bold; }
+    .node-sub { font-size: 10px; fill: #c0d0e0; }
+    .node-detail { font-size: 10px; fill: #b0b0c0; }
+    .edge-label { font-size: 10px; fill: #e0e0e0; font-weight: bold; }
+    .grid { stroke: #333355; stroke-width: 0.5; }
+  </style>
+  <marker id="arrCyan" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+    <polygon points="0 0, 8 3, 0 6" fill="#22d3ee" opacity="0.8"/>
+  </marker>
+  <marker id="arrEmerald" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+    <polygon points="0 0, 8 3, 0 6" fill="#34d399" opacity="0.8"/>
+  </marker>
+  <marker id="arrAmber" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+    <polygon points="0 0, 8 3, 0 6" fill="#fbbf24" opacity="0.8"/>
+  </marker>
+  <marker id="arrRose" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+    <polygon points="0 0, 8 3, 0 6" fill="#fb7185" opacity="0.8"/>
+  </marker>
+  <marker id="arrViolet" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+    <polygon points="0 0, 8 3, 0 6" fill="#a78bfa" opacity="0.8"/>
+  </marker>
+  <marker id="arrSlate" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+    <polygon points="0 0, 8 3, 0 6" fill="#94a3b8" opacity="0.8"/>
+  </marker>
+</defs>
+
+<!-- Background -->
+<rect width="660" height="520" fill="#1a1a2e" rx="8"/>
+
+<!-- Subtle grid -->
+<line x1="0" y1="60" x2="660" y2="60" class="grid"/>
+<line x1="0" y1="130" x2="660" y2="130" class="grid"/>
+<line x1="0" y1="195" x2="660" y2="195" class="grid"/>
+<line x1="0" y1="260" x2="660" y2="260" class="grid"/>
+<line x1="0" y1="325" x2="660" y2="325" class="grid"/>
+<line x1="0" y1="390" x2="660" y2="390" class="grid"/>
+<line x1="0" y1="455" x2="660" y2="455" class="grid"/>
+
+<!-- Title -->
+<text x="330" y="28" class="title" text-anchor="middle">Sistema de Atendimento com Agente IA</text>
+<text x="330" y="44" class="subtitle" text-anchor="middle">Arquitetura RAG + Tools — Fonte: sistema-atendimento.svg</text>
+
+<!-- ═══ FLOW COLUMN (center) ═══ -->
+<!-- Vertical flow arrows connecting the main pipeline -->
+
+<!-- ═══ NODES ═══ -->
+
+<!-- 1. Usuário — Frontend/IO -->
+<rect x="220" y="60" width="220" height="50" rx="6" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+<text x="330" y="82" class="node-title" text-anchor="middle">Usuário</text>
+<text x="330" y="99" class="node-sub" text-anchor="middle">Envia mensagem</text>
+
+<!-- 2. WhatsApp API — External -->
+<rect x="210" y="135" width="240" height="50" rx="6" fill="rgba(30,41,59,0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="330" y="157" class="node-title" text-anchor="middle">WhatsApp API</text>
+<text x="330" y="174" class="node-sub" text-anchor="middle">Canal de entrada</text>
+
+<!-- 3. Memória — Agent/AI -->
+<rect x="185" y="210" width="290" height="50" rx="6" fill="rgba(120,53,15,0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+<text x="330" y="232" class="node-title" text-anchor="middle">Memória</text>
+<text x="330" y="249" class="node-sub" text-anchor="middle">Recupera contexto da conversa</text>
+
+<!-- 4. Pergunta — Frontend/IO -->
+<rect x="225" y="285" width="210" height="44" rx="6" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+<text x="330" y="313" class="node-title" text-anchor="middle">Pergunta</text>
+
+<!-- 5. Embedding — Backend/Processing -->
+<rect x="225" y="354" width="210" height="44" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+<text x="330" y="382" class="node-title" text-anchor="middle">Embedding</text>
+
+<!-- 6. Vector DB — Database/Storage -->
+<rect x="195" y="420" width="270" height="55" rx="6" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="330" y="444" class="node-title" text-anchor="middle">Vector DB</text>
+<text x="330" y="462" class="node-sub" text-anchor="middle">Busca em PDFs indexados</text>
+
+<!-- ═══ SIDE NODES ═══ -->
+
+<!-- Documentos (left of Vector DB) — Database/Storage -->
+<rect x="30" y="420" width="140" height="55" rx="6" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="100" y="444" class="node-title" text-anchor="middle">Documentos</text>
+<text x="100" y="462" class="node-sub" text-anchor="middle">PDFs, bases</text>
+
+<!-- LLM → Resposta? (right side, diamond-like) — Agent/AI -->
+<rect x="490" y="185" width="145" height="55" rx="6" fill="rgba(120,53,15,0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+<text x="562" y="207" class="node-title" text-anchor="middle">LLM</text>
+<text x="562" y="225" class="node-sub" text-anchor="middle">→ Resposta?</text>
+
+<!-- Resposta (bottom-right) — Frontend/IO with success color -->
+<rect x="490" y="340" width="145" height="50" rx="6" fill="rgba(6,78,59,0.5)" stroke="#34d399" stroke-width="1.5"/>
+<text x="562" y="362" class="node-title" text-anchor="middle">Resposta</text>
+<text x="562" y="380" class="node-sub" text-anchor="middle">✓ Ao usuário</text>
+
+<!-- Zendesk API (bottom-right) — External -->
+<rect x="490" y="420" width="145" height="50" rx="6" fill="rgba(30,41,59,0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="562" y="442" class="node-title" text-anchor="middle">Zendesk API</text>
+<text x="562" y="460" class="node-sub" text-anchor="middle">Atendimento humano</text>
+
+<!-- ═══ ARROWS ═══ -->
+
+<!-- Usuário → WhatsApp (cyan) -->
+<line x1="330" y1="110" x2="330" y2="135" stroke="#22d3ee" stroke-width="1.5" opacity="0.7" marker-end="url(#arrCyan)"/>
+
+<!-- WhatsApp → Memória (slate) -->
+<line x1="330" y1="185" x2="330" y2="210" stroke="#94a3b8" stroke-width="1.5" opacity="0.7" marker-end="url(#arrSlate)"/>
+
+<!-- Memória → Pergunta (amber) -->
+<line x1="330" y1="260" x2="330" y2="285" stroke="#fbbf24" stroke-width="1.5" opacity="0.7" marker-end="url(#arrAmber)"/>
+
+<!-- Pergunta → Embedding (cyan) -->
+<line x1="330" y1="329" x2="330" y2="354" stroke="#22d3ee" stroke-width="1.5" opacity="0.7" marker-end="url(#arrCyan)"/>
+
+<!-- Embedding → Vector DB (violet) -->
+<line x1="330" y1="398" x2="330" y2="420" stroke="#a78bfa" stroke-width="1.5" opacity="0.7" marker-end="url(#arrViolet)"/>
+
+<!-- Documentos → Vector DB (violet, dashed) -->
+<line x1="170" y1="447" x2="195" y2="447" stroke="#a78bfa" stroke-width="1.2" opacity="0.55" stroke-dasharray="4,3" marker-end="url(#arrViolet)"/>
+
+<!-- Vector DB → LLM decision (amber — the context flows to LLM) -->
+<path d="M465,435 C530,435 525,260 562,240" fill="none" stroke="#fbbf24" stroke-width="1.5" opacity="0.7" marker-end="url(#arrAmber)"/>
+
+<!-- Pergunta also connects to LLM -->
+<path d="M435,300 C470,290 500,240 505,212" fill="none" stroke="#fbbf24" stroke-width="1.2" opacity="0.55" stroke-dasharray="5,3" marker-end="url(#arrAmber)"/>
+
+<!-- LLM → Resposta (emerald, "Sim") -->
+<line x1="575" y1="240" x2="580" y2="340" stroke="#34d399" stroke-width="1.5" opacity="0.7" marker-end="url(#arrEmerald)"/>
+<text x="595" y="295" class="edge-label" fill="#34d399" font-size="11" opacity="0.85">Sim</text>
+
+<!-- LLM → Zendesk (slate, "Não") -->
+<line x1="562" y1="240" x2="562" y2="420" stroke="#94a3b8" stroke-width="1.5" opacity="0.55" stroke-dasharray="5,3" marker-end="url(#arrSlate)"/>
+<text x="542" y="310" class="edge-label" fill="#fb7185" font-size="11" opacity="0.85">Não</text>
+
+<!-- Resposta back to Usuário (curved left side) -->
+<path d="M490,365 C430,365 200,200 220,110" fill="none" stroke="#22d3ee" stroke-width="1.3" opacity="0.45" stroke-dasharray="6,3" marker-end="url(#arrCyan)"/>
+
+</svg>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Python + API de LLM</title>
+<meta name="author" content="Lucas S. Vieira"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/theme/night.css" id="theme"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/npm/reveal.js@4/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide" data-background="./slide_04.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Python + API de LLM</h2><br/><p style="font-size:0.85em;opacity:0.8;">Conectando com modelos</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+</section>
+<section>
+<section id="slide-org90ae9dd">
+<h2 id="org90ae9dd">O que é uma API?</h2>
+<ul>
+<li class="fragment appear"><b>API</b> = Application Programming Interface</li>
+<li class="fragment appear">Forma de programas "conversarem"</li>
+<li class="fragment appear">Você <b>envia</b> uma requisição, <b>recebe</b> uma resposta</li>
+
+</ul>
+
+<blockquote >
+<p>
+Analogia: API é como um garçom.
+Você pede, ele leva pra cozinha, traz a resposta.
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org046b1a7">
+<h2 id="org046b1a7">APIs Gratuitas de LLM</h2>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="fragment (appear)">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">Provedor</td>
+<td class="org-left">Gratuito?</td>
+<td class="org-left">Limite</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">----------<del>-----------</del>---------</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">Google Gemini</td>
+<td class="org-left">✅ Sim</td>
+<td class="org-left">1M tokens/dia</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">HuggingFace</td>
+<td class="org-left">✅ Sim</td>
+<td class="org-left">Rate limit</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">OpenRouter</td>
+<td class="org-left">✅ Sim*</td>
+<td class="org-left">Crédito inicial</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">Ollama (local)</td>
+<td class="org-left">✅ Sim</td>
+<td class="org-left">Ilimitado</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">LM Studio (local)</td>
+<td class="org-left">✅ Sim</td>
+<td class="org-left">Ilimitado</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">OpenAI</td>
+<td class="org-left">❌ Pago</td>
+<td class="org-left">Por uso</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote >
+<p>
+Vamos usar Gemini e HuggingFace no Colab!
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-orga9ccec3">
+<h2 id="orga9ccec3">Opção 1: Google Gemini</h2>
+<ul>
+<li class="fragment appear"><b><b>1 milhão de tokens/dia GRATUITO</b></b></li>
+<li class="fragment appear">Precisa de conta Google</li>
+<li class="fragment appear">API key: aistudio.google.com</li>
+
+</ul>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" >from google import genai
+from google.genai import types
+import os
+
+# Novo SDK google-genai: usar Client
+client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+# Chamada simples
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="Olá!"
+)
+print(response.text)
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org464c012">
+<h2 id="org464c012">Como obter API key do Gemini</h2>
+<ol>
+<li class="fragment appear">Acesse: aistudio.google.com</li>
+<li class="fragment appear">Faça login com sua conta Google</li>
+<li class="fragment appear">Clique em "Get API Key"</li>
+<li class="fragment appear">Crie uma nova chave</li>
+<li class="fragment appear">Copie e guarde bem!</li>
+
+</ol>
+
+<blockquote >
+<p>
+API key é SECRETA. Não compartilhe!
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org8e281be">
+<h2 id="org8e281be">Opção 2: HuggingFace</h2>
+<ul>
+<li class="fragment appear"><b><b>Gratuito</b></b> com rate limiting</li>
+<li class="fragment appear">Vários modelos disponíveis</li>
+<li class="fragment appear">Precisa de conta no HuggingFace (gratuita)</li>
+
+</ul>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" >from huggingface_hub import InferenceClient
+import os
+
+client = InferenceClient(
+    model="Qwen/Qwen2.5-7B-Instruct",
+    token=os.environ["HF_TOKEN"]
+)
+
+response = client.text_generation("Olá!")
+print(response)
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org2685704">
+<h2 id="org2685704">Como obter token do HuggingFace</h2>
+<ol>
+<li class="fragment appear">Acesse: huggingface.co</li>
+<li class="fragment appear">Crie uma conta gratuita</li>
+<li class="fragment appear">Settings → Access Tokens → New token</li>
+<li class="fragment appear">Copie o token</li>
+
+</ol>
+
+<blockquote >
+<p>
+Token é diferente de API key!
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org3053945">
+<h2 id="org3053945">Opção 3: OpenRouter</h2>
+<ul>
+<li class="fragment appear"><b>Agregador de modelos</b> de múltiplos provedores</li>
+<li class="fragment appear">Modelos gratuitos disponíveis</li>
+<li class="fragment appear">Crédito inicial gratuito</li>
+<li class="fragment appear">Integração com LangChain</li>
+
+</ul>
+</section>
+<section id="slide-org24b7423">
+<h3 id="org24b7423">Modelos gratuitos populares:</h3>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="fragment (appear)">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">Modelo</td>
+<td class="org-left">Provedor</td>
+<td class="org-left">Uso</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">--------<del>----------</del>-----</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">qwen/qwen3.6-plus:free</td>
+<td class="org-left">Qwen</td>
+<td class="org-left">Chat geral</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">meta-llama/llama-3.2-3b-instruct:free</td>
+<td class="org-left">Meta</td>
+<td class="org-left">Rápido</td>
+</tr>
+</tbody>
+</table>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" >from langchain_openrouter import ChatOpenRouter
+
+llm = ChatOpenRouter(
+    model="qwen/qwen3.6-plus:free",
+    temperature=0.8,
+)
+
+response = llm.invoke("Olá! Qual é a capital do Brasil?")
+print(response.content)
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orge86dd45">
+<h2 id="orge86dd45">Como usar OpenRouter</h2>
+<ol>
+<li class="fragment appear">Acesse: openrouter.ai</li>
+<li class="fragment appear">Crie uma conta</li>
+<li class="fragment appear">Gere sua API key</li>
+<li class="fragment appear">Configure: <code>OPENROUTER_API_KEY</code></li>
+
+</ol>
+</section>
+<section id="slide-org566e382">
+<h3 id="org566e382">Links úteis:</h3>
+<ul>
+<li class="fragment appear"><b>Modelos gratuitos:</b> openrouter.ai/collections/free-models</li>
+<li class="fragment appear"><b>Docs LangChain:</b> docs.langchain.com/oss/python/integrations/chat/openrouter</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org08dd5c1">
+<h2 id="org08dd5c1">Estrutura da Mensagem (padrão)</h2>
+<p class="fragment (appear)">
+Todas as APIs usam formato similar:
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" >messages = [
+    {"role": "system", "content": "Você é um tutor."},
+    {"role": "user", "content": "O que é Python?"},
+    {"role": "assistant", "content": "Python é..."},
+    {"role": "user", "content": "E como instalo?"}
+]
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgcf61fbf">
+<h2 id="orgcf61fbf">System Instruction (Gemini)</h2>
+<div class="org-src-container">
+
+<pre   ><code class="python" >from google import genai
+from google.genai import types
+
+client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+# Configurar com system instruction
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="O que é uma lista?",
+    config=types.GenerateContentConfig(
+        system_instruction="Você é um tutor de Python. Responda de forma didática."
+    )
+)
+print(response.text)
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgc64458a">
+<h2 id="orgc64458a">Parâmetros Importantes</h2>
+<ul>
+<li class="fragment appear"><b>temperature:</b> 0.0 (determinístico) a 2.0 (criativo)</li>
+<li class="fragment appear"><b>max<sub>output</sub><sub>tokens</sub>:</b> Limite de tokens na resposta</li>
+
+</ul>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" ># Exemplo com Gemini (novo SDK)
+from google import genai
+from google.genai import types
+
+client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="Conte uma piada!",
+    config=types.GenerateContentConfig(
+        temperature=0.7,
+        max_output_tokens=100
+    )
+)
+print(response.text)
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgf2917f9">
+<h2 id="orgf2917f9">Chat com Histórico (Gemini)</h2>
+<div class="org-src-container">
+
+<pre   ><code class="python" >from google import genai
+from google.genai import types
+
+client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+# Criar chat
+chat = client.chats.create(model="gemini-2.0-flash")
+
+# Enviar mensagens
+response1 = chat.send_message("Olá!")
+print(response1.text)
+
+response2 = chat.send_message("Qual é a capital do Brasil?")
+print(response2.text)
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org1a2f787">
+<h2 id="org1a2f787">Tratamento de Erros</h2>
+<div class="org-src-container">
+
+<pre   ><code class="python" >from google import genai
+from google.genai import types
+from google.api_core.exceptions import NotFound, PermissionDenied
+
+client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+try:
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents="Olá!"
+    )
+    print(response.text)
+except PermissionDenied:
+    print("API key inválida!")
+except NotFound:
+    print("Modelo não encontrado!")
+except Exception as e:
+    print(f"Erro: {e}")
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org2713fec">
+<h2 id="org2713fec">Para os Aventureiros: Rodando Local</h2>
+<p class="fragment (appear)">
+Se você tem GPU em casa:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Opção</th>
+<th scope="col" class="org-left">Interface</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Ollama</td>
+<td class="org-left">Terminal</td>
+</tr>
+
+<tr>
+<td class="org-left">LM Studio</td>
+<td class="org-left">Gráfica</td>
+</tr>
+
+<tr>
+<td class="org-left">llama.cpp</td>
+<td class="org-left">Terminal (C++)</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote >
+<p>
+Intruções completas na apostila!
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-orga249363">
+<h2 id="orga249363">Exercício</h2>
+<ol>
+<li class="fragment appear">Acesse aistudio.google.com</li>
+<li class="fragment appear">Crie sua API key gratuita</li>
+<li class="fragment appear">Abra o Google Colab</li>
+<li class="fragment appear">Teste o código do slide "Opção 1: Google Gemini"</li>
+<li class="fragment appear">Tente mudar a temperatura e ver a diferença</li>
+
+</ol>
+
+<blockquote >
+<p>
+Use o Gemini! É gratuito e simples.
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org56268b1">
+<h2 id="org56268b1">Para a próxima aula</h2>
+<ul>
+<li class="fragment appear">Ter uma conta Google funcionando</li>
+<li class="fragment appear">Ter API key do Gemini</li>
+<li class="fragment appear">(Opcional) Conta no HuggingFace</li>
+<li class="fragment appear">Ler o material da semana 05</li>
+
+</ul>
+
+<blockquote >
+<p>
+Próxima aula: vamos construir nosso primeiro agente!
+</p>
+</blockquote>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
+
+});
+
+</script>
+</body>
+</html>

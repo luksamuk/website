@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pt_BR">
+<head>
+<meta charset="utf-8"/>
+<title>Majestic Lisp:</title>
+<meta name="author" content="Lucas S. Vieira"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/black.css" id="theme"/>
+
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/npm/reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h2>Majestic Lisp:</h2><p>do Zero ao Lisp em Rust</p><br/><h3 style="font-size:0.9em">Lucas S. Vieira</h3><br/><p style="font-size:0.7em;"><a href="mailto:lucasvieira at protonmail dot com">lucasvieira at protonmail dot com</a><br/>08 de dezembro de 2020</p>
+</section>
+<section id="sec-table-of-contents"><div id="table-of-contents" role="doc-toc">
+<h2>&Iacute;ndice</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#/slide-orgf46c666">Introdução</a></li>
+<li><a href="#/slide-org9a62a56">Características e Implementação</a></li>
+<li><a href="#/slide-orge7c5348">Comparando Majestic e outros Lisps</a></li>
+<li><a href="#/slide-org592fc57">Interpretador metacircular</a></li>
+<li><a href="#/slide-orgbb3d890">Referências</a></li>
+</ul>
+</div>
+</div>
+</section>
+<style>
+.container{
+display: flex;
+}
+.col{
+flex: 1;
+}
+</style>
+<section>
+<section id="slide-orgf46c666">
+<h2 id="orgf46c666">Introdução</h2>
+<div class="outline-text-2" id="text-orgf46c666">
+</div>
+</section>
+<section id="slide-org6f85674">
+<h3 id="org6f85674">Quem sou eu?</h3>
+<div class="container">
+
+<div class="col">
+<p style="font-size:0.7em;text-align:left;">
+Discente de Sistemas de Informação
+</p>
+
+<p style="font-size:0.7em;text-align:left;">
+<b>Interesses:</b> Inteligência  artificial, ciência cognitiva,  filosofia da
+mente,  teoria   da  computação,  desenvolvimento  de   linguagens  de
+programação, desenvolvimento de jogos, programação bare-metal
+</p>
+
+<div style="font-size:0.7em;text-align:left;">
+<p>Co-fundador da Common Lisp Brasil
+<br/>
+<i class="fa fa-globe" aria-hidden="true"></i><code> lisp.com.br</code>
+</p></div>
+
+</div>
+
+<div class="col">
+
+
+<div id="org2518a57" class="figure">
+<p><img src="img/eu.jpg" alt="eu.jpg" width="200" />
+</p>
+</div>
+
+<div style="font-size:0.7em;text-align:left;">
+<i class="fa fa-twitter" aria-hidden="true"></i><code> @luksamuk</code><br/>
+<i class="fa fa-globe" aria-hidden="true"></i><code> luksamuk.codes</code><br/>
+<i class="fa fa-github" aria-hidden="true"></i><code> luksamuk</code>
+</div>
+
+</div>
+
+</div>
+</section>
+<section id="slide-org33550c7">
+<h3 id="org33550c7">O que é Majestic Lisp?</h3>
+<p>
+Dialeto da família das linguagens Lisp.
+</p>
+
+<ul>
+<li class="fragment appear">Feito para propósito educacional: Aprenda a construir o seu Lisp.</li>
+<li class="fragment appear">Inspirado em Common Lisp, Scheme, Clojure, APL&#x2026;</li>
+<li class="fragment appear">Sobretudo, inspirado em Bel.</li>
+
+</ul>
+</section>
+<section id="slide-org3369f61">
+<h3 id="org3369f61">Um segundo. O que é Bel?</h3>
+<p>
+Dialeto de Lisp criado por Paul Graham em 2019.
+</p>
+
+<ul>
+<li class="fragment appear">Criado para ser "cozinhado" como formalismo por um tempo, nos moldes
+de LISP 1.5.</li>
+<li class="fragment appear">Tentei implementar em C logo no mês que foi lançado&#x2026;</li>
+<li class="fragment appear">Não era "simples" o suficiente. Muitas idiossincrasias!</li>
+<li class="fragment appear">Decidi criar logo meu próprio dialeto.</li>
+
+</ul>
+</section>
+<section id="slide-org260257d">
+<h3 id="org260257d">Objetivos de Majestic Lisp</h3>
+<p>
+Escrito como <i>literate  program</i> na forma de livro, guia  o leitor sobre
+como construir um interpretador de Majestic passo-a-passo em Rust.
+</p>
+
+<ul>
+<li class="fragment appear">Propósito educacional, implementação didática;</li>
+<li class="fragment appear">Corretude antes de performance;</li>
+<li class="fragment appear">Simplicidade e sintaxe óbvia para quem vem de outros Lisps.</li>
+<li class="fragment appear">Fazer sua linguagem não é algo intangível!</li>
+<li class="fragment appear">Pode ser executado no <i>papel</i>.</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org9a62a56">
+<h2 id="org9a62a56">Características e Implementação</h2>
+<div class="outline-text-2" id="text-org9a62a56">
+</div>
+</section>
+<section id="slide-orga9ebb79">
+<h3 id="orga9ebb79">Live Demo</h3>
+</section>
+<section id="slide-org19b680d">
+<h3 id="org19b680d">Por que Rust?</h3>
+<p>
+A  escolha não  foi motivada  por performance,  corretude ou  <i>safety</i> /
+<i>security</i>.
+</p>
+
+<ul>
+<li class="fragment appear">Maior facilidade ao expressar abstrações com dados;</li>
+<li class="fragment appear">Usa <code>rust-gc</code> para coleta de lixo;</li>
+<li class="fragment appear">WebAssembly (via WASI)!</li>
+
+</ul>
+</section>
+<section id="slide-org5e7c89e">
+<h4 id="org5e7c89e">Exemplo: Objeto básico de Bel (C11)</h4>
+<div class="org-src-container">
+
+<pre  class="src src-C"   ><code trim><span class="org-keyword">typedef</span> <span class="org-keyword">struct</span> <span class="org-type">BEL</span> <span class="org-type">Bel</span>;
+<span class="org-keyword">typedef</span> <span class="org-keyword">struct</span>
+{
+    <span class="org-type">Bel</span> *<span class="org-variable-name">car</span>;
+    <span class="org-type">Bel</span> *<span class="org-variable-name">cdr</span>;
+} <span class="org-type">Bel_pair</span>;
+
+<span class="org-keyword">struct</span> <span class="org-type">BEL</span>
+{
+    <span class="org-type">BEL_TYPE</span> <span class="org-variable-name">type</span>;
+    <span class="org-keyword">union</span> {
+        <span class="org-type">Bel_sym</span>     <span class="org-variable-name">sym</span>;
+        <span class="org-type">Bel_pair</span>   *<span class="org-variable-name">pair</span>;
+        <span class="org-type">Bel_char</span>    <span class="org-variable-name">chr</span>;
+        <span class="org-type">Bel_stream</span>  <span class="org-variable-name">stream</span>;
+        <span class="org-type">Bel_number</span>  <span class="org-variable-name">number</span>;
+    };
+};
+</code></pre>
+</div>
+</section>
+<section id="slide-orgb1d8136">
+<h4 id="orgb1d8136">Exemplo: Objeto básico de Majestic (Rust 2018)</h4>
+<div class="org-src-container">
+
+<pre  class="src src-rust"   ><code trim>#[derive(Debug, Trace, Finalize, Clone)]
+pub enum Maj {
+    Sym(u64),
+    Cons {
+        car: Gc&lt;Maj&gt;,
+        cdr: Gc&lt;Maj&gt;
+    },
+    Char(char),
+    Stream(MajStream),
+    Number(MajNumber)
+}
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orge7c5348">
+<h2 id="orge7c5348">Comparando Majestic e outros Lisps</h2>
+<div class="outline-text-2" id="text-orge7c5348">
+</div>
+</section>
+<section id="slide-org3271198">
+<h3 id="org3271198">Exemplo</h3>
+<div class="org-src-container">
+
+<pre  class="src src-majestic"   ><code trim>(<span class="org-keyword">def</span> *my-list* '(a b c d))
+(<span class="org-function-name">map</span> (<span class="org-function-name">cons</span> 'z) *my-list*)
+</code></pre>
+</div>
+
+<pre class="example" id="org592382c">
+((z . a) (z . b) (z . c) (z . d))
+</pre>
+
+<p class="fragment (appear)">
+Faremos comparações com Scheme, Common Lisp, Clojure e Shen.
+</p>
+</section>
+<section id="slide-orgc9b586d">
+<h3 id="orgc9b586d">Scheme</h3>
+<div class="org-src-container">
+
+<pre  class="src src-scheme"   ><code trim>(<span class="org-keyword">define</span> <span class="org-function-name">*my-list*</span> '(a b c d))
+(<span class="org-keyword">map</span> (<span class="org-keyword">lambda</span> (x) (cons 'z x)) *my-list*)
+</code></pre>
+</div>
+
+<p>
+Sem muitas diferenças, exceto na aplicação parcial.
+</p>
+
+<p>
+Scheme tem desgosto por mutabilidade.
+</p>
+</section>
+<section id="slide-orgd00edb6">
+<h3 id="orgd00edb6">Common Lisp</h3>
+<div class="org-src-container">
+
+<pre  class="src src-lisp"   ><code trim>(<span class="org-keyword">defparameter</span> <span class="org-variable-name">*my-list*</span> '(a b c d))
+(mapcar (<span class="org-keyword">lambda</span> (x) (cons 'z x)) *my-list*)
+<span class="org-comment-delimiter">;; </span><span class="org-comment">ou...
+</span>(<span class="org-keyword">loop</span> for x in *my-list* collect (cons 'z x))
+</code></pre>
+</div>
+
+<p>
+Algumas considerações&#x2026;
+</p>
+
+</section>
+<section id="slide-orgd00edb6-split">
+
+<ul>
+<li class="fragment appear">CL  é um  Lisp-2. Funções  e variáveis  podem ter  o mesmo  nome sem
+conflito.</li>
+<li class="fragment appear">CL  é <i>obrigatoriamente</i>  compilado  (o compilador  fica exposto  para
+invocação em runtime).</li>
+<li class="fragment appear">CL é <b>multiparadigma</b>, e sua OO é uma das mais elegantes que existem.</li>
+
+</ul>
+</section>
+<section id="slide-orgd56d31c">
+<h3 id="orgd56d31c">Clojure</h3>
+<div class="org-src-container">
+
+<pre  class="src src-clojure"   ><code trim>(def *my-list* '(a b c d))
+(map #(cons 'z %) *my-list*)
+</code></pre>
+</div>
+
+<p class="fragment (appear)" style="font-size:0.5em;">
+&#x2026;pera, não. Isso dá erro.
+</p>
+
+</section>
+<section id="slide-orgd56d31c-split">
+
+<p>
+Vamos tentar de novo.
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-clojure"   ><code trim>(def *my-list* '(a b c d))
+(map #(list 'z %) *my-list*)
+</code></pre>
+</div>
+
+<pre class="example" id="org2657823">
+((z a) (z b) (z c) (z d))
+</pre>
+
+<p>
+Algumas considerações&#x2026;
+</p>
+
+</section>
+<section id="slide-orgd56d31c-split">
+
+<ul>
+<li class="fragment appear">Clojure tem desgosto por mutabilidade.</li>
+<li class="fragment appear">Clojure é primariamente funcional.</li>
+<li class="fragment appear">Clojure é <b>pouco ortodoxa</b> quando comparada a outros Lisps.</li>
+
+</ul>
+</section>
+<section id="slide-orgc5bdff6">
+<h3 id="orgc5bdff6">Shen</h3>
+<div class="org-src-container">
+
+<pre  class="src src-shen"   ><code trim>(set *my-list* [a b c d])
+(map (cons z) (value *my-list*))
+</code></pre>
+</div>
+
+<p>
+Voltada para metaprogramação. Possui  aplicação parcial como Majestic,
+trabalha com um sistema de tipos estático e opcional.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org592fc57">
+<h2 id="org592fc57">Interpretador metacircular</h2>
+
+<div id="org62166e7" class="figure">
+<p><img src="img/metacircular.svg" alt="metacircular.svg" class="org-svg" width="500" />
+</p>
+</div>
+
+<ul>
+<li class="fragment appear">Exemplo relevante de programa em um Lisp</li>
+<li class="fragment appear">Duas funções + análise de casos + funções auxiliares</li>
+
+</ul>
+</section>
+<section id="slide-orgbafb178">
+<h3 id="orgbafb178"><code>eval</code></h3>
+<div class="org-src-container">
+
+<pre  class="src src-majestic"   ><code trim>(<span class="org-keyword">defn</span> eval. (exp env)
+  (<span class="org-keyword">cond</span>
+    ((<span class="org-function-name">numberp</span> exp) exp)
+    ((<span class="org-function-name">symbolp</span> exp) (lookup. exp env))
+    ((<span class="org-function-name">eq</span> (<span class="org-function-name">first</span> exp) '<span class="org-keyword">quote</span>)
+     (<span class="org-function-name">second</span> exp))
+    ((<span class="org-function-name">eq</span> (<span class="org-function-name">first</span> exp) '<span class="org-keyword">fn</span>)
+     (<span class="org-function-name">list</span> 'closure (<span class="org-function-name">rest</span> exp) env))
+    ((<span class="org-function-name">primitivep</span> exp) exp)
+    ((<span class="org-function-name">eq</span> (<span class="org-function-name">first</span> exp) '<span class="org-keyword">cond</span>)
+     (evcond. (<span class="org-function-name">rest</span> exp) env))
+    ((<span class="org-function-name">eq</span> (<span class="org-function-name">first</span> exp) '<span class="org-keyword">def</span>)
+     (define. (<span class="org-function-name">second</span> exp) (<span class="org-function-name">third</span> exp) env))
+    (t (apply. (eval. (<span class="org-function-name">first</span> exp) env)
+               (evlist. (<span class="org-function-name">rest</span> exp) env)))))
+</code></pre>
+</div>
+</section>
+<section id="slide-orge762bf7">
+<h3 id="orge762bf7"><code>apply</code></h3>
+<div class="org-src-container">
+
+<pre  class="src src-majestic"   ><code trim>(<span class="org-keyword">defn</span> apply. (proc args)
+  (<span class="org-keyword">cond</span>
+    ((<span class="org-function-name">primitivep</span> proc) (<span class="org-keyword">apply</span> proc args))
+    ((<span class="org-function-name">eq</span> (<span class="org-function-name">first</span> proc) 'closure)
+     (eval. (<span class="org-function-name">second</span> (<span class="org-function-name">second</span> proc))
+            (bind. (<span class="org-function-name">first</span> (<span class="org-function-name">second</span> proc))
+                   args
+                   (<span class="org-function-name">third</span> proc))))
+    (t (<span class="org-function-name">err</span> <span class="org-string">"Undefined procedure: {}"</span> proc))))
+</code></pre>
+</div>
+</section>
+<section id="slide-orgfe34d94">
+<h3 id="orgfe34d94">Exemplos</h3>
+<div class="container">
+<div class="col">
+
+<div class="org-src-container">
+
+<pre  class="src src-majestic"   ><code trim>(<span class="org-keyword">quote</span> foo)
+
+*mynum*
+
+(<span class="org-keyword">def</span> square (<span class="org-keyword">fn</span> (x) (<span class="org-function-name">*</span> x x)))
+
+(square 6)
+
+(<span class="org-keyword">cond</span> ((<span class="org-function-name">eq</span> (<span class="org-function-name">=</span> 1 1) t)
+       (<span class="org-keyword">quote</span> okay))
+      (t (<span class="org-keyword">quote</span> nay)))
+
+(((<span class="org-keyword">fn</span> (x)
+    (<span class="org-keyword">fn</span> (y) (<span class="org-function-name">+</span> x y))) 3)
+ 4)
+</code></pre>
+</div>
+
+</div>
+
+<div class="col">
+
+<div class="org-src-container">
+
+<pre  class="src src-lisp"   ><code trim>foo
+
+7
+
+square
+
+36
+
+okay
+
+
+
+7
+
+
+</code></pre>
+</div>
+
+</div>
+</div>
+
+</section>
+<section id="slide-orgfe34d94-split">
+
+<p>
+Perguntas?
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgbb3d890">
+<h2 id="orgbb3d890">Referências</h2>
+<p style="font-size:0.7em;text-align:left;">
+ABELSON, H.; SUSSMAN,  G. J. <b>Structure and  Interpretation of Computer
+Programs</b>. MIT Press: Cambridge, 1996. ISBN: 978-0-262-51087-5.
+</p>
+
+<p style="font-size:0.7em;text-align:left;">
+TARVER,   M.   <b>Coding   a   Lisp   interpreter   in   Shen</b>:   A   case
+study.               2011.                Disponível               em:
+<a href="http://www.shenlanguage.org/shenpaper.pdf" style="font-size:0.7em;text-align:left;">http://www.shenlanguage.org/shenpaper.pdf</a>. Acesso em 24/11/2020.
+</p>
+
+<p style="font-size:0.7em;text-align:left;">
+GRAHAM,  P.   <b>The Bel  Language</b>.   Outubro  de 2019.   Disponível  em:
+<a href="http://www.paulgraham.com/bel.html" style="font-size:0.7em;text-align:left;">http://www.paulgraham.com/bel.html</a>. Acesso em 02/11/2020.
+</p>
+
+<p style="font-size:0.7em;text-align:left;">
+GRAHAM,  P.  <b>The  roots of  Lisp</b>.   Janeiro de  2002.  Disponível  em:
+<a href="http://www.paulgraham.com/rootsoflisp.html" style="font-size:0.7em;text-align:left;">http://www.paulgraham.com/rootsoflisp.html</a>. Acesso em 02/11/2020.
+</p>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+,
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } }]
+
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Prompting Básico</title>
+<meta name="author" content="Lucas S. Vieira"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/theme/night.css" id="theme"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/npm/reveal.js@4/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide" data-background="./slide_02.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Prompting Básico</h2><br/><p style="font-size:0.85em;opacity:0.8;">Como falar com IA</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+</section>
+<section>
+<section id="slide-orgb10d7c1">
+<h2 id="orgb10d7c1">O Problema</h2>
+<ul>
+<li class="fragment appear">A mesma pergunta pode gerar respostas diferentes</li>
+<li class="fragment appear">Dependendo de como você formula</li>
+
+</ul>
+</section>
+<section id="slide-orge0c27f6">
+<h3 id="orge0c27f6">Exemplo</h3>
+<p>
+<b>Vago:</b>
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="text" >"Me fale sobre gatos"
+→ resposta genérica
+</code></pre>
+</div>
+
+<p>
+<b>Específico:</b>
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="text" >"Quais as 3 raças de gatos mais populares no Brasil?"
+→ resposta específica
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgaaf6f24">
+<h2 id="orgaaf6f24">O que é prompt?</h2>
+<ul>
+<li class="fragment appear">Prompt = instrução que você dá para o modelo</li>
+<li class="fragment appear">A pergunta, o comando, o contexto</li>
+<li class="fragment appear">Tudo junto</li>
+
+</ul>
+
+<blockquote  class="fragment (appear)">
+<p>
+O prompt é como uma receita.
+Ingredientes claros = prato previsível.
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-orge3bd36e">
+<h2 id="orge3bd36e">Técnicas básicas</h2>
+<div class="outline-text-2" id="text-orge3bd36e">
+</div>
+</section>
+<section id="slide-org4bddfaa">
+<h3 id="org4bddfaa">1. Zero-shot</h3>
+<p>
+Você pede algo sem dar exemplos.
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="text" >Traduza para inglês: "Bom dia"
+</code></pre>
+</div>
+
+<p>
+O modelo nunca viu você traduzir antes, mas tenta fazer.
+</p>
+</section>
+<section id="slide-org369047d">
+<h3 id="org369047d">2. Few-shot</h3>
+<p>
+Você dá exemplos antes de pedir.
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="text" >Traduza para inglês:
+"Gato" → "Cat"
+"Cachorro" → "Dog"
+"Pássaro" → ?
+</code></pre>
+</div>
+
+<p class="fragment (appear)">
+O modelo aprende o padrão pelos exemplos.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org81b5157">
+<h2 id="org81b5157">Por que few-shot funciona?</h2>
+<ul>
+<li class="fragment appear">O modelo vê o que você quer</li>
+<li class="fragment appear">Segue o molde</li>
+<li class="fragment appear">Reduz ambiguidade</li>
+
+</ul>
+
+<blockquote  class="fragment (appear)">
+<p>
+Exemplos são como mostrar em vez de explicar.
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-orgf918cbe">
+<h2 id="orgf918cbe">Framework R-C-E-F</h2>
+<p class="fragment (appear)">
+Uma estrutura útil para prompts:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Letra</th>
+<th scope="col" class="org-left">Significado</th>
+<th scope="col" class="org-left">Exemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><b>R</b></td>
+<td class="org-left">Role (papel)</td>
+<td class="org-left">"Você é um professor de matemática"</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>C</b></td>
+<td class="org-left">Context</td>
+<td class="org-left">"O aluno está no ensino médio"</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>E</b></td>
+<td class="org-left">Examples</td>
+<td class="org-left">"Explique como: 2x + 3 = 7 → x = 2"</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>F</b></td>
+<td class="org-left">Format</td>
+<td class="org-left">"Responda em bullets"</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="slide-org565aab8">
+<h3 id="org565aab8">Exemplo completo</h3>
+<div class="org-src-container">
+
+<pre   ><code class="text" >R: Você é um tutor de matemática paciente.
+C: O aluno tem dificuldade com equações.
+E: Para 2x + 4 = 10: subtraia 4 dos dois lados,
+   depois divida por 2.
+F: Responda passo a passo, numerando.
+
+Pergunta: Como resolvo 3x + 6 = 21?
+</code></pre>
+</div>
+</section>
+<section id="slide-org6c9b1e9">
+<h3 id="org6c9b1e9">Resultado comparado</h3>
+<p>
+<b>Sem R-C-E-F:</b>
+</p>
+<blockquote  class="fragment (appear)">
+<p>
+"3x + 6 = 21, x = 5"
+</p>
+</blockquote>
+
+<p>
+<b>Com R-C-E-F:</b>
+</p>
+<blockquote  class="fragment (appear)">
+<p>
+"Vamos resolver passo a passo:
+</p>
+
+<ol>
+<li>Subtraia 6 de ambos os lados: 3x = 15</li>
+<li>Divida por 3: x = 5</li>
+<li>Verificação: 3 × 5 + 6 = 21 ✓"</li>
+
+</ol>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-orgf752864">
+<h2 id="orgf752864">Alucinações vs Prompt ruim</h2>
+<p>
+Às vezes o modelo erra. Por quê?
+</p>
+
+<ol>
+<li class="fragment appear"><b>Hallucinação</b> → modelo inventa (limitação)</li>
+<li class="fragment appear"><b>Prompt ruim</b> → você não deixou claro</li>
+
+</ol>
+</section>
+<section id="slide-org3abb9fc">
+<h3 id="org3abb9fc">Como distinguir</h3>
+<ul>
+<li class="fragment appear">Refaça o prompt com mais contexto</li>
+<li class="fragment appear">Se ainda errar, é alucinação</li>
+<li class="fragment appear">Se melhorar, era prompt ruim</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org896a9a3">
+<h2 id="org896a9a3">Dicas práticas</h2>
+<div class="outline-text-2" id="text-org896a9a3">
+</div>
+</section>
+<section id="slide-org08ee22e">
+<h3 id="org08ee22e">✅ Bom:</h3>
+<div class="org-src-container">
+
+<pre   ><code class="text" >"Liste as 5 capitais mais populosas do Brasil
+em ordem decrescente"
+
+"Explique recursão como se eu tivesse 12 anos"
+
+"Corrija o texto abaixo mantendo o estilo do autor"
+</code></pre>
+</div>
+</section>
+<section id="slide-org0f908b9">
+<h3 id="org0f908b9">❌ Ruim:</h3>
+<div class="org-src-container">
+
+<pre   ><code class="text" >"Me fale algo" (vago demais)
+
+"O que você acha?" (subjetivo)
+
+"Responda sim ou não: o número 7 é legal?" (não factual)
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgaf4a97c">
+<h2 id="orgaf4a97c">Para lembrar</h2>
+<blockquote  class="fragment (appear)">
+<p>
+"O prompt é como uma receita.
+Ingredientes claros = prato previsível."
+</p>
+</blockquote>
+
+<p class="fragment (appear)">
+Quanto mais específico você for,
+mais próxima a resposta do que você espera.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org8a183c1">
+<h2 id="org8a183c1">Próxima semana</h2>
+<ul>
+<li class="fragment appear">Vamos começar a programar!</li>
+<li class="fragment appear">Python para chamar LLMs via API</li>
+<li class="fragment appear">Google Colab</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org427fbd4">
+<h2 id="org427fbd4">Perguntas?</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
+
+});
+
+</script>
+</body>
+</html>

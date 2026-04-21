@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>O que é IA hoje?</title>
+<meta name="author" content="Lucas S. Vieira"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/theme/night.css" id="theme"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/npm/reveal.js@4/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide" data-background="./slide_01.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>O que é IA hoje?</h2><br/><p style="font-size:0.85em;opacity:0.8;">Nomenclaturas de IA</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+</section>
+<section>
+<section id="slide-org9240a9f">
+<h2 id="org9240a9f">O Problema</h2>
+<ul>
+<li class="fragment appear">Muita gente usa termos como se fossem a mesma coisa</li>
+<li class="fragment appear"><b>Não são</b></li>
+<li class="fragment appear">Entender a diferença é fundamental</li>
+
+</ul>
+</section>
+<section id="slide-org96e6a17">
+<h3 id="org96e6a17">Quatro termos principais</h3>
+<ul>
+<li class="fragment appear">IA (Inteligência Artificial)</li>
+<li class="fragment appear">LLM (Large Language Model)</li>
+<li class="fragment appear">RAG (Retrieval Augmented Generation)</li>
+<li class="fragment appear">Agente (AI Agent)</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org26a5027">
+<h2 id="org26a5027">1. IA - Inteligência Artificial</h2>
+<ul>
+<li class="fragment appear"><b>O que é:</b> Campo geral</li>
+<li class="fragment appear">Qualquer sistema que faz algo "inteligente"</li>
+
+</ul>
+</section>
+<section id="slide-org06d8a60">
+<h3 id="org06d8a60">Exemplos de IA</h3>
+<ul>
+<li class="fragment appear">Spam filter do email → IA</li>
+<li class="fragment appear">Reconhecimento facial → IA</li>
+<li class="fragment appear">Chess engine → IA</li>
+<li class="fragment appear">ChatGPT → IA</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org302f486">
+<h2 id="org302f486">2. LLM - Large Language Model</h2>
+<ul>
+<li class="fragment appear"><b>O que é:</b> Um TIPO de IA</li>
+<li class="fragment appear">Modelo que prevê próxima palavra</li>
+
+</ul>
+</section>
+<section id="slide-orgbda8437">
+<h3 id="orgbda8437">Capacidades que importam (pra construtores)</h3>
+<ul>
+<li><b>Tool calling</b> → Consegue chamar ferramentas externas</li>
+<li><b>Raciocínio</b> → Pensamento passo a passo explícito</li>
+<li><b>Contexto longo</b> → Janela de 100K+ tokens</li>
+<li><b>Multimodalidade</b> → Imagem, áudio, vídeo</li>
+
+</ul>
+</section>
+<section id="slide-orgf8dd297">
+<h3 id="orgf8dd297">Dica: estabilidade</h3>
+<p class="fragment (appear)">
+Para construir agentes, o essencial é <b>tool calling + estabilidade</b>. Modelos densos (não-MoE) tendem a ser mais estáveis.
+</p>
+</section>
+<section id="slide-org3bf90d9">
+<h3 id="org3bf90d9">Modelos de LLM (Abril 2026)</h3>
+<ul>
+<li><b>Proprietários:</b> Gemini 3 Flash, Gemini 3.1 Pro, Claude Opus 4.7, GPT-5.4</li>
+<li><b>API gratuita:</b> Gemini 2.5 Flash, Gemini 3.1 Flash-Lite</li>
+<li><b>API barata:</b> DeepSeek V3.2, MiniMax M2.5, GLM-5.1</li>
+<li><b>Para edge/celular:</b> Gemma 4 E2B, Qwen3.5-4B</li>
+<li><b>Para agentes:</b> Qwen3.5-27B, Qwen 3.6-35B-A3B</li>
+
+</ul>
+</section>
+<section id="slide-org1fa047a">
+<h3 id="org1fa047a">Open Weights (Abril 2026)</h3>
+<ul>
+<li>GLM-5.1 (MIT!) — agente open robusto</li>
+<li>Kimi K2.5 — multimodal agentic</li>
+<li>Qwen3.5 (série) — de 0.5B a 397B, Apache 2.0</li>
+<li>DeepSeek V3.2 — MoE eficiente, barato na API</li>
+<li>Gemma 4 — de E2B a 31B, Apache 2.0</li>
+<li>Qwen 3.6-35B-A3B — 3B ativos, supera 27B densos</li>
+
+</ul>
+</section>
+<section id="slide-org71a533c">
+<h3 id="org71a533c">Paradoxo da eficiência</h3>
+<ul>
+<li class="fragment appear">2023: GPT-4 era SOTA com ~1.8T parâmetros</li>
+<li class="fragment appear">2026: Gemma 4 E4B (4B) alcança desempenho comparable</li>
+<li class="fragment appear">Modelos modernos são <b>~450x menores</b> e igualmente capazes</li>
+
+</ul>
+
+<blockquote  class="fragment (appear)">
+<p>
+Como? Mais dados de treino, distilação, MoE, pós-treino.
+</p>
+</blockquote>
+</section>
+<section id="slide-orgfaf34fd">
+<h3 id="orgfaf34fd">Estado da Arte (Abril 2026)</h3>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Modelo</th>
+<th scope="col" class="org-left">Tipo</th>
+<th scope="col" class="org-left">Destaque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Claude Opus 4.7</td>
+<td class="org-left">Proprietário</td>
+<td class="org-left">Top geral</td>
+</tr>
+
+<tr>
+<td class="org-left">Gemini 3.1 Pro</td>
+<td class="org-left">Proprietário</td>
+<td class="org-left">Top Google</td>
+</tr>
+
+<tr>
+<td class="org-left">GPT-5.4</td>
+<td class="org-left">Proprietário</td>
+<td class="org-left">1M contexto</td>
+</tr>
+
+<tr>
+<td class="org-left">Gemini 3 Flash</td>
+<td class="org-left">Proprietário</td>
+<td class="org-left">Agentic, pago</td>
+</tr>
+
+<tr>
+<td class="org-left">GLM-5.1</td>
+<td class="org-left">Open (MIT)</td>
+<td class="org-left">Coding open forte</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="slide-org917d24f">
+<h3 id="org917d24f">GLM-5.1: o open que compete</h3>
+<p>
+GLM-5.1 (open weights) empata com GPT-5.4 em coding, custando uma fração. Qwen 3.6-35B-A3B (3B ativos) roda em hardware modesto e supera modelos 10x maiores.
+</p>
+</section>
+<section id="slide-orgf150aa1">
+<h3 id="orgf150aa1">Sobre o termo "AGI"</h3>
+<ul>
+<li class="fragment appear">"AGI virou um termo de hype, não um termo com significado preciso" — Andrew Ng (Google Brain)</li>
+
+</ul>
+
+<blockquote  class="fragment (appear)">
+<p>
+Para quem constrói: o que importa são capacidades mensuráveis. O modelo faz tool calling? É estável? Foco no que você pode testar.
+</p>
+</blockquote>
+</section>
+<section id="slide-orgb7835b3">
+<h3 id="orgb7835b3">Modelos Densos vs MoE</h3>
+<ul>
+<li class="fragment appear"><b>Densos:</b> Todos parâmetros ativos (estável)</li>
+<li class="fragment appear"><b>MoE:</b> Mixture of Experts (eficiente, mas instável)</li>
+<li class="fragment appear">Para agentes: prefira modelos <b>densos</b></li>
+
+</ul>
+</section>
+<section id="slide-orgd66cea4">
+<h3 id="orgd66cea4">O que LLM NÃO faz</h3>
+<ul>
+<li class="fragment appear">Não calcula (234 × 987 = ? → ele chuta)</li>
+<li class="fragment appear">Não sabe fatos específicos (suas notas, documentos)</li>
+<li class="fragment appear">Não tem memória de longo prazo</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org42fc375">
+<h2 id="org42fc375">3. RAG - Retrieval Augmented Generation</h2>
+<ul>
+<li class="fragment appear"><b>O que é:</b> Técnica para fazer LLM "saber" coisas</li>
+<li class="fragment appear">Usado para documentos que não estavam no treinamento</li>
+
+</ul>
+</section>
+<section id="slide-org37d2678">
+<h3 id="org37d2678">Fluxo RAG</h3>
+<ol>
+<li class="fragment appear">Usuário pergunta</li>
+<li class="fragment appear">Sistema busca em documentos (Retrieval)</li>
+<li class="fragment appear">Passa documentos + pergunta para LLM (Augmented)</li>
+<li class="fragment appear">LLM responde baseado nos documentos (Generation)</li>
+
+</ol>
+</section>
+<section id="slide-orga9dc671">
+<h3 id="orga9dc671">Exemplo</h3>
+<p>
+<b>Sem RAG:</b>
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="text" >"Quando foi fundada a Liga de IA?"
+→ LLM: "Não sei" ou inventa data
+</code></pre>
+</div>
+
+<p>
+<b>Com RAG:</b>
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="text" >"Quando foi fundada a Liga de IA?"
+→ Sistema busca no documento
+→ Encontra: "fundada em 2025"
+→ LLM responde: "2025"
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org97f6273">
+<h2 id="org97f6273">4. Agente (AI Agent)</h2>
+<ul>
+<li class="fragment appear"><b>O que é:</b> Sistema que usa LLM + ferramentas + memória</li>
+<li class="fragment appear">Diferença: LLM só fala, Agente <b>faz coisas</b></li>
+
+</ul>
+</section>
+<section id="slide-orga20dc6d">
+<h3 id="orga20dc6d">Comparação</h3>
+<div class="org-src-container">
+
+<pre   ><code class="text" >LLM puro:
+Usuário: "Quanto é 234 × 987?"
+LLM: "230.898" (pode estar errado, ele chutou)
+
+Agente:
+Usuário: "Quanto é 234 × 987?"
+Agente: "Deixa eu calcular..."
+→ Usa ferramenta de calculadora
+→ Responde: "230.958" (correto)
+</code></pre>
+</div>
+</section>
+<section id="slide-orgb94aa3a">
+<h3 id="orgb94aa3a">Componentes de um agente</h3>
+<ol>
+<li class="fragment appear"><b>LLM</b> → faz inferência com linguagem natural</li>
+<li class="fragment appear"><b>Ferramentas</b> → o que ele pode fazer</li>
+<li class="fragment appear"><b>Memória</b> → histórico da conversa</li>
+<li class="fragment appear"><b>Decisão</b> → lógica de quando usar cada ferramenta</li>
+
+</ol>
+
+<blockquote  class="fragment (appear)">
+<p>
+LLM só fala. Agente fala E faz coisas.
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org9e41fb1">
+<h2 id="org9e41fb1">Resumo Visual</h2>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Termo</th>
+<th scope="col" class="org-left">O que é</th>
+<th scope="col" class="org-left">Exemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">IA</td>
+<td class="org-left">Campo geral</td>
+<td class="org-left">Spam filter, Xadrez, ChatGPT</td>
+</tr>
+
+<tr>
+<td class="org-left">LLM</td>
+<td class="org-left">Modelo de linguagem</td>
+<td class="org-left">GPT-5.4, Gemma 4</td>
+</tr>
+
+<tr>
+<td class="org-left">RAG</td>
+<td class="org-left">Busca + geração</td>
+<td class="org-left">Chatbot que consulta PDFs</td>
+</tr>
+
+<tr>
+<td class="org-left">Agente</td>
+<td class="org-left">LLM + ferramentas</td>
+<td class="org-left">Assistente que calcula, busca, age</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="slide-orgcdf754c">
+<h3 id="orgcdf754c">Hierarquia</h3>
+<ul>
+<li class="fragment appear">IA → contém tudo</li>
+<li class="fragment appear">LLM → subconjunto de IA</li>
+<li class="fragment appear">RAG → usa LLM + documentos</li>
+<li class="fragment appear">Agente → usa LLM + ferramentas + memória</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org356b62f">
+<h2 id="org356b62f">Confusões Comuns</h2>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Frase</th>
+<th scope="col" class="org-left">Termo correto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">"Vou usar IA para responder"</td>
+<td class="org-left">LLM ou Agente</td>
+</tr>
+
+<tr>
+<td class="org-left">"Meu RAG responde perguntas"</td>
+<td class="org-left">Agente com RAG</td>
+</tr>
+
+<tr>
+<td class="org-left">"O agente alucina"</td>
+<td class="org-left">LLM alucina</td>
+</tr>
+
+<tr>
+<td class="org-left">"Preciso treinar minha IA"</td>
+<td class="org-left">LLM fine-tuning</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+<section id="slide-org578f4d5">
+<h2 id="org578f4d5">Por que importa?</h2>
+<p>
+Se você sabe a diferença, não se perde.
+</p>
+
+<ul>
+<li class="fragment appear"><b>"RAG"</b> → embeddings, vector store, retrieval</li>
+<li class="fragment appear"><b>"Agente"</b> → ferramentas, loops, decisão</li>
+<li class="fragment appear"><b>"LLM"</b> → prompt, token, contexto</li>
+<li class="fragment appear"><b>"IA"</b> → genérico, pode ser qualquer coisa</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgae1709d">
+<h2 id="orgae1709d">Roadmap</h2>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Semana</th>
+<th scope="col" class="org-left">Conceito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">IA, LLM, RAG, Agentes (conceitos)</td>
+</tr>
+
+<tr>
+<td class="org-right">2-3</td>
+<td class="org-left">Prompting, Python mínimo</td>
+</tr>
+
+<tr>
+<td class="org-right">4-5</td>
+<td class="org-left">Estrutura de um agente, primeira ferramenta</td>
+</tr>
+
+<tr>
+<td class="org-right">6-7</td>
+<td class="org-left">Ferramentas múltiplas, embeddings</td>
+</tr>
+
+<tr>
+<td class="org-right">8</td>
+<td class="org-left">RAG</td>
+</tr>
+
+<tr>
+<td class="org-right">9-10</td>
+<td class="org-left">Agente completo, desenvolvimento</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+<section id="slide-org2604041" data-background="./slide_01.gif">
+<h2 id="org2604041">Perguntas?</h2>
+<p>
+No final, você vai ouvir "RAG", "Agente", "LLM" e saber exatamente o que é.</p>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
+
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 580" font-family="'Segoe UI', system-ui, sans-serif">
+<defs>
+  <style>
+    .title { font-size: 18px; fill: #e0e0e0; font-weight: bold; }
+    .subtitle { font-size: 11px; fill: #b0b0c0; }
+    .node-title { font-size: 12px; fill: #e0e0e0; font-weight: 600; }
+    .node-detail { font-size: 10.5px; fill: #c0d0e0; }
+    .grid { stroke: #333355; stroke-width: 0.5; }
+    .legend-text { font-size: 10px; fill: #e0e0e0; }
+    .group-label { font-size: 9.5px; fill: #b0b0c0; font-style: italic; }
+  </style>
+  <marker id="arr-cyan" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+    <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee" opacity="0.75"/>
+  </marker>
+  <marker id="arr-emerald" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+    <polygon points="0 0, 10 3.5, 0 7" fill="#34d399" opacity="0.75"/>
+  </marker>
+</defs>
+
+<!-- Background -->
+<rect width="500" height="580" fill="#1a1a2e" rx="8"/>
+
+<!-- Subtle grid lines -->
+<line x1="30" y1="120" x2="470" y2="120" class="grid"/>
+<line x1="30" y1="202" x2="470" y2="202" class="grid"/>
+<line x1="30" y1="270" x2="470" y2="270" class="grid"/>
+<line x1="30" y1="406" x2="470" y2="406" class="grid"/>
+<line x1="30" y1="474" x2="470" y2="474" class="grid"/>
+
+<!-- Title -->
+<text x="250" y="30" class="title" text-anchor="middle">Pipeline de um LLM</text>
+<text x="250" y="48" class="subtitle" text-anchor="middle">Do texto à predição do próximo token</text>
+
+<!-- Thin accent line under title -->
+<line x1="200" y1="55" x2="300" y2="55" stroke="#34d399" stroke-width="1" opacity="0.35"/>
+
+<!-- ============ NODE 1: Entrada (Cyan/Input) ============ -->
+<rect x="70" y="70" width="360" height="50" rx="6" fill="#22d3ee" fill-opacity="0.08" stroke="#22d3ee" stroke-width="1.5"/>
+<text x="250" y="91" class="node-title" text-anchor="middle">Entrada:</text>
+<text x="250" y="107" class="node-detail" text-anchor="middle">"O gato sentou no"</text>
+
+<!-- Arrow 1→2 -->
+<line x1="250" y1="120" x2="250" y2="138" stroke="#22d3ee" stroke-width="1.5" opacity="0.7" marker-end="url(#arr-cyan)"/>
+
+<!-- ============ NODE 2: Tokenização (Emerald/Processing) ============ -->
+<rect x="70" y="138" width="360" height="64" rx="6" fill="#34d399" fill-opacity="0.08" stroke="#34d399" stroke-width="1.5"/>
+<text x="250" y="159" class="node-title" text-anchor="middle">Tokenização</text>
+<text x="250" y="175" class="node-detail" text-anchor="middle">Tokens: ['O', 'gato', 'sentou', 'no']</text>
+<text x="250" y="191" class="node-detail" text-anchor="middle">IDs: [128, 4521, 7892, 301]</text>
+
+<!-- Arrow 2→3 -->
+<line x1="250" y1="202" x2="250" y2="220" stroke="#34d399" stroke-width="1.5" opacity="0.7" marker-end="url(#arr-emerald)"/>
+
+<!-- ============ NODE 3: Embeddings (Emerald/Processing) ============ -->
+<rect x="70" y="220" width="360" height="50" rx="6" fill="#34d399" fill-opacity="0.08" stroke="#34d399" stroke-width="1.5"/>
+<text x="250" y="241" class="node-title" text-anchor="middle">Embeddings</text>
+<text x="250" y="257" class="node-detail" text-anchor="middle">Cada token → vetor (dims: 4096)</text>
+
+<!-- Arrow 3→4 -->
+<line x1="250" y1="270" x2="250" y2="288" stroke="#34d399" stroke-width="1.5" opacity="0.7" marker-end="url(#arr-emerald)"/>
+
+<!-- ============ TRANSFORMER BLOCK GROUPING (Nodes 4&amp;5) ============ -->
+<rect x="56" y="275" width="388" height="144" rx="6" fill="none" stroke="#555577" stroke-width="1" stroke-dasharray="6,3"/>
+<text x="62" y="290" class="group-label">N × Bloco Transformer</text>
+
+<!-- ============ NODE 4: Self-Attention (Emerald/Processing) ============ -->
+<rect x="70" y="302" width="360" height="50" rx="6" fill="#34d399" fill-opacity="0.08" stroke="#34d399" stroke-width="1.5"/>
+<text x="250" y="323" class="node-title" text-anchor="middle">Self-Attention</text>
+<text x="250" y="339" class="node-detail" text-anchor="middle">Calcula relações entre tokens</text>
+
+<!-- Arrow 4→5 -->
+<line x1="250" y1="352" x2="250" y2="370" stroke="#34d399" stroke-width="1.5" opacity="0.7" marker-end="url(#arr-emerald)"/>
+
+<!-- ============ NODE 5: Feed-Forward (Emerald/Processing) ============ -->
+<rect x="70" y="370" width="360" height="50" rx="6" fill="#34d399" fill-opacity="0.08" stroke="#34d399" stroke-width="1.5"/>
+<text x="250" y="391" class="node-title" text-anchor="middle">Feed-Forward</text>
+<text x="250" y="407" class="node-detail" text-anchor="middle">Transformações não-lineares</text>
+
+<!-- Arrow 5→6 -->
+<line x1="250" y1="420" x2="250" y2="438" stroke="#34d399" stroke-width="1.5" opacity="0.7" marker-end="url(#arr-emerald)"/>
+
+<!-- ============ NODE 6: Predição (Emerald/Processing) ============ -->
+<rect x="70" y="438" width="360" height="50" rx="6" fill="#34d399" fill-opacity="0.08" stroke="#34d399" stroke-width="1.5"/>
+<text x="250" y="459" class="node-title" text-anchor="middle">Predição</text>
+<text x="250" y="475" class="node-detail" text-anchor="middle">Probabilidade por token do vocabulário</text>
+
+<!-- Arrow 6→7 -->
+<line x1="250" y1="488" x2="250" y2="506" stroke="#34d399" stroke-width="1.5" opacity="0.7" marker-end="url(#arr-emerald)"/>
+
+<!-- ============ NODE 7: Saída (Cyan/Output) ============ -->
+<rect x="70" y="506" width="360" height="50" rx="6" fill="#22d3ee" fill-opacity="0.08" stroke="#22d3ee" stroke-width="1.5"/>
+<text x="250" y="527" class="node-title" text-anchor="middle">Saída:</text>
+<text x="250" y="543" class="node-detail" text-anchor="middle">"tapete" (mais provável)</text>
+
+<!-- ============ LEGEND ============ -->
+<circle cx="140" cy="570" r="5" fill="#22d3ee"/>
+<text x="152" y="574" class="legend-text">Entrada / Saída</text>
+<circle cx="290" cy="570" r="5" fill="#34d399"/>
+<text x="302" y="574" class="legend-text">Processamento</text>
+
+</svg>

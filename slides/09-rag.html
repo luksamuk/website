@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>RAG</title>
+<meta name="author" content="Lucas S. Vieira"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/theme/night.css" id="theme"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/npm/reveal.js@4/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide" data-background="./slide_09.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>RAG</h2><br/><p style="font-size:0.85em;opacity:0.8;">O agente que lê documentos</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+</section>
+<section>
+<section id="slide-org26d6d67">
+<h2 id="org26d6d67">O problema</h2>
+<p class="fragment (appear)">
+LLMs não conhecem:
+</p>
+
+<ul>
+<li>Seus documentos pessoais</li>
+<li>PDFs da empresa</li>
+<li>Notas privadas</li>
+<li>Informações recentes (pós-treinamento)</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org7b47587">
+<h2 id="org7b47587">A solução: RAG</h2>
+<p class="fragment (appear)">
+RAG = Retrieval Augmented Generation
+</p>
+</section>
+<section id="slide-org5bf4f16">
+<h3 id="org5bf4f16">Fluxo:</h3>
+<ol>
+<li class="fragment appear"><b>Chunking</b> → divide documentos em pedaços</li>
+<li class="fragment appear"><b>Embeddings</b> → transforma texto em números</li>
+<li class="fragment appear"><b>Vector Store</b> → guarda os vetores</li>
+<li class="fragment appear"><b>Retrieval</b> → busca pedaços relevantes</li>
+<li class="fragment appear"><b>Generation</b> → LLM responde com contexto</li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-orgfb69aec">
+<h2 id="orgfb69aec">Analogia</h2>
+<ul>
+<li class="fragment appear"><b>Sem RAG:</b> aluno fazendo prova de memória</li>
+<li class="fragment appear"><b>Com RAG:</b> aluno fazendo prova com livro aberto</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgad894ce">
+<h2 id="orgad894ce">Chunking</h2>
+<p>
+Dividir texto em pedaços menores.
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" >def dividir_em_chunks(texto, tamanho=200):
+    chunks = []
+    for i in range(0, len(texto), tamanho):
+        chunks.append(texto[i:i+tamanho])
+    return chunks
+</code></pre>
+</div>
+
+<p class="fragment (appear)">
+Por quê? Documentos grandes são difíceis de buscar.
+Pedaços pequenos = busca mais precisa.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org7dd4b06">
+<h2 id="org7dd4b06">Embeddings (simplificado)</h2>
+<p class="fragment (appear)">
+Texto → números = vetor
+</p>
+
+<p>
+Vetores parecidos = textos parecidos.
+</p>
+
+<blockquote  class="fragment (appear)">
+<p>
+Busca semântica: encontra significado, não só palavras.
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org566657c">
+<h2 id="org566657c">Matryoshka Embeddings</h2>
+<p class="fragment (appear)">
+Embeddings que podem ser truncados.
+</p>
+
+<ul>
+<li>Normal: 768 dimensões fixas</li>
+<li>Matryoshka: 768, 512, 256, 128&#x2026; (flexível)</li>
+
+</ul>
+
+<p>
+<b>Vantagem:</b> economiza espaço e tempo.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org8adb892">
+<h2 id="org8adb892">Fluxo RAG completo</h2>
+<div class="org-src-container">
+
+<pre   ><code class="text" >Documento → Chunks → Embeddings → Vector Store
+                                         ↓
+Usuário pergunta                        ↓
+      ↓                                  ↓
+Pergunta → Embedding → Busca similar → Chunks relevantes
+                                              ↓
+                              LLM recebe pergunta + chunks
+                                              ↓
+                                         Resposta
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgf078b8e">
+<h2 id="orgf078b8e">Para lembrar</h2>
+<blockquote  class="fragment (appear)">
+<p>
+"RAG = buscar antes de responder."
+</p>
+</blockquote>
+
+<ul>
+<li class="fragment appear">Chunking: divide em pedaços</li>
+<li class="fragment appear">Embeddings: transforma em números</li>
+<li class="fragment appear">Retrieval: encontra o relevante</li>
+<li class="fragment appear">Generation: LLM responde</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orge1ee798">
+<h2 id="orge1ee798">Próxima semana</h2>
+<ul>
+<li class="fragment appear">Desenvolvimento e ajustes</li>
+<li class="fragment appear">Demo completa de agente</li>
+<li class="fragment appear">Mentoria</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org82f46af">
+<h2 id="org82f46af">Perguntas?</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
+
+});
+
+</script>
+</body>
+</html>

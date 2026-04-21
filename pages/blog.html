@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Blog</title>
+<meta name="author" content="Lucas S. Vieira" />
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira" />
+<meta name="generator" content="Org Mode" />
+<style type="text/css">
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-22RF3F5XE0"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-22RF3F5XE0');
+</script>
+<link rel="stylesheet" type="text/css" href="/css/main.css" />
+<link rel="stylesheet" type="text/css" href="/css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="/css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="/img/cat-i-mage.jpg" />
+<link rel="alternate" type="application/atom+xml" title="The Alchemist's Hideout" href="/feed.xml" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#14171e">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="/js/theme-toggle.js"></script>
+<script src="/js/nav-scroll.js"></script>
+<script src="/js/email-deobfuscate.js"></script>
+<style>#preamble > h1.title { display: none; }</style>
+<meta property="og:url" content="https://luksamuk.codes/pages/blog.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Blog">
+<meta property="og:description" content="Programming, Tech, and occasional rant space by Lucas Vieira">
+<meta property="og:image" content="https://luksamuk.codes/img/banner-full.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:domain" content="luksamuk.codes">
+<meta name="twitter:url" content="https://luksamuk.codes/pages/blog.html">
+<meta name="twitter:title" content="Blog">
+<meta name="twitter:description" content="Programming, Tech, and occasional rant space by Lucas Vieira">
+<meta name="twitter:image" content="https://luksamuk.codes/img/banner.png">
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">Blog</h1>
+</div>
+<div id="content" class="content">
+<h1 class="title"><i class="fa-solid fa-rss"></i> Blog</h1>
+
+<p class="blog-intro">Articles about programming, technology, Lisp, and occasional reflections. Most recent posts first. <a href="/feed.xml"><i class="fa-solid fa-rss"></i> Subscribe to the feed</a></p>
+
+<p class="blog-intro-note">Posts are written in Portuguese. Some may have English summaries.</p>
+
+<div class="blog-list">
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/configurando-llms.html"><img src="/posts/img/thumb-configurando-llms.png" alt="Configurando LLMs" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/configurando-llms.html">Configurando LLMs localmente para uso pessoal</a></h2>
+<span class="blog-date">Jan 11, 2026</span>
+</div>
+<p><a href="/posts/configurando-llms.html" class="blog-link">A practical guide on setting up language models locally with Ollama and using them for everyday tasks.</a></p>
+<div class="blog-tags"><span class="badge lang-pt">PT</span> <span class="badge tag-ai">IA</span> <span class="badge tag-tools">Ferramentas</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/otimismo-ou-como-iniciar-uma-conversa.html"><img src="/posts/img/thumb-otimismo-ou-como-iniciar-uma-conversa.png" alt="otimismo-ou-como-iniciar-uma-conversa" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/otimismo-ou-como-iniciar-uma-conversa.html">O Otimismo, ou como iniciar uma conversa</a></h2>
+<span class="blog-date">Oct 04, 2025</span>
+</div>
+<p><a href="/posts/otimismo-ou-como-iniciar-uma-conversa.html" class="blog-link">Reflections on optimism as a tool for human connection and how to start meaningful conversations.</a></p>
+<div class="blog-tags"><span class="badge lang-pt">PT</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/configuring-windows-98.html"><img src="/posts/img/thumb-configuring-windows-98.png" alt="configuring-windows-98" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/configuring-windows-98.html">Revisiting Windows 98's nostalgia</a></h2>
+<span class="blog-date">Apr 01, 2024</span>
+</div>
+<p><a href="/posts/configuring-windows-98.html" class="blog-link">A nostalgic deep dive into Windows 98 — what made it special, and what we lost along the way.</a></p>
+<div class="blog-tags"><span class="badge lang-en">EN</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/plan9-rest-requests.html"><img src="/posts/img/thumb-plan9-rest-requests.png" alt="plan9-rest-requests" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/plan9-rest-requests.html">Plan 9: REST requests using the filesystem (seriously)</a></h2>
+<span class="blog-date">Apr 07, 2024</span>
+</div>
+<p><a href="/posts/plan9-rest-requests.html" class="blog-link">How to make REST API requests using the Plan 9 filesystem — yes, everything is a file.</a></p>
+<div class="blog-tags"><span class="badge lang-en">EN</span> <span class="badge tag-plan9">Plan 9</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/plan9-setup-rpi.html"><img src="/posts/img/thumb-plan9-setup-rpi.png" alt="plan9-setup-rpi" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/plan9-setup-rpi.html">Plan 9: Setting up 9front on a Raspberry Pi</a></h2>
+<span class="blog-date">Apr 10, 2021</span>
+</div>
+<p><a href="/posts/plan9-setup-rpi.html" class="blog-link">Step-by-step guide to installing and running 9front on a Raspberry Pi.</a></p>
+<div class="blog-tags"><span class="badge lang-en">EN</span> <span class="badge tag-plan9">Plan 9</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/majestic-devlog-04.html"><img src="/posts/img/thumb-majestic-devlog-04.png" alt="majestic-devlog-04" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/majestic-devlog-04.html">Majestic Lisp: Interpretando Majestic com Majestic</a></h2>
+<span class="blog-date">Mar 14, 2021</span>
+</div>
+<p><a href="/posts/majestic-devlog-04.html" class="blog-link">Devlog #4 — Majestic Lisp interpreting itself: metacircularity in practice.</a></p>
+<div class="blog-tags"><span class="badge lang-pt">PT</span> <span class="badge tag-lisp">Lisp</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/majestic-devlog-03.html"><img src="/posts/img/thumb-majestic-devlog-03.png" alt="majestic-devlog-03" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/majestic-devlog-03.html">Majestic Lisp: Implementando <code>let</code> em termos de clausuras</a></h2>
+<span class="blog-date">Nov 18, 2020</span>
+</div>
+<p><a href="/posts/majestic-devlog-03.html" class="blog-link">Devlog #3 — How to implement <code>let</code> using lambda and closures in a Lisp interpreter.</a></p>
+<div class="blog-tags"><span class="badge lang-pt">PT</span> <span class="badge tag-lisp">Lisp</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/plan9-mail.html"><img src="/posts/img/thumb-plan9-mail.png" alt="plan9-mail" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/plan9-mail.html">Reading E-mail from Gmail on Plan 9 from Bell Labs</a></h2>
+<span class="blog-date">Oct 06, 2020</span>
+</div>
+<p><a href="/posts/plan9-mail.html" class="blog-link">How to read Gmail on Plan 9 — because why wouldn't you check email from a research OS?</a></p>
+<div class="blog-tags"><span class="badge lang-en">EN</span> <span class="badge tag-plan9">Plan 9</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/majestic-lisp-pt2.html"><img src="/posts/img/thumb-majestic-lisp-pt2.png" alt="majestic-lisp-pt2" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/majestic-lisp-pt2.html">Mais Recursos de Majestic Lisp</a></h2>
+<span class="blog-date">Sep 30, 2020</span>
+</div>
+<p><a href="/posts/majestic-lisp-pt2.html" class="blog-link">Part 2 of the introduction to Majestic Lisp — more features, more macros, more fun.</a></p>
+<div class="blog-tags"><span class="badge lang-pt">PT</span> <span class="badge tag-lisp">Lisp</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/apresentando-majestic-lisp.html"><img src="/posts/img/thumb-apresentando-majestic-lisp.png" alt="apresentando-majestic-lisp" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/apresentando-majestic-lisp.html">Apresentando Lisps e Majestic Lisp</a></h2>
+<span class="blog-date">Aug 05, 2020</span>
+</div>
+<p><a href="/posts/apresentando-majestic-lisp.html" class="blog-link">Introduction to the world of Lisps and presentation of Majestic Lisp, a Lisp interpreter in Haskell.</a></p>
+<div class="blog-tags"><span class="badge lang-pt">PT</span> <span class="badge tag-lisp">Lisp</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/automatos-celulares-apl.html"><img src="/posts/img/thumb-automatos-celulares-apl.png" alt="automatos-celulares-apl" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/automatos-celulares-apl.html">Programando Autômatos Celulares em APL</a></h2>
+<span class="blog-date">Apr 21, 2020</span>
+</div>
+<p><a href="/posts/automatos-celulares-apl.html" class="blog-link">Implementing the Game of Life and other cellular automata using the APL language.</a></p>
+<div class="blog-tags"><span class="badge lang-pt">PT</span> <span class="badge tag-apl">APL</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/caso-clojure.html"><img src="/posts/img/thumb-caso-clojure.png" alt="caso-clojure" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/caso-clojure.html">Classificando Lisps: O Caso Clojure</a></h2>
+<span class="blog-date">Aug 16, 2019</span>
+</div>
+<p><a href="/posts/caso-clojure.html" class="blog-link">An analysis of where Clojure fits in the Lisp family and what that means.</a></p>
+<div class="blog-tags"><span class="badge lang-pt">PT</span> <span class="badge tag-lisp">Lisp</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/plan9-c-dev.html"><img src="/posts/img/thumb-plan9-c-dev.png" alt="plan9-c-dev" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/plan9-c-dev.html">Desenvolvimento em C no Plan 9 From Bell Labs</a></h2>
+<span class="blog-date">Mar 24, 2019</span>
+</div>
+<p><a href="/posts/plan9-c-dev.html" class="blog-link">How to program in C on Plan 9 — differences from POSIX, a custom compiler, and the charm of a different system.</a></p>
+<div class="blog-tags"><span class="badge lang-pt">PT</span> <span class="badge tag-plan9">Plan 9</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/usando-apl.html"><img src="/posts/img/thumb-usando-apl.png" alt="usando-apl" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/usando-apl.html">Escalonando matrizes em APL</a></h2>
+<span class="blog-date">Aug 22, 2019</span>
+</div>
+<p><a href="/posts/usando-apl.html" class="blog-link">Step-by-step matrix row reduction using APL — mathematics and array-first programming.</a></p>
+<div class="blog-tags"><span class="badge lang-pt">PT</span> <span class="badge tag-apl">APL</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/oop-java-vs-cl.html"><img src="/pages/img/blog-thumb-default.png" alt="oop-java-vs-cl" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/oop-java-vs-cl.html">Orientação a Objetos: Java <em>versus</em> Common Lisp</a></h2>
+<span class="blog-date">Jan 08, 2019</span>
+</div>
+<p><a href="/posts/oop-java-vs-cl.html" class="blog-link">Comparing the object-oriented model of Java and Common Lisp (CLOS) — multiple dispatch, generic functions, and more.</a></p>
+<div class="blog-tags"><span class="badge lang-pt">PT</span> <span class="badge tag-lisp">Lisp</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/genetic-algorithms.html"><img src="/pages/img/blog-thumb-default.png" alt="genetic-algorithms" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/genetic-algorithms.html">Learning Genetic Algorithms</a></h2>
+<span class="blog-date">Dec 27, 2018</span>
+</div>
+<p><a href="/posts/genetic-algorithms.html" class="blog-link">An introduction to genetic algorithms with practical examples in Common Lisp.</a></p>
+<div class="blog-tags"><span class="badge lang-en">EN</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/counting-occurencies.html"><img src="/pages/img/blog-thumb-default.png" alt="counting-occurencies" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/counting-occurencies.html">Contando Ocorrências de Números em C, C++ e Common Lisp</a></h2>
+<span class="blog-date">Dec 18, 2018</span>
+</div>
+<p><a href="/posts/counting-occurencies.html" class="blog-link">Comparing solutions for counting occurrences in C, C++, and Common Lisp — each language has its own way.</a></p>
+<div class="blog-tags"><span class="badge lang-pt">PT</span> <span class="badge tag-lisp">Lisp</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/operator-associativity.html"><img src="/pages/img/blog-thumb-default.png" alt="operator-associativity" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/operator-associativity.html">Associatividade de Operadores em C/C++</a></h2>
+<span class="blog-date">Dec 02, 2018</span>
+</div>
+<p><a href="/posts/operator-associativity.html" class="blog-link">A detailed guide on operator associativity in C/C++ — left vs right, and why it matters.</a></p>
+<div class="blog-tags"><span class="badge lang-pt">PT</span></div>
+</div>
+</article>
+
+<article class="blog-item">
+<div class="blog-item-thumb"><a href="/posts/lispm-001.html"><img src="/pages/img/blog-thumb-default.png" alt="lispm-001" loading="lazy"></a></div>
+<div class="blog-item-body">
+<div class="blog-item-header">
+<h2><a href="/posts/lispm-001.html">Early Ideas: A Modern Lisp Machine from Scratch</a></h2>
+<span class="blog-date">Sep 15, 2018</span>
+</div>
+<p><a href="/posts/lispm-001.html" class="blog-link">First thoughts on building a modern Lisp Machine — hardware, software, and the dream of a Lisp-native computer.</a></p>
+<div class="blog-tags"><span class="badge lang-en">EN</span> <span class="badge tag-lisp">Lisp</span></div>
+</div>
+</article>
+
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="'Segoe UI', system-ui, sans-serif">
+<defs>
+  <style>
+    .title { font-size: 18px; fill: #e0e0e0; font-weight: bold; }
+    .subtitle { font-size: 11px; fill: #b0b0c0; }
+    .node-title { font-size: 12px; fill: #e0e0e0; font-weight: 600; }
+    .node-detail { font-size: 10.5px; fill: #c0d0e0; }
+    .grid { stroke: #333355; stroke-width: 0.5; }
+    .legend-text { font-size: 10px; fill: #e0e0e0; }
+    .group-label { font-size: 9.5px; fill: #b0b0c0; font-style: italic; }
+    .db-label { font-size: 9px; fill: #a78bfa; opacity: 0.8; }
+  </style>
+  <marker id="arr-cyan-r" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+    <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee" opacity="0.75"/>
+  </marker>
+  <marker id="arr-emerald-r" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+    <polygon points="0 0, 10 3.5, 0 7" fill="#34d399" opacity="0.75"/>
+  </marker>
+  <marker id="arr-violet-r" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+    <polygon points="0 0, 10 3.5, 0 7" fill="#a78bfa" opacity="0.75"/>
+  </marker>
+</defs>
+
+<!-- Background -->
+<rect width="960" height="400" fill="#1a1a2e" rx="8"/>
+
+<!-- Subtle vertical grid lines -->
+<line x1="140" y1="70" x2="140" y2="310" class="grid"/>
+<line x1="295" y1="70" x2="295" y2="310" class="grid"/>
+<line x1="450" y1="70" x2="450" y2="310" class="grid"/>
+<line x1="600" y1="70" x2="600" y2="310" class="grid"/>
+<line x1="750" y1="70" x2="750" y2="310" class="grid"/>
+
+<!-- Title -->
+<text x="480" y="30" class="title" text-anchor="middle">Arquitetura RAG</text>
+<text x="480" y="48" class="subtitle" text-anchor="middle">Retrieval-Augmented Generation — Lewis et al. (2020)</text>
+
+<!-- Thin accent line under title -->
+<line x1="380" y1="55" x2="580" y2="55" stroke="#34d399" stroke-width="1" opacity="0.35"/>
+
+<!-- ============ NODE 1: Consulta do Usuário (Cyan/Input) ============ -->
+<rect x="30" y="135" width="170" height="60" rx="6" fill="#22d3ee" fill-opacity="0.08" stroke="#22d3ee" stroke-width="1.5"/>
+<text x="115" y="161" class="node-title" text-anchor="middle">Consulta</text>
+<text x="115" y="178" class="node-detail" text-anchor="middle">do Usuário</text>
+
+<!-- Arrow 1→2 -->
+<line x1="200" y1="165" x2="218" y2="165" stroke="#22d3ee" stroke-width="1.5" opacity="0.7" marker-end="url(#arr-cyan-r)"/>
+
+<!-- ============ NODE 2: Embedding Model (Emerald/Processing) ============ -->
+<rect x="220" y="135" width="160" height="60" rx="6" fill="#34d399" fill-opacity="0.08" stroke="#34d399" stroke-width="1.5"/>
+<text x="300" y="161" class="node-title" text-anchor="middle">Embedding</text>
+<text x="300" y="178" class="node-detail" text-anchor="middle">Model</text>
+
+<!-- ============ NODE 3: Vector DB (Violet/Storage) — above node 2 ============ -->
+<!-- DB cylinder shape: top ellipse + body + bottom ellipse -->
+<rect x="225" y="78" width="150" height="44" rx="6" fill="#a78bfa" fill-opacity="0.08" stroke="#a78bfa" stroke-width="1.5"/>
+<ellipse cx="300" cy="78" rx="75" ry="5" fill="#a78bfa" fill-opacity="0.05" stroke="#a78bfa" stroke-width="1"/>
+<text x="300" y="98" class="node-title" text-anchor="middle">Vector DB</text>
+<text x="300" y="113" class="node-detail" text-anchor="middle">Embeddings Indexados</text>
+
+<!-- Arrow 2↔3 (bidirectional — model writes/reads DB) -->
+<!-- DB → Model (down) -->
+<line x1="270" y1="122" x2="270" y2="133" stroke="#a78bfa" stroke-width="1.5" opacity="0.7" marker-end="url(#arr-violet-r)"/>
+<!-- Model → DB (up) -->
+<line x1="330" y1="135" x2="330" y2="124" stroke="#34d399" stroke-width="1.5" opacity="0.7" marker-end="url(#arr-emerald-r)"/>
+
+<!-- Arrow 2→4 -->
+<line x1="380" y1="165" x2="398" y2="165" stroke="#34d399" stroke-width="1.5" opacity="0.7" marker-end="url(#arr-emerald-r)"/>
+
+<!-- ============ NODE 4: Vector Search (Emerald/Processing) ============ -->
+<rect x="400" y="135" width="170" height="60" rx="6" fill="#34d399" fill-opacity="0.08" stroke="#34d399" stroke-width="1.5"/>
+<text x="485" y="161" class="node-title" text-anchor="middle">Vector Search</text>
+<text x="485" y="178" class="node-detail" text-anchor="middle">(Top-k docs)</text>
+
+<!-- Dashed arrow: DB → Search (retrieval path) -->
+<path d="M 375,105 Q 420,105 440,133" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="5,3" opacity="0.55" marker-end="url(#arr-violet-r)"/>
+<text x="418" y="100" class="db-label" text-anchor="middle">retrieve</text>
+
+<!-- Arrow 4→5 -->
+<line x1="570" y1="165" x2="588" y2="165" stroke="#34d399" stroke-width="1.5" opacity="0.7" marker-end="url(#arr-emerald-r)"/>
+
+<!-- ============ NODE 5: Context Fusion (Emerald/Processing) ============ -->
+<rect x="590" y="135" width="170" height="60" rx="6" fill="#34d399" fill-opacity="0.08" stroke="#34d399" stroke-width="1.5"/>
+<text x="675" y="161" class="node-title" text-anchor="middle">Context Fusion</text>
+<text x="675" y="178" class="node-detail" text-anchor="middle">(Query + Docs)</text>
+
+<!-- Arrow 5→6 -->
+<line x1="760" y1="165" x2="778" y2="165" stroke="#34d399" stroke-width="1.5" opacity="0.7" marker-end="url(#arr-emerald-r)"/>
+
+<!-- ============ NODE 6: LLM Generation (Emerald/Processing) ============ -->
+<rect x="780" y="135" width="150" height="60" rx="6" fill="#34d399" fill-opacity="0.08" stroke="#34d399" stroke-width="1.5"/>
+<text x="855" y="161" class="node-title" text-anchor="middle">LLM</text>
+<text x="855" y="178" class="node-detail" text-anchor="middle">Generation</text>
+
+<!-- Arrow 6→7 (output) -->
+<line x1="855" y1="195" x2="855" y2="240" stroke="#34d399" stroke-width="1.5" opacity="0.7" marker-end="url(#arr-emerald-r)"/>
+
+<!-- ============ NODE 7: Resposta Final (Cyan/Output) ============ -->
+<rect x="775" y="244" width="160" height="50" rx="6" fill="#22d3ee" fill-opacity="0.08" stroke="#22d3ee" stroke-width="1.5"/>
+<text x="855" y="265" class="node-title" text-anchor="middle">Resposta</text>
+<text x="855" y="281" class="node-detail" text-anchor="middle">Final</text>
+
+<!-- ============ GROUPING: Retrieval Phase ============ -->
+<rect x="210" y="68" width="370" height="140" rx="6" fill="none" stroke="#555577" stroke-width="1" stroke-dasharray="6,3"/>
+<text x="216" y="84" class="group-label">Fase de Retrieval</text>
+
+<!-- ============ GROUPING: Generation Phase ============ -->
+<rect x="580" y="120" width="360" height="185" rx="6" fill="none" stroke="#555577" stroke-width="1" stroke-dasharray="6,3"/>
+<text x="586" y="136" class="group-label">Fase de Geração</text>
+
+<!-- ============ LEGEND ============ -->
+<circle cx="200" cy="370" r="5" fill="#22d3ee"/>
+<text x="212" y="374" class="legend-text">Entrada / Saída</text>
+<circle cx="360" cy="370" r="5" fill="#34d399"/>
+<text x="372" y="374" class="legend-text">Processamento</text>
+<circle cx="520" cy="370" r="5" fill="#a78bfa"/>
+<text x="532" y="374" class="legend-text">Armazenamento</text>
+
+</svg>

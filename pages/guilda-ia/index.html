@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Guilda de IA</title>
+<meta name="author" content="Lucas S. Vieira" />
+<meta name="description" content="Material didático do curso de IA Generativa da Guilda de IA
+Material didático do curso de Introdução à IA Generativa da Guilda de IA" />
+<meta name="generator" content="Org Mode" />
+<style type="text/css">
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-22RF3F5XE0"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-22RF3F5XE0');
+</script>
+<link rel="stylesheet" type="text/css" href="/css/main.css" />
+<link rel="stylesheet" type="text/css" href="/css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="/css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="/img/cat-i-mage.jpg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#14171e">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="/js/theme-toggle.js"></script>
+<script src="/js/nav-scroll.js"></script>
+<meta property="og:url" content="https://luksamuk.codes/pages/guilda-ia/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Guilda de IA">
+<meta property="og:description" content="Material didático do curso de IA Generativa da Guilda de IA
+Material didático do curso de Introdução à IA Generativa da Guilda de IA">
+<meta property="og:image" content="https://luksamuk.codes/img/banner-full.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:domain" content="luksamuk.codes">
+<meta name="twitter:url" content="https://luksamuk.codes/pages/guilda-ia/index.html">
+<meta name="twitter:title" content="Guilda de IA">
+<meta name="twitter:description" content="Material didático do curso de IA Generativa da Guilda de IA
+Material didático do curso de Introdução à IA Generativa da Guilda de IA">
+<meta name="twitter:image" content="https://luksamuk.codes/img/banner.png">
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">Guilda de IA</h1>
+</div>
+<div id="content" class="content">
+<div id="outline-container-orgf3e05b1" class="outline-2">
+<h2 id="orgf3e05b1">Sobre o curso</h2>
+<div class="outline-text-2" id="text-orgf3e05b1">
+<p>
+Material modular sobre construção de agentes de IA, da teoria à prática. 12 semanas de conteúdo para iniciantes.
+</p>
+</div>
+<div id="outline-container-orgdafc0f5" class="outline-3">
+<h3 id="orgdafc0f5">Pré-requisitos</h3>
+<div class="outline-text-3" id="text-orgdafc0f5">
+<ul class="org-ul">
+<li>Lógica básica</li>
+<li>Curiosidade</li>
+<li>Conta Google (para Google Colab)</li>
+<li>API key de um provedor: <a href="https://aistudio.google.com/">Gemini</a>, <a href="https://huggingface.co/">HuggingFace</a> ou <a href="https://openrouter.ai/">OpenRouter</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgcb944fc" class="outline-3">
+<h3 id="orgcb944fc">Tutor</h3>
+<div class="outline-text-3" id="text-orgcb944fc">
+<p>
+Lucas S. Vieira (luksamuk)
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org35ae07e" class="outline-2">
+<h2 id="org35ae07e">Cronograma</h2>
+<div class="outline-text-2" id="text-org35ae07e">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Semana</th>
+<th scope="col" class="org-left">Data</th>
+<th scope="col" class="org-left">Tema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">00</td>
+<td class="org-left">10/04</td>
+<td class="org-left">Abertura e alinhamento</td>
+</tr>
+
+<tr>
+<td class="org-right">01</td>
+<td class="org-left">17/04</td>
+<td class="org-left">O que é IA hoje?</td>
+</tr>
+
+<tr>
+<td class="org-right">02</td>
+<td class="org-left">24/04</td>
+<td class="org-left">Prompting básico</td>
+</tr>
+
+<tr>
+<td class="org-right">03</td>
+<td class="org-left">08/05</td>
+<td class="org-left">Python mínimo</td>
+</tr>
+
+<tr>
+<td class="org-right">04</td>
+<td class="org-left">15/05</td>
+<td class="org-left">Python + API de LLM</td>
+</tr>
+
+<tr>
+<td class="org-right">05</td>
+<td class="org-left">22/05</td>
+<td class="org-left">Estrutura de um agente</td>
+</tr>
+
+<tr>
+<td class="org-right">06</td>
+<td class="org-left">29/05</td>
+<td class="org-left">Primeira ferramenta</td>
+</tr>
+
+<tr>
+<td class="org-right">07</td>
+<td class="org-left">05/06</td>
+<td class="org-left">Ferramentas múltiplas</td>
+</tr>
+
+<tr>
+<td class="org-right">08</td>
+<td class="org-left">12/06</td>
+<td class="org-left">Embeddings e similaridade</td>
+</tr>
+
+<tr>
+<td class="org-right">09</td>
+<td class="org-left">19/06</td>
+<td class="org-left">RAG</td>
+</tr>
+
+<tr>
+<td class="org-right">10</td>
+<td class="org-left">26/06</td>
+<td class="org-left">Desenvolvimento livre</td>
+</tr>
+
+<tr>
+<td class="org-right">11</td>
+<td class="org-left">03/07</td>
+<td class="org-left">Apresentação final</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org28f1395" class="outline-2">
+<h2 id="org28f1395">Materiais por Semana</h2>
+<div class="outline-text-2" id="text-org28f1395">
+<table>
+<thead><tr><th>Semana</th><th>Tema</th><th>Apostila</th><th>Slides</th><th>Live</th><th>Mini aula</th></tr></thead>
+<tbody>
+<tr><td>00</td><td>Abertura e alinhamento</td><td>—</td><td><a href="/slides/00-abertura.html">Abrir slides</a></td><td>📺 <a href="https://www.youtube.com/watch?v=XvA9RAHBjBk">Ver no YouTube</a></td><td>🎬 <a href="https://youtu.be/Rt8tLgnZkrg">Ver no YouTube</a></td></tr>
+<tr><td>01</td><td>O que é IA hoje?</td><td><a href="/pages/guilda-ia/01-nomenclaturas.html">Nomenclaturas de IA</a></td><td><a href="/slides/01-nomenclaturas.html">Abrir slides</a></td><td>Sem live</td><td>🎬 <a href="https://youtu.be/ay4EnE-xaf0">Ver no YouTube</a></td></tr>
+
+<!-- <tr><td>02</td><td>Prompting básico</td><td><a href="/pages/guilda-ia/02-prompting.html">Prompting: Como falar com IA</a></td><td><a href="/slides/02-prompting.html">Abrir slides</a></td><td>📺 Em breve</td><td>—</td></tr> -->
+
+<!-- <tr><td>03</td><td>Python mínimo</td><td><a href="/pages/guilda-ia/03-python-minimo.html">Python mínimo: O essencial</a></td><td><a href="/slides/03-python-minimo.html">Abrir slides</a></td><td>📺 Em breve</td><td>—</td></tr> -->
+
+<!-- <tr><td>04</td><td>Python + API de LLM</td><td><a href="/pages/guilda-ia/03-python-minimo.html">Python e APIs</a></td><td><a href="/slides/04-python-api.html">Abrir slides</a></td><td>📺 Em breve</td><td>—</td></tr> -->
+
+<!-- <tr><td>05</td><td>Estrutura de um agente</td><td><a href="/pages/guilda-ia/05-estrutura-agente.html">Estrutura de Agente</a></td><td><a href="/slides/05-estrutura-agente.html">Abrir slides</a></td><td>📺 Em breve</td><td>—</td></tr> -->
+
+<!-- <tr><td>06</td><td>Primeira ferramenta</td><td><a href="/pages/guilda-ia/06-primeira-ferramenta.html">Primeira Ferramenta</a></td><td><a href="/slides/06-primeira-ferramenta.html">Abrir slides</a></td><td>📺 Em breve</td><td>—</td></tr> -->
+
+<!-- <tr><td>07</td><td>Ferramentas múltiplas</td><td><a href="/pages/guilda-ia/07-ferramentas-multiplas.html">Ferramentas Múltiplas</a></td><td><a href="/slides/07-ferramentas-multiplas.html">Abrir slides</a></td><td>📺 Em breve</td><td>—</td></tr> -->
+
+<!-- <tr><td>08</td><td>Embeddings e similaridade</td><td><a href="/pages/guilda-ia/08-embeddings.html">Embeddings e Similaridade</a></td><td><a href="/slides/08-embeddings.html">Abrir slides</a></td><td>📺 Em breve</td><td>🎬 <a href="#">Em breve</a></td></tr> -->
+
+<!-- <tr><td>09</td><td>RAG</td><td><a href="/pages/guilda-ia/09-rag.html">RAG: O agente que lê documentos</a></td><td><a href="/slides/09-rag.html">Abrir slides</a></td><td>📺 Em breve</td><td>🎬 <a href="#">Em breve</a></td></tr> -->
+
+<!-- <tr><td>10</td><td>Desenvolvimento livre</td><td><a href="/pages/guilda-ia/10-desenvolvimento.html">Desenvolvimento e Ajustes</a></td><td><a href="/slides/10-desenvolvimento.html">Abrir slides</a></td><td>📺 Em breve</td><td>—</td></tr> -->
+
+<!-- <tr><td>11</td><td>Apresentação final</td><td><a href="/pages/guilda-ia/11-apresentacoes.html">Apresentação Final</a></td><td><a href="/slides/11-apresentacoes.html">Abrir slides</a></td><td>📺 Em breve</td><td>—</td></tr> -->
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</body>
+</html>

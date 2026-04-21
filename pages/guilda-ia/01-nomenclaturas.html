@@ -1,0 +1,1997 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>IA, LLM, RAG, Agentes: Entendendo as Nomenclaturas</title>
+<meta name="author" content="Lucas S. Vieira" />
+<meta name="description" content="Semana 01 - Guilda de IA: Entendendo as nomenclaturas fundamentais de IA
+Material didático do curso de IA Generativa da Guilda de IA" />
+<meta name="generator" content="Org Mode" />
+<style type="text/css">
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-22RF3F5XE0"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-22RF3F5XE0');
+</script>
+<link rel="stylesheet" type="text/css" href="/css/main.css" />
+<link rel="stylesheet" type="text/css" href="/css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="/css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="/img/cat-i-mage.jpg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#14171e">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="/js/theme-toggle.js"></script>
+<script src="/js/nav-scroll.js"></script>
+<meta property="og:url" content="https://luksamuk.codes/pages/guilda-ia/01-nomenclaturas.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="IA, LLM, RAG, Agentes: Entendendo as Nomenclaturas">
+<meta property="og:description" content="Semana 01 - Guilda de IA: Entendendo as nomenclaturas fundamentais de IA
+Material didático do curso de IA Generativa da Guilda de IA">
+<meta property="og:image" content="https://luksamuk.codes/img/banner-full.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:domain" content="luksamuk.codes">
+<meta name="twitter:url" content="https://luksamuk.codes/pages/guilda-ia/01-nomenclaturas.html">
+<meta name="twitter:title" content="IA, LLM, RAG, Agentes: Entendendo as Nomenclaturas">
+<meta name="twitter:description" content="Semana 01 - Guilda de IA: Entendendo as nomenclaturas fundamentais de IA
+Material didático do curso de IA Generativa da Guilda de IA">
+<meta name="twitter:image" content="https://luksamuk.codes/img/banner.png">
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">IA, LLM, RAG, Agentes: Entendendo as Nomenclaturas</h1>
+</div>
+<div id="content" class="content">
+<div id="outline-container-org0333639" class="outline-2">
+<h2 id="org0333639">O Problema</h2>
+<div class="outline-text-2" id="text-org0333639">
+<p>
+Muita gente usa esses termos como se fossem a mesma coisa. Não são. Neste artigo, vamos definir formalmente cada conceito e entender as diferenças fundamentais entre eles.
+</p>
+</div>
+</div>
+<div id="outline-container-orga06476f" class="outline-2">
+<h2 id="orga06476f">IA (Inteligência Artificial)</h2>
+<div class="outline-text-2" id="text-orga06476f">
+</div>
+<div id="outline-container-orgcdc829d" class="outline-3">
+<h3 id="orgcdc829d">Definição formal</h3>
+<div class="outline-text-3" id="text-orgcdc829d">
+<p>
+Inteligência Artificial é um campo da ciência da computação dedicado a criar sistemas capazes de executar tarefas que normalmente requerem inteligência humana, como percepção, raciocínio, aprendizado e tomada de decisão.
+</p>
+</div>
+</div>
+<div id="outline-container-org5651885" class="outline-3">
+<h3 id="org5651885">Base teórica</h3>
+<div class="outline-text-3" id="text-org5651885">
+<p>
+O termo foi cunhado por John McCarthy em 1956, na Conferência de Dartmouth, considerada o marco fundador do campo. Mas a história começa antes<sup><a id="fnr.hist" class="footref" href="#fn.hist" role="doc-backlink">1</a></sup>.
+</p>
+
+<p>
+O <b>prelúdio</b> veio com a <b><b>Cibernética</b></b> (1940s): Warren McCulloch, Walter Pitts e Norbert Wiener investigando "mente como circuito" — sistemas de feedback, auto-organização, e a ideia de que processos cognitivos poderiam ser realizados por máquinas.
+</p>
+</div>
+<div id="outline-container-org5924ea2" class="outline-4">
+<h4 id="org5924ea2">Alan Turing e os fundamentos</h4>
+<div class="outline-text-4" id="text-org5924ea2">
+<p>
+Em 1936, antes mesmo do termo "inteligência artificial", Alan Turing publicou "On Computable Numbers", demonstrando que existe uma sequência finita de passos (algoritmo) para qualquer processo computacional — incluindo, hipoteticamente, processos cognitivos.
+</p>
+
+<p>
+A <b><b>Tese de Church-Turing</b></b> sugere: se um ser pensante opera uma sequência finita de passos para realizar um processo cognitivo, então tal processo pode ser realizado por uma Máquina de Turing.
+</p>
+
+<p>
+Isso estabelece a base filosófica: <b>computação e IA são indissociáveis</b>. Sempre houve a pretensão de criar tecnologias que simulem ou se assemelhem a mentes artificiais.
+</p>
+
+<blockquote>
+<p>
+<b>Nota:</b> Esta classificação acompanha a evolução acadêmica da ciência cognitiva — ver Carvalho, Pereira &amp; Coelho (2015) para a genealogia completa das escolas.
+</p>
+</blockquote>
+
+<p>
+Desde Dartmouth, a IA evoluiu através de vários paradigmas:
+</p>
+
+<ol class="org-ol">
+<li><b>IA Simbólica (1950s-1980s):</b> Sistemas baseados em regras explícitas e representação de conhecimento</li>
+<li><b>IA Conexionista (1980s-presente):</b> Redes neurais artificiais inspiradas no cérebro</li>
+<li><b>IA Estatística (1990s-2010s):</b> Métodos probabilísticos e aprendizado de máquina</li>
+<li><b>IA Generativa (2017-presente):</b> Modelos que criam novo conteúdo</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="outline-container-org10095bd" class="outline-3">
+<h3 id="org10095bd">Classificação por capacidades (para construtores)</h3>
+<div class="outline-text-3" id="text-org10095bd">
+<p>
+Ao escolher um modelo, o que importa são as <b><b>capacidades</b></b>, não o marketing:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Capacidade</th>
+<th scope="col" class="org-left">O que faz</th>
+<th scope="col" class="org-left">Modelos com essa capacidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><b>Geração de texto</b></td>
+<td class="org-left">Completa prompts</td>
+<td class="org-left">Todos os LLMs</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>Contexto longo</b></td>
+<td class="org-left">Janela de contexto grande (100K+)</td>
+<td class="org-left">Gemini 3 Flash/3.1 Flash-Lite (1M), Claude 4.7 (1M), Qwen 3.6 Plus (1M), Kimi K2.5 (128K), GLM-5.1 (~200K)</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>Tool calling</b></td>
+<td class="org-left">Consegue chamar ferramentas externas</td>
+<td class="org-left">Gemini 3 Flash, Claude 4.7, GPT-5.4, Qwen 3.6 Plus, GLM-5.1, Gemma 4 31B</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>Raciocínio</b></td>
+<td class="org-left">Pensamento passo a passo explícito</td>
+<td class="org-left">DeepSeek R1, o1, Gemini 3 Flash Thinking, Gemma 4 31B, Qwen 3.6 Plus (always-on CoT)</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>Multimodalidade</b></td>
+<td class="org-left">Imagem, áudio, vídeo</td>
+<td class="org-left">Gemini 3 Flash, Qwen 3.6 Plus, Gemma 4, Kimi K2.5, Qwen 3.6-35B-A3B</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>Vision</b></td>
+<td class="org-left">Processa imagens</td>
+<td class="org-left">Gemini 3 Flash, Claude 4.7, Qwen 3.6 Plus, Gemma 4, Kimi K2.5</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>
+<b>Dica:</b> Para construir agentes, o essencial é <b><b>tool calling</b></b> e <b><b>estabilidade</b></b>. Modelos densos (não-MoE) tendem a ser mais estáveis nisso.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-orgc03209c" class="outline-3">
+<h3 id="orgc03209c">Sobre o termo "AGI"</h3>
+<div class="outline-text-3" id="text-orgc03209c">
+<blockquote>
+<p>
+<b>"AGI virou termo de hype" — Andrew Ng (Google Brain) e Yann LeCun (Meta AI)</b>
+</p>
+
+<p>
+Andrew Ng, fundador do Google Brain e professor de Stanford, afirma que "AGI virou um termo de hype, não um termo com significado preciso". Yann LeCun, Chief AI Scientist da Meta e vencedor do Turing Award, complementa: "O hype de IA é ridículo em todas as direções."
+</p>
+
+<p>
+O problema: não existe definição rigorosa. Empresas usam para criar FOMO<sup><a id="fnr.fomo" class="footref" href="#fn.fomo" role="doc-backlink">2</a></sup> e justificar valuations.
+</p>
+
+<p>
+Para quem constrói, o que importa são <b><b>capacidades mensuráveis</b></b>: o modelo X faz tool calling? Tem contexto suficiente? É estável? Foco no que você pode testar.
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc466347" class="outline-2">
+<h2 id="orgc466347">LLM (Large Language Model)</h2>
+<div class="outline-text-2" id="text-orgc466347">
+</div>
+<div id="outline-container-org941b576" class="outline-3">
+<h3 id="org941b576">Definição formal</h3>
+<div class="outline-text-3" id="text-org941b576">
+<p>
+Large Language Model é um tipo de modelo de linguagem neural baseado na arquitetura Transformer, treinado em grandes corpus de texto (bilhões a trilhões de tokens) para prever a próxima palavra em uma sequência, desenvolvendo capacidades emergentes de compreensão e geração de linguagem natural.
+</p>
+</div>
+</div>
+<div id="outline-container-org40fae9a" class="outline-3">
+<h3 id="org40fae9a">Base teórica</h3>
+<div class="outline-text-3" id="text-org40fae9a">
+<p>
+Os LLMs fundamentam-se na arquitetura Transformer proposta por Vaswani et al. (2017). O mecanismo de <b>self-attention</b> permite que o modelo pondere a importância de diferentes partes do input de forma dinâmica.
+</p>
+</div>
+</div>
+<div id="outline-container-org2453681" class="outline-3">
+<h3 id="org2453681">Como funciona (detalhado)</h3>
+<div class="outline-text-3" id="text-org2453681">
+
+<div id="org763da0e" class="figure">
+<p><img src="img/llm-funcionamento-v2.svg" alt="llm-funcionamento-v2.svg" class="org-svg" />
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org4420dd8" class="outline-3">
+<h3 id="org4420dd8">Escala de Modelos (2019-2026)</h3>
+<div class="outline-text-3" id="text-org4420dd8">
+<p>
+A evolução de LLMs foi exponencial em duas dimensões: tamanho e eficiência.
+</p>
+
+<blockquote>
+<p>
+<b>Paradoxo da eficiência:</b> Em 2023, GPT-4 foi o estado da arte com ~1.8T parâmetros. Em 2026, Gemma 4 E4B (4B parâmetros) alcança desempenho comparable em muitos benchmarks. Modelos modernos são ~450x menores e igualmente capazes.
+</p>
+</blockquote>
+</div>
+<div id="outline-container-org2fac02e" class="outline-4">
+<h4 id="org2fac02e">Como a eficiência aumentou</h4>
+<div class="outline-text-4" id="text-org2fac02e">
+<p>
+Alguns fatores que permitiram modelos menores e mais capazes:
+</p>
+
+<ol class="org-ol">
+<li><b>Treino com mais dados</b> - Mais tokens de treino compensam menos parâmetros</li>
+<li><b>Distilação</b> - Modelos pequenos aprendem com modelos grandes</li>
+<li><b>Arquiteturas eficientes</b> - MoE (Mixture of Experts), atenção eficiente</li>
+<li><b>Pós-treino</b> - Fine-tuning focado em tarefas específicas</li>
+</ol>
+
+<p>
+A tabela abaixo mostra o progresso:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Modelo</th>
+<th scope="col" class="org-left">Parâmetros</th>
+<th scope="col" class="org-left">Tokens de Treino</th>
+<th scope="col" class="org-right">Ano</th>
+<th scope="col" class="org-left">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">GPT-2</td>
+<td class="org-left">1.5B</td>
+<td class="org-left">~40B</td>
+<td class="org-right">2019</td>
+<td class="org-left">Histórico</td>
+</tr>
+
+<tr>
+<td class="org-left">GPT-3</td>
+<td class="org-left">175B</td>
+<td class="org-left">~300B</td>
+<td class="org-right">2020</td>
+<td class="org-left">Histórico</td>
+</tr>
+
+<tr>
+<td class="org-left">GPT-4</td>
+<td class="org-left">~1.8T</td>
+<td class="org-left">~13T</td>
+<td class="org-right">2023</td>
+<td class="org-left">Proprietário</td>
+</tr>
+
+<tr>
+<td class="org-left">Llama 3.1 405B</td>
+<td class="org-left">405B</td>
+<td class="org-left">~15T</td>
+<td class="org-right">2024</td>
+<td class="org-left">Open Weights</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://huggingface.co/deepseek-ai/DeepSeek-V3.2">DeepSeek V3.2</a></td>
+<td class="org-left">671B MoE</td>
+<td class="org-left">~14.8T</td>
+<td class="org-right">2025</td>
+<td class="org-left">Open Weights</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/zai-org/GLM-5">GLM-5</a></b></td>
+<td class="org-left">744B MoE (40B ativos)</td>
+<td class="org-left">~28.5T</td>
+<td class="org-right">2026</td>
+<td class="org-left">Open Weights (MIT)</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/zai-org/GLM-5.1">GLM-5.1</a></b></td>
+<td class="org-left">754B MoE (40B ativos)</td>
+<td class="org-left">~28.5T</td>
+<td class="org-right">2026</td>
+<td class="org-left">Open Weights (MIT)</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>Qwen3.5</b> (série)</td>
+<td class="org-left">0.5B-397B MoE</td>
+<td class="org-left">~36T</td>
+<td class="org-right">2026</td>
+<td class="org-left">Open Weights (Apache 2.0)</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/google/gemma-4-31b">Gemma 4 31B</a></b></td>
+<td class="org-left">31B denso</td>
+<td class="org-left">Não divulgado</td>
+<td class="org-right">2026</td>
+<td class="org-left">Open Weights (Apache 2.0)</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>
+<b>Nota:</b> Os parâmetros "ativos" em MoE indicam quantos parâmetros são usados por inferência. GLM-5.1 tem 754B totais, mas só 40B ativos por token. Modelos densos (Gemma 4 31B) usam todos os parâmetros. Google não divulgou os tokens de treino do Gemma 4 — prática comum em modelos proprietários. Os dados de treino do Qwen3.5 vêm do paper do Qwen3 (~36T tokens). GLM-5 e 5.1 compartilham o mesmo corpus de 28.5T tokens (fonte: Z.ai blog e arXiv). Os dados históricos (GPT-2, GPT-3, GPT-4) são estimativas de papers oficiais e reports de terceiros — GPT-4 não teve o valor confirmado pela OpenAI (~13T por Semafor/leaked info).
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-orge3365c2" class="outline-4">
+<h4 id="orge3365c2">Gráfico: Explosão de parâmetros e a revolução da eficiência</h4>
+<div class="outline-text-4" id="text-orge3365c2">
+
+<div id="orge9de620" class="figure">
+<p><img src="img/escala-modelos-v2.svg" alt="escala-modelos-v2.svg" class="org-svg" />
+</p>
+</div>
+
+<blockquote>
+<p>
+<b>Tendência:</b> A escalada de parâmetros atingiu pico em 2023 (GPT-4). Depois, open weights e arquiteturas eficientes (MoE, distilação) permitiram modelos cada vez menores com performance similar ou superior.
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+<b>Nota:</b> DeepSeek V3.2 tem 671B parâmetros totais, mas só usa ~37B por inferência (MoE). Gemma 4 31B é denso — todos os parâmetros são usados.
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+<div id="outline-container-orga54488b" class="outline-3">
+<h3 id="orga54488b">Estado da Arte (Abril 2026)</h3>
+<div class="outline-text-3" id="text-orga54488b">
+<p>
+Top modelos por benchmark (MMLU Pro):
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Modelo</th>
+<th scope="col" class="org-left">Tipo</th>
+<th scope="col" class="org-right">MMLU Pro</th>
+<th scope="col" class="org-left">Contexto</th>
+<th scope="col" class="org-left">Preço/M tokens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/deepseek-ai/DeepSeek-V3.2">DeepSeek V3.2</a></b></td>
+<td class="org-left">Open Weights</td>
+<td class="org-right">82.3%</td>
+<td class="org-left">128K</td>
+<td class="org-left">USD 0.30 (~BRL 1.65)</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/moonshotai/Kimi-K2.5">Kimi K2.5</a></b></td>
+<td class="org-left">Open Weights</td>
+<td class="org-right">~83%</td>
+<td class="org-left">128K</td>
+<td class="org-left">Local (grátis)</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/Qwen/Qwen3.5-397B-A17B">Qwen3.5-397B-A17B</a></b></td>
+<td class="org-left">Open Weights</td>
+<td class="org-right">81.5%</td>
+<td class="org-left">128K</td>
+<td class="org-left">Local (grátis)</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/MiniMaxAI/MiniMax-M2.5">MiniMax M2.5</a></b></td>
+<td class="org-left">Open Weights (MIT mod.)</td>
+<td class="org-right">80.1%</td>
+<td class="org-left">~200K</td>
+<td class="org-left">USD 0.15/1.20 (~BRL 0.83/6.60)</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/MiniMaxAI/MiniMax-M2.7">MiniMax M2.7</a></b></td>
+<td class="org-left">Open Weights (MIT mod.)</td>
+<td class="org-right">~84%</td>
+<td class="org-left">204K</td>
+<td class="org-left">USD 0.30 (~BRL 1.65)</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>Gemini 3 Flash</b></td>
+<td class="org-left">Proprietário</td>
+<td class="org-right">88.0%</td>
+<td class="org-left">1M tokens</td>
+<td class="org-left">USD 0.50/3.00 (~BRL 2.75/16.50)</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>Gemini 3.1 Flash-Lite</b></td>
+<td class="org-left">Proprietário</td>
+<td class="org-right">88.9%</td>
+<td class="org-left">256K tokens</td>
+<td class="org-left">Gratuito*</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/zai-org/GLM-5">GLM-5</a></b></td>
+<td class="org-left">Open Weights (MIT)</td>
+<td class="org-right">~85%</td>
+<td class="org-left">128K</td>
+<td class="org-left">USD 2.10 (~BRL 11.55) / Local</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/zai-org/GLM-5.1">GLM-5.1</a></b></td>
+<td class="org-left">Open Weights (MIT)</td>
+<td class="org-right">~86%</td>
+<td class="org-left">~200K</td>
+<td class="org-left">~USD 0.95/3.15 (~BRL 5.23/17.33) / Local</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>Qwen 3.6 Plus</b></td>
+<td class="org-left">Proprietário</td>
+<td class="org-right">88.5%</td>
+<td class="org-left">1M tokens</td>
+<td class="org-left">API only</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>GPT-5.4</b></td>
+<td class="org-left">Proprietário</td>
+<td class="org-right">~88%</td>
+<td class="org-left">1M tokens</td>
+<td class="org-left">USD 5.00 (~BRL 27.50)</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>Claude Opus 4.7</b></td>
+<td class="org-left">Proprietário</td>
+<td class="org-right">~90%</td>
+<td class="org-left">1M tokens</td>
+<td class="org-left">USD 5.00 (~BRL 27.50)</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B">Qwen 3.6-35B-A3B</a></b></td>
+<td class="org-left">Open Weights (Apache 2.0)</td>
+<td class="org-right">85.2%</td>
+<td class="org-left">262K</td>
+<td class="org-left">Local (grátis)</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>
+<b>Nota:</b> Qwen 3.6 Plus NÃO é open weights (diferente da maioria dos Qwen), tem 1M de contexto e reasoning always-on. Qwen 3.6-35B-A3B é open weights (Apache 2.0), 35B/3B MoE, supera o Qwen3.5-27B em coding. GPT-4o foi aposentado em Fevereiro/2026. GPT-5.4 (março/2026) substituiu o GPT-5.2 com computer use nativo e 1M de contexto. Gemini 3.1 Flash-Lite tem tier gratuito na API (500 RPD). Gemini 3 Flash (SWE-bench 78%, τ²-bench 90.2%) é pago: USD 0.50/3.00 por M tokens. Não existe "Gemini 3.1 Flash" — os modelos de texto da série 3 são: 3 Flash (agentic, pago), 3.1 Flash-Lite (leve, gratuito), 3.1 Pro (top, pago). Gemini 2.5 Flash (gratuito, 1.500 RPD) ainda é a opção free mais generosa para Colab/API. GLM-5.1 (MIT License) é o modelo open weights mais forte em coding — SWE-bench Pro 58.4%, execução autônoma de até 8 horas. MiniMax M2.5 é mais barato que M2.7 (USD 0.15 vs USD 0.30/M input) e melhor pra batch processing; M2.7 tem self-evolution e é melhor pra coding interativo. Atenção: M2.7 tem licença MIT modificada que proíbe uso comercial. Câmbio: USD 1 = BRL 5.50.
+</p>
+</blockquote>
+</div>
+<div id="outline-container-org45eb229" class="outline-4">
+<h4 id="org45eb229">Destaque: MiniMax M2.7 e Self-Evolution</h4>
+<div class="outline-text-4" id="text-org45eb229">
+<p>
+MiniMax M2.7 é o <b><b>primeiro modelo com auto-evolução real</b></b>:
+</p>
+
+<ul class="org-ul">
+<li><b><b>56.22% SWE-Bench Pro</b></b> — entre os melhores open para coding</li>
+<li><b><b>ELO 1495 GDPval-AA</b></b> — topo entre open-source</li>
+<li><b><b>97% skill adherence</b></b> — consistência em tool calling</li>
+<li><b><b>Self-optimization loop:</b></b> analisa próprias falhas, modifica o harness, itera</li>
+<li><b><b>Pesos NÃO mudam</b></b> — o que evolui é o sistema ao redor (skills, memory, tools)</li>
+</ul>
+
+<blockquote>
+<p>
+<b>Self-evolution:</b> M2.7 analisa falhas em tasks anteriores, gera código para melhorar seu próprio harness (tools, prompts, memória), e itera. Os pesos permanecem fixos — o que evolui é o sistema ao redor. É um passo em direção à auto-melhoria de agentes.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-orgc1ada06" class="outline-4">
+<h4 id="orgc1ada06">Destaque: MiniMax M2.5 — Irmão Mais Barato</h4>
+<div class="outline-text-4" id="text-orgc1ada06">
+<p>
+MiniMax M2.5 é o modelo "prático" da família:
+</p>
+
+<ul class="org-ul">
+<li><b><b>SWE-bench Verified 80.2%</b></b> — próximo do Opus 4.6</li>
+<li><b><b>MMLU Pro 80.1%</b></b> — competitivo entre open</li>
+<li><b><b>Preço: USD 0.15/M input</b></b> — metade do M2.7</li>
+<li><b><b>229B total / 10B ativos</b></b> — MoE eficiente</li>
+<li><b><b>~200K contexto</b></b></li>
+</ul>
+
+<blockquote>
+<p>
+<b>M2.5 vs M2.7:</b> M2.5 é melhor para batch processing e tarefas onde custo importa mais que velocidade. M2.7 é melhor para coding interativo (self-evolution, mais estável em loops de agente). Atenção: ambos usam licença MIT modificada que proíbe uso comercial — diferente de GLM-5 (MIT puro) e Qwen (Apache 2.0).
+</p>
+</blockquote>
+
+<p>
+<b><b>Comparação: Modelos Flagship Recentes</b></b>
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Modelo</th>
+<th scope="col" class="org-left">Open Weights</th>
+<th scope="col" class="org-left">Treinamento</th>
+<th scope="col" class="org-left">Destaque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><a href="https://huggingface.co/zai-org/GLM-5">GLM-5</a></td>
+<td class="org-left">Sim (MIT)</td>
+<td class="org-left">Standard</td>
+<td class="org-left">Agente open robusto</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://huggingface.co/zai-org/GLM-5.1">GLM-5.1</a></td>
+<td class="org-left">Sim (MIT)</td>
+<td class="org-left">Long-horizon</td>
+<td class="org-left">SWE-bench Pro 58.4%, 8h autônomo, 94.6% do Opus 4.6 em coding</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://huggingface.co/MiniMaxAI/MiniMax-M2.7">MiniMax M2.7</a></td>
+<td class="org-left">Sim (MIT mod.)</td>
+<td class="org-left">Self-evolution</td>
+<td class="org-left">Primeiro com auto-otimização</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://huggingface.co/MiniMaxAI/MiniMax-M2.5">MiniMax M2.5</a></td>
+<td class="org-left">Sim (MIT mod.)</td>
+<td class="org-left">Standard</td>
+<td class="org-left">USD 0.15/M input, melhor pra batch, SWE 80.2%</td>
+</tr>
+
+<tr>
+<td class="org-left">Qwen 3.6 Plus</td>
+<td class="org-left"><b><b>Não</b></b></td>
+<td class="org-left">Standard</td>
+<td class="org-left">1M contexto, agentic coding, reasoning always-on</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B">Qwen 3.6-35B-A3B</a></td>
+<td class="org-left">Sim (Apache 2.0)</td>
+<td class="org-left">Standard</td>
+<td class="org-left">3B ativos, supera Qwen3.5-27B em coding</td>
+</tr>
+
+<tr>
+<td class="org-left">Claude Opus 4.7</td>
+<td class="org-left"><b><b>Não</b></b></td>
+<td class="org-left">Standard</td>
+<td class="org-left">SWE-bench Verified 87.6%, GPQA 94.2%</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>
+<b>Tendência:</b> A disputa entre modelos proprietários e open weights está cada vez mais acirrada. GLM-5.1 (MIT, 754B MoE) empata com GPT-5.4 e Opus 4.6 em SWE-bench Pro, custando uma fração do preço. Qwen 3.6-35B-A3B (3B ativos, Apache 2.0) roda em hardware modesto e supera modelos 10x maiores em coding.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-orgc1537bd" class="outline-4">
+<h4 id="orgc1537bd">Modelos de Acesso Restrito (Abril 2026)</h4>
+<div class="outline-text-4" id="text-orgc1537bd">
+<p>
+Em abril/2026, Anthropic e OpenAI anunciaram modelos de acesso controlado para cybersecurity:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Modelo</th>
+<th scope="col" class="org-left">Empresa</th>
+<th scope="col" class="org-left">Acesso</th>
+<th scope="col" class="org-left">Destaque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Claude Mythos</td>
+<td class="org-left">Anthropic</td>
+<td class="org-left">Governo EUA + empresas selecionadas</td>
+<td class="org-left">SWE-bench 93.9%, exploração autônoma de vulnerabilidades</td>
+</tr>
+
+<tr>
+<td class="org-left">GPT-5.4-Cyber</td>
+<td class="org-left">OpenAI</td>
+<td class="org-left">Programa Trusted Access for Cyber</td>
+<td class="org-left">Cybersecurity defensiva, 3000+ vulnerabilidades corrigidas</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>
+<b>Por que acesso restrito?</b> Esses modelos têm capacidade avançada de encontrar e explorar falhas de segurança em software. Por isso, não estão disponíveis publicamente. Mythos foi o primeiro a demonstrar exploração autônoma de sistemas com segurança robusta, gerando debate sobre a responsabilidade de liberar capacidades ofensivas. GPT-5.4-Cyber é a resposta da OpenAI, focada em defesa. O GPT-5.4-Cyber NÃO é equivalente ao Mythos — é defensivo, não ofensivo.
+</p>
+
+<p>
+Para quem constrói agentes, o que importa: esses modelos <b><b>não estão disponíveis via API pública</b></b> e não impactam o dia a dia de desenvolvimento. Mas são um marco no debate sobre limites de capacidade de IA.
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+<div id="outline-container-org9490cad" class="outline-3">
+<h3 id="org9490cad">Modelos Pequenos (Edge/Local)</h3>
+<div class="outline-text-3" id="text-org9490cad">
+<p>
+Para rodar localmente em CPU/GPU modesta:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Modelo</th>
+<th scope="col" class="org-left">Parâmetros</th>
+<th scope="col" class="org-left">Destaque</th>
+<th scope="col" class="org-left">Licença</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/google/gemma-4-E2B">Gemma 4 E2B</a></b></td>
+<td class="org-left">~2B efetivos</td>
+<td class="org-left">Roda em celular, multimodal</td>
+<td class="org-left">Apache 2.0</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/google/gemma-4-E4B">Gemma 4 E4B</a></b></td>
+<td class="org-left">~4B efetivos</td>
+<td class="org-left">Vision + áudio nativo</td>
+<td class="org-left">Apache 2.0</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/google/gemma-4-26b-a4b-it">Gemma 4 26B A4B</a></b></td>
+<td class="org-left">26B (4B ativos)</td>
+<td class="org-left">MoE eficiente, reasoning forte</td>
+<td class="org-left">Apache 2.0</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/Qwen/Qwen3.5-4B">Qwen3.5-4B</a></b></td>
+<td class="org-left">4B</td>
+<td class="org-left">Vision + thinking integrados</td>
+<td class="org-left">Apache 2.0</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/Qwen/Qwen3.5-9B">Qwen3.5-9B</a></b></td>
+<td class="org-left">9B</td>
+<td class="org-left">Melhor custo-benefício</td>
+<td class="org-left">Apache 2.0</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B">Qwen 3.6-35B-A3B</a></b></td>
+<td class="org-left">35B (3B ativos)</td>
+<td class="org-left">Agentic coding, supera 27B densos, multimodal</td>
+<td class="org-left">Apache 2.0</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/Qwen/Qwen3.5-27B">Qwen3.5-27B</a></b></td>
+<td class="org-left">27B denso</td>
+<td class="org-left">Referência para agentes, estável</td>
+<td class="org-left">Apache 2.0</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><a href="https://huggingface.co/google/gemma-4-31b">Gemma 4 31B</a></b></td>
+<td class="org-left">31B denso</td>
+<td class="org-left">#3 open model, coding (80% LiveCodeBench)</td>
+<td class="org-left">Apache 2.0</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>
+<b>Dica:</b> Para agentes locais, Gemma 4 31B e Qwen3.5-27B são as escolhas mais robustas. Ambos densos, ambos com tool calling estável. Gemma 4 vence em coding, Qwen3.5 vence em multilingual. Prefira modelos densos (não-MoE) para tool calling estável. Qwen 3.6-35B-A3B é exceção: sendo MoE de 3B ativos, roda em hardware modesto e ainda supera o 27B denso em coding — boa opção para quem tem GPU limitada.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-org8e0e413" class="outline-3">
+<h3 id="org8e0e413">Google AI Edge Gallery</h3>
+<div class="outline-text-3" id="text-org8e0e413">
+<p>
+Aplicativo Android (beta) para rodar modelos localmente:
+</p>
+
+<ul class="org-ul">
+<li>Roda Gemma 4 E2B e E4B no celular</li>
+<li>Funciona <b><b>offline</b></b>, sem API, sem custo</li>
+<li>Suporta texto, imagem e áudio</li>
+<li>Disponível na Google Play Store</li>
+</ul>
+
+<blockquote>
+<p>
+<b>Para iniciantes:</b> O AI Edge Gallery é a forma mais fácil de experimentar IA local sem configurar nada. Instala e usa.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-org5d42ccd" class="outline-3">
+<h3 id="org5d42ccd">Referências</h3>
+<div class="outline-text-3" id="text-org5d42ccd">
+<ul class="org-ul">
+<li>Vaswani, A. et al. (2017). "Attention Is All You Need". <a href="https://arxiv.org/abs/1706.03762">arXiv:1706.03762</a></li>
+<li>Kaplan, J. et al. (2020). "Scaling Laws for Neural Language Models". <a href="https://arxiv.org/abs/2001.08361">arXiv:2001.08361</a></li>
+<li>Brown, T. et al. (2020). "Language Models are Few-Shot Learners". <a href="https://arxiv.org/abs/2005.14165">arXiv:2005.14165</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org30bd46c" class="outline-2">
+<h2 id="org30bd46c">RAG (Retrieval Augmented Generation)</h2>
+<div class="outline-text-2" id="text-org30bd46c">
+</div>
+<div id="outline-container-orgfc902cb" class="outline-3">
+<h3 id="orgfc902cb">Definição formal</h3>
+<div class="outline-text-3" id="text-orgfc902cb">
+<p>
+Retrieval Augmented Generation é uma arquitetura de sistema que combina recuperação de informação (retrieval) com geração de texto (generation), permitindo que LLMs acessem conhecimento externo não presente em seus parâmetros de treinamento.
+</p>
+</div>
+</div>
+<div id="outline-container-orgec0617e" class="outline-3">
+<h3 id="orgec0617e">Base teórica</h3>
+<div class="outline-text-3" id="text-orgec0617e">
+<p>
+Proposto por Lewis et al. (2020), o RAG endereça a limitação de LLMs de não conseguirem acessar informação privada ou atualizada após o cutoff de treinamento.
+</p>
+</div>
+</div>
+<div id="outline-container-org8aa2989" class="outline-3">
+<h3 id="org8aa2989">Arquitetura detalhada</h3>
+<div class="outline-text-3" id="text-org8aa2989">
+
+<div id="org11b13e7" class="figure">
+<p><img src="img/rag-diagram-v2.svg" alt="rag-diagram-v2.svg" class="org-svg" />
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org0509f51" class="outline-3">
+<h3 id="org0509f51">Referências</h3>
+<div class="outline-text-3" id="text-org0509f51">
+<ul class="org-ul">
+<li>Lewis, P. et al. (2020). "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks". <a href="https://arxiv.org/abs/2005.11401">arXiv:2005.11401</a></li>
+<li>Gao, Y. et al. (2023). "Retrieval-Augmented Generation for Large Language Models: A Survey". <a href="https://arxiv.org/abs/2312.10997">arXiv:2312.10997</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org1ed9419" class="outline-2">
+<h2 id="org1ed9419">Agente (AI Agent)</h2>
+<div class="outline-text-2" id="text-org1ed9419">
+</div>
+<div id="outline-container-org8cf2041" class="outline-3">
+<h3 id="org8cf2041">Definição formal</h3>
+<div class="outline-text-3" id="text-org8cf2041">
+<p>
+Agente de IA é um sistema autônomo que utiliza um LLM como controlador central para perceber o ambiente, raciocinar sobre objetivos, e executar ações através de ferramentas externas, mantendo memória e estado ao longo de interações.
+</p>
+</div>
+</div>
+<div id="outline-container-orgba42f22" class="outline-3">
+<h3 id="orgba42f22">Framework ReAct (Reasoning + Acting)</h3>
+<div class="outline-text-3" id="text-orgba42f22">
+<p>
+Proposto por Yao et al. (2022), o framework ReAct intercala passos de raciocínio (Thought) com passos de ação (Action):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">Thought: Preciso saber a popula&#231;&#227;o atual do Brasil
+Action: Search[popula&#231;&#227;o Brasil 2024]
+Observation: Brasil tem aproximadamente 215 milh&#245;es de habitantes
+Thought: Agora tenho a informa&#231;&#227;o necess&#225;ria
+Action: Finish[A popula&#231;&#227;o do Brasil em 2024 &#233; de aproximadamente 215 milh&#245;es]
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org87e51cd" class="outline-3">
+<h3 id="org87e51cd">Referências</h3>
+<div class="outline-text-3" id="text-org87e51cd">
+<ul class="org-ul">
+<li>Yao, S. et al. (2022). "ReAct: Synergizing Reasoning and Acting in Language Models". <a href="https://arxiv.org/abs/2210.03629">arXiv:2210.03629</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org7f3d1af" class="outline-2">
+<h2 id="org7f3d1af">Fine-tuning (Ajuste Fino)</h2>
+<div class="outline-text-2" id="text-org7f3d1af">
+</div>
+<div id="outline-container-orgb2b0740" class="outline-3">
+<h3 id="orgb2b0740">Definição formal</h3>
+<div class="outline-text-3" id="text-orgb2b0740">
+<p>
+Fine-tuning é o processo de treinamento adicional de um modelo pré-treinado em um dataset específico para adaptar seu comportamento a uma tarefa ou domínio particular.
+</p>
+</div>
+</div>
+<div id="outline-container-org784f770" class="outline-3">
+<h3 id="org784f770">Tipos de Fine-tuning</h3>
+<div class="outline-text-3" id="text-org784f770">
+</div>
+<div id="outline-container-org6ed1285" class="outline-4">
+<h4 id="org6ed1285">Supervised Fine-Tuning (SFT)</h4>
+<div class="outline-text-4" id="text-org6ed1285">
+<p>
+Treina o modelo com pares prompt-resposta:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> trl <span class="org-keyword">import</span> SFTTrainer
+
+<span class="org-variable-name">trainer</span> <span class="org-operator">=</span> SFTTrainer(
+    model<span class="org-operator">=</span><span class="org-string">"Qwen/Qwen2.5-0.5B"</span>,
+    train_dataset<span class="org-operator">=</span>dataset,  <span class="org-comment-delimiter"># </span><span class="org-comment">Prompt + resposta esperada
+</span>)
+trainer.train()
+</pre>
+</div>
+
+<p>
+Casos de uso:
+</p>
+<ul class="org-ul">
+<li>Instruction tuning (seguir instruções)</li>
+<li>Domain adaptation (adaptar para domínio específico)</li>
+<li>Style transfer (estilo de escrita)</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org7630a83" class="outline-4">
+<h4 id="org7630a83">LoRA e QLoRA</h4>
+<div class="outline-text-4" id="text-org7630a83">
+<p>
+<b>LoRA (Low-Rank Adaptation)</b> adiciona matrizes de baixa dimensão, mantendo pesos originais congelados:
+</p>
+
+<ul class="org-ul">
+<li>Treina apenas ~1% dos parâmetros</li>
+<li>Preserva conhecimento original</li>
+<li>Permite múltiplos adapters para diferentes tarefas</li>
+</ul>
+
+<p>
+<b>QLoRA</b> combina LoRA com quantização:
+</p>
+
+<ul class="org-ul">
+<li>4-bit quantização do modelo base</li>
+<li>Treina em GPUs pequenas (8GB+)</li>
+<li>~50% menos memória que LoRA</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org1672f57" class="outline-4">
+<h4 id="org1672f57">Alinhamento com Preferências</h4>
+<div class="outline-text-4" id="text-org1672f57">
+<p>
+Modelos pré-treinados aprendem a prever texto, não necessariamente a ser úteis ou seguros. Alinhamento adapta o modelo para seguir preferências humanas.
+</p>
+
+<blockquote>
+<p>
+<b>Por que alinhamento?</b>
+Um modelo pode completar "Como fazer uma bomba&#x2026;" de várias formas. Alinhamento ensina qual completão é preferível (recusar, redirecionar, etc.).
+</p>
+</blockquote>
+</div>
+<ul class="org-ul">
+<li><a id="org1133943"></a>DPO (Direct Preference Optimization)<br />
+<div class="outline-text-5" id="text-org1133943">
+<p>
+Método simples que não precisa de reward model:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> trl <span class="org-keyword">import</span> DPOTrainer, DPOConfig
+
+<span class="org-variable-name">config</span> <span class="org-operator">=</span> DPOConfig(output_dir<span class="org-operator">=</span><span class="org-string">"model-dpo"</span>, beta<span class="org-operator">=</span>0.1)
+<span class="org-variable-name">trainer</span> <span class="org-operator">=</span> DPOTrainer(
+    model<span class="org-operator">=</span>model,
+    args<span class="org-operator">=</span>config,
+    train_dataset<span class="org-operator">=</span>preference_dataset,  <span class="org-comment-delimiter"># </span><span class="org-comment">pares chosen/rejected
+</span>)
+trainer.train()
+</pre>
+</div>
+
+<p>
+<b>Dados necessários:</b> Pares de preferência (prompt, chosen<sub>response</sub>, rejected<sub>response</sub>)
+</p>
+</div>
+</li>
+<li><a id="orgfff7458"></a>PPO (Proximal Policy Optimization)<br />
+<div class="outline-text-5" id="text-orgfff7458">
+<p>
+Pipeline completo de RLHF:
+</p>
+
+<ol class="org-ol">
+<li>Treina reward model com preferências humanas</li>
+<li>Usa RL para maximizar reward sem driftar do modelo original</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> trl <span class="org-keyword">import</span> PPOTrainer
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Requer: policy model + reward model + reference model
+</span><span class="org-variable-name">trainer</span> <span class="org-operator">=</span> PPOTrainer(
+    model<span class="org-operator">=</span>policy_model,
+    reward_model<span class="org-operator">=</span>reward_model,
+    train_dataset<span class="org-operator">=</span>prompts,
+)
+trainer.train()
+</pre>
+</div>
+
+<p>
+<b>Vantagem:</b> Controle fino sobre comportamento
+<b>Desvantagem:</b> Complexo, requer 3 modelos em memória
+</p>
+</div>
+</li>
+<li><a id="org60df01a"></a>GRPO (Group Relative Policy Optimization)<br />
+<div class="outline-text-5" id="text-org60df01a">
+<p>
+Alternativa mais eficiente ao PPO:
+</p>
+
+<ul class="org-ul">
+<li>Não precisa de reward model separado (usa reward function)</li>
+<li>Mais estável que PPO</li>
+<li>Usa menos memória</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> trl <span class="org-keyword">import</span> GRPOTrainer, GRPOConfig
+
+<span class="org-variable-name">config</span> <span class="org-operator">=</span> GRPOConfig(output_dir<span class="org-operator">=</span><span class="org-string">"model-grpo"</span>, num_generations<span class="org-operator">=</span>4)
+<span class="org-variable-name">trainer</span> <span class="org-operator">=</span> GRPOTrainer(
+    model<span class="org-operator">=</span><span class="org-string">"Qwen/Qwen2-0.5B-Instruct"</span>,
+    reward_funcs<span class="org-operator">=</span>reward_function,  <span class="org-comment-delimiter"># </span><span class="org-comment">Fun&#231;&#227;o de recompensa customizada
+</span>    train_dataset<span class="org-operator">=</span>prompts,
+)
+trainer.train()
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org6ea4214" class="outline-4">
+<h4 id="org6ea4214">Comparação de Métodos</h4>
+<div class="outline-text-4" id="text-org6ea4214">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Método</th>
+<th scope="col" class="org-left">Dados Necessários</th>
+<th scope="col" class="org-left">Complexidade</th>
+<th scope="col" class="org-left">Quando Usar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">SFT</td>
+<td class="org-left">Prompt + resposta</td>
+<td class="org-left">Baixa</td>
+<td class="org-left">Instruction tuning, domain adaptation</td>
+</tr>
+
+<tr>
+<td class="org-left">LoRA/QLoRA</td>
+<td class="org-left">Prompt + resposta</td>
+<td class="org-left">Baixa</td>
+<td class="org-left">Quando memória é limitada</td>
+</tr>
+
+<tr>
+<td class="org-left">DPO</td>
+<td class="org-left">Preferências (chosen/rejected)</td>
+<td class="org-left">Média</td>
+<td class="org-left">Alinhamento simples</td>
+</tr>
+
+<tr>
+<td class="org-left">PPO</td>
+<td class="org-left">Reward model + prompts</td>
+<td class="org-left">Alta</td>
+<td class="org-left">Controle máximo, RLHF completo</td>
+</tr>
+
+<tr>
+<td class="org-left">GRPO</td>
+<td class="org-left">Reward function + prompts</td>
+<td class="org-left">Média</td>
+<td class="org-left">RL eficiente, sem reward model</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc307f70" class="outline-3">
+<h3 id="orgc307f70">Ferramentas Recomendadas</h3>
+<div class="outline-text-3" id="text-orgc307f70">
+</div>
+<div id="outline-container-org092e7ec" class="outline-4">
+<h4 id="org092e7ec">Unsloth (SFT + LoRA)</h4>
+<div class="outline-text-4" id="text-org092e7ec">
+<p>
+Melhor para fine-tuning supervisionado:
+</p>
+
+<ul class="org-ul">
+<li><b><b>Site:</b></b> <a href="https://unsloth.ai">https://unsloth.ai</a></li>
+<li><b><b>Guias:</b></b> Tutoriais para Llama, Qwen, Mistral</li>
+<li><b><b>Vantagens:</b></b> 2-5x mais rápido, 50-80% menos memória</li>
+<li><b><b>Casos de uso:</b></b> Instruction tuning, domain adaptation</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org284c527" class="outline-4">
+<h4 id="org284c527">TRL (RLHF + DPO + GRPO)</h4>
+<div class="outline-text-4" id="text-org284c527">
+<p>
+Biblioteca do HuggingFace para alinhamento:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">pip install trl transformers datasets peft accelerate
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><b><b>Site:</b></b> <a href="https://huggingface.co/docs/trl/">https://huggingface.co/docs/trl/</a></li>
+<li><b><b>Métodos:</b></b> SFT, DPO, PPO, GRPO, Reward Models</li>
+<li><b><b>Integração:</b></b> Funciona com modelos HuggingFace</li>
+</ul>
+
+<blockquote>
+<p>
+<b>Dica:</b> Use Unsloth para SFT/LoRA (mais rápido). Use TRL para DPO/PPO/GRPO (alinhamento com preferências).
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+<div id="outline-container-org77d55b9" class="outline-3">
+<h3 id="org77d55b9">Referências</h3>
+<div class="outline-text-3" id="text-org77d55b9">
+<ul class="org-ul">
+<li>Hu, E. J. et al. (2021). "LoRA: Low-Rank Adaptation of Large Language Models". <a href="https://arxiv.org/abs/2106.09685">arXiv:2106.09685</a></li>
+<li>Ouyang, L. et al. (2022). "Training language models to follow instructions with human feedback". <a href="https://arxiv.org/abs/2203.02155">arXiv:2203.02155</a></li>
+<li>Rafailov, R. et al. (2023). "Direct Preference Optimization: Your Language Model is Secretly a Reward Model". <a href="https://arxiv.org/abs/2305.18290">arXiv:2305.18290</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org4576388" class="outline-2">
+<h2 id="org4576388">Arquiteturas de Modelo</h2>
+<div class="outline-text-2" id="text-org4576388">
+</div>
+<div id="outline-container-org9a162d9" class="outline-3">
+<h3 id="org9a162d9">Modelos Densos vs MoE (Mixture of Experts)</h3>
+<div class="outline-text-3" id="text-org9a162d9">
+<p>
+Modelos de linguagem podem ter diferentes arquiteturas:
+</p>
+</div>
+<div id="outline-container-org1f9b7c6" class="outline-4">
+<h4 id="org1f9b7c6">Modelos Densos</h4>
+<div class="outline-text-4" id="text-org1f9b7c6">
+<ul class="org-ul">
+<li><b>Definição:</b> Todos os parâmetros são ativados a cada token</li>
+<li><b>Exemplos:</b> Qwen3.5:27B, Llama 3.1 405B</li>
+<li><b>Vantagens:</b> Estáveis, previsíveis, bons para tool calling</li>
+<li><b>Desvantagens:</b> Mais custosos para rodar</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org3775487" class="outline-4">
+<h4 id="org3775487">MoE (Mixture of Experts)</h4>
+<div class="outline-text-4" id="text-org3775487">
+<ul class="org-ul">
+<li><b>Definição:</b> Apenas um subconjunto de "experts" é ativado por token</li>
+<li><b>Exemplos:</b> DeepSeek V3.2 (671B total, ~37B ativos), Qwen3.5-397B-MoE, Qwen 3.6-35B-A3B (35B total, 3B ativos), GLM-5.1 (754B total, 40B ativos)</li>
+<li><b>Vantagens:</b> Mais eficientes, melhor custo-benefício</li>
+<li><b>Desvantagens:</b> Podem ser instáveis para agentes</li>
+</ul>
+
+<blockquote>
+<p>
+<b>Dica:</b> Para agentes com tool calling, prefira modelos densos (Qwen3.5:27B). MoE pode ter comportamento inconsistente.
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+<div id="outline-container-orge03fb53" class="outline-3">
+<h3 id="orge03fb53">Recursos de Computação</h3>
+<div class="outline-text-3" id="text-orge03fb53">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Arquitetura</th>
+<th scope="col" class="org-left">Parâmetros Totais</th>
+<th scope="col" class="org-left">Parâmetros Ativos</th>
+<th scope="col" class="org-left">VRAM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Denso 7B</td>
+<td class="org-left">7B</td>
+<td class="org-left">7B</td>
+<td class="org-left">~16GB</td>
+</tr>
+
+<tr>
+<td class="org-left">MoE 35B/3B</td>
+<td class="org-left">35B</td>
+<td class="org-left">3B</td>
+<td class="org-left">~8GB</td>
+</tr>
+
+<tr>
+<td class="org-left">Denso 27B</td>
+<td class="org-left">27B</td>
+<td class="org-left">27B</td>
+<td class="org-left">~48GB</td>
+</tr>
+
+<tr>
+<td class="org-left">MoE 671B</td>
+<td class="org-left">671B</td>
+<td class="org-left">~37B</td>
+<td class="org-left">~80GB</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="outline-container-org6bad746" class="outline-2">
+<h2 id="org6bad746">Parâmetros de Inferência</h2>
+<div class="outline-text-2" id="text-org6bad746">
+</div>
+<div id="outline-container-orgce5990e" class="outline-3">
+<h3 id="orgce5990e">Configurando Modelos Locais</h3>
+<div class="outline-text-3" id="text-orgce5990e">
+<p>
+Ao rodar modelos localmente (Ollama, LM Studio, llama.cpp), você pode ajustar parâmetros que afetam a geração de texto.
+</p>
+</div>
+<div id="outline-container-orgd3cca80" class="outline-4">
+<h4 id="orgd3cca80">Parâmetros Principais</h4>
+<div class="outline-text-4" id="text-orgd3cca80">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Parâmetro</th>
+<th scope="col" class="org-left">Descrição</th>
+<th scope="col" class="org-left">Quando ajustar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><b>temperature</b> (0.0-2.0)</td>
+<td class="org-left">Controla criatividade. Baixa = mais determinístico</td>
+<td class="org-left">0.0 para código, 0.7 para chat</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>top<sub>k</sub></b> (1-100)</td>
+<td class="org-left">Limita tokens às top-k mais prováveis</td>
+<td class="org-left">10 para conservador, 40 para variado</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>top<sub>p</sub></b> (0.0-1.0)</td>
+<td class="org-left">Nucleus sampling - probabilidade cumulativa</td>
+<td class="org-left">0.9 para balanceado</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>min<sub>p</sub></b> (0.0-1.0)</td>
+<td class="org-left">Probabilidade mínima relativa ao mais provável</td>
+<td class="org-left">0.05 para filtrar tokens ruins</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>num<sub>ctx</sub></b> (int)</td>
+<td class="org-left">Tamanho da janela de contexto</td>
+<td class="org-left">Maior para documentos longos</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>num<sub>predict</sub></b> (int)</td>
+<td class="org-left">Máximo de tokens a gerar</td>
+<td class="org-left">-1 para ilimitado</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>repeat<sub>penalty</sub></b> (1.0-2.0)</td>
+<td class="org-left">Penaliza repetições</td>
+<td class="org-left">1.1 para evitar loops</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>seed</b> (int)</td>
+<td class="org-left">Semente para reprodutibilidade</td>
+<td class="org-left">Fixo para resultados consistentes</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org720c3bf" class="outline-4">
+<h4 id="org720c3bf">Exemplo: Modelfile do Ollama</h4>
+<div class="outline-text-4" id="text-org720c3bf">
+<div class="org-src-container">
+<pre class="src src-nil"># Modelfile para criar modelo personalizado
+FROM qwen3.5:27b
+
+# Temperatura mais baixa para agentes
+PARAMETER temperature 0.3
+
+# Contexto maior para RAG
+PARAMETER num_ctx 32768
+
+# Evitar repetições
+PARAMETER repeat_penalty 1.15
+
+# System prompt
+SYSTEM """Você é um assistente útil que responde em português."""
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org668be46" class="outline-4">
+<h4 id="org668be46">Comandos Úteis</h4>
+<div class="outline-text-4" id="text-org668be46">
+<div class="org-src-container">
+<pre class="src src-bash"><span class="org-comment-delimiter"># </span><span class="org-comment">Ver modelfile de um modelo
+</span>ollama show --modelfile qwen3.5:27b
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Criar modelo personalizado
+</span>ollama create meu-modelo -f Modelfile
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Ver par&#226;metros atuais
+</span>ollama run qwen3.5:27b
+/set parameter
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org09c391b" class="outline-3">
+<h3 id="org09c391b">Ferramenta Recomendada: Unsloth</h3>
+<div class="outline-text-3" id="text-org09c391b">
+<p>
+<a href="https://unsloth.ai">Unsloth</a> oferece guias para:
+</p>
+<ul class="org-ul">
+<li>Fine-tuning de LLMs com LoRA/QLoRA</li>
+<li>Deploy local de modelos</li>
+<li>Otimização de parâmetros de inferência</li>
+<li>Tutoriais para Qwen, Llama, Mistral</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org8a81c59" class="outline-3">
+<h3 id="org8a81c59">Embedding</h3>
+</div>
+
+<div id="outline-container-org2764403" class="outline-3">
+<h3 id="org2764403">Definição formal</h3>
+<div class="outline-text-3" id="text-org2764403">
+<p>
+Embedding é uma representação vetorial densa de um objeto (palavra, frase, documento, imagem) em um espaço contínuo de dimensão d, onde a proximidade vetorial indica similaridade semântica.
+</p>
+</div>
+</div>
+<div id="outline-container-orge33aea4" class="outline-3">
+<h3 id="orge33aea4">Base teórica</h3>
+<div class="outline-text-3" id="text-orge33aea4">
+<p>
+Embeddings word2vec (Mikolov et al., 2013) revolucionaram NLP ao mostrar que relações semânticas podem ser capturadas geometricamente:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">rei - homem + mulher &#8776; rainha
+vetor("rei") - vetor("homem") + vetor("mulher") &#8776; vetor("rainha")
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgd2390da" class="outline-3">
+<h3 id="orgd2390da">Referência</h3>
+<div class="outline-text-3" id="text-orgd2390da">
+<p>
+Mikolov, T. et al. (2013). "Efficient Estimation of Word Representations in Vector Space". <a href="https://arxiv.org/abs/1301.3781">arXiv:1301.3781</a>
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org7dbd86a" class="outline-2">
+<h2 id="org7dbd86a">Vector Database (Banco de Dados Vetorial)</h2>
+<div class="outline-text-2" id="text-org7dbd86a">
+</div>
+<div id="outline-container-org2373728" class="outline-3">
+<h3 id="org2373728">Definição formal</h3>
+<div class="outline-text-3" id="text-org2373728">
+<p>
+Vector Database é um sistema de armazenamento otimizado para embeddings, fornecendo indexação e busca de similaridade eficiente (ANN - Approximate Nearest Neighbor) em escala.
+</p>
+</div>
+</div>
+<div id="outline-container-org2a5e3a8" class="outline-3">
+<h3 id="org2a5e3a8">Ferramentas Populares</h3>
+<div class="outline-text-3" id="text-org2a5e3a8">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Ferramenta</th>
+<th scope="col" class="org-left">Tipo</th>
+<th scope="col" class="org-left">Escala</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">FAISS</td>
+<td class="org-left">Biblioteca</td>
+<td class="org-left">Milhões</td>
+</tr>
+
+<tr>
+<td class="org-left">Pinecone</td>
+<td class="org-left">Serviço gerenciado</td>
+<td class="org-left">Bilhões</td>
+</tr>
+
+<tr>
+<td class="org-left">Weaviate</td>
+<td class="org-left">Open source</td>
+<td class="org-left">Milhões</td>
+</tr>
+
+<tr>
+<td class="org-left">Chroma</td>
+<td class="org-left">Open source</td>
+<td class="org-left">Milhões</td>
+</tr>
+
+<tr>
+<td class="org-left">Milvus</td>
+<td class="org-left">Open source</td>
+<td class="org-left">Bilhões</td>
+</tr>
+
+<tr>
+<td class="org-left">Qdrant</td>
+<td class="org-left">Open source</td>
+<td class="org-left">Milhões</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="outline-container-orgd851499" class="outline-2">
+<h2 id="orgd851499">Resumo Visual Completo</h2>
+<div class="outline-text-2" id="text-orgd851499">
+
+<div id="org8886e3c" class="figure">
+<p><img src="img/resumo-ia-v2.svg" alt="resumo-ia-v2.svg" class="org-svg" />
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org426c0f9" class="outline-2">
+<h2 id="org426c0f9">Confusões Comuns</h2>
+<div class="outline-text-2" id="text-org426c0f9">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Frase que ouvimos</th>
+<th scope="col" class="org-left">O que a pessoa quer dizer</th>
+<th scope="col" class="org-left">Termo correto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">"Vou usar IA para responder"</td>
+<td class="org-left">Vai usar um chatbot</td>
+<td class="org-left">LLM ou Agente</td>
+</tr>
+
+<tr>
+<td class="org-left">"Meu RAG responde perguntas"</td>
+<td class="org-left">Sistema com busca + LLM</td>
+<td class="org-left">Agente com RAG</td>
+</tr>
+
+<tr>
+<td class="org-left">"O agente alucina"</td>
+<td class="org-left">O LLM dentro do agente errou</td>
+<td class="org-left">LLM alucina</td>
+</tr>
+
+<tr>
+<td class="org-left">"Preciso treinar minha IA"</td>
+<td class="org-left">Quer fazer fine-tune do LLM</td>
+<td class="org-left">LLM fine-tuning</td>
+</tr>
+
+<tr>
+<td class="org-left">"Vou criar um embedding"</td>
+<td class="org-left">Vai criar representação vetorial</td>
+<td class="org-left">Correto!</td>
+</tr>
+
+<tr>
+<td class="org-left">"Meu vector database aprende"</td>
+<td class="org-left">O banco armazena, não aprende</td>
+<td class="org-left">Vector DB só indexa</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-orge10763b" class="outline-2">
+<h2 id="orge10763b">Leituras Sugeridas</h2>
+<div class="outline-text-2" id="text-orge10763b">
+</div>
+<div id="outline-container-org3e69fae" class="outline-3">
+<h3 id="org3e69fae">Papers Fundamentais</h3>
+<div class="outline-text-3" id="text-org3e69fae">
+<ol class="org-ol">
+<li><b>"Attention Is All You Need"</b> (Vaswani et al., 2017)
+<ul class="org-ul">
+<li>Link: <a href="https://arxiv.org/abs/1706.03762">arXiv:1706.03762</a></li>
+<li>Por que ler: Arquitetura Transformer, base de todos os LLMs modernos</li>
+</ul></li>
+
+<li><b>"Language Models are Few-Shot Learners"</b> (Brown et al., 2020)
+<ul class="org-ul">
+<li>Link: <a href="https://arxiv.org/abs/2005.14165">arXiv:2005.14165</a></li>
+<li>Por que ler: Introduz GPT-3 e demonstra capacidades emergentes</li>
+</ul></li>
+
+<li><b>"Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks"</b> (Lewis et al., 2020)
+<ul class="org-ul">
+<li>Link: <a href="https://arxiv.org/abs/2005.11401">arXiv:2005.11401</a></li>
+<li>Por que ler: Paper original do RAG</li>
+</ul></li>
+
+<li><b>"ReAct: Synergizing Reasoning and Acting in Language Models"</b> (Yao et al., 2022)
+<ul class="org-ul">
+<li>Link: <a href="https://arxiv.org/abs/2210.03629">arXiv:2210.03629</a></li>
+<li>Por que ler: Framework fundamental para agentes</li>
+</ul></li>
+</ol>
+</div>
+</div>
+<div id="outline-container-orgdb30efd" class="outline-3">
+<h3 id="orgdb30efd">Sobre Eficiência de Modelos</h3>
+<div class="outline-text-3" id="text-orgdb30efd">
+<ol class="org-ol">
+<li><b>"Scaling Laws for Neural Language Models"</b> (Kaplan et al., 2020)
+<ul class="org-ul">
+<li>Link: <a href="https://arxiv.org/abs/2001.08361">arXiv:2001.08361</a></li>
+<li>Por que ler: Mostra como performance escala com parâmetros e dados - a base teórica do "maior é melhor"</li>
+</ul></li>
+
+<li><b>"Training Compute-Optimal Large Language Models"</b> (Hoffmann et al., 2022)
+<ul class="org-ul">
+<li>Link: <a href="https://arxiv.org/abs/2203.15556">arXiv:2203.15556</a></li>
+<li>Por que ler: Chinchilla scaling laws - modelos menores com mais dados podem superar modelos maiores</li>
+</ul></li>
+
+<li><b>"Distilling the Knowledge in a Neural Network"</b> (Hinton et al., 2015)
+<ul class="org-ul">
+<li>Link: <a href="https://arxiv.org/abs/1503.02531">arXiv:1503.02531</a></li>
+<li>Por que ler: Base teórica da distilação - como modelos pequenos aprendem com grandes</li>
+</ul></li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org18a0ac2" class="outline-3">
+<h3 id="org18a0ac2">Sobre História e Filosofia da IA</h3>
+<div class="outline-text-3" id="text-org18a0ac2">
+<ol class="org-ol">
+<li><b>"Origins and Evolution of Enactive Cognitive Science"</b> (Carvalho, Pereira &amp; Coelho, 2015)
+<ul class="org-ul">
+<li>Link: <a href="https://doi.org/10.1016/j.plrev.2015.08.001">doi:10.1016/j.plrev.2015.08.001</a></li>
+<li>Por que ler: Genealogia das escolas de ciência cognitiva — da Cibernética ao Enativismo</li>
+</ul></li>
+</ol>
+</div>
+</div>
+</div>
+<div id="outline-container-org4997678" class="outline-2">
+<h2 id="org4997678">Exercícios Práticos</h2>
+<div class="outline-text-2" id="text-org4997678">
+</div>
+<div id="outline-container-org29b566e" class="outline-3">
+<h3 id="org29b566e">Exercício 1: Identificação de Conceitos</h3>
+<div class="outline-text-3" id="text-org29b566e">
+<p>
+Para cada cenário abaixo, identifique qual tecnologia está sendo usada (IA, LLM, RAG, Agente, Embedding, VectorDB, Fine-tuning):
+</p>
+
+<p>
+<b>Cenário A:</b> Você faz uma pergunta sobre documentos internos da sua empresa. O sistema busca os documentos relevantes e passa para um modelo gerar a resposta.
+</p>
+
+<p>
+<b>Cenário B:</b> Um sistema classifica automaticamente emails como spam ou não spam.
+</p>
+
+<p>
+<b>Cenário C:</b> Você usa o ChatGPT para traduzir um texto do português para inglês.
+</p>
+
+<p>
+<b>Cenário D:</b> Um assistente converte moedas em tempo real, faz buscas na web e lembra suas preferências.
+</p>
+
+<p>
+<b>Cenário E:</b> Uma empresa treina um modelo para responder no tom específico da sua marca.
+</p>
+
+<div class="DETAILS" id="org8bf3ba5">
+<p>
+📝 Respostas
+</p>
+
+<ul class="org-ul">
+<li>Cenário A: <b>RAG</b> - combina retrieval com generation</li>
+<li>Cenário B: <b>IA</b> (modelo discriminativo, não LLM) - classificação tradicional</li>
+<li>Cenário C: <b>LLM</b> - uso direto do modelo sem ferramentas</li>
+<li>Cenário D: <b>Agente</b> - tem ferramentas, memória e ações</li>
+<li>Cenário E: <b>Fine-tuning</b> - adaptação do modelo para estilo específico</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div id="outline-container-orga2da948" class="outline-3">
+<h3 id="orga2da948">Exercício 2: Análise de Arquitetura</h3>
+<div class="outline-text-3" id="text-orga2da948">
+<p>
+Dado o seguinte sistema, desenhe a arquitetura e identifique os componentes:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">"Sistema de atendimento ao cliente da empresa X:
+1. Recebe pergunta do usu&#225;rio via WhatsApp
+2. Busca em 5000 PDFs de manuais t&#233;cnicos
+3. Usa um modelo para gerar resposta
+4. Se n&#227;o encontrar resposta, abre ticket no Zendesk
+5. Mant&#233;m hist&#243;rico das &#250;ltimas 10 conversas por usu&#225;rio"
+</pre>
+</div>
+
+<p>
+Tarefas:
+a) Quais componentes de RAG estão presentes?
+b) Quais componentes de Agente estão presentes?
+c) Desenhe o fluxo de dados.
+</p>
+
+<div class="DETAILS" id="org75e6547">
+<p>
+📝 Resposta
+</p>
+
+<p>
+<b>a) Componentes RAG:</b>
+</p>
+<ul class="org-ul">
+<li>Vector DB (para indexar 5000 PDFs)</li>
+<li>Embedding Model (para vetorizar perguntas e documentos)</li>
+<li>Retrieval (busca de documentos relevantes)</li>
+<li>LLM (para gerar resposta)</li>
+</ul>
+
+<p>
+<b>b) Componentes de Agente:</b>
+</p>
+<ul class="org-ul">
+<li>Memória (histórico de 10 conversas)</li>
+<li>Ferramenta externa (Zendesk)</li>
+<li>Decisão (quando abrir ticket vs responder)</li>
+</ul>
+
+<p>
+<b>c) Fluxo:</b>
+<img src="img/sistema-atendimento-v2.svg" alt="sistema-atendimento-v2.svg" class="org-svg" />
+</p>
+
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Notas de Rodap&eacute;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.hist" class="footnum" href="#fnr.hist" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+O material histórico desta seção acompanha Carvalho, Pereira &amp; Coelho (2015), "Origins and Evolution of Enactive Cognitive Science", que traça a genealogia das escolas de ciência cognitiva — Cibernética, Cognitivismo, Conexionismo, Enativismo.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.fomo" class="footnum" href="#fnr.fomo" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<b>FOMO</b> = "Fear Of Missing Out" (medo de ficar de fora). Termo usado em marketing para descrever a ansiedade de perder oportunidades, frequentemente explorado em campanhas de venda.</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<h3><a href="/pages/guilda-ia/">&#8592; Voltar para Guilda de IA</a></h3>
+</div>
+</body>
+</html>

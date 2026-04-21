@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Estrutura de um Agente</title>
+<meta name="author" content="Lucas S. Vieira"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/theme/night.css" id="theme"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/npm/reveal.js@4/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide" data-background="./slide_05.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Estrutura de um Agente</h2><br/><p style="font-size:0.85em;opacity:0.8;">Construindo o primeiro agente</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+</section>
+<section>
+<section id="slide-orgef41ba0">
+<h2 id="orgef41ba0">O que é um agente?</h2>
+<p class="fragment (appear)">
+Agente = LLM + estrutura para conversar
+</p>
+
+<p class="fragment (appear)">
+O LLM puro só responde uma pergunta. Um agente:
+</p>
+<ul>
+<li>Lembra da conversa (memória)</li>
+<li>Tem personalidade (instruções)</li>
+<li>Pode usar ferramentas (extensões)</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org7878510">
+<h2 id="org7878510">Componentes do agente</h2>
+<div class="outline-text-2" id="text-org7878510">
+</div>
+</section>
+<section id="slide-org8ed0cc6">
+<h3 id="org8ed0cc6">1. Instruções (System)</h3>
+<p>
+Define quem o agente é.
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" >instrucoes = "Você é um assistente educado e objetivo."
+</code></pre>
+</div>
+</section>
+<section id="slide-orgaa33fe3">
+<h3 id="orgaa33fe3">2. Histórico (Memory)</h3>
+<p>
+Guarda a conversa.
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" >historico = [
+    {"role": "usuário", "content": "Oi!"},
+    {"role": "assistente", "content": "Olá! Como posso ajudar?"}
+]
+</code></pre>
+</div>
+</section>
+<section id="slide-org935fd3e">
+<h3 id="org935fd3e">3. Mensagem (Input)</h3>
+<p>
+A pergunta atual.
+</p>
+</section>
+<section id="slide-org75936c1">
+<h3 id="org75936c1">4. Resposta (Output)</h3>
+<p>
+A resposta do modelo.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgf37398a">
+<h2 id="orgf37398a">Estrutura com funções</h2>
+<div class="org-src-container">
+
+<pre   ><code class="python" >def criar_agente(instrucoes):
+    return {
+        "instrucoes": instrucoes,
+        "historico": []
+    }
+
+def conversar(agente, mensagem):
+    # Monta prompt
+    # Chama LLM
+    # Salva no histórico (agente["historico"].append(...))
+    # Retorna resposta
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org879466e">
+<h2 id="org879466e">Por que estado separado?</h2>
+<p class="fragment (appear)">
+Estado em dicionário = mais simples para iniciantes.
+</p>
+
+<p>
+Funções puras são mais fáceis de testar e entender.
+</p>
+</section>
+<section id="slide-org4ff4432">
+<h3 id="org4ff4432">Com funções:</h3>
+<div class="org-src-container">
+
+<pre   ><code class="python" >agente = criar_agente("Você é educado.")
+conversar(agente, "Oi")       # histórico atualiza
+conversar(agente, "Lembra o que eu disse?")  # tem contexto
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org1360476">
+<h2 id="org1360476">O problema do histórico infinito</h2>
+<p class="fragment (appear)">
+Se a conversa crescer demais, o prompt fica gigante.
+</p>
+
+<p>
+<b><b>Solução:</b></b> limitar histórico.
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" ># Pegar só as últimas 10 trocas
+for msg in agente["historico"][-10:]:
+    ...
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgb4218e0">
+<h2 id="orgb4218e0">Diagrama</h2>
+<div class="org-src-container">
+
+<pre   ><code class="text" >Usuário → Agente → LLM → Resposta
+           ↑                |
+           |                |
+           └──── Histórico ←┘
+</code></pre>
+</div>
+
+<ol>
+<li class="fragment appear">Usuário envia mensagem</li>
+<li class="fragment appear">Agente monta prompt com histórico</li>
+<li class="fragment appear">LLM processa</li>
+<li class="fragment appear">Resposta salva no histórico</li>
+<li class="fragment appear">Retorna ao usuário</li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-org28a6026">
+<h2 id="org28a6026">Para lembrar</h2>
+<blockquote  class="fragment (appear)">
+<p>
+"Agente é LLM com memória e personalidade."
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org64ccbbb">
+<h2 id="org64ccbbb">Próxima semana</h2>
+<ul>
+<li class="fragment appear">Vamos dar uma ferramenta para o agente</li>
+<li class="fragment appear">Calculadora</li>
+<li class="fragment appear">Tool calling básico</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org0e470ae">
+<h2 id="org0e470ae">Perguntas?</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
+
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Primeira Ferramenta</title>
+<meta name="author" content="Lucas S. Vieira"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/theme/night.css" id="theme"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/npm/reveal.js@4/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide" data-background="./slide_06.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Primeira Ferramenta</h2><br/><p style="font-size:0.85em;opacity:0.8;">Dando poderes ao agente</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+</section>
+<section>
+<section id="slide-orgda07437">
+<h2 id="orgda07437">O problema do LLM puro</h2>
+<p class="fragment (appear)">
+LLMs são ruins em matemática.
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="text" >Pergunta: "Quanto é 234 × 987?"
+</code></pre>
+</div>
+
+<p>
+O modelo não calcula. Ele <b>prevê</b> a resposta baseado em padrões.
+Pode acertar, pode errar.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgd09e272">
+<h2 id="orgd09e272">A solução: ferramentas</h2>
+<p class="fragment (appear)">
+Ferramenta = função Python que o agente pode chamar.
+</p>
+</section>
+<section id="slide-org2749a1e">
+<h3 id="org2749a1e">Como funciona:</h3>
+<ol>
+<li class="fragment appear">Modelo recebe descrição da ferramenta</li>
+<li class="fragment appear">Analisa a pergunta</li>
+<li class="fragment appear">Decide: preciso dessa ferramenta?</li>
+<li class="fragment appear">Se sim, gera chamada no formato correto</li>
+<li class="fragment appear">Python executa e devolve resultado</li>
+<li class="fragment appear">Modelo usa resultado na resposta</li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-org94ec2b1">
+<h2 id="org94ec2b1">Exemplo: calculadora</h2>
+<div class="org-src-container">
+
+<pre   ><code class="python" >def calcular(expressao):
+    """Resolve expressão matemática."""
+    return str(eval(expressao))
+
+# Exemplo:
+calcular("234 * 987")  # "230958"
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgdff5775">
+<h2 id="orgdff5775">O segredo: descrição clara</h2>
+<p>
+O modelo decide baseado na descrição.
+</p>
+
+<p>
+<b>Descrição ruim:</b>
+</p>
+<blockquote  class="fragment (appear)">
+<p>
+"Calculadora."
+</p>
+</blockquote>
+
+<p>
+→ Modelo não sabe quando usar.
+</p>
+
+</section>
+<section id="slide-orgdff5775-split">
+<p>
+<b>Descrição boa:</b>
+</p>
+<blockquote  class="fragment (appear)">
+<p>
+"Resolve expressões matemáticas. Use quando precisar
+fazer cálculos. Ex: '2 + 2', '10 * 5', '(5 + 3) / 2'."
+</p>
+</blockquote>
+
+<p>
+→ Modelo entende quando e como usar.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org116cb07">
+<h2 id="org116cb07">O formato de chamada</h2>
+<p>
+O modelo precisa gerar algo que Python entenda.
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="text" >USAR_FERRAMENTA: calculadora
+ARGUMENTO: 234 * 987
+</code></pre>
+</div>
+
+<p>
+Seu código:
+</p>
+<ol>
+<li>Detecta isso na resposta</li>
+<li>Executa a função</li>
+<li>Devolve o resultado para o modelo</li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-org3792dac">
+<h2 id="org3792dac">Diagrama</h2>
+<div class="org-src-container">
+
+<pre   ><code class="text" >Usuário: "Quanto é 234 × 987?"
+    ↓
+Agente: "Preciso da calculadora"
+    ↓
+Ferramenta: calcular("234 * 987") = 230958
+    ↓
+Agente: "230.958"
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org83edec9">
+<h2 id="org83edec9">Para lembrar</h2>
+<blockquote  class="fragment (appear)">
+<p>
+"Ferramenta transforma conversa em ação."
+</p>
+</blockquote>
+
+<p class="fragment (appear)">
+LLM puro: só fala
+Agente com ferramenta: fala E faz
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org6f80a1b">
+<h2 id="org6f80a1b">Próxima semana</h2>
+<ul>
+<li class="fragment appear">Múltiplas ferramentas</li>
+<li class="fragment appear">Como o modelo escolhe qual usar</li>
+<li class="fragment appear">Descrições mais específicas</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgb8690e6">
+<h2 id="orgb8690e6">Perguntas?</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
+
+});
+
+</script>
+</body>
+</html>

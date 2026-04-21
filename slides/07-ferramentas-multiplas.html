@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Ferramentas Múltiplas</title>
+<meta name="author" content="Lucas S. Vieira"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/theme/night.css" id="theme"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/npm/reveal.js@4/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide" data-background="./slide_07.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Ferramentas Múltiplas</h2><br/><p style="font-size:0.85em;opacity:0.8;">Agentes com várias capacidades</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+</section>
+<section>
+<section id="slide-orgc8b51a3">
+<h2 id="orgc8b51a3">O desafio</h2>
+<p class="fragment (appear)">
+Um agente com uma ferramenta já é útil.
+Mas e com várias?
+</p>
+
+<p>
+O modelo precisa <b>escolher</b> qual usar.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org6554266">
+<h2 id="org6554266">Como o modelo decide</h2>
+<p class="fragment (appear)">
+O modelo lê todas as descrições e compara com a pergunta.
+</p>
+</section>
+<section id="slide-orgbd51a84">
+<h3 id="orgbd51a84">Exemplo:</h3>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Ferramenta</th>
+<th scope="col" class="org-left">Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">calculadora</td>
+<td class="org-left">Resolve matemática</td>
+</tr>
+
+<tr>
+<td class="org-left">horário</td>
+<td class="org-left">Retorna data e hora atual</td>
+</tr>
+
+<tr>
+<td class="org-left">wikipedia</td>
+<td class="org-left">Busca informações</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="slide-org1b3b6e9">
+<h3 id="org1b3b6e9">Perguntas:</h3>
+<div class="org-src-container">
+
+<pre   ><code class="text" >"Quanto é 10 + 5?"
+→ Modelo vê "matemática" → usa calculadora
+
+"Que horas são?"
+→ Modelo vê "data e hora" → usa horário
+
+"Quem foi Ada Lovelace?"
+→ Modelo vê "informações" → usa wikipedia
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org7f1c042">
+<h2 id="org7f1c042">O problema das descrições vagas</h2>
+<p>
+Se duas ferramentas parecem fazer a mesma coisa:
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="text" >ferramenta1: "Busca informações"
+ferramenta2: "Pesquisa dados"
+</code></pre>
+</div>
+
+<p>
+O modelo confunde.
+</p>
+</section>
+<section id="slide-org2c8c055">
+<h3 id="org2c8c055">Solução:</h3>
+<div class="org-src-container">
+
+<pre   ><code class="text" >ferramenta1: "Busca informações na Wikipedia
+              sobre pessoas e lugares"
+ferramenta2: "Pesquisa preços de produtos
+              em APIs de e-commerce"
+</code></pre>
+</div>
+
+<p>
+Seja específico.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org699091d">
+<h2 id="org699091d">Ferramentas com argumentos</h2>
+<p class="fragment (appear)">
+Algumas ferramentas precisam de argumentos.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Ferramenta</th>
+<th scope="col" class="org-left">Argumento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Calculadora</td>
+<td class="org-left">expressão matemática</td>
+</tr>
+
+<tr>
+<td class="org-left">Wikipedia</td>
+<td class="org-left">termo de busca</td>
+</tr>
+
+<tr>
+<td class="org-left">Horário</td>
+<td class="org-left">nenhum argumento</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="slide-org5b5f016">
+<h3 id="org5b5f016">Exemplo Wikipedia:</h3>
+<div class="org-src-container">
+
+<pre   ><code class="python" >def ferramenta_wikipedia(termo):
+    """Busca resumo na Wikipedia."""
+    url = f"https://pt.wikipedia.org/api/rest_v1/page/summary/{termo}"
+    ...
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgb7803e9">
+<h2 id="orgb7803e9">Diagrama de decisão</h2>
+<div class="org-src-container">
+
+<pre   ><code class="text" >Usuário: "Quanto é 10 + 5 e quem foi Ada Lovelace?"
+    ↓
+Agente: "Preciso de duas ferramentas..."
+    ↓
+Ferramentas: calculadora("10 + 5") = 15
+              wikipedia("Ada Lovelace") = resumo
+    ↓
+Agente: "10 + 5 = 15. Ada Lovelace foi..."
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org0880c56">
+<h2 id="org0880c56">Para lembrar</h2>
+<blockquote  class="fragment (appear)">
+<p>
+"Cada ferramenta precisa de uma descrição
+que o modelo entenda."
+</p>
+</blockquote>
+
+<ul>
+<li class="fragment appear">Descrições vagas = confusão</li>
+<li class="fragment appear">Descrições específicas = clareza</li>
+<li class="fragment appear">Exemplos na descrição ajudam</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgebe1023">
+<h2 id="orgebe1023">Próxima semana</h2>
+<ul>
+<li class="fragment appear">Consolidar tudo em projeto</li>
+<li class="fragment appear">Demo completa de agente</li>
+<li class="fragment appear">Mentoria e ajustes</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgf062c31">
+<h2 id="orgf062c31">Perguntas?</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
+
+});
+
+</script>
+</body>
+</html>

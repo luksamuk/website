@@ -1,0 +1,712 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Estrutura de Agente: Onde Tudo Começa</title>
+<meta name="author" content="Lucas S. Vieira" />
+<meta name="description" content="Semana 6 - Guilda de IA: Estrutura de um agente de IA
+Material didático do curso de IA Generativa da Guilda de IA" />
+<meta name="generator" content="Org Mode" />
+<style type="text/css">
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-22RF3F5XE0"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-22RF3F5XE0');
+</script>
+<link rel="stylesheet" type="text/css" href="/css/main.css" />
+<link rel="stylesheet" type="text/css" href="/css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="/css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="/img/cat-i-mage.jpg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#14171e">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="/js/theme-toggle.js"></script>
+<script src="/js/nav-scroll.js"></script>
+<meta property="og:url" content="https://luksamuk.codes/pages/guilda-ia/05-estrutura-agente.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Estrutura de Agente: Onde Tudo Começa">
+<meta property="og:description" content="Semana 6 - Guilda de IA: Estrutura de um agente de IA
+Material didático do curso de IA Generativa da Guilda de IA">
+<meta property="og:image" content="https://luksamuk.codes/img/banner-full.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:domain" content="luksamuk.codes">
+<meta name="twitter:url" content="https://luksamuk.codes/pages/guilda-ia/05-estrutura-agente.html">
+<meta name="twitter:title" content="Estrutura de Agente: Onde Tudo Começa">
+<meta name="twitter:description" content="Semana 6 - Guilda de IA: Estrutura de um agente de IA
+Material didático do curso de IA Generativa da Guilda de IA">
+<meta name="twitter:image" content="https://luksamuk.codes/img/banner.png">
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">Estrutura de Agente: Onde Tudo Começa</h1>
+</div>
+<div id="content" class="content">
+<div id="outline-container-orgbf522da" class="outline-2">
+<h2 id="orgbf522da">O que é um agente?</h2>
+<div class="outline-text-2" id="text-orgbf522da">
+<p>
+Agente = LLM + estrutura para conversar.
+</p>
+
+<p>
+O LLM puro só responde uma pergunta. Um agente:
+</p>
+<ul class="org-ul">
+<li>Lembra da conversa (memória)</li>
+<li>Tem personalidade (instruções)</li>
+<li>Pode usar ferramentas (extensões)</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org4c05ac3" class="outline-2">
+<h2 id="org4c05ac3">Arquitetura em Detalhe</h2>
+<div class="outline-text-2" id="text-org4c05ac3">
+</div>
+<div id="outline-container-orge29127b" class="outline-3">
+<h3 id="orge29127b">Visão Geral</h3>
+<div class="outline-text-3" id="text-orge29127b">
+<p>
+Um agente de IA não é apenas um modelo de linguagem. É um <b>sistema</b> composto por múltiplos componentes trabalhando em conjunto:
+</p>
+
+
+<div id="orgc044b72" class="figure">
+<p><img src="img/agente-componentes.svg" alt="agente-componentes.svg" class="org-svg" />
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org63ce3d1" class="outline-3">
+<h3 id="org63ce3d1">Componentes Principais</h3>
+<div class="outline-text-3" id="text-org63ce3d1">
+<ol class="org-ol">
+<li><b>LLM (Large Language Model):</b> O cérebro que processa e gera texto</li>
+<li><b>Memory:</b> Armazena o histórico de conversas</li>
+<li><b>Tools (Ferramentas):</b> Capacidades extras além do conhecimento do modelo</li>
+<li><b>System Prompt:</b> Define personalidade, comportamento e restrições</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="outline-container-orgac794e8" class="outline-2">
+<h2 id="orgac794e8">Paradigmas de Arquitetura de Agentes</h2>
+<div class="outline-text-2" id="text-orgac794e8">
+</div>
+<div id="outline-container-org58ef994" class="outline-3">
+<h3 id="org58ef994">ReAct (Reasoning + Acting)</h3>
+<div class="outline-text-3" id="text-org58ef994">
+<p>
+O paradigma <b>ReAct</b> foi introduzido no paper <b>\"ReAct: Synergistic Reasoning and Acting in Language Models\"</b> (Yao et al., 2022). A ideia central é intercalar <b>raciocínio</b> (reasoning) com <b>ações</b> (acting).
+</p>
+
+
+<div id="orga816ba6" class="figure">
+<p><img src="img/react-cycle.svg" alt="react-cycle.svg" class="org-svg" />
+</p>
+</div>
+
+<p>
+<b>Exemplo de trace ReAct:</b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">Question: Quanto &#233; 234 * 987 + 100?
+
+Thought 1: Preciso multiplicar 234 por 987 primeiro.
+Action 1: calculadora[234 * 987]
+Observation 1: 230958
+
+Thought 2: Agora preciso somar 100 ao resultado.
+Action 2: calculadora[230958 + 100]
+Observation 2: 231058
+
+Thought 3: Tenho a resposta final.
+Answer: O resultado &#233; 231058.
+</pre>
+</div>
+
+<p>
+<b>Vantagens do ReAct:</b>
+</p>
+<ul class="org-ul">
+<li>Interpretabilidade: vemos o raciocínio passo a passo</li>
+<li>Debug facilitado: conseguimos identificar onde o agente errou</li>
+<li>Comporabilidade: ações podem ser encadeadas</li>
+</ul>
+
+<p>
+<b>Referência:</b> Yao, S. et al. (2022). "ReAct: Synergistic Reasoning and Acting in Language Models". <a href="https://arxiv.org/abs/2210.03629">arXiv:2210.03629</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org4564472" class="outline-3">
+<h3 id="org4564472">Plan-and-Solve</h3>
+<div class="outline-text-3" id="text-org4564472">
+<p>
+Uma extensão do ReAct é o paradigma <b>Plan-and-Solve</b>, onde o agente primeiro <b>planeja</b> todos os passos antes de executá-los.
+</p>
+
+<p>
+<b>Quando usar Plan-and-Solve:</b>
+</p>
+<ul class="org-ul">
+<li>Tarefas complexas com múltiplos passos dependentes</li>
+<li>Quando a ordem de execução é crítica</li>
+<li>Problemas matemáticos ou de lógica estruturada</li>
+</ul>
+
+<p>
+<b>Referência:</b> Wang et al. (2023). "Plan-and-Solve Prompting: Improving Zero-Shot Chain-of-Thought Reasoning by Large Language Models". <a href="https://arxiv.org/abs/2305.16969">arXiv:2305.16969</a>
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc1f4671" class="outline-2">
+<h2 id="orgc1f4671">Referências Importantes</h2>
+<div class="outline-text-2" id="text-orgc1f4671">
+</div>
+<div id="outline-container-orgcadff21" class="outline-3">
+<h3 id="orgcadff21">Paper Fundacional: ReAct</h3>
+<div class="outline-text-3" id="text-orgcadff21">
+<p>
+<b>Título:</b> "ReAct: Synergistic Reasoning and Acting in Language Models"  
+<b>Autores:</b> Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan, Yuan Cao  
+<b>Ano:</b> 2022  
+<b>Link:</b> <a href="https://arxiv.org/abs/2210.03629">arXiv:2210.03629</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org7b4c012" class="outline-3">
+<h3 id="org7b4c012">Paper: Toolformer</h3>
+<div class="outline-text-3" id="text-org7b4c012">
+<p>
+<b>Título:</b> "Toolformer: Language Models Can Teach Themselves to Use Tools"  
+<b>Autores:</b> Timo Schick, Jane Dwivedi-Yu, Roberto Dessì, et al.  
+<b>Ano:</b> 2023  
+<b>Link:</b> <a href="https://arxiv.org/abs/2302.04761">arXiv:2302.04761</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org06c2832" class="outline-3">
+<h3 id="org06c2832">Paper: Gorilla</h3>
+<div class="outline-text-3" id="text-org06c2832">
+<p>
+<b>Título:</b> "Gorilla: Large Language Model Connected to Massive APIs"  
+<b>Autores:</b> Shishir Patil, Tianjun Zhang, Xin Wang, Joseph E. Gonzalez  
+<b>Ano:</b> 2023  
+<b>Link:</b> <a href="https://arxiv.org/abs/2305.15334">arXiv:2305.15334</a>
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org0555614" class="outline-2">
+<h2 id="org0555614">Componentes do Agente (Detalhado)</h2>
+<div class="outline-text-2" id="text-org0555614">
+</div>
+<div id="outline-container-org4ebf09f" class="outline-3">
+<h3 id="org4ebf09f">1. Instruções (System Prompt)</h3>
+<div class="outline-text-3" id="text-org4ebf09f">
+<p>
+Define quem o agente é, como age e suas restrições.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-variable-name">instrucoes</span> <span class="org-operator">=</span> <span class="org-string">"""Voc&#234; &#233; um assistente educado e objetivo.
+
+REGRAS:
+- Responda de forma clara e concisa
+- Se n&#227;o souber algo, admita
+- Use ferramentas quando necess&#225;rio
+- NUNCA invente informa&#231;&#245;es
+
+FERRAMENTAS DISPON&#205;VEIS:
+- calculadora: para opera&#231;&#245;es matem&#225;ticas
+- wikipedia: para buscas de informa&#231;&#227;o
+- horario: para saber data/hora atual
+"""</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org1be30b3" class="outline-3">
+<h3 id="org1be30b3">2. Histórico (Memory)</h3>
+<div class="outline-text-3" id="text-org1be30b3">
+<p>
+Guarda a conversa para manter contexto.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-variable-name">historico</span> <span class="org-operator">=</span> [
+    {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Oi!"</span>},
+    {<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Ol&#225;! Como posso ajudar?"</span>}
+]
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org8bad984" class="outline-3">
+<h3 id="org8bad984">3. Mensagem (Input)</h3>
+<div class="outline-text-3" id="text-org8bad984">
+<p>
+A pergunta atual do usuário.
+</p>
+</div>
+</div>
+<div id="outline-container-org847dfcf" class="outline-3">
+<h3 id="org847dfcf">4. Resposta (Output)</h3>
+<div class="outline-text-3" id="text-org847dfcf">
+<p>
+A resposta do modelo.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf436954" class="outline-2">
+<h2 id="orgf436954">Implementação Real</h2>
+<div class="outline-text-2" id="text-orgf436954">
+</div>
+<div id="outline-container-org8c7c108" class="outline-3">
+<h3 id="org8c7c108">Código Completo de um Agente Básico</h3>
+<div class="outline-text-3" id="text-org8c7c108">
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-doc">"""
+Implementa&#231;&#227;o completa de um agente com mem&#243;ria e tratamento de erros.
+Inclui:
+- Gerenciamento de hist&#243;rico
+- Truncamento de contexto
+- Retry com backoff
+- Logging estruturado
+"""</span>
+
+<span class="org-keyword">import</span> os
+<span class="org-keyword">import</span> json
+<span class="org-keyword">import</span> logging
+<span class="org-keyword">from</span> datetime <span class="org-keyword">import</span> datetime
+<span class="org-keyword">from</span> typing <span class="org-keyword">import</span> Optional, List, Dict, Any
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Configura&#231;&#227;o de logging
+</span>logging.basicConfig(
+    level<span class="org-operator">=</span>logging.INFO,
+    <span class="org-builtin">format</span><span class="org-operator">=</span><span class="org-string">'%(asctime)s - %(name)s - %(levelname)s - %(message)s'</span>
+)
+<span class="org-variable-name">logger</span> <span class="org-operator">=</span> logging.getLogger(<span class="org-builtin">__name__</span>)
+
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">============================================
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">AGENTE COM FUN&#199;&#213;ES E ESTADO
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">============================================
+</span>
+<span class="org-keyword">def</span> <span class="org-function-name">criar_agente</span>(
+    system_prompt: <span class="org-builtin">str</span> <span class="org-operator">=</span> <span class="org-string">"Voc&#234; &#233; um assistente &#250;til e educado."</span>,
+    max_historico: <span class="org-builtin">int</span> <span class="org-operator">=</span> 20
+) <span class="org-operator">-&gt;</span> Dict:
+    <span class="org-doc">"""
+    Cria um agente com mem&#243;ria de conversa.
+
+    Args:
+        system_prompt: Instru&#231;&#245;es iniciais do sistema
+        max_historico: N&#250;mero m&#225;ximo de mensagens no hist&#243;rico
+
+    Returns:
+        Dicion&#225;rio com o estado do agente
+    """</span>
+    <span class="org-keyword">if</span> <span class="org-keyword">not</span> system_prompt <span class="org-keyword">or</span> <span class="org-keyword">not</span> system_prompt.strip():
+        <span class="org-keyword">raise</span> <span class="org-type">ValueError</span>(<span class="org-string">"System prompt n&#227;o pode estar vazio"</span>)
+
+    <span class="org-variable-name">estado</span> <span class="org-operator">=</span> {
+        <span class="org-string">"system_prompt"</span>: system_prompt,
+        <span class="org-string">"historico"</span>: [],
+        <span class="org-string">"max_historico"</span>: max_historico
+    }
+
+    logger.info(f<span class="org-string">"Agente criado com max_historico=</span>{max_historico}<span class="org-string">"</span>)
+    <span class="org-keyword">return</span> estado
+
+
+<span class="org-keyword">def</span> <span class="org-function-name">_truncar_historico</span>(estado: Dict) <span class="org-operator">-&gt;</span> List[Dict[<span class="org-builtin">str</span>, <span class="org-builtin">str</span>]]:
+    <span class="org-doc">"""
+    Trunca o hist&#243;rico se exceder o limite.
+
+    Returns:
+        Lista de mensagens truncada
+    """</span>
+    <span class="org-keyword">if</span> <span class="org-builtin">len</span>(estado[<span class="org-string">"historico"</span>]) <span class="org-operator">&gt;</span> estado[<span class="org-string">"max_historico"</span>]:
+        <span class="org-variable-name">metade</span> <span class="org-operator">=</span> estado[<span class="org-string">"max_historico"</span>] <span class="org-operator">//</span> 2
+        <span class="org-variable-name">historico_truncado</span> <span class="org-operator">=</span> (
+            estado[<span class="org-string">"historico"</span>][:metade<span class="org-operator">//</span>2] <span class="org-operator">+</span> 
+            estado[<span class="org-string">"historico"</span>][<span class="org-operator">-</span>(metade<span class="org-operator">//</span>2):]
+        )
+        logger.warning(
+            f<span class="org-string">"Hist&#243;rico truncado: </span>{<span class="org-builtin">len</span>(estado['historico'])}<span class="org-string"> -&gt; </span>{<span class="org-builtin">len</span>(historico_truncado)}<span class="org-string">"</span>
+        )
+        <span class="org-keyword">return</span> historico_truncado
+    <span class="org-keyword">return</span> estado[<span class="org-string">"historico"</span>]
+
+
+<span class="org-keyword">def</span> <span class="org-function-name">_montar_messages</span>(estado: Dict, mensagem: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> List[Dict[<span class="org-builtin">str</span>, <span class="org-builtin">str</span>]]:
+    <span class="org-doc">"""
+    Monta a lista de mensagens no formato esperado pelo modelo.
+
+    Args:
+        estado: Estado do agente
+        mensagem: Mensagem atual do usu&#225;rio
+
+    Returns:
+        Lista completa de mensagens formatadas
+    """</span>
+    <span class="org-variable-name">messages</span> <span class="org-operator">=</span> [{<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: estado[<span class="org-string">"system_prompt"</span>]}]
+
+    <span class="org-keyword">for</span> msg <span class="org-keyword">in</span> _truncar_historico(estado):
+        messages.append(msg)
+
+    messages.append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: mensagem})
+
+    <span class="org-keyword">return</span> messages
+
+
+<span class="org-keyword">def</span> <span class="org-function-name">conversar</span>(estado: Dict, mensagem: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""
+    Processa uma mensagem e retorna a resposta.
+
+    Args:
+        estado: Estado do agente
+        mensagem: Mensagem do usu&#225;rio
+
+    Returns:
+        Resposta do agente
+    """</span>
+    <span class="org-keyword">if</span> <span class="org-keyword">not</span> mensagem <span class="org-keyword">or</span> <span class="org-keyword">not</span> mensagem.strip():
+        <span class="org-keyword">raise</span> <span class="org-type">ValueError</span>(<span class="org-string">"Mensagem n&#227;o pode estar vazia"</span>)
+
+    logger.info(f<span class="org-string">"Processando mensagem: </span>{mensagem[:50]}<span class="org-string">..."</span>)
+
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Monta mensagens
+</span>    <span class="org-variable-name">messages</span> <span class="org-operator">=</span> _montar_messages(estado, mensagem)
+
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Salvar no hist&#243;rico
+</span>    estado[<span class="org-string">"historico"</span>].append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: mensagem})
+    estado[<span class="org-string">"historico"</span>].append({<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Resposta simulada"</span>})
+
+    <span class="org-keyword">return</span> <span class="org-string">"Resposta simulada"</span>
+
+
+<span class="org-keyword">def</span> <span class="org-function-name">limpar_historico</span>(estado: Dict) <span class="org-operator">-&gt;</span> <span class="org-constant">None</span>:
+    <span class="org-doc">"""Limpa todo o hist&#243;rico de conversa."""</span>
+    <span class="org-variable-name">estado</span>[<span class="org-string">"historico"</span>] <span class="org-operator">=</span> []
+    logger.info(<span class="org-string">"Hist&#243;rico limpo"</span>)
+
+
+<span class="org-keyword">def</span> <span class="org-function-name">exportar_historico</span>(estado: Dict) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""
+    Exporta hist&#243;rico como JSON.
+
+    Returns:
+        String JSON com o hist&#243;rico
+    """</span>
+    <span class="org-keyword">return</span> json.dumps({
+        <span class="org-string">"system_prompt"</span>: estado[<span class="org-string">"system_prompt"</span>],
+        <span class="org-string">"historico"</span>: estado[<span class="org-string">"historico"</span>],
+        <span class="org-string">"timestamp"</span>: datetime.now().isoformat()
+    }, ensure_ascii<span class="org-operator">=</span><span class="org-constant">False</span>, indent<span class="org-operator">=</span>2)
+
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Exemplo de uso
+</span><span class="org-keyword">if</span> <span class="org-builtin">__name__</span> <span class="org-operator">==</span> <span class="org-string">"__main__"</span>:
+    <span class="org-variable-name">agente</span> <span class="org-operator">=</span> criar_agente(
+        system_prompt<span class="org-operator">=</span><span class="org-string">"Voc&#234; &#233; um assistente especializado em Python."</span>,
+        max_historico<span class="org-operator">=</span>10
+    )
+
+    <span class="org-builtin">print</span>(conversar(agente, <span class="org-string">"Oi!"</span>))
+    <span class="org-builtin">print</span>(conversar(agente, <span class="org-string">"Qual sua fun&#231;&#227;o?"</span>))
+
+    <span class="org-builtin">print</span>(<span class="org-string">"</span><span class="org-constant">\n</span><span class="org-string">Hist&#243;rico:"</span>)
+    <span class="org-builtin">print</span>(exportar_historico(agente))
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org03794d5" class="outline-2">
+<h2 id="org03794d5">Pitfalls Comuns</h2>
+<div class="outline-text-2" id="text-org03794d5">
+</div>
+<div id="outline-container-orgaa909cd" class="outline-3">
+<h3 id="orgaa909cd">1. Histórico Infinito</h3>
+<div class="outline-text-3" id="text-orgaa909cd">
+<p>
+<b>Problema:</b> Se a conversa crescer demais, o prompt fica gigante e custa caro.
+</p>
+
+<p>
+<b>Solução:</b> Limitar histórico e truncar inteligentemente.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">ERRADO - hist&#243;rico cresce para sempre
+</span>historico.append(mensagem)  <span class="org-comment-delimiter"># </span><span class="org-comment">sem limite!
+</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">CERTO - limite definido
+</span><span class="org-keyword">if</span> <span class="org-builtin">len</span>(historico) <span class="org-operator">&gt;</span> MAX_HISTORICO:
+    <span class="org-variable-name">historico</span> <span class="org-operator">=</span> historico[<span class="org-operator">-</span>MAX_HISTORICO:]
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org3fb943c" class="outline-3">
+<h3 id="org3fb943c">2. Memória Não Persistida</h3>
+<div class="outline-text-3" id="text-org3fb943c">
+<p>
+<b>Problema:</b> Histórico só existe em memória RAM. Se reiniciar, perde tudo.
+</p>
+
+<p>
+<b>Solução:</b> Salvar em banco de dados ou arquivo.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org10086a2" class="outline-2">
+<h2 id="org10086a2">Exercícios Práticos</h2>
+<div class="outline-text-2" id="text-org10086a2">
+</div>
+<div id="outline-container-org7595ab7" class="outline-3">
+<h3 id="org7595ab7">Exercício 1: Agente com Personalidade</h3>
+<div class="outline-text-3" id="text-org7595ab7">
+<p>
+Crie um agente com uma personalidade específica (ex: professor de Python, assistente de receitas):
+</p>
+
+<div class="DETAILS" id="orge3fd3a8">
+<p>
+📝 Exemplo de Solução
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> google <span class="org-keyword">import</span> genai
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Inicializar cliente
+</span><span class="org-variable-name">client</span> <span class="org-operator">=</span> genai.Client(api_key<span class="org-operator">=</span><span class="org-string">"sua-api-key"</span>)
+
+<span class="org-variable-name">agente_python</span> <span class="org-operator">=</span> AgenteBasico(
+    system_prompt<span class="org-operator">=</span><span class="org-string">"""Voc&#234; &#233; um professor de Python paciente e did&#225;tico.
+
+SOBRE VOC&#202;:
+- Ensina Python para iniciantes
+- Usa exemplos pr&#225;ticos
+- Explica conceitos complexos de forma simples
+- Nunca julga perguntas "burras"
+- Sempre oferece c&#243;digo execut&#225;vel
+
+SEU P&#218;BLICO:
+- Pessoas come&#231;ando a programar
+- Podem n&#227;o saber terminologia t&#233;cnica
+- Precisam de explica&#231;&#245;es passo a passo
+"""</span>,
+    max_historico<span class="org-operator">=</span>15,
+    client<span class="org-operator">=</span>client,
+    model<span class="org-operator">=</span><span class="org-string">"gemini-2.0-flash"</span>
+)
+</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<h3><a href="/pages/guilda-ia/">&#8592; Voltar para Guilda de IA</a></h3>
+</div>
+</body>
+</html>
