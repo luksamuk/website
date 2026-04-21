@@ -1,0 +1,176 @@
+#+TITLE: Prompting Básico
+#+AUTHOR: Lucas S. Vieira
+#+SUBTITLE: Como falar com IA
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js@4/
+#+REVEAL_THEME: night
+#+REVEAL_PLUGINS: (highlight)
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.0
+#+OPTIONS: toc:nil num:nil
+#+REVEAL_TITLE_SLIDE: <p style="font-size:0.7em;opacity:0.6;">%a</p><br/><h2>%t</h2><br/><p style="font-size:0.85em;opacity:0.8;">%s</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+#+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_02.gif
+
+* O Problema
+#+ATTR_REVEAL: :frag (appear)
+- A mesma pergunta pode gerar respostas diferentes
+- Dependendo de como você formula
+
+** Exemplo
+
+*Vago:*
+#+BEGIN_SRC text
+"Me fale sobre gatos"
+→ resposta genérica
+#+END_SRC
+
+*Específico:*
+#+BEGIN_SRC text
+"Quais as 3 raças de gatos mais populares no Brasil?"
+→ resposta específica
+#+END_SRC
+
+* O que é prompt?
+#+ATTR_REVEAL: :frag (appear)
+- Prompt = instrução que você dá para o modelo
+- A pergunta, o comando, o contexto
+- Tudo junto
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+O prompt é como uma receita.
+Ingredientes claros = prato previsível.
+#+end_quote
+
+* Técnicas básicas
+
+** 1. Zero-shot
+Você pede algo sem dar exemplos.
+
+#+BEGIN_SRC text
+Traduza para inglês: "Bom dia"
+#+END_SRC
+
+O modelo nunca viu você traduzir antes, mas tenta fazer.
+
+** 2. Few-shot
+Você dá exemplos antes de pedir.
+
+#+BEGIN_SRC text
+Traduza para inglês:
+"Gato" → "Cat"
+"Cachorro" → "Dog"
+"Pássaro" → ?
+#+END_SRC
+
+#+ATTR_REVEAL: :frag (appear)
+O modelo aprende o padrão pelos exemplos.
+
+* Por que few-shot funciona?
+#+ATTR_REVEAL: :frag (appear)
+- O modelo vê o que você quer
+- Segue o molde
+- Reduz ambiguidade
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+Exemplos são como mostrar em vez de explicar.
+#+end_quote
+
+* Framework R-C-E-F
+
+#+ATTR_REVEAL: :frag (appear)
+Uma estrutura útil para prompts:
+
+| Letra | Significado | Exemplo |
+|-------+-------------+---------|
+| *R* | Role (papel) | "Você é um professor de matemática" |
+| *C* | Context | "O aluno está no ensino médio" |
+| *E* | Examples | "Explique como: 2x + 3 = 7 → x = 2" |
+| *F* | Format | "Responda em bullets" |
+
+** Exemplo completo
+
+#+BEGIN_SRC text
+R: Você é um tutor de matemática paciente.
+C: O aluno tem dificuldade com equações.
+E: Para 2x + 4 = 10: subtraia 4 dos dois lados,
+   depois divida por 2.
+F: Responda passo a passo, numerando.
+
+Pergunta: Como resolvo 3x + 6 = 21?
+#+END_SRC
+
+** Resultado comparado
+
+*Sem R-C-E-F:*
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+"3x + 6 = 21, x = 5"
+#+end_quote
+
+*Com R-C-E-F:*
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+"Vamos resolver passo a passo:
+
+1. Subtraia 6 de ambos os lados: 3x = 15
+2. Divida por 3: x = 5
+3. Verificação: 3 × 5 + 6 = 21 ✓"
+#+end_quote
+
+* Alucinações vs Prompt ruim
+
+Às vezes o modelo erra. Por quê?
+
+#+ATTR_REVEAL: :frag (appear)
+1. *Hallucinação* → modelo inventa (limitação)
+2. *Prompt ruim* → você não deixou claro
+
+** Como distinguir
+#+ATTR_REVEAL: :frag (appear)
+- Refaça o prompt com mais contexto
+- Se ainda errar, é alucinação
+- Se melhorar, era prompt ruim
+
+* Dicas práticas
+
+** ✅ Bom:
+#+BEGIN_SRC text
+"Liste as 5 capitais mais populosas do Brasil
+em ordem decrescente"
+
+"Explique recursão como se eu tivesse 12 anos"
+
+"Corrija o texto abaixo mantendo o estilo do autor"
+#+END_SRC
+
+** ❌ Ruim:
+#+BEGIN_SRC text
+"Me fale algo" (vago demais)
+
+"O que você acha?" (subjetivo)
+
+"Responda sim ou não: o número 7 é legal?" (não factual)
+#+END_SRC
+
+* Para lembrar
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+"O prompt é como uma receita.
+Ingredientes claros = prato previsível."
+#+end_quote
+
+#+ATTR_REVEAL: :frag (appear)
+Quanto mais específico você for,
+mais próxima a resposta do que você espera.
+
+* Próxima semana
+
+#+ATTR_REVEAL: :frag (appear)
+- Vamos começar a programar!
+- Python para chamar LLMs via API
+- Google Colab
+
+* Perguntas?

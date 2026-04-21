@@ -1,0 +1,122 @@
+#+TITLE: Ferramentas Múltiplas
+#+AUTHOR: Lucas S. Vieira
+#+SUBTITLE: Agentes com várias capacidades
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js@4/
+#+REVEAL_THEME: night
+#+REVEAL_PLUGINS: (highlight)
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.0
+#+OPTIONS: toc:nil num:nil
+#+REVEAL_TITLE_SLIDE: <p style="font-size:0.7em;opacity:0.6;">%a</p><br/><h2>%t</h2><br/><p style="font-size:0.85em;opacity:0.8;">%s</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+#+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_07.gif
+
+* O desafio
+
+#+ATTR_REVEAL: :frag (appear)
+Um agente com uma ferramenta já é útil.
+Mas e com várias?
+
+O modelo precisa *escolher* qual usar.
+
+* Como o modelo decide
+
+#+ATTR_REVEAL: :frag (appear)
+O modelo lê todas as descrições e compara com a pergunta.
+
+** Exemplo:
+
+| Ferramenta | Descrição |
+|------------+-----------|
+| calculadora | Resolve matemática |
+| horário | Retorna data e hora atual |
+| wikipedia | Busca informações |
+
+** Perguntas:
+#+BEGIN_SRC text
+"Quanto é 10 + 5?"
+→ Modelo vê "matemática" → usa calculadora
+
+"Que horas são?"
+→ Modelo vê "data e hora" → usa horário
+
+"Quem foi Ada Lovelace?"
+→ Modelo vê "informações" → usa wikipedia
+#+END_SRC
+
+* O problema das descrições vagas
+
+Se duas ferramentas parecem fazer a mesma coisa:
+
+#+BEGIN_SRC text
+ferramenta1: "Busca informações"
+ferramenta2: "Pesquisa dados"
+#+END_SRC
+
+O modelo confunde.
+
+** Solução:
+
+#+BEGIN_SRC text
+ferramenta1: "Busca informações na Wikipedia
+              sobre pessoas e lugares"
+ferramenta2: "Pesquisa preços de produtos
+              em APIs de e-commerce"
+#+END_SRC
+
+Seja específico.
+
+* Ferramentas com argumentos
+
+#+ATTR_REVEAL: :frag (appear)
+Algumas ferramentas precisam de argumentos.
+
+| Ferramenta | Argumento |
+|------------+-----------|
+| Calculadora | expressão matemática |
+| Wikipedia | termo de busca |
+| Horário | nenhum argumento |
+
+** Exemplo Wikipedia:
+
+#+BEGIN_SRC python
+def ferramenta_wikipedia(termo):
+    """Busca resumo na Wikipedia."""
+    url = f"https://pt.wikipedia.org/api/rest_v1/page/summary/{termo}"
+    ...
+#+END_SRC
+
+* Diagrama de decisão
+
+#+BEGIN_SRC text
+Usuário: "Quanto é 10 + 5 e quem foi Ada Lovelace?"
+    ↓
+Agente: "Preciso de duas ferramentas..."
+    ↓
+Ferramentas: calculadora("10 + 5") = 15
+              wikipedia("Ada Lovelace") = resumo
+    ↓
+Agente: "10 + 5 = 15. Ada Lovelace foi..."
+#+END_SRC
+
+* Para lembrar
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+"Cada ferramenta precisa de uma descrição
+que o modelo entenda."
+#+end_quote
+
+#+ATTR_REVEAL: :frag (appear)
+- Descrições vagas = confusão
+- Descrições específicas = clareza
+- Exemplos na descrição ajudam
+
+* Próxima semana
+
+#+ATTR_REVEAL: :frag (appear)
+- Consolidar tudo em projeto
+- Demo completa de agente
+- Mentoria e ajustes
+
+* Perguntas?

@@ -1,0 +1,117 @@
+#+TITLE: Primeira Ferramenta
+#+AUTHOR: Lucas S. Vieira
+#+SUBTITLE: Dando poderes ao agente
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js@4/
+#+REVEAL_THEME: night
+#+REVEAL_PLUGINS: (highlight)
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.0
+#+OPTIONS: toc:nil num:nil
+#+REVEAL_TITLE_SLIDE: <p style="font-size:0.7em;opacity:0.6;">%a</p><br/><h2>%t</h2><br/><p style="font-size:0.85em;opacity:0.8;">%s</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+#+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_06.gif
+
+* O problema do LLM puro
+
+#+ATTR_REVEAL: :frag (appear)
+LLMs são ruins em matemática.
+
+#+BEGIN_SRC text
+Pergunta: "Quanto é 234 × 987?"
+#+END_SRC
+
+O modelo não calcula. Ele *prevê* a resposta baseado em padrões.
+Pode acertar, pode errar.
+
+* A solução: ferramentas
+
+#+ATTR_REVEAL: :frag (appear)
+Ferramenta = função Python que o agente pode chamar.
+
+** Como funciona:
+#+ATTR_REVEAL: :frag (appear)
+1. Modelo recebe descrição da ferramenta
+2. Analisa a pergunta
+3. Decide: preciso dessa ferramenta?
+4. Se sim, gera chamada no formato correto
+5. Python executa e devolve resultado
+6. Modelo usa resultado na resposta
+
+* Exemplo: calculadora
+
+#+BEGIN_SRC python
+def calcular(expressao):
+    """Resolve expressão matemática."""
+    return str(eval(expressao))
+
+# Exemplo:
+calcular("234 * 987")  # "230958"
+#+END_SRC
+
+* O segredo: descrição clara
+
+O modelo decide baseado na descrição.
+
+*Descrição ruim:*
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+"Calculadora."
+#+end_quote
+
+→ Modelo não sabe quando usar.
+
+#+REVEAL: split
+*Descrição boa:*
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+"Resolve expressões matemáticas. Use quando precisar
+fazer cálculos. Ex: '2 + 2', '10 * 5', '(5 + 3) / 2'."
+#+end_quote
+
+→ Modelo entende quando e como usar.
+
+* O formato de chamada
+
+O modelo precisa gerar algo que Python entenda.
+
+#+BEGIN_SRC text
+USAR_FERRAMENTA: calculadora
+ARGUMENTO: 234 * 987
+#+END_SRC
+
+Seu código:
+1. Detecta isso na resposta
+2. Executa a função
+3. Devolve o resultado para o modelo
+
+* Diagrama
+
+#+BEGIN_SRC text
+Usuário: "Quanto é 234 × 987?"
+    ↓
+Agente: "Preciso da calculadora"
+    ↓
+Ferramenta: calcular("234 * 987") = 230958
+    ↓
+Agente: "230.958"
+#+END_SRC
+
+* Para lembrar
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+"Ferramenta transforma conversa em ação."
+#+end_quote
+
+#+ATTR_REVEAL: :frag (appear)
+LLM puro: só fala
+Agente com ferramenta: fala E faz
+
+* Próxima semana
+
+#+ATTR_REVEAL: :frag (appear)
+- Múltiplas ferramentas
+- Como o modelo escolhe qual usar
+- Descrições mais específicas
+
+* Perguntas?

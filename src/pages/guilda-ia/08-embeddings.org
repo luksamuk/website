@@ -1,0 +1,89 @@
+#+TITLE: Embeddings e Similaridade - Texto como números
+# Semana 9 - 05/06/2026
+#+SETUPFILE: ./setupfile.org
+#+DESCRIPTION: Semana 9 - Guilda de IA: Entendendo embeddings e similaridade por cosseno
+#+LANGUAGE: pt_BR
+#+STARTUP: inlineimages showall latexpreview
+#+DATE: 05/06/2026
+
+* Semana 9 - Embeddings e Similaridade
+
+* O que são Embeddings?
+
+Imagine que cada palavra ou texto pode ser representado por uma lista de números.
+Esses números capturam o *significado* do texto.
+
+#+begin_quote
+"Embeddings são como coordenadas num mapa de significados."
+#+end_quote
+
+** Como funciona?
+
+Palavras com significados parecidos ficam próximas no "espaço vetorial":
+
+- "gato" e "cachorro" → vetores próximos
+- "gato" e "carro" → vetores distantes
+
+Quem decide esses números? Um modelo de ML treinado em bilhões de textos.
+
+* Similaridade por Cosseno
+
+**Conexão com Geometria Analítica!**
+
+Você já estudou ângulos entre vetores? A similaridade por cosseno usa exatamente isso.
+
+**Fórmula:**
+$$\cos(\theta) = \frac{\vec{A} \cdot \vec{B}}{|\vec{A}| \cdot |\vec{B}|}$$
+
+**Interpretação:**
+- ângulo = 0° → vetores iguais → cosseno = 1 → *muito similares*
+- ângulo = 90° → vetores perpendiculares → cosseno = 0 → *nada similares*
+- ângulo = 180° → vetores opostos → cosseno = -1 → *opostos*
+
+**Por que funciona?**
+- Textos com significado parecido = vetores na mesma direção
+- Textos com significado diferente = vetores em direções diferentes
+
+* Por que isso importa?
+
+Embeddings são a base para:
+- **Busca semântica:** encontrar textos parecidos
+- **RAG:** buscar documentos relevantes (próxima semana!)
+- **Tradução:** entender significados entre idiomas
+- **Classificação:** agrupar textos por tema
+
+* Prática: calculando similaridade
+
+#+begin_src python
+from sentence_transformers import SentenceTransformer
+from numpy import dot
+from numpy.linalg import norm
+
+# Carregar modelo
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+# Converter textos em embeddings
+textos = ["Eu amo gatos", "Eu adoro cachorros", "O carro é vermelho"]
+embeddings = model.encode(textos)
+
+# Calcular similaridade por cosseno
+cos_sim = lambda a, b: dot(a, b) / (norm(a) * norm(b))
+
+print(f"gatos vs cachorros: {cos_sim(embeddings[0], embeddings[1]):.3f}")
+print(f"gatos vs carro: {cos_sim(embeddings[0], embeddings[2]):.3f}")
+#+end_src
+
+**Resultado esperado:**
+- "gatos vs cachorros" → ~0.7 (parecidos!)
+- "gatos vs carro" → ~0.1 (diferentes)
+
+* Resumo
+
+1. Embeddings = texto transformado em números
+2. Similaridade por cosseno = ângulo entre vetores
+3. Textos parecidos = vetores na mesma direção
+4. Conexão direta com geometria analítica
+
+* Próxima semana
+
+**Semana 9 - RAG (Retrieval-Augmented Generation):** vamos usar embeddings para criar um agente que "lê" documentos!

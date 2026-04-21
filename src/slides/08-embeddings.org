@@ -1,0 +1,114 @@
+#+TITLE: Embeddings e Similaridade
+#+AUTHOR: Lucas S. Vieira
+#+SUBTITLE: Texto como números
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js@4/
+#+REVEAL_THEME: night
+#+REVEAL_PLUGINS: (highlight)
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.0
+#+OPTIONS: toc:nil num:nil
+#+REVEAL_TITLE_SLIDE: <p style="font-size:0.7em;opacity:0.6;">%a</p><br/><h2>%t</h2><br/><p style="font-size:0.85em;opacity:0.8;">%s</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+#+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_08.gif
+
+* O que são Embeddings?
+
+#+ATTR_REVEAL: :frag (appear)
+Imagine que cada palavra ou texto pode ser representado por uma lista de números.
+Esses números capturam o *significado* do texto.
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+"Embeddings são como coordenadas num mapa de significados."
+#+end_quote
+
+* Exemplo visual
+
+| Texto | Vetor (simplificado) |
+|-------|---------------------|
+| "gato" | [0.2, 0.8, 0.1] |
+| "cachorro" | [0.3, 0.7, 0.2] |
+| "carro" | [0.9, 0.1, 0.3] |
+
+#+ATTR_REVEAL: :frag (appear)
+"gato" e "cachorro" são mais próximos!
+"carro" está longe.
+
+* Similaridade por Cosseno
+
+#+ATTR_REVEAL: :frag (appear)
+*Conexão com Geometria Analítica!*
+
+Você já estudou ângulos entre vetores?
+A similaridade por cosseno usa exatamente isso.
+
+** Fórmula:
+$$\cos(\theta) = \frac{\vec{A} \cdot \vec{B}}{|\vec{A}| \cdot |\vec{B}|}$$
+
+** Interpretação:
+
+#+ATTR_REVEAL: :frag (appear)
+- ângulo = 0° → vetores iguais → cosseno = 1 → *muito similares*
+- ângulo = 90° → vetores perpendiculares → cosseno = 0 → *nada similares*
+- ângulo = 180° → vetores opostos → cosseno = -1 → *opostos*
+
+** Por que funciona?
+
+#+ATTR_REVEAL: :frag (appear)
+- Textos com significado parecido = vetores na mesma direção
+- Textos com significado diferente = vetores em direções diferentes
+
+* Por que isso importa?
+
+#+ATTR_REVEAL: :frag (appear)
+Embeddings são a base para:
+
+- **Busca semântica:** encontrar textos parecidos
+- **RAG:** buscar documentos relevantes
+- **Tradução:** entender significados entre idiomas
+- **Classificação:** agrupar textos por tema
+
+* Prática
+
+#+BEGIN_SRC python
+from sentence_transformers import SentenceTransformer
+
+# Carregar modelo
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+# Converter textos em embeddings
+textos = ["Eu amo gatos", "Eu adoro cachorros", "O carro é vermelho"]
+embeddings = model.encode(textos)
+
+# Calcular similaridade
+from numpy import dot
+from numpy.linalg import norm
+
+cos_sim = lambda a, b: dot(a, b) / (norm(a) * norm(b))
+#+END_SRC
+
+** Resultado esperado:
+
+#+BEGIN_SRC python
+print(f"gatos vs cachorros: {cos_sim(embeddings[0], embeddings[1]):.3f}")
+# ~0.7 (parecidos)
+
+print(f"gatos vs carro: {cos_sim(embeddings[0], embeddings[2]):.3f}")
+# ~0.1 (diferentes)
+#+END_SRC
+
+* Para lembrar
+
+#+ATTR_REVEAL: :frag (appear)
+1. Embeddings = texto transformado em números
+2. Similaridade por cosseno = ângulo entre vetores
+3. Textos parecidos = vetores na mesma direção
+4. Conexão com geometria analítica no seu curso
+
+* Próxima semana
+
+#+ATTR_REVEAL: :frag (appear)
+**RAG:** vamos usar embeddings para criar
+um agente que "lê" documentos!
+
+* Perguntas?

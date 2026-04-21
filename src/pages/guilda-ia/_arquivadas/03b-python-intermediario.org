@@ -1,0 +1,489 @@
+#+TITLE: Python Intermediário: Além do Básico
+# Semana 5 - 08/05/2026
+#+DESCRIPTION: Semana 5 - Guilda de IA: Python intermediário para agentes de IA
+#+SETUPFILE: ../setupfile.org
+#+LANGUAGE: pt_BR
+#+STARTUP: inlineimages showall latexpreview
+#+DATE: 08/05/2026
+
+* Semana 4 - Python Intermediário
+
+* Por que continuar com Python?
+
+Na semana anterior, vimos o mínimo necessário para usar APIs de LLM. Agora vamos além:
+
+1. *Estruturas de dados mais complexas*
+2. *Classes e orientação a objetos*
+3. *Tratamento de erros robusto*
+4. *Organização de código*
+
+Esses conceitos são fundamentais para construir agentes mais sofisticados.
+
+* Estruturas de Dados Avançadas
+
+** Comprehensions
+
+Forma concisa de criar listas, dicionários e sets.
+
+#+BEGIN_SRC python
+# List comprehension
+numeros = [1, 2, 3, 4, 5]
+quadrados = [n ** 2 for n in numeros]  # [1, 4, 9, 16, 25]
+
+# Com condição
+pares = [n for n in numeros if n % 2 == 0]  # [2, 4]
+
+# Dict comprehension
+palavras = ["gato", "cachorro", "pássaro"]
+tamanhos = {p: len(p) for p in palavras}  # {"gato": 4, "cachorro": 8, ...}
+#+END_SRC
+
+** Generators
+
+Funções que produzem valores sob demanda, economizando memória.
+
+#+BEGIN_SRC python
+# Generator function
+def contar_ate(n):
+    for i in range(n):
+        yield i
+
+# Uso
+for num in contar_ate(5):
+    print(num)  # 0, 1, 2, 3, 4
+
+# Generator expression
+quadrados_gen = (n ** 2 for n in range(1000000))  # Não cria lista na memória
+#+END_SRC
+
+** Quando usar Generator vs Lista
+
+| Situação                | Use Lista          | Use Generator      |
+|-------------------------+--------------------+--------------------|
+| Precisa acessar múltiplas vezes | ✓ | ✗ |
+| Precisa de len() ou indexação | ✓ | ✗ |
+| Grande volume de dados | ✗ | ✓ |
+| Pipeline de processamento | ✗ | ✓ |
+
+* Orientação a Objetos
+
+** Classes Básicas
+
+#+BEGIN_SRC python
+class Agente:
+    """Representa um agente de IA com memória."""
+    
+    def __init__(self, nome: str, sistema: str = "Você é um assistente."):
+        """
+        Inicializa o agente.
+        
+        Args:
+            nome: Nome identificador do agente
+            sistema: System prompt do agente
+        """
+        self.nome = nome
+        self.sistema = sistema
+        self.historico = []
+    
+    def conversar(self, mensagem: str) -> str:
+        """Processa uma mensagem e retorna resposta."""
+        self.historico.append({"role": "user", "content": mensagem})
+        # ... lógica de processamento ...
+        resposta = f"[{self.nome}] Resposta simulada"
+        self.historico.append({"role": "assistant", "content": resposta})
+        return resposta
+    
+    def limpar_memoria(self) -> None:
+        """Limpa o histórico de conversa."""
+        self.historico = []
+        return "Memória limpa"
+    
+    def __repr__(self) -> str:
+        return f"Agente(nome='{self.nome}', mensagens={len(self.historico)})"
+
+
+# Uso
+agente = Agente("Assistente", "Você é um tutor de Python.")
+print(agente.conversar("Olá!"))  # [Assistente] Resposta simulada
+print(agente)  # Agente(nome='Assistente', mensagens=2)
+#+END_SRC
+
+** Herança
+
+#+BEGIN_SRC python
+class AgenteComFerramentas(Agente):
+    """Agente que pode usar ferramentas externas."""
+    
+    def __init__(self, nome: str, sistema: str = "Você é um assistente.", ferramentas: dict = None):
+        super().__init__(nome, sistema)
+        self.ferramentas = ferramentas or {}
+    
+    def adicionar_ferramenta(self, nome: str, funcao: callable) -> None:
+        """Registra uma nova ferramenta."""
+        self.ferramentas[nome] = funcao
+    
+    def usar_ferramenta(self, nome: str, *args, **kwargs):
+        """Executa uma ferramenta pelo nome."""
+        if nome not in self.ferramentas:
+            raise ValueError(f"Ferramenta '{nome}' não encontrada")
+        return self.ferramentas[nome](*args, **kwargs)
+
+
+# Uso
+def calculadora(expr: str):
+    return eval(expr)  # Simplificado - não usar em produção!
+
+agente = AgenteComFerramentas("Calc", ferramentas={"calc": calculadora})
+print(agente.usar_ferramenta("calc", "2 + 2"))  # 4
+#+END_SRC
+
+** @property e Encapsulamento
+
+#+BEGIN_SRC python
+class AgenteProtegido:
+    def __init__(self, nome: str):
+        self._nome = nome  # "Privado" por convenção
+        self.__historico = []  # Name-mangled (mais privado)
+    
+    @property
+    def nome(self) -> str:
+        """Getter para nome."""
+        return self._nome
+    
+    @nome.setter
+    def nome(self, valor: str) -> None:
+        """Setter com validação."""
+        if not valor.strip():
+            raise ValueError("Nome não pode ser vazio")
+        self._nome = valor
+    
+    @property
+    def total_mensagens(self) -> int:
+        """Propriedade calculada."""
+        return len(self.__historico)
+#+END_SRC
+
+* Tratamento de Erros Robusto
+
+** Hierarquia de Exceções
+
+#+BEGIN_SRC python
+# Exceções embutidas comuns
+try:
+    resultado = fazer_algo()
+except ValueError as e:
+    print(f"Valor inválido: {e}")
+except TypeError as e:
+    print(f"Tipo errado: {e}")
+except KeyError as e:
+    print(f"Chave não encontrada: {e}")
+except Exception as e:
+    print(f"Erro inesperado: {e}")
+    raise  # Re-lança para debug
+#+END_SRC
+
+** Criando Exceções Customizadas
+
+#+BEGIN_SRC python
+class ErroAgente(Exception):
+    """Exceção base para erros de agente."""
+    pass
+
+class ErroFerramentaNaoEncontrada(ErroAgente):
+    """Ferramenta solicitada não existe."""
+    pass
+
+class ErroLimiteTokens(ErroAgente):
+    """Limite de tokens excedido."""
+    pass
+
+
+class AgenteSeguro:
+    def usar_ferramenta(self, nome: str):
+        if nome not in self.ferramentas:
+            raise ErroFerramentaNaoEncontrada(f"Ferramenta '{nome}' não registrada")
+        # ... resto da lógica
+#+END_SRC
+
+** Context Managers
+
+Padrão para gerenciar recursos automaticamente.
+
+#+BEGIN_SRC python
+from contextlib import contextmanager
+
+@contextmanager
+def agente_contexto(nome: str):
+    """Context manager para agente com cleanup automático."""
+    agente = Agente(nome)
+    print(f"[{nome}] Iniciando sessão...")
+    try:
+        yield agente
+    finally:
+        print(f"[{nome}] Encerrando sessão...")
+        agente.limpar_memoria()
+
+# Uso
+with agente_contexto("TestBot") as agente:
+    agente.conversar("Olá!")
+    # Automaticamente faz cleanup ao sair
+#+END_SRC
+
+* Organização de Código
+
+** Type Hints
+
+Documentação de tipos para melhor legibilidade e debug.
+
+#+BEGIN_SRC python
+from typing import List, Dict, Optional, Union, Callable
+
+def processar_mensagens(
+    mensagens: List[Dict[str, str]],
+    max_tokens: int = 1000,
+    modelo: str = "gpt-4o-mini"
+) -> Dict[str, Union[str, int]]:
+    """
+    Processa uma lista de mensagens.
+    
+    Args:
+        mensagens: Lista de mensagens no formato OpenAI
+        max_tokens: Máximo de tokens na resposta
+        modelo: ID do modelo a usar
+    
+    Returns:
+        Dicionário com resposta e metadados
+    """
+    # ...
+    return {"resposta": "...", "tokens_usados": 150}
+
+
+def buscar_ferramenta(
+    nome: str,
+    registro: Dict[str, Callable]
+) -> Optional[Callable]:
+    """Busca uma ferramenta pelo nome. Retorna None se não encontrar."""
+    return registro.get(nome)
+#+END_SRC
+
+** Dataclasses
+
+Classes focadas em dados com menos boilerplate.
+
+#+BEGIN_SRC python
+from dataclasses import dataclass, field
+from typing import List, Dict
+
+@dataclass
+class Mensagem:
+    role: str
+    content: str
+    
+    def to_dict(self) -> Dict[str, str]:
+        return {"role": self.role, "content": self.content}
+
+@dataclass
+class AgenteConfig:
+    nome: str
+    sistema: str = "Você é um assistente."
+    max_historico: int = 20
+    ferramentas: List[str] = field(default_factory=list)
+    
+    def __post_init__(self):
+        """Validação após inicialização."""
+        if not self.nome.strip():
+            raise ValueError("Nome não pode ser vazio")
+
+
+# Uso
+msg = Mensagem(role="user", content="Olá!")
+config = AgenteConfig("Bot", ferramentas=["calc", "wiki"])
+print(config)  # AgenteConfig(nome='Bot', sistema='...', max_historico=20, ferramentas=['calc', 'wiki'])
+#+END_SRC
+
+** Modularização
+
+Estrutura recomendada para projetos maiores:
+
+#+BEGIN_SRC text
+meu_agente/
+├── __init__.py
+├── agente.py          # Classe principal Agente
+├── ferramentas/
+│   ├── __init__.py
+│   ├── calculadora.py
+│   ├── wikipedia.py
+│   └── horario.py
+├── memoria.py         # Gerenciamento de histórico
+├── config.py          # Configurações centralizadas
+└── main.py            # Ponto de entrada
+#+END_SRC
+
+* Padrões Úteis para Agentes
+
+** Singleton para Memória Compartilhada
+
+#+BEGIN_SRC python
+class MemoriaGlobal:
+    _instancia = None
+    
+    def __new__(cls):
+        if cls._instancia is None:
+            cls._instancia = super().__new__(cls)
+            cls._instancia._dados = {}
+        return cls._instancia
+    
+    def salvar(self, chave: str, valor: any) -> None:
+        self._dados[chave] = valor
+    
+    def recuperar(self, chave: str) -> any:
+        return self._dados.get(chave)
+
+# Uso
+mem1 = MemoriaGlobal()
+mem2 = MemoriaGlobal()
+mem1.salvar("teste", 123)
+print(mem2.recuperar("teste"))  # 123 - mesma instância!
+#+END_SRC
+
+** Factory Pattern para Agentes
+
+#+BEGIN_SRC python
+class AgenteFactory:
+    """Factory para criar diferentes tipos de agentes."""
+    
+    @staticmethod
+    def criar_assistente() -> AgenteComFerramentas:
+        return AgenteComFerramentas(
+            nome="Assistente",
+            sistema="Você é um assistente útil e educado.",
+            ferramentas={"calc": calculadora, "horario": obter_horario}
+        )
+    
+    @staticmethod
+    def criar_tutor_python() -> AgenteComFerramentas:
+        return AgenteComFerramentas(
+            nome="TutorPython",
+            sistema="Você é um professor de Python paciente e didático.",
+            ferramentas={"calc": calculadora}
+        )
+    
+    @staticmethod
+    def criar_do_tipo(tipo: str) -> AgenteComFerramentas:
+        """Cria agente baseado em string."""
+        criadores = {
+            "assistente": AgenteFactory.criar_assistente,
+            "tutor_python": AgenteFactory.criar_tutor_python,
+        }
+        if tipo not in criadores:
+            raise ValueError(f"Tipo de agente desconhecido: {tipo}")
+        return criadores[tipo]()
+
+# Uso
+agente = AgenteFactory.criar_do_tipo("tutor_python")
+#+END_SRC
+
+* Exercícios Práticos
+
+** Exercício 1: Agente com Config
+
+Crie uma classe AgenteConfiguravel que aceita configurações via dataclass:
+
+#+BEGIN_SRC python
+@dataclass
+class Config:
+    nome: str
+    sistema: str
+    max_tokens: int = 1000
+    temperatura: float = 0.7
+
+class AgenteConfiguravel:
+    def __init__(self, config: Config):
+        # Implemente
+        pass
+    
+    def conversar(self, mensagem: str) -> str:
+        # Implemente
+        pass
+#+END_SRC
+
+#+BEGIN_DETAILS
+📝 Gabarito
+
+#+BEGIN_SRC python
+from dataclasses import dataclass
+
+@dataclass
+class Config:
+    nome: str
+    sistema: str
+    max_tokens: int = 1000
+    temperatura: float = 0.7
+
+class AgenteConfiguravel:
+    def __init__(self, config: Config):
+        if not config.nome.strip():
+            raise ValueError("Nome não pode ser vazio")
+        self.config = config
+        self.historico: list = []
+    
+    def conversar(self, mensagem: str) -> str:
+        self.historico.append({"role": "user", "content": mensagem})
+        resposta = f"[{self.config.nome}] Processando com temp={self.config.temperatura}"
+        self.historico.append({"role": "assistant", "content": resposta})
+        return resposta
+    
+    @property
+    def total_mensagens(self) -> int:
+        return len(self.historico)
+
+# Uso
+config = Config(nome="TestBot", sistema="Seja útil.", temperatura=0.5)
+agente = AgenteConfiguravel(config)
+print(agente.conversar("Olá!"))
+#+END_SRC
+
+#+END_DETAILS
+
+** Exercício 2: Repository Pattern para Histórico
+
+Implemente um RepositorioHistorico que salva/recupera mensagens:
+
+#+BEGIN_DETAILS
+📝 Gabarito
+
+#+BEGIN_SRC python
+import json
+from pathlib import Path
+from typing import List, Dict
+
+class RepositorioHistorico:
+    def __init__(self, arquivo: str = "historico.json"):
+        self.arquivo = Path(arquivo)
+    
+    def salvar(self, mensagens: List[Dict[str, str]]) -> None:
+        with open(self.arquivo, 'w', encoding='utf-8') as f:
+            json.dump(mensagens, f, ensure_ascii=False, indent=2)
+    
+    def carregar(self) -> List[Dict[str, str]]:
+        if not self.arquivo.exists():
+            return []
+        with open(self.arquivo, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    
+    def limpar(self) -> None:
+        if self.arquivo.exists():
+            self.arquivo.unlink()
+
+# Uso
+repo = RepositorioHistorico()
+repo.salvar([{"role": "user", "content": "Olá"}])
+mensagens = repo.carregar()
+print(mensagens)
+#+END_SRC
+
+#+END_DETAILS
+
+* Próxima Semana
+
+**Estrutura de Agente:** Vamos aprender a montar a arquitetura completa de um agente, conectando LLM, memória e ferramentas.

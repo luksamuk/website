@@ -1,0 +1,230 @@
+#+TITLE: RAG: Recuperando Conhecimento
+# Semana 10 - 12/06/2026
+#+DESCRIPTION: Semana 10 - Guilda de IA: RAG (Retrieval-Augmented Generation)
+#+SETUPFILE: ./setupfile.org
+#+LANGUAGE: pt_BR
+#+STARTUP: inlineimages showall latexpreview
+#+DATE: 12/06/2026
+
+* Introdução
+
+Um dos maiores desafios em trabalhar com Large Language Models (LLMs) é que eles possuem conhecimento estático — limitado aos dados presentes no treinamento. Isso significa que:
+
+- Não conhecem seus documentos pessoais
+- Não sabem de informações pós-treinamento
+- Estão limitados a "conhecimento congelado"
+
+*RAG (Retrieval-Augmented Generation)* resolve esse problema de forma elegante, permitindo que LLMs acessem conhecimento externo dinamicamente.
+
+* O Problema do Conhecimento Limitado
+
+LLMs como GPT-4 e Claude têm impressionantes capacidades de raciocínio, mas enfrentam limitações fundamentais:
+
+1. *Cutoff temporal* — Não sabem de eventos após a data de treinamento
+2. *Domínio privado* — Não conhecem documentos corporativos ou pessoais
+3. *Alucinação* — Quando não sabem, podem inventar informações plausíveis
+4. *Falta de fontes* — Dificuldade em citar origem de informações
+
+* O Paradigma RAG
+
+RAG foi proposto formalmente por *Lewis et al. (2020)* no paper seminal *"Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks"*. A ideia central: combinar a capacidade de geração de modelos de linguagem com a precisão de sistemas de recuperação de informação.
+
+> *Definição:* RAG é uma arquitetura que recupera documentos relevantes de uma base de conhecimento e os fornece como contexto para um LLM gerar respostas fundamentadas.
+
+** Fluxo Arquitetural
+
+#+BEGIN_SRC dot :file img/rag-pipeline.svg :cache yes
+digraph RAGPipeline {
+    rankdir=TB;
+    node [shape=box, style="rounded,filled"];
+    
+    label [label="PIPELINE RAG", fillcolor="#e0e0ff", fontsize=16, style="filled,bold"];
+    
+    subgraph cluster_indexing {
+        label="Indexação (offline)";
+        style="rounded";
+        fillcolor="#fafafa";
+        
+        documentos [label="Documentos", fillcolor="#e0e0e0"];
+        chunking [label="Chunking", fillcolor="#f0f0ff"];
+        embedding_idx [label="Embedding\nModels", fillcolor="#f0f0ff"];
+        vector_store [label="Vector\nStore", shape="cylinder", fillcolor="#ffffe0"];
+        
+        documentos -> chunking;
+        chunking -> embedding_idx;
+        embedding_idx -> vector_store;
+    }
+    
+    subgraph cluster_query {
+        label="Query (online)";
+        style="rounded";
+        fillcolor="#fafafa";
+        
+        query [label="Query", fillcolor="#e0e0e0"];
+        embedding_qry [label="Embedding", fillcolor="#f0f0ff"];
+        retrieval [label="Retrieval\n(Top-k)", fillcolor="#f0f0ff"];
+        reranking [label="Reranking\n(opcional)", fillcolor="#f0f0ff"];
+        prompt_context [label="Prompt\n+ Contexto", fillcolor="#f0f0ff"];
+        llm [label="LLM", fillcolor="#e0e0e0"];
+        resposta [label="Resposta\nFinal", fillcolor="#e0ffe0"];
+        
+        query -> embedding_qry;
+        embedding_qry -> retrieval;
+        vector_store -> retrieval [style=dashed, label="similaridade"];
+        retrieval -> reranking;
+        reranking -> prompt_context;
+        prompt_context -> llm;
+        llm -> resposta;
+    }
+}
+#+END_SRC
+
+** Papers Fundamentais
+
+*** Lewis et al. (2020) — O Paper Original
+
+*Título:* "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks"
+
+*Contribuições:*
+- Introduziu formalmente o conceito de RAG
+- Demonstrou superioridade em tarefas de question-answering
+- Propôs arquitetura de retriever + generator end-to-end treinável
+
+*Citação:*
+> "We explore a general-purpose fine-tuning recipe for retrieval-augmented generation (RAG): models combine pre-trained parametric and non-parametric memory for language generation."
+
+[[https://arxiv.org/abs/2005.11401][arXiv:2005.11401]]
+
+* Chunking: Dividindo Documentos
+
+** Por que Chunking é Crítico?
+
+Documentos longos não podem ser processados inteiros. Chunking divide texto em pedaços gerenciáveis, mas a estratégia de divisão impacta drasticamente a qualidade da recuperação.
+
+** Estratégias de Chunking
+
+*** 1. Fixed-Size Chunking
+
+#+BEGIN_SRC python
+def fixed_chunking(text: str, chunk_size: int = 200, overlap: int = 0) -> list:
+    """Divide texto em chunks de tamanho fixo."""
+    chunks = []
+    for i in range(0, len(text), chunk_size - overlap):
+        chunks.append(text[i:i + chunk_size])
+    return chunks
+#+END_SRC
+
+*Vantagens:* Simples, tamanho previsível  
+*Desvantagens:* Pode cortar frases no meio
+
+*** 2. Semantic Chunking
+
+Divide baseado em mudanças semânticas no texto.
+
+*Vantagens:* Preserva ideias completas  
+*Desvantagens:* Mais computacionalmente intensivo
+
+*** 3. Recursive Chunking
+
+Combina divisões hierárquicas (parágrafos → frases → palavras).
+
+*Vantagens:* Balanceado entre simplicidade e semântica  
+*Desvantagens:* Overhead de processamento
+
+** Comparação
+
+| Estratégia  | Latência | Qualidade | Uso Recomendado        |
+|-------------+----------+-----------+------------------------|
+| Fixed-Size  | Baixa    | Média     | Documentos homogêneos  |
+| Semantic    | Alta     | Alta      | Documentos técnicos    |
+| Recursive   | Média    | Alta      | Uso geral (recomendado)|
+
+* Embeddings: Texto em Vetores
+
+** O Que São Embeddings?
+
+Embeddings são representações vetoriais de texto que capturam significado semântico. Textos semanticamente similares têm vetores próximos no espaço.
+
+#+BEGIN_SRC python
+# Exemplo conceitual
+texto_a = "O gato dorme no sofá"
+texto_b = "O felino descansa no sofá"
+texto_c = "O carro está na garagem"
+
+# Embeddings (simplificado)
+embedding_a = [0.2, 0.8, 0.1, ...]  # ~768 dimensões
+embedding_b = [0.21, 0.79, 0.11, ...]  # Muito similar a A
+embedding_c = [-0.5, 0.2, 0.8, ...]  # Diferente de A e B
+
+# Similaridade (cosseno)
+sim_ab = 0.95  # Alta similaridade semântica
+sim_ac = 0.15  # Baixa similaridade
+#+END_SRC
+
+** Modelos de Embedding Populares
+
+| Modelo                      | Dimensões | Descrição                        |
+|-----------------------------+-----------+----------------------------------|
+| text-embedding-3-small      | 1536      | OpenAI, rápido e barato         |
+| text-embedding-3-large     | 3072      | OpenAI, alta qualidade          |
+| all-MiniLM-L6-v2            | 384       | Open-source, local              |
+| e5-large-v2                 | 1024      | Open-source, alta performance  |
+
+* Vector Databases
+
+** Comparação de Vector DBs
+
+| Feature      | sqlite-vec | LanceDB | Chroma  | Pinecone    |
+|--------------+-------------+---------+---------+-------------|
+| Tipo         | Embedded    | Embedded| Embedded| Cloud       |
+| Licença      | Open-source | Open-source | Open-source | Proprietário|
+| Latência     | Baixa       | Baixa   | Média   | Variável    |
+| Custo        | Grátis      | Grátis  | Grátis  | Pago        |
+
+** sqlite-vec
+
+#+BEGIN_SRC python
+import sqlite3
+import sqlite_vec
+
+conn = sqlite3.connect("vectors.db")
+conn.enable_load_extension(True)
+sqlite_vec.load(conn)
+
+# Criar tabela vetorial
+conn.execute("""
+    CREATE VIRTUAL TABLE embeddings USING vec0(
+        content TEXT,
+        embedding FLOAT[768]
+    )
+""")
+
+# Inserir
+conn.execute("""
+    INSERT INTO embeddings(content, embedding)
+    VALUES (?, vec_f32(?))
+""", (text_content, embedding_bytes))
+
+# Buscar
+results = conn.execute("""
+    SELECT content, vec_distance_cosine(embedding, ?) as distance
+    FROM embeddings
+    ORDER BY distance
+    LIMIT 5
+""", (query_embedding_bytes,))
+#+END_SRC
+
+** Recomendações por Caso de Uso
+
+| Cenário               | Recomendação        |
+|-----------------------+---------------------|
+| Protótipo/PoC         | sqlite-vec ou Chroma|
+| App local/desktop     | sqlite-vec          |
+| Startup/MVP           | Chroma ou LanceDB   |
+| Produção média escala | LanceDB             |
+| Produção grande escala| Pinecone ou Weaviate|
+
+* Referências
+
+- Lewis, P. et al. (2020). "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks". [[https://arxiv.org/abs/2005.11401][arXiv:2005.11401]]
+- Gao, Y. et al. (2023). "Retrieval-Augmented Generation for AI-Generated Content: A Survey". [[https://arxiv.org/abs/2312.10997][arXiv:2312.10997]]

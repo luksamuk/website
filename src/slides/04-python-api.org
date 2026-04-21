@@ -1,0 +1,291 @@
+#+TITLE: Python + API de LLM
+#+AUTHOR: Lucas S. Vieira
+#+SUBTITLE: Conectando com modelos
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js@4/
+#+REVEAL_THEME: night
+#+REVEAL_PLUGINS: (highlight)
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.0
+#+OPTIONS: toc:nil num:nil
+#+REVEAL_TITLE_SLIDE: <p style="font-size:0.7em;opacity:0.6;">%a</p><br/><h2>%t</h2><br/><p style="font-size:0.85em;opacity:0.8;">%s</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+#+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_04.gif
+
+* O que é uma API?
+
+#+ATTR_REVEAL: :frag (appear)
+- *API* = Application Programming Interface
+- Forma de programas "conversarem"
+- Você *envia* uma requisição, *recebe* uma resposta
+
+#+begin_quote
+Analogia: API é como um garçom.
+Você pede, ele leva pra cozinha, traz a resposta.
+#+end_quote
+
+* APIs Gratuitas de LLM
+
+#+ATTR_REVEAL: :frag (appear)
+|| Provedor | Gratuito? | Limite |
+||----------+-----------+---------|
+|| Google Gemini | ✅ Sim | 1M tokens/dia |
+|| HuggingFace | ✅ Sim | Rate limit |
+|| OpenRouter | ✅ Sim* | Crédito inicial |
+|| Ollama (local) | ✅ Sim | Ilimitado |
+|| LM Studio (local) | ✅ Sim | Ilimitado |
+|| OpenAI | ❌ Pago | Por uso |
+
+#+begin_quote
+Vamos usar Gemini e HuggingFace no Colab!
+#+end_quote
+
+* Opção 1: Google Gemini
+
+#+ATTR_REVEAL: :frag (appear)
+- **1 milhão de tokens/dia GRATUITO**
+- Precisa de conta Google
+- API key: aistudio.google.com
+
+#+BEGIN_SRC python
+from google import genai
+from google.genai import types
+import os
+
+# Novo SDK google-genai: usar Client
+client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+# Chamada simples
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="Olá!"
+)
+print(response.text)
+#+END_SRC
+
+* Como obter API key do Gemini
+
+#+ATTR_REVEAL: :frag (appear)
+1. Acesse: aistudio.google.com
+2. Faça login com sua conta Google
+3. Clique em "Get API Key"
+4. Crie uma nova chave
+5. Copie e guarde bem!
+
+#+begin_quote
+API key é SECRETA. Não compartilhe!
+#+end_quote
+
+* Opção 2: HuggingFace
+
+#+ATTR_REVEAL: :frag (appear)
+- **Gratuito** com rate limiting
+- Vários modelos disponíveis
+- Precisa de conta no HuggingFace (gratuita)
+
+#+BEGIN_SRC python
+from huggingface_hub import InferenceClient
+import os
+
+client = InferenceClient(
+    model="Qwen/Qwen2.5-7B-Instruct",
+    token=os.environ["HF_TOKEN"]
+)
+
+response = client.text_generation("Olá!")
+print(response)
+#+END_SRC
+
+* Como obter token do HuggingFace
+
+#+ATTR_REVEAL: :frag (appear)
+1. Acesse: huggingface.co
+2. Crie uma conta gratuita
+3. Settings → Access Tokens → New token
+4. Copie o token
+
+#+begin_quote
+Token é diferente de API key!
+#+end_quote
+
+* Opção 3: OpenRouter
+
+#+ATTR_REVEAL: :frag (appear)
+- *Agregador de modelos* de múltiplos provedores
+- Modelos gratuitos disponíveis
+- Crédito inicial gratuito
+- Integração com LangChain
+
+#+ATTR_REVEAL: :frag (appear)
+** Modelos gratuitos populares:
+
+#+ATTR_REVEAL: :frag (appear)
+| Modelo | Provedor | Uso |
+||--------+----------+-----|
+|| qwen/qwen3.6-plus:free | Qwen | Chat geral |
+|| meta-llama/llama-3.2-3b-instruct:free | Meta | Rápido |
+
+#+BEGIN_SRC python
+from langchain_openrouter import ChatOpenRouter
+
+llm = ChatOpenRouter(
+    model="qwen/qwen3.6-plus:free",
+    temperature=0.8,
+)
+
+response = llm.invoke("Olá! Qual é a capital do Brasil?")
+print(response.content)
+#+END_SRC
+
+* Como usar OpenRouter
+
+#+ATTR_REVEAL: :frag (appear)
+1. Acesse: openrouter.ai
+2. Crie uma conta
+3. Gere sua API key
+4. Configure: =OPENROUTER_API_KEY=
+
+#+ATTR_REVEAL: :frag (appear)
+** Links úteis:
+
+#+ATTR_REVEAL: :frag (appear)
+- *Modelos gratuitos:* openrouter.ai/collections/free-models
+- *Docs LangChain:* docs.langchain.com/oss/python/integrations/chat/openrouter
+
+* Estrutura da Mensagem (padrão)
+
+#+ATTR_REVEAL: :frag (appear)
+Todas as APIs usam formato similar:
+
+#+BEGIN_SRC python
+messages = [
+    {"role": "system", "content": "Você é um tutor."},
+    {"role": "user", "content": "O que é Python?"},
+    {"role": "assistant", "content": "Python é..."},
+    {"role": "user", "content": "E como instalo?"}
+]
+#+END_SRC
+
+* System Instruction (Gemini)
+
+#+BEGIN_SRC python
+from google import genai
+from google.genai import types
+
+client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+# Configurar com system instruction
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="O que é uma lista?",
+    config=types.GenerateContentConfig(
+        system_instruction="Você é um tutor de Python. Responda de forma didática."
+    )
+)
+print(response.text)
+#+END_SRC
+
+* Parâmetros Importantes
+
+#+ATTR_REVEAL: :frag (appear)
+- *temperature:* 0.0 (determinístico) a 2.0 (criativo)
+- *max_output_tokens:* Limite de tokens na resposta
+
+#+BEGIN_SRC python
+# Exemplo com Gemini (novo SDK)
+from google import genai
+from google.genai import types
+
+client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="Conte uma piada!",
+    config=types.GenerateContentConfig(
+        temperature=0.7,
+        max_output_tokens=100
+    )
+)
+print(response.text)
+#+END_SRC
+
+* Chat com Histórico (Gemini)
+
+#+BEGIN_SRC python
+from google import genai
+from google.genai import types
+
+client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+# Criar chat
+chat = client.chats.create(model="gemini-2.0-flash")
+
+# Enviar mensagens
+response1 = chat.send_message("Olá!")
+print(response1.text)
+
+response2 = chat.send_message("Qual é a capital do Brasil?")
+print(response2.text)
+#+END_SRC
+
+* Tratamento de Erros
+
+#+BEGIN_SRC python
+from google import genai
+from google.genai import types
+from google.api_core.exceptions import NotFound, PermissionDenied
+
+client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+try:
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents="Olá!"
+    )
+    print(response.text)
+except PermissionDenied:
+    print("API key inválida!")
+except NotFound:
+    print("Modelo não encontrado!")
+except Exception as e:
+    print(f"Erro: {e}")
+#+END_SRC
+
+* Para os Aventureiros: Rodando Local
+
+#+ATTR_REVEAL: :frag (appear)
+Se você tem GPU em casa:
+
+| Opção | Interface |
+|-------+-----------|
+| Ollama | Terminal |
+| LM Studio | Gráfica |
+| llama.cpp | Terminal (C++) |
+
+#+begin_quote
+Intruções completas na apostila!
+#+end_quote
+
+* Exercício
+
+#+ATTR_REVEAL: :frag (appear)
+1. Acesse aistudio.google.com
+2. Crie sua API key gratuita
+3. Abra o Google Colab
+4. Teste o código do slide "Opção 1: Google Gemini"
+5. Tente mudar a temperatura e ver a diferença
+
+#+begin_quote
+Use o Gemini! É gratuito e simples.
+#+end_quote
+
+* Para a próxima aula
+
+#+ATTR_REVEAL: :frag (appear)
+- Ter uma conta Google funcionando
+- Ter API key do Gemini
+- (Opcional) Conta no HuggingFace
+- Ler o material da semana 05
+
+#+begin_quote
+Próxima aula: vamos construir nosso primeiro agente!
+#+end_quote

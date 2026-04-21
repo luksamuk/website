@@ -1,0 +1,403 @@
+#+TITLE: Múltiplas Ferramentas: O Agente Escolhe
+# Semana 8 - 29/05/2026
+#+DESCRIPTION: Semana 8 - Guilda de IA: Agentes com múltiplas ferramentas
+#+SETUPFILE: ./setupfile.org
+#+LANGUAGE: pt_BR
+#+STARTUP: inlineimages showall latexpreview
+#+DATE: 29/05/2026
+
+* O desafio
+
+Um agente com uma ferramenta já é útil. Mas e com várias?
+
+O modelo precisa *escolher* qual usar, e às vezes *combinar* resultados de múltiplas ferramentas.
+
+#+BEGIN_SRC dot :file img/agente-multi-ferramentas.svg :cache yes
+digraph AgenteMultiFerramentas {
+    rankdir=TB;
+    node [shape=box, style="rounded,filled"];
+    
+    label [label="AGENTE COM MÚLTIPLAS FERRAMENTAS", fillcolor="#e0e0ff", fontsize=14, style="filled,bold"];
+    
+    usuario [label="USUÁRIO", fillcolor="#e0e0e0"];
+    
+    subgraph cluster_llm {
+        label="LLM";
+        style="rounded";
+        fillcolor="#fafafa";
+        
+        input [label="Input: \"Quem nasceu primeiro:\nEinstein ou Newton,\ne qual a diferença de\nidade em dias?\"", fillcolor="#f0f0ff"];
+        thought [label="Thought: Preciso de:\n1. Data nasc. Einstein\n2. Data nasc. Newton\n3. Calcular diferença", fillcolor="#f0f0ff"];
+        decision [label="Decision: usar\nWIKIPEDIA (2x)\n+ CALCULADORA", fillcolor="#f0f0ff"];
+    }
+    
+    wikipedia1 [label="WIKIPEDIA\nEinstein: 1879\nNewton: 1643", fillcolor="#ffffe0"];
+    calculadora [label="CALCULADORA\nDiferença\nde datas", fillcolor="#ffffe0"];
+    horario [label="HORÁRIO\nData/atual", fillcolor="#ffffe0"];
+    
+    resposta [label="RESPOSTA FINAL", fillcolor="#e0ffe0"];
+    
+    usuario -> input;
+    input -> thought;
+    thought -> decision;
+    decision -> {wikipedia1, calculadora, horario};
+    {wikipedia1, calculadora, horario} -> resposta;
+}
+#+END_SRC
+
+* Paradigmas de Orquestração
+
+** 1. Orquestração Sequencial
+
+Executar ferramentas uma após outra, usando o resultado da anterior para a próxima.
+
+#+BEGIN_SRC text
+Pergunta: "Qual a idade de Einstein hoje?"
+
+Sequência:
+  1. WIKIPEDIA("Albert Einstein birth date") → 1879
+  2. HORARIO("current year") → 2025
+  3. CALCULADORA("2025 - 1879") → 146 anos (se estivesse vivo)
+  4. Resposta: "Einstein nasceu em 1879, teria 146 anos hoje."
+#+END_SRC
+
+** 2. Orquestração Paralela
+
+Executar ferramentas independentes simultaneamente.
+
+#+BEGIN_SRC dot :file img/orquestracao-paralela.svg :cache yes
+digraph OrquestracaoParalela {
+    rankdir=TB;
+    node [shape=box, style="rounded,filled"];
+    
+    label [label="Paralelo:", fillcolor="#e0e0e0", fontsize=12];
+    
+    wiki1 [label="WIKIPEDIA\n\"Brazil GDP\"", fillcolor="#f0f0ff"];
+    wiki2 [label="WIKIPEDIA\n\"Argentina GDP\"", fillcolor="#f0f0ff"];
+    
+    resA [label="Resultado A", fillcolor="#ffffe0"];
+    resB [label="Resultado B", fillcolor="#ffffe0"];
+    
+    calc [label="CALCULADORA\n(A - B)", fillcolor="#f0f0ff"];
+    resposta [label="Resposta\nfinal", fillcolor="#e0ffe0"];
+    
+    wiki1 -> resA;
+    wiki2 -> resB;
+    resA -> calc;
+    resB -> calc;
+    calc -> resposta;
+}
+#+END_SRC
+
+** 3. Orquestração Condicional
+
+Usar resultado de uma ferramenta para decidir qual usar depois.
+
+#+BEGIN_SRC text
+Pergunta: "Qual é o dobro da população da capital da França?"
+
+Fluxo:
+  1. WIKIPEDIA("capital of France") → "Paris"
+  2. WIKIPEDIA("Paris population") → 2161000
+  3. CALCULADORA("2161000 * 2") → 4322000
+  4. Resposta: "O dobro da população de Paris é 4.322.000."
+#+END_SRC
+
+* Referências Importantes
+
+** Paper: Gorilla
+
+*Título:* "Gorilla: Large Language Model Connected to Massive APIs"  
+*Autores:* Shishir Patil, Tianjun Zhang, Xin Wang, Joseph E. Gonzalez  
+*Ano:* 2023  
+*Link:* [[https://arxiv.org/abs/2305.15334][arXiv:2305.15334]]
+
+** Paper: ReAct
+
+*Título:* "ReAct: Synergistic Reasoning and Acting in Language Models"  
+*Autores:* Shunyu Yao, et al.  
+*Ano:* 2022  
+
+* Como o modelo decide
+
+O modelo lê todas as descrições e compara com a pergunta.
+
+#+BEGIN_SRC dot :file img/decisao-modelo.svg :cache yes
+digraph DecisaoModelo {
+    rankdir=TB;
+    node [shape=box, style="rounded,filled"];
+    
+    label [label="DECISÃO DO MODELO (Inside LLM)", fillcolor="#e0e0ff", fontsize=14, style="filled,bold"];
+    
+    input [label="INPUT:\n\"Quem foi Ada Lovelace\nquando ela nasceu?\"", fillcolor="#e0e0e0"];
+    
+    subgraph cluster_step1 {
+        label="Step 1: Parsing da pergunta";
+        style="rounded";
+        fillcolor="#fafafa";
+        parse1 [label="- \"Quem foi Ada Lovelace\" →\n  informação biográfica", fillcolor="#f0f0ff"];
+        parse2 [label="- \"quando ela nasceu\" →\n  data", fillcolor="#f0f0ff"];
+    }
+    
+    subgraph cluster_step2 {
+        label="Step 2: Análise das ferramentas";
+        style="rounded";
+        fillcolor="#fafafa";
+        
+        calc [label="calculadora\nResolve matemática", fillcolor="#ffe0e0"];
+        calc_status [label="❌ Não relevante", fillcolor="#ffe0e0"];
+        
+        hora [label="horario\nData/hora atual", fillcolor="#ffe0e0"];
+        hora_status [label="❌ Não relevante", fillcolor="#ffe0e0"];
+        
+        wiki [label="wikipedia\nBusca informações", fillcolor="#e0ffe0"];
+        wiki_status [label="✅ RELEVANTE", fillcolor="#e0ffe0"];
+    }
+    
+    subgraph cluster_step3 {
+        label="Step 3: Geração do plano";
+        style="rounded";
+        fillcolor="#fafafa";
+        thought [label="Thought: Ada Lovelace é uma\npessoa histórica. Preciso\nbuscar informações sobre ela\nna Wikipedia.", fillcolor="#f0f0ff"];
+        action [label="Action: wikipedia\nArguments: {\"termo\": \"Ada Lovelace\"}", fillcolor="#e0ffe0"];
+    }
+    
+    input -> parse1;
+    input -> parse2;
+    parse1 -> calc;
+    parse1 -> hora;
+    parse1 -> wiki;
+    calc -> calc_status;
+    hora -> hora_status;
+    wiki -> wiki_status;
+    {calc_status, hora_status, wiki_status} -> thought;
+    thought -> action;
+}
+#+END_SRC
+
+* O problema das descrições vagas
+
+Se duas ferramentas parecem fazer a mesma coisa, o modelo confunde.
+
+** Exemplo de Conflito
+
+#+BEGIN_SRC dot :file img/ferramentas-conflitantes.svg :cache yes
+digraph FerramentasConflitantes {
+    rankdir=LR;
+    node [shape=box, style="rounded,filled"];
+    
+    pergunta [label="Pergunta:\n\"Quem foi Einstein?\"", fillcolor="#e0e0e0"];
+    
+    ferramentas [label="Ferramentas conflitantes:", fillcolor="#e0e0e0"];
+    
+    wiki [label="buscar_wikipedia\n\"Busca informações\nna Wikipedia\"", fillcolor="#f0f0ff"];
+    google [label="buscar_google\n\"Pesquisa informações\nno Google\"", fillcolor="#f0f0ff"];
+    
+    confusao [label="Problema:\nModelo não sabe\nqual usar!", shape="diamond", fillcolor="#ffe0e0"];
+    
+    pergunta -> confusao;
+    confusao -> wiki [style=dashed];
+    confusao -> google [style=dashed];
+    wiki -> ferramentas [style=invis];
+}
+#+END_SRC
+
+** Solução: Descrições Específicas
+
+#+BEGIN_SRC dot :file img/ferramentas-especificas.svg :cache yes
+digraph FerramentasEspecificas {
+    rankdir=TB;
+    node [shape=box, style="rounded,filled"];
+    
+    pergunta [label="Pergunta:\n\"Quem foi Einstein?\"", fillcolor="#e0e0e0"];
+    
+    wiki [label="buscar_wikipedia\n\n\"Busca artigos enciclopédicos\nsobre pessoas, lugares e conceitos.\nUse para informações factuais\ne históricas bem estabelecidas.\"", fillcolor="#e0ffe0"];
+    
+    google [label="buscar_google\n\n\"Pesquisa resultados da web\nem tempo real. Use para\nnotícias atuais, preços,\neventos recentes.\"", fillcolor="#e0ffe0"];
+    
+    resposta [label="Agora o modelo\nsabe distinguir!", fillcolor="#e0ffe0"];
+    
+    pergunta -> wiki [label="factual"];
+    pergunta -> google [label="tempo real"];
+    {wiki, google} -> resposta;
+}
+#+END_SRC
+
+Agora o modelo sabe distinguir!
+
+* Implementação
+
+** Registro de Ferramentas
+
+#+BEGIN_SRC python
+from typing import Callable, Dict, List, Any
+
+# ============================================
+# FERRAMENTAS COM DICIONÁRIOS E FUNÇÕES
+# ============================================
+
+def criar_ferramenta(
+    nome: str,
+    descricao: str,
+    funcao: Callable,
+    parametros: Dict[str, Dict[str, Any]] = None
+) -> Dict:
+    """
+    Cria uma ferramenta como dicionário.
+    
+    Args:
+        nome: Nome único da ferramenta
+        descricao: O que a ferramenta faz (para o LLM entender)
+        funcao: Função Python que será executada
+        parametros: Dict com descrição dos parâmetros
+    
+    Returns:
+        Dicionário representando a ferramenta
+    """
+    return {
+        "nome": nome,
+        "descricao": descricao,
+        "funcao": funcao,
+        "parametros": parametros or {}
+    }
+
+
+def gerar_descricao_ferramenta(ferramenta: Dict) -> str:
+    """Gera descrição para o prompt do modelo."""
+    params_desc = "\n".join(
+        f"    - {name}: {info.get('description', '')} "
+        f"({'obrigatório' if info.get('required') else 'opcional'})"
+        for name, info in ferramenta["parametros"].items()
+    )
+    return f"""### {ferramenta["nome"]}
+{ferramenta["descricao"]}
+
+Parâmetros:
+{params_desc}
+"""
+
+
+# ============================================
+# REGISTRO DE FERRAMENTAS
+# ============================================
+
+def criar_registro() -> Dict:
+    """Cria um registro vazio de ferramentas."""
+    return {"ferramentas": {}}
+
+
+def registrar_ferramenta(registro: Dict, ferramenta: Dict) -> None:
+    """Registra uma ferramenta no registro."""
+    nome = ferramenta["nome"]
+    if nome in registro["ferramentas"]:
+        raise ValueError(f"Ferramenta '{nome}' já está registrada")
+    registro["ferramentas"][nome] = ferramenta
+
+
+def obter_ferramenta(registro: Dict, nome: str) -> Dict:
+    """Retorna ferramenta pelo nome."""
+    return registro["ferramentas"].get(nome)
+
+
+def listar_ferramentas(registro: Dict) -> List[str]:
+    """Retorna lista de nomes de ferramentas."""
+    return list(registro["ferramentas"].keys())
+
+
+def gerar_prompt_ferramentas(registro: Dict) -> str:
+    """Gera string com todas as descrições para o prompt."""
+    prompt = "# FERRAMENTAS DISPONÍVEIS\n\n"
+    prompt += "Você tem acesso às seguintes ferramentas.\n\n"
+    
+    for ferramenta in registro["ferramentas"].values():
+        prompt += gerar_descricao_ferramenta(ferramenta)
+    
+    return prompt
+
+
+# Exemplo de uso
+registro = criar_registro()
+
+registrar_ferramenta(registro, criar_ferramenta(
+    nome="calculadora",
+    descricao="Resolve expressões matemáticas. Use para cálculos numéricos.",
+    funcao=calculadora_segura,  # Função definida no módulo anterior
+    parametros={
+        "expressao": {
+            "type": "string",
+            "description": "Expressão matemática (ex: '2 + 2', '10 * 5')",
+            "required": True
+        }
+    }
+))
+
+registrar_ferramenta(registro, criar_ferramenta(
+    nome="horario",
+    descricao="Retorna data e hora atual. Use quando precisar saber 'agora'.",
+    funcao=obter_horario,  # Função definida no módulo anterior
+    parametros={
+        "formato": {
+            "type": "string",
+            "description": "Formato da saída (opcional)",
+            "required": False
+        }
+    }
+))
+
+print(gerar_prompt_ferramentas(registro))
+#+END_SRC
+
+* Exercícios Práticos
+
+** Exercício 1: Agente com Múltiplas Ferramentas
+
+Crie um agente que tenha calculadora, horário e uma ferramenta de contagem de palavras.
+
+#+BEGIN_DETAILS
+📝 Estrutura sugerida
+
+#+BEGIN_SRC python
+def criar_agente_com_ferramentas(ferramentas: list) -> dict:
+    """
+    Cria um agente com registro de ferramentas.
+    
+    Args:
+        ferramentas: Lista de dicionários de ferramentas
+    
+    Returns:
+        Dicionário com estado do agente
+    """
+    registro = criar_registro()
+    for f in ferramentas:
+        registrar_ferramenta(registro, f)
+    
+    return {
+        "registro": registro,
+        "historico": []
+    }
+
+
+def processar_mensagem(agente: dict, mensagem: str) -> str:
+    """
+    Processa mensagem usando ferramentas se necessário.
+    
+    Args:
+        agente: Estado do agente
+        mensagem: Mensagem do usuário
+    
+    Returns:
+        Resposta do agente
+    """
+    # 1. Montar prompt com ferramentas
+    prompt_ferramentas = gerar_prompt_ferramentas(agente["registro"])
+    
+    # 2. Chamar LLM com histórico
+    # ... (implementação depende do provedor)
+    
+    # 3. Parsear resposta para detectar tool calls
+    # 4. Executar ferramenta se necessário
+    # 5. Retornar resultado
+    pass
+#+END_SRC
+
+#+END_DETAILS

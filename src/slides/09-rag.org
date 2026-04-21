@@ -1,0 +1,115 @@
+#+TITLE: RAG
+#+AUTHOR: Lucas S. Vieira
+#+SUBTITLE: O agente que lê documentos
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js@4/
+#+REVEAL_THEME: night
+#+REVEAL_PLUGINS: (highlight)
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.0
+#+OPTIONS: toc:nil num:nil
+#+REVEAL_TITLE_SLIDE: <p style="font-size:0.7em;opacity:0.6;">%a</p><br/><h2>%t</h2><br/><p style="font-size:0.85em;opacity:0.8;">%s</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+#+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_09.gif
+
+* O problema
+
+#+ATTR_REVEAL: :frag (appear)
+LLMs não conhecem:
+
+- Seus documentos pessoais
+- PDFs da empresa
+- Notas privadas
+- Informações recentes (pós-treinamento)
+
+* A solução: RAG
+
+#+ATTR_REVEAL: :frag (appear)
+RAG = Retrieval Augmented Generation
+
+** Fluxo:
+#+ATTR_REVEAL: :frag (appear)
+1. *Chunking* → divide documentos em pedaços
+2. *Embeddings* → transforma texto em números
+3. *Vector Store* → guarda os vetores
+4. *Retrieval* → busca pedaços relevantes
+5. *Generation* → LLM responde com contexto
+
+* Analogia
+
+#+ATTR_REVEAL: :frag (appear)
+- *Sem RAG:* aluno fazendo prova de memória
+- *Com RAG:* aluno fazendo prova com livro aberto
+
+* Chunking
+
+Dividir texto em pedaços menores.
+
+#+BEGIN_SRC python
+def dividir_em_chunks(texto, tamanho=200):
+    chunks = []
+    for i in range(0, len(texto), tamanho):
+        chunks.append(texto[i:i+tamanho])
+    return chunks
+#+END_SRC
+
+#+ATTR_REVEAL: :frag (appear)
+Por quê? Documentos grandes são difíceis de buscar.
+Pedaços pequenos = busca mais precisa.
+
+* Embeddings (simplificado)
+
+#+ATTR_REVEAL: :frag (appear)
+Texto → números = vetor
+
+Vetores parecidos = textos parecidos.
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+Busca semântica: encontra significado, não só palavras.
+#+end_quote
+
+* Matryoshka Embeddings
+
+#+ATTR_REVEAL: :frag (appear)
+Embeddings que podem ser truncados.
+
+- Normal: 768 dimensões fixas
+- Matryoshka: 768, 512, 256, 128... (flexível)
+
+*Vantagem:* economiza espaço e tempo.
+
+* Fluxo RAG completo
+
+#+BEGIN_SRC text
+Documento → Chunks → Embeddings → Vector Store
+                                         ↓
+Usuário pergunta                        ↓
+      ↓                                  ↓
+Pergunta → Embedding → Busca similar → Chunks relevantes
+                                              ↓
+                              LLM recebe pergunta + chunks
+                                              ↓
+                                         Resposta
+#+END_SRC
+
+* Para lembrar
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+"RAG = buscar antes de responder."
+#+end_quote
+
+#+ATTR_REVEAL: :frag (appear)
+- Chunking: divide em pedaços
+- Embeddings: transforma em números
+- Retrieval: encontra o relevante
+- Generation: LLM responde
+
+* Próxima semana
+
+#+ATTR_REVEAL: :frag (appear)
+- Desenvolvimento e ajustes
+- Demo completa de agente
+- Mentoria
+
+* Perguntas?

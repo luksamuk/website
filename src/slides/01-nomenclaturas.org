@@ -1,0 +1,222 @@
+#+TITLE: O que é IA hoje?
+#+AUTHOR: Lucas S. Vieira
+#+SUBTITLE: Nomenclaturas de IA
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js@4/
+#+REVEAL_THEME: night
+#+REVEAL_PLUGINS: (highlight)
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.0
+#+OPTIONS: toc:nil num:nil
+#+REVEAL_TITLE_SLIDE: <p style="font-size:0.7em;opacity:0.6;">%a</p><br/><h2>%t</h2><br/><p style="font-size:0.85em;opacity:0.8;">%s</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+#+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_01.gif
+
+* O Problema
+#+ATTR_REVEAL: :frag (appear)
+- Muita gente usa termos como se fossem a mesma coisa
+- *Não são*
+- Entender a diferença é fundamental
+
+** Quatro termos principais
+#+ATTR_REVEAL: :frag (appear)
+- IA (Inteligência Artificial)
+- LLM (Large Language Model)
+- RAG (Retrieval Augmented Generation)
+- Agente (AI Agent)
+
+* 1. IA - Inteligência Artificial
+#+ATTR_REVEAL: :frag (appear)
+- *O que é:* Campo geral
+- Qualquer sistema que faz algo "inteligente"
+
+** Exemplos de IA
+#+ATTR_REVEAL: :frag (appear)
+- Spam filter do email → IA
+- Reconhecimento facial → IA
+- Chess engine → IA
+- ChatGPT → IA
+
+* 2. LLM - Large Language Model
+#+ATTR_REVEAL: :frag (appear)
+- *O que é:* Um TIPO de IA
+- Modelo que prevê próxima palavra
+
+** Capacidades que importam (pra construtores)
+- *Tool calling* → Consegue chamar ferramentas externas
+- *Raciocínio* → Pensamento passo a passo explícito
+- *Contexto longo* → Janela de 100K+ tokens
+- *Multimodalidade* → Imagem, áudio, vídeo
+
+** Dica: estabilidade
+#+ATTR_REVEAL: :frag (appear)
+Para construir agentes, o essencial é *tool calling + estabilidade*. Modelos densos (não-MoE) tendem a ser mais estáveis.
+
+** Modelos de LLM (Abril 2026)
+- *Proprietários:* Gemini 3 Flash, Gemini 3.1 Pro, Claude Opus 4.7, GPT-5.4
+- *API gratuita:* Gemini 2.5 Flash, Gemini 3.1 Flash-Lite
+- *API barata:* DeepSeek V3.2, MiniMax M2.5, GLM-5.1
+- *Para edge/celular:* Gemma 4 E2B, Qwen3.5-4B
+- *Para agentes:* Qwen3.5-27B, Qwen 3.6-35B-A3B
+
+** Open Weights (Abril 2026)
+#+REVEAL_SPLIT:
+- GLM-5.1 (MIT!) — agente open robusto
+- Kimi K2.5 — multimodal agentic
+- Qwen3.5 (série) — de 0.5B a 397B, Apache 2.0
+- DeepSeek V3.2 — MoE eficiente, barato na API
+- Gemma 4 — de E2B a 31B, Apache 2.0
+- Qwen 3.6-35B-A3B — 3B ativos, supera 27B densos
+
+** Paradoxo da eficiência
+#+ATTR_REVEAL: :frag (appear)
+- 2023: GPT-4 era SOTA com ~1.8T parâmetros
+- 2026: Gemma 4 E4B (4B) alcança desempenho comparable
+- Modelos modernos são *~450x menores* e igualmente capazes
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+Como? Mais dados de treino, distilação, MoE, pós-treino.
+#+end_quote
+
+** Estado da Arte (Abril 2026)
+| Modelo | Tipo | Destaque |
+|--------+------+----------|
+| Claude Opus 4.7 | Proprietário | Top geral |
+| Gemini 3.1 Pro | Proprietário | Top Google |
+| GPT-5.4 | Proprietário | 1M contexto |
+| Gemini 3 Flash | Proprietário | Agentic, pago |
+| GLM-5.1 | Open (MIT) | Coding open forte |
+
+** GLM-5.1: o open que compete
+GLM-5.1 (open weights) empata com GPT-5.4 em coding, custando uma fração. Qwen 3.6-35B-A3B (3B ativos) roda em hardware modesto e supera modelos 10x maiores.
+
+** Sobre o termo "AGI"
+#+ATTR_REVEAL: :frag (appear)
+- "AGI virou um termo de hype, não um termo com significado preciso" — Andrew Ng (Google Brain)
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+Para quem constrói: o que importa são capacidades mensuráveis. O modelo faz tool calling? É estável? Foco no que você pode testar.
+#+end_quote
+
+** Modelos Densos vs MoE
+#+ATTR_REVEAL: :frag (appear)
+- *Densos:* Todos parâmetros ativos (estável)
+- *MoE:* Mixture of Experts (eficiente, mas instável)
+- Para agentes: prefira modelos *densos*
+
+** O que LLM NÃO faz
+#+ATTR_REVEAL: :frag (appear)
+- Não calcula (234 × 987 = ? → ele chuta)
+- Não sabe fatos específicos (suas notas, documentos)
+- Não tem memória de longo prazo
+
+* 3. RAG - Retrieval Augmented Generation
+#+ATTR_REVEAL: :frag (appear)
+- *O que é:* Técnica para fazer LLM "saber" coisas
+- Usado para documentos que não estavam no treinamento
+
+** Fluxo RAG
+#+ATTR_REVEAL: :frag (appear)
+1. Usuário pergunta
+2. Sistema busca em documentos (Retrieval)
+3. Passa documentos + pergunta para LLM (Augmented)
+4. LLM responde baseado nos documentos (Generation)
+
+** Exemplo
+*Sem RAG:*
+#+BEGIN_SRC text
+"Quando foi fundada a Liga de IA?"
+→ LLM: "Não sei" ou inventa data
+#+END_SRC
+
+*Com RAG:*
+#+BEGIN_SRC text
+"Quando foi fundada a Liga de IA?"
+→ Sistema busca no documento
+→ Encontra: "fundada em 2025"
+→ LLM responde: "2025"
+#+END_SRC
+
+* 4. Agente (AI Agent)
+#+ATTR_REVEAL: :frag (appear)
+- *O que é:* Sistema que usa LLM + ferramentas + memória
+- Diferença: LLM só fala, Agente *faz coisas*
+
+** Comparação
+#+BEGIN_SRC text
+LLM puro:
+Usuário: "Quanto é 234 × 987?"
+LLM: "230.898" (pode estar errado, ele chutou)
+
+Agente:
+Usuário: "Quanto é 234 × 987?"
+Agente: "Deixa eu calcular..."
+→ Usa ferramenta de calculadora
+→ Responde: "230.958" (correto)
+#+END_SRC
+
+** Componentes de um agente
+#+ATTR_REVEAL: :frag (appear)
+1. *LLM* → faz inferência com linguagem natural
+2. *Ferramentas* → o que ele pode fazer
+3. *Memória* → histórico da conversa
+4. *Decisão* → lógica de quando usar cada ferramenta
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+LLM só fala. Agente fala E faz coisas.
+#+end_quote
+
+* Resumo Visual
+
+| Termo | O que é | Exemplo |
+|-------+---------+---------|
+| IA | Campo geral | Spam filter, Xadrez, ChatGPT |
+| LLM | Modelo de linguagem | GPT-5.4, Gemma 4 |
+| RAG | Busca + geração | Chatbot que consulta PDFs |
+| Agente | LLM + ferramentas | Assistente que calcula, busca, age |
+
+** Hierarquia
+#+ATTR_REVEAL: :frag (appear)
+- IA → contém tudo
+- LLM → subconjunto de IA
+- RAG → usa LLM + documentos
+- Agente → usa LLM + ferramentas + memória
+
+* Confusões Comuns
+
+| Frase | Termo correto |
+|-------+---------------|
+| "Vou usar IA para responder" | LLM ou Agente |
+| "Meu RAG responde perguntas" | Agente com RAG |
+| "O agente alucina" | LLM alucina |
+| "Preciso treinar minha IA" | LLM fine-tuning |
+
+* Por que importa?
+
+Se você sabe a diferença, não se perde.
+
+#+ATTR_REVEAL: :frag (appear)
+- *"RAG"* → embeddings, vector store, retrieval
+- *"Agente"* → ferramentas, loops, decisão
+- *"LLM"* → prompt, token, contexto
+- *"IA"* → genérico, pode ser qualquer coisa
+
+* Roadmap
+
+| Semana | Conceito |
+|--------+----------|
+| 1 | IA, LLM, RAG, Agentes (conceitos) |
+| 2-3 | Prompting, Python mínimo |
+| 4-5 | Estrutura de um agente, primeira ferramenta |
+| 6-7 | Ferramentas múltiplas, embeddings |
+| 8 | RAG |
+| 9-10 | Agente completo, desenvolvimento |
+
+* Perguntas?
+:PROPERTIES:
+:REVEAL_BACKGROUND: ./slide_01.gif
+:END:
+
+No final, você vai ouvir "RAG", "Agente", "LLM" e saber exatamente o que é.

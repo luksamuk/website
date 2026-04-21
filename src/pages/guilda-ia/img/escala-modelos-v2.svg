@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="'Segoe UI', system-ui, sans-serif">
+<defs>
+  <style>
+    .title { font-size: 18px; fill: #e0e0e0; font-weight: bold; }
+    .subtitle { font-size: 11px; fill: #b0b0c0; }
+    .axis-label { font-size: 11px; fill: #b0b0c0; }
+    .model-label { font-size: 9.5px; fill: #e0e0e0; }
+    .legend-text { font-size: 10px; fill: #e0e0e0; }
+    .grid { stroke: #333355; stroke-width: 0.5; }
+  </style>
+  <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+    <polygon points="0 0, 8 3, 0 6" fill="#A5D6A7" opacity="0.6"/>
+  </marker>
+</defs>
+
+<!-- Background -->
+<rect width="900" height="520" fill="#1a1a2e" rx="8"/>
+
+<!-- Title -->
+<text x="450" y="28" class="title" text-anchor="middle">Escala de Parâmetros de LLMs (2019–2026)</text>
+<text x="450" y="44" class="subtitle" text-anchor="middle">Fontes: Papers originais, Z.ai, Qwen3 (arXiv), Epoch AI, Meta AI, OpenAI</text>
+
+<!-- Grid: horizontal lines for param thresholds -->
+<!-- Y range: 50 to 450 (400px) for log scale 1B to 2T -->
+<!-- log10(1B)=9, log10(2T)=12.3, range=3.3 -->
+
+<!-- 1B line: y = 450 -->
+<line x1="80" y1="450" x2="860" y2="450" class="grid"/>
+<text x="72" y="454" class="axis-label" text-anchor="end">1B</text>
+
+<!-- 10B line: y = 450 - 400*(1/3.3) = 328.8 -->
+<line x1="80" y1="328.8" x2="860" y2="328.8" class="grid"/>
+<text x="72" y="332.8" class="axis-label" text-anchor="end">10B</text>
+
+<!-- 100B line: y = 450 - 400*(2/3.3) = 207.6 -->
+<line x1="80" y1="207.6" x2="860" y2="207.6" class="grid"/>
+<text x="72" y="211.6" class="axis-label" text-anchor="end">100B</text>
+
+<!-- 1T line: y = 450 - 400*(3/3.3) = 86.4 -->
+<line x1="80" y1="86.4" x2="860" y2="86.4" class="grid"/>
+<text x="72" y="90.4" class="axis-label" text-anchor="end">1T</text>
+
+<!-- Y-axis label -->
+<text x="14" y="270" class="axis-label" text-anchor="middle" transform="rotate(-90 14 270)">Parâmetros (escala log)</text>
+
+<!-- X range: 2018.5 to 2026.5, 780px -->
+<!-- Vertical grids -->
+<!-- 2020: x=80+780*(1.5/8)=226.25 -->
+<line x1="226.25" y1="50" x2="226.25" y2="450" class="grid" stroke-dasharray="4,4"/>
+<text x="226.25" y="468" class="axis-label" text-anchor="middle">2020</text>
+
+<!-- 2022: x=80+780*(3.5/8)=421.25 -->
+<line x1="421.25" y1="50" x2="421.25" y2="450" class="grid" stroke-dasharray="4,4"/>
+<text x="421.25" y="468" class="axis-label" text-anchor="middle">2022</text>
+
+<!-- 2024: x=80+780*(5.5/8)=616.25 -->
+<line x1="616.25" y1="50" x2="616.25" y2="450" class="grid" stroke-dasharray="4,4"/>
+<text x="616.25" y="468" class="axis-label" text-anchor="middle">2024</text>
+
+<!-- 2026: x=80+780*(7.5/8)=811.25 -->
+<line x1="811.25" y1="50" x2="811.25" y2="450" class="grid" stroke-dasharray="4,4"/>
+<text x="811.25" y="468" class="axis-label" text-anchor="middle">2026</text>
+
+<!-- Legend -->
+<circle cx="100" cy="500" r="5" fill="#4FC3F7"/>
+<text x="112" y="504" class="legend-text">Denso (todos ativos)</text>
+<circle cx="260" cy="500" r="5" fill="#FF8A65"/>
+<text x="272" y="504" class="legend-text">MoE (total)</text>
+<circle cx="380" cy="500" r="5" fill="#A5D6A7"/>
+<text x="392" y="504" class="legend-text">MoE (ativos por token)</text>
+
+<!-- === DATA POINTS === -->
+<!-- x = 80 + 780 * ((year-2018.5)/8) -->
+<!-- y = 450 - 400 * ((log10(params_B)-9)/3.3) -->
+
+<!-- 2019: GPT-2, 1.5B denso, x=128.75, y=450-400*((9.176-9)/3.3)=428.6 -->
+<circle cx="128.75" cy="428.6" r="6" fill="#4FC3F7" opacity="0.9"/>
+<text x="128.75" y="418" class="model-label" text-anchor="middle">GPT-2</text>
+<text x="128.75" y="440" class="model-label" text-anchor="middle" font-size="8" opacity="0.7">1.5B</text>
+
+<!-- 2020: GPT-3, 175B denso, x=226.25, y=450-400*((11.243-9)/3.3)=178.4 -->
+<circle cx="226.25" cy="178.4" r="6" fill="#4FC3F7" opacity="0.9"/>
+<text x="226.25" y="168" class="model-label" text-anchor="middle">GPT-3</text>
+<text x="226.25" y="190" class="model-label" text-anchor="middle" font-size="8" opacity="0.7">175B</text>
+
+<!-- 2023: GPT-4, ~1800B denso, x=518.75, y=450-400*((12.255-9)/3.3)=56.7 -->
+<circle cx="518.75" cy="56.7" r="7" fill="#4FC3F7" opacity="0.95"/>
+<line x1="518.75" y1="63.7" x2="518.75" y2="72" stroke="#4FC3F7" stroke-width="1" opacity="0.5"/>
+<text x="534" y="55" font-size="9" fill="#FFD54F" opacity="0.9">← Pico 2023</text>
+<text x="518.75" y="88" class="model-label" text-anchor="middle">GPT-4</text>
+<text x="518.75" y="99" class="model-label" text-anchor="middle" font-size="8" opacity="0.7">~1.8T</text>
+
+<!-- 2024: Llama 3.1 405B, denso, x=616.25, y=450-400*((11.607-9)/3.3)=134.1 -->
+<circle cx="616.25" cy="134.1" r="6" fill="#4FC3F7" opacity="0.9"/>
+<text x="616.25" y="124" class="model-label" text-anchor="middle">Llama 3.1 405B</text>
+<text x="616.25" y="146" class="model-label" text-anchor="middle" font-size="8" opacity="0.7">405B</text>
+
+<!-- 2025: DeepSeek V3.2, 671B total/37B active MoE -->
+<!-- total: x=713.75, y=450-400*((11.827-9)/3.3)=107.3 -->
+<!-- active: x=713.75, y=450-400*((10.568-9)/3.3)=260.2 -->
+<line x1="713.75" y1="107.3" x2="713.75" y2="260.2" stroke="#FF8A65" stroke-width="2" opacity="0.4" stroke-dasharray="3,2"/>
+<circle cx="713.75" cy="107.3" r="5" fill="#FF8A65" opacity="0.8"/>
+<circle cx="713.75" cy="260.2" r="5" fill="#A5D6A7" opacity="0.9"/>
+<text x="713.75" y="275" class="model-label" text-anchor="middle">DS V3.2</text>
+<text x="713.75" y="286" class="model-label" text-anchor="middle" font-size="8" opacity="0.7">671B/37B</text>
+
+<!-- 2026 models — stagger horizontally -->
+
+<!-- 2026: Gemma 4 31B, denso, x=811.25, y=450-400*((10.491-9)/3.3)=269.6 -->
+<circle cx="811.25" cy="269.6" r="6" fill="#4FC3F7" opacity="0.9"/>
+<text x="811.25" y="259" class="model-label" text-anchor="middle">Gemma 4 31B</text>
+<text x="811.25" y="281" class="model-label" text-anchor="middle" font-size="8" opacity="0.7">31B denso</text>
+
+<!-- 2026: Qwen 3.6-35B-A3B, 35B total/3B active MoE -->
+<!-- total: x=790, y=450-400*((10.544-9)/3.3)=263.2 -->
+<!-- active: x=790, y=450-400*((9.477-9)/3.3)=356.7 -->
+<line x1="790" y1="263.2" x2="790" y2="356.7" stroke="#FF8A65" stroke-width="2" opacity="0.4" stroke-dasharray="3,2"/>
+<circle cx="790" cy="263.2" r="4" fill="#FF8A65" opacity="0.8"/>
+<circle cx="790" cy="356.7" r="5" fill="#A5D6A7" opacity="0.9"/>
+<text x="790" y="372" class="model-label" text-anchor="middle">Q3.6-35B</text>
+<text x="790" y="383" class="model-label" text-anchor="middle" font-size="8" opacity="0.7">35B/3B</text>
+
+<!-- 2026: MiniMax M2.5, 229B total/10B active MoE -->
+<!-- total: x=750, y=450-400*((11.36-9)/3.3)=164.2 -->
+<!-- active: x=750, y=450-400*((10-9)/3.3)=328.8 -->
+<line x1="750" y1="164.2" x2="750" y2="328.8" stroke="#FF8A65" stroke-width="2" opacity="0.4" stroke-dasharray="3,2"/>
+<circle cx="750" cy="164.2" r="4" fill="#FF8A65" opacity="0.8"/>
+<circle cx="750" cy="328.8" r="5" fill="#A5D6A7" opacity="0.9"/>
+<text x="750" y="344" class="model-label" text-anchor="middle">MM M2.5</text>
+<text x="750" y="355" class="model-label" text-anchor="middle" font-size="8" opacity="0.7">229B/10B</text>
+
+<!-- 2026: MiniMax M2.7, 456B total/45B active MoE -->
+<!-- total: x=770, y=450-400*((11.659-9)/3.3)=128.0 -->
+<!-- active: x=770, y=450-400*((10.653-9)/3.3)=250.0 -->
+<line x1="770" y1="128.0" x2="770" y2="250.0" stroke="#FF8A65" stroke-width="2" opacity="0.4" stroke-dasharray="3,2"/>
+<circle cx="770" cy="128.0" r="4" fill="#FF8A65" opacity="0.8"/>
+<circle cx="770" cy="250.0" r="5" fill="#A5D6A7" opacity="0.9"/>
+<text x="770" y="240" class="model-label" text-anchor="middle">MM M2.7</text>
+<text x="770" y="225" class="model-label" text-anchor="middle" font-size="8" opacity="0.7">456B/45B</text>
+
+<!-- 2026: GLM-5, 744B total/40B active MoE -->
+<!-- total: x=830, y=450-400*((11.872-9)/3.3)=102.2 -->
+<!-- active: x=830, y=450-400*((10.602-9)/3.3)=256.4 -->
+<line x1="830" y1="102.2" x2="830" y2="256.4" stroke="#FF8A65" stroke-width="2" opacity="0.4" stroke-dasharray="3,2"/>
+<circle cx="830" cy="102.2" r="5" fill="#FF8A65" opacity="0.8"/>
+<circle cx="830" cy="256.4" r="5" fill="#A5D6A7" opacity="0.9"/>
+<text x="830" y="92" class="model-label" text-anchor="end" font-size="8" fill="#b0b0f0" opacity="0.8">GLM-5</text>
+<text x="830" y="271" class="model-label" text-anchor="middle" font-size="8" opacity="0.7">744B/40B</text>
+
+<!-- 2026: GLM-5.1, 754B total/40B active MoE -->
+<!-- total: x=850, y=450-400*((11.877-9)/3.3)=101.5 -->
+<!-- active: x=850, y=256.4 (same active as GLM-5) -->
+<line x1="850" y1="101.5" x2="850" y2="256.4" stroke="#FF8A65" stroke-width="2" opacity="0.4" stroke-dasharray="3,2"/>
+<circle cx="850" cy="101.5" r="5" fill="#FF8A65" opacity="0.8"/>
+<circle cx="850" cy="256.4" r="5" fill="#A5D6A7" opacity="0.9"/>
+<text x="850" y="92" class="model-label" text-anchor="start" font-size="8" fill="#b0b0f0" opacity="0.8">GLM-5.1</text>
+<text x="850" y="271" class="model-label" text-anchor="middle" font-size="8" opacity="0.7">754B/40B</text>
+
+<!-- Efficiency trend arrow -->
+<line x1="616.25" y1="56" x2="810" y2="56" stroke="#A5D6A7" stroke-width="1.5" opacity="0.6" marker-end="url(#arrowhead)"/>
+<text x="713" y="51" font-size="9" fill="#A5D6A7" text-anchor="middle" opacity="0.7">Eficiência ↑ (mesma perf., menos params)</text>
+
+</svg>
