@@ -3,6 +3,154 @@
 
 * About
 
-This is the source code for my website, The Alchemist's Hideout, after
-being moved to GitHub.
+Source code for [[https://luksamuk.codes][The Alchemist's Hideout]], my
+personal corner on the web — a portfolio site built entirely with Org
+Mode, Emacs, and Pandoc.
 
+No frameworks. No static site generators. Just plain Org files, a custom
+Emacs export pipeline, and a Docker container that turns it all into
+HTML.
+
+* Stack
+
+| Layer       | Tool                                                      |
+|-------------+-----------------------------------------------------------|
+| Authoring   | Org Mode (Emacs)                                          |
+| Export       | =ox-html= + =ox-reveal= (Emacs Lisp)                     |
+| Styling     | Vanilla CSS (dark/light themes, CSS custom properties)    |
+| JS          | Theme toggle, nav scroll, email deobfuscation (hand-rolled) |
+| Build       | Docker (=luksamuk/emacs-export:hermes=)                   |
+| Deploy      | GitHub Actions → =gh-pages= branch                        |
+| Hosting     | GitHub Pages + Cloudflare                                 |
+
+* Structure
+
+#+BEGIN_SRC
+src/
+├── index.org              # Homepage (hero, explore, featured, posts)
+├── navbar.el              # Single-source navbar (DRY)
+├── macros.el              # OG tags, email obfuscation, postamble
+├── bindings.el            # Preamble/postamble for root pages
+├── feed.xml               # Atom feed (manual, with thumbnails)
+├── css/                   # main.css, dark-theme.css, light-theme.css, syntax.css
+├── js/                    # theme-toggle.js, nav-scroll.js, email-deobfuscate.js
+├── img/                   # Banner, favicon, backgrounds
+├── pages/
+│   ├── about.org          # Bio, skills, experience
+│   ├── blog.org           # All blog posts (card layout)
+│   ├── games.org          # Game projects
+│   ├── portfolio.org      # Featured + categorized projects
+│   ├── talks-index.org    # Talks & presentations
+│   ├── learn.org          # Learning resources (APL, etc.)
+│   ├── psx-homebrew.org   # PS1 Homebrew Lab with live emulators
+│   └── guilda-ia/         # Full AI course (12 weeks, in Portuguese)
+├── posts/                 # Blog posts (.org)
+├── talks/                 # Reveal.js presentations (.org)
+├── slides/                # Guilda de IA slides (.org)
+└── root/                  # CNAME, keybase.txt (copied to docs/ on build)
+#+END_SRC
+
+* Build & Serve
+
+#+BEGIN_SRC shell
+# Build (requires Docker)
+./hermes-build.sh
+
+# Serve locally
+./serve.sh
+#+END_SRC
+
+* Blog Post Checklist
+
+When publishing a new blog post, update these files manually:
+
+1. Write the post (=src/posts/<slug>.org=)
+2. Generate thumbnail (=python3 ~/.hermes/scripts/blog-thumb.py=)
+3. Add entry to =src/pages/blog.org=
+4. Update latest posts in =src/index.org=
+5. Add entry to =src/feed.xml= (with =<link rel="enclosure">= for thumbnail)
+6. Build, verify, commit
+
+See =AGENTS.md= for the full checklist with templates.
+
+* Timeline
+
+A condensed history of how this site evolved.
+
+** 2020 — Foundation
+
+The site started as a simple Org Mode blog deployed via Travis CI.
+In the first two days, I set up the build pipeline (Docker + Travis),
+wrote the first blog posts on cellular automata in APL and Majestic
+Lisp, and added Reveal.js presentations. Posts were bilingual (PT/EN).
+
+Key additions: AVL tree article, Majestic Lisp devlogs (let,
+metacircularity), Plan 9 mail configuration, first talks (EBICC,
+Secret Santa).
+
+** 2021 — Plan 9 Deep Dive
+
+The year of Plan 9. I wrote a comprehensive guide on setting up 9front
+on a Raspberry Pi, complete with instructions on compiling Vim,
+NetSurf, and configuring the plumber. Also added talks at EIICA and
+V Unsafe.rs. Started hosting PS1 homebrew games with emulator
+integration.
+
+** 2022 — Build Modernization
+
+Migrated from Travis CI to GitHub Actions. Wrote a Git technical
+webinar (multiple revisions — presentations are hard). Added the
+Techimera talk and updated Plan 9 instructions for Git/SSH and
+Drawterm.
+
+** 2023 — Content Growth
+
+New talks: Pragmatic Programming, UaiDev Talks Kickstart. Added the
+Huffman compression article. Wrote (and finally finished) the
+Revisiting Windows 98 nostalgia post. Did a homepage overhaul.
+
+** 2024 — PlayStation Homebrew Era
+
+This was the PSX year. Dozens of game ISO updates (Sonic XA, Wipefaux,
+Doom Intro), a full PSX Programming presentation for UaiDev 2024, and
+the PSX emulator page with live browser play. Also added a proper
+navbar, portfolio page, and the site started looking like a portfolio
+instead of just a blog.
+
+** 2025 — Polish & OG Tags
+
+Added Disqus comments, OG/Twitter meta tags with banner images, email
+obfuscation, and the Candide book post. Switched the site logo to the
+Rule 90 cellular automaton pattern. Started separating macros and
+setupfiles for cleaner builds.
+
+** 2026 — The Great Overhaul
+
+The site went from "archive" to "portfolio" in a few weeks:
+
+- *Guilda de IA*: Full 12-week generative AI course for beginners, with
+  Org Mode slides, Graphviz diagrams, video scripts, and Apostila
+- *Portfolio page*: Project cards with overlay thumbnails, featured
+  highlights, categorized sections
+- *Blog page*: Dedicated blog with card layout, lateral thumbnails, edge-to-edge design
+- *Talks page*: Visual cards with full metadata and descriptions
+- *Games page*: Redesigned to match the portfolio card style
+- *Homepage*: Hero section with avatar, tagline, CTAs, socials,
+  featured projects, explore cards, and latest posts
+- *Theme redesign*: Migrated from cyan accents to a green palette with
+  dark (olive-tinted) and light (warm cream) themes using CSS custom
+  properties
+- *Responsive overhaul*: Mobile-first CSS with proper breakpoints
+- *Blog thumbnails*: 13 custom 1200×628 OG-standard thumbnails
+- *Atom feed*: Full feed with =<link rel="enclosure">= thumbnails for
+  all 19 posts
+- *i18n*: All navigation pages translated to English (posts/talks
+  remain in Portuguese)
+- *Learn page*: APL and other learning resources with accent-colored
+  clickable cards
+- *PSX Homebrew Lab*: Restyled with project cards
+
+* License
+
+Content and source code © Lucas S. Vieira. All rights reserved unless
+otherwise noted.
