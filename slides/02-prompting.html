@@ -31,48 +31,73 @@
 <section id="sec-title-slide" data-background="./slide_02.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Prompting Básico</h2><br/><p style="font-size:0.85em;opacity:0.8;">Como falar com IA</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 </section>
 <section>
-<section id="slide-org18d25b7">
-<h2 id="org18d25b7">O Problema</h2>
+<section id="slide-org3ae5f9e">
+<h2 id="org3ae5f9e">Fofoca da Semana 🗞️</h2>
 <ul>
-<li class="fragment appear">A mesma pergunta pode gerar respostas diferentes</li>
-<li class="fragment appear">Dependendo de como você formula</li>
+<li><b>Kimi K2.6</b> (20/04) — 1T, 32B ativos, 256K ctx, open weights</li>
+<li><b>DeepSeek V4 Pro</b> (24/04) — 1.6T, 49B ativos, 1M ctx, MIT</li>
+<li><b>Claude Code</b> (21/04) — removido e reposto no Pro em 12h 👀</li>
 
 </ul>
 </section>
-<section id="slide-orgc310ab1">
-<h3 id="orgc310ab1">Exemplo</h3>
+<section id="slide-orgc08033b">
+<h3 id="orgc08033b">Claude Code — O Episódio</h3>
 <p>
-<b>Vago:</b>
+21/04: plano Pro ($20/mês) perdeu o Claude Code.
+12h depois, voltou.
 </p>
-<div class="org-src-container">
 
-<pre   ><code class="text" >"Me fale sobre gatos"
-→ resposta genérica
-</code></pre>
-</div>
-
+<blockquote >
 <p>
-<b>Específico:</b>
+"Usage has changed a lot and our current plans
+weren't built for this." — Anthropic
 </p>
-<div class="org-src-container">
-
-<pre   ><code class="text" >"Quais as 3 raças de gatos mais populares no Brasil?"
-→ resposta específica
-</code></pre>
-</div>
+</blockquote>
 </section>
 </section>
 <section>
-<section id="slide-org3898714">
-<h2 id="org3898714">O que é prompt?</h2>
+<section id="slide-org18170a7">
+<h2 id="org18170a7">O Problema</h2>
+<p>
+A mesma pergunta pode gerar respostas completamente diferentes,
+dependendo de como você formula.
+</p>
+
+<p>
+<b>Vago:</b> <code>Me fale sobre gatos</code> → resposta genérica
+</p>
+
+<p>
+<b>Específico:</b> <code>Quais as 3 raças de gatos mais populares no Brasil e por quê?</code> → resposta específica
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org24e16dd">
+<h2 id="org24e16dd">🔴 Demo ao vivo (2 min)</h2>
+<p>
+Abram um chat:
+</p>
 <ul>
-<li class="fragment appear">Prompt = instrução que você dá para o modelo</li>
-<li class="fragment appear">A pergunta, o comando, o contexto</li>
-<li class="fragment appear">Tudo junto</li>
+<li><a href="https://aistudio.google.com/">Gemini</a> / <a href="https://chat.mistral.ai">Le Chat</a> / <code>ollama run qwen3.5:4b</code> / <code>ollama run deepseek-v4-flash:cloud</code></li>
 
 </ul>
 
-<blockquote  class="fragment (appear)">
+<p>
+Testem os dois prompts do slide anterior. Notem a diferença.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgb372164">
+<h2 id="orgb372164">O que é prompt?</h2>
+<ul>
+<li>Prompt = instrução que você dá para o modelo</li>
+<li>A pergunta, o comando, o contexto — tudo junto</li>
+
+</ul>
+
+<blockquote >
 <p>
 O prompt é como uma receita.
 Ingredientes claros = prato previsível.
@@ -81,13 +106,8 @@ Ingredientes claros = prato previsível.
 </section>
 </section>
 <section>
-<section id="slide-org562c5db">
-<h2 id="org562c5db">Técnicas básicas</h2>
-<div class="outline-text-2" id="text-org562c5db">
-</div>
-</section>
-<section id="slide-org0ce97c8">
-<h3 id="org0ce97c8">1. Zero-shot</h3>
+<section id="slide-org3af0047">
+<h2 id="org3af0047">Zero-shot</h2>
 <p>
 Você pede algo sem dar exemplos.
 </p>
@@ -99,11 +119,18 @@ Você pede algo sem dar exemplos.
 </div>
 
 <p>
-O modelo nunca viu você traduzir antes, mas tenta fazer.
+O modelo nunca viu você traduzir antes, mas tenta.
+</p>
+
+<p>
+💡 Ambíguo: <code>"Banco"</code> → <code>bank</code> ou <code>bench</code>?
+Sem contexto, o modelo chuta.
 </p>
 </section>
-<section id="slide-org0b29f5a">
-<h3 id="org0b29f5a">2. Few-shot</h3>
+</section>
+<section>
+<section id="slide-org6b27a17">
+<h2 id="org6b27a17">Few-shot</h2>
 <p>
 Você dá exemplos antes de pedir.
 </p>
@@ -117,22 +144,11 @@ Você dá exemplos antes de pedir.
 </code></pre>
 </div>
 
-<p class="fragment (appear)">
+<p>
 O modelo aprende o padrão pelos exemplos.
 </p>
-</section>
-</section>
-<section>
-<section id="slide-org595caff">
-<h2 id="org595caff">Por que few-shot funciona?</h2>
-<ul>
-<li class="fragment appear">O modelo vê o que você quer</li>
-<li class="fragment appear">Segue o molde</li>
-<li class="fragment appear">Reduz ambiguidade</li>
 
-</ul>
-
-<blockquote  class="fragment (appear)">
+<blockquote >
 <p>
 Exemplos são como mostrar em vez de explicar.
 </p>
@@ -140,10 +156,120 @@ Exemplos são como mostrar em vez de explicar.
 </section>
 </section>
 <section>
-<section id="slide-orgbe23e87">
-<h2 id="orgbe23e87">Framework R-C-E-F</h2>
-<p class="fragment (appear)">
-Uma estrutura útil para prompts:
+<section id="slide-org7b8debf">
+<h2 id="org7b8debf">🔴 Demo: Zero-shot vs Few-shot (3 min)</h2>
+<div class="org-src-container">
+
+<pre   ><code class="text" ># Zero-shot:
+Classifique: "Esse filme é incrível!"
+
+# Few-shot:
+Classifique o sentimento:
+"Odiei o filme" → Negativo
+"Adorei, recomendo" → Positivo
+"Esse filme é incrível!" → ?
+</code></pre>
+</div>
+
+<p>
+💡 Testem com "Mais ou menos" — vejam a diferença.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orge0fb9a0">
+<h2 id="orge0fb9a0">Role Prompting</h2>
+<p>
+Atribuir um <b>papel</b> ao modelo muda a qualidade da resposta.
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="text" >Você é uma professora de matemática do ensino
+médio, paciente e didática.
+</code></pre>
+</div>
+
+<p>
+Role + contexto = o modelo opera dentro de um escopo.
+</p>
+
+<p>
+💡 <b>Vai ser essencial pra agentes:</b> o system prompt
+de um agente é role prompting.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org07062f6">
+<h2 id="org07062f6">🔴 Demo: Role Prompting (3 min)</h2>
+<div class="org-src-container">
+
+<pre   ><code class="text" ># Sem role:
+"Explique derivadas"
+
+# Com role:
+"Você é uma professora de matemática do ensino
+médio, paciente e didática. Explique derivadas."
+</code></pre>
+</div>
+
+<p>
+💡 Troque o role pra "professor universitário" —
+a resposta muda completamente.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgc74a11d">
+<h2 id="orgc74a11d">Chain-of-Thought (CoT)</h2>
+<p>
+Pedir ao modelo para <b>pensar passo a passo</b>.
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="text" >Pergunta: Roger tem 5 bolas. Ele compra 2 latas
+de 3 bolas cada. Quantas bolas ele tem?
+
+Pense passo a passo.
+</code></pre>
+</div>
+
+<p>
+Sem CoT: pode errar. Com CoT: mostra o raciocínio.
+</p>
+
+<p>
+💡 Ferramentas exigem raciocínio sobre qual usar e quando.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org8269b60">
+<h2 id="org8269b60">🔴 Demo: CoT (3 min)</h2>
+<div class="org-src-container">
+
+<pre   ><code class="text" ># Sem CoT:
+"Na livraria, um livro custa R$ 25.
+Comprei 3 livros e paguei com R$ 100.
+Quanto troco recebo?"
+
+# Com CoT: (mesma pergunta +)
+"Pense passo a passo."
+</code></pre>
+</div>
+
+<p>
+💡 Em modelos menores (local), a diferença é dramática.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org404c9f6">
+<h2 id="org404c9f6">Framework RCEF</h2>
+<p>
+Os 4 elementos de um prompt eficaz:
 </p>
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
@@ -166,8 +292,8 @@ Uma estrutura útil para prompts:
 <tbody>
 <tr>
 <td class="org-left"><b>R</b></td>
-<td class="org-left">Role (papel)</td>
-<td class="org-left">"Você é um professor de matemática"</td>
+<td class="org-left">Role</td>
+<td class="org-left">"Você é um tutor de matemática"</td>
 </tr>
 
 <tr>
@@ -179,7 +305,7 @@ Uma estrutura útil para prompts:
 <tr>
 <td class="org-left"><b>E</b></td>
 <td class="org-left">Examples</td>
-<td class="org-left">"Explique como: 2x + 3 = 7 → x = 2"</td>
+<td class="org-left">"2x + 3 = 7 → x = 2"</td>
 </tr>
 
 <tr>
@@ -190,133 +316,365 @@ Uma estrutura útil para prompts:
 </tbody>
 </table>
 </section>
-<section id="slide-org8bc9e16">
-<h3 id="org8bc9e16">Exemplo completo</h3>
-<div class="org-src-container">
-
-<pre   ><code class="text" >R: Você é um tutor de matemática paciente.
-C: O aluno tem dificuldade com equações.
-E: Para 2x + 4 = 10: subtraia 4 dos dois lados,
-   depois divida por 2.
-F: Responda passo a passo, numerando.
-
-Pergunta: Como resolvo 3x + 6 = 21?
-</code></pre>
-</div>
 </section>
-<section id="slide-orgaf4880f">
-<h3 id="orgaf4880f">Resultado comparado</h3>
+<section>
+<section id="slide-org5a7f1d5">
+<h2 id="org5a7f1d5">RCEF + Task &amp; Constraints</h2>
 <p>
-<b>Sem R-C-E-F:</b>
-</p>
-<blockquote  class="fragment (appear)">
-<p>
-"3x + 6 = 21, x = 5"
-</p>
-</blockquote>
-
-<p>
-<b>Com R-C-E-F:</b>
-</p>
-<blockquote  class="fragment (appear)">
-<p>
-"Vamos resolver passo a passo:
+Pra prompts completos, adicione:
 </p>
 
-<ol>
-<li>Subtraia 6 de ambos os lados: 3x = 15</li>
-<li>Divida por 3: x = 5</li>
-<li>Verificação: 3 × 5 + 6 = 21 ✓"</li>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
-</ol>
-</blockquote>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Letra</th>
+<th scope="col" class="org-left">Significado</th>
+<th scope="col" class="org-left">Exemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><b>T</b></td>
+<td class="org-left">Task</td>
+<td class="org-left">"Resolva esta equação"</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>C</b></td>
+<td class="org-left">Constraints</td>
+<td class="org-left">"Máximo 3 passos"</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<b>T</b> = o que fazer. <b>C</b> = o que não fazer.
+💡 Zero-shot = sem E. Few-shot = com E. Role = R.
+RCEF-TC vai virar a linguagem pra descrever ferramentas.
+</p>
 </section>
 </section>
 <section>
-<section id="slide-org88b5b30">
-<h2 id="org88b5b30">Alucinações vs Prompt ruim</h2>
+<section id="slide-orgfb483bb">
+<h2 id="orgfb483bb">RCEF-TC na prática</h2>
+<div class="org-src-container">
+
+<pre   ><code class="text" >R: Você é um desenvolvedor Python sênior.
+C: A função processa dados de uma API externa.
+E: Input: [1,2,3] → Output: {"dados": [...]}
+T: Sugira melhorias de legibilidade e erros.
+F: Uma melhoria por tópico, com código antes/depois.
+C: Python 3.9+, soluções simples primeiro.
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgddf9301">
+<h2 id="orgddf9301">Prompting para código</h2>
 <p>
-Às vezes o modelo erra. Por quê?
+❌ <b>"Escreve uma função pra mim"</b>
 </p>
 
-<ol>
-<li class="fragment appear"><b>Hallucinação</b> → modelo inventa (limitação)</li>
-<li class="fragment appear"><b>Prompt ruim</b> → você não deixou claro</li>
+<p>
+✅ Com RCEF-TC:
+</p>
 
-</ol>
+<div class="org-src-container">
+
+<pre   ><code class="text" >R: Você é um dev Python especialista em API design.
+T: Crie uma função que valida CPF brasileiro.
+C: A função será usada num form de cadastro.
+F: Retorne bool + mensagem de erro se inválido.
+C: Sem bibliotecas externas, máximo 20 linhas.
+</code></pre>
+</div>
 </section>
-<section id="slide-org831379d">
-<h3 id="org831379d">Como distinguir</h3>
+</section>
+<section>
+<section id="slide-org258d5a9">
+<h2 id="org258d5a9">🔴 Demo: RCEF-TC (5 min)</h2>
+<p>
+Exercício: Refatore <code>Me ajuda com meu TCC</code> com RCEF-TC
+</p>
+
 <ul>
-<li class="fragment appear">Refaça o prompt com mais contexto</li>
-<li class="fragment appear">Se ainda errar, é alucinação</li>
-<li class="fragment appear">Se melhorar, era prompt ruim</li>
+<li><b>R</b> — Quem é o modelo? (tutor, revisor, orientador?)</li>
+<li><b>C</b> — Qual área? Qual semestre?</li>
+<li><b>T</b> — Revisão? Escrita? Ideias?</li>
+<li><b>F</b> — Como quer a resposta?</li>
+<li><b>C</b> — Quantas páginas? Qual prazo?</li>
 
 </ul>
 </section>
 </section>
 <section>
-<section id="slide-org60c1d1a">
-<h2 id="org60c1d1a">Dicas práticas</h2>
-<div class="outline-text-2" id="text-org60c1d1a">
-</div>
+<section id="slide-org9cfbcdd">
+<h2 id="org9cfbcdd">Prompting para ferramentas (preview)</h2>
+<p>
+Quando construímos agentes, precisamos <b>descrever
+ferramentas</b> para o modelo.
+</p>
+
+<p>
+Uma ferramenta é, essencialmente, um prompt estruturado:
+<code>description</code> segue RCEF-TC.
+</p>
 </section>
-<section id="slide-orgb7c290c">
-<h3 id="orgb7c290c">✅ Bom:</h3>
+</section>
+<section>
+<section id="slide-org7f780b7">
+<h2 id="org7f780b7">Tool calling — exemplo</h2>
 <div class="org-src-container">
 
-<pre   ><code class="text" >"Liste as 5 capitais mais populosas do Brasil
-em ordem decrescente"
-
-"Explique recursão como se eu tivesse 12 anos"
-
-"Corrija o texto abaixo mantendo o estilo do autor"
+<pre   ><code class="python" >{
+  "name": "buscar_cpf",
+  "description": "Busca dados de uma pessoa
+     pelo CPF. Use para validar cadastros.",
+  "parameters": {
+    "cpf": "string — CPF com 11 dígitos"
+  }
+}
 </code></pre>
 </div>
 </section>
-<section id="slide-orgef933ea">
-<h3 id="orgef933ea">❌ Ruim:</h3>
+</section>
+<section>
+<section id="slide-org23ac9ef">
+<h2 id="org23ac9ef">Alucinações vs Prompt ruim</h2>
+<p>
+Às vezes o modelo erra. Por quê?
+</p>
+
+<ol>
+<li><b>Alucinação</b> → modelo inventa (limitação dele)</li>
+<li><b>Prompt ruim</b> → você não deixou claro (limitação sua)</li>
+
+</ol>
+
+<p>
+Como distinguir: refaça o prompt com mais contexto.
+Se ainda errar → alucinação. Se melhorar → prompt ruim.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org452cb03">
+<h2 id="org452cb03">🔴 Demo: Alucinação vs Prompt ruim (3 min)</h2>
+<div class="org-src-container">
+
+<pre   ><code class="text" ># Prompt vago:
+"Quem ganhou a copa de 2042?"
+</code></pre>
+</div>
+
+<p>
+Se responder como se soubesse → alucinação.
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="text" ># Prompt com constraint:
+"Quem ganhou a copa de 2042?
+Responda apenas se tiver certeza.
+Se não souber, diga que não sabe."
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org2bc6b28">
+<h2 id="org2bc6b28">Modelos disponíveis hoje</h2>
+<p>
+Para as demonstrações:
+</p>
+<ul>
+<li><a href="https://aistudio.google.com/">Gemini 2.5 Flash</a> — Cloud grátis</li>
+<li><a href="https://chat.mistral.ai">Mistral Le Chat</a> / <a href="https://chat.deepseek.com">DeepSeek V4</a> — Cloud grátis</li>
+<li><code>ollama run deepseek-v4-flash:cloud</code> — Cloud</li>
+<li><code>ollama run qwen3.5:4b</code> / <code>qwen3.5:9b</code> — Local</li>
+
+</ul>
+
+<p>
+⚠ <code>:cloud</code> no Ollama = nuvem, não local.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgf27f00b">
+<h2 id="orgf27f00b">Modelos — resumo</h2>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Modelo</th>
+<th scope="col" class="org-left">Onde</th>
+<th scope="col" class="org-left">Tipo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Gemini 2.5 Flash</td>
+<td class="org-left"><a href="https://aistudio.google.com/">AI Studio</a></td>
+<td class="org-left">Cloud grátis</td>
+</tr>
+
+<tr>
+<td class="org-left">Mistral Le Chat</td>
+<td class="org-left"><a href="https://chat.mistral.ai">chat.mistral.ai</a></td>
+<td class="org-left">Cloud grátis</td>
+</tr>
+
+<tr>
+<td class="org-left">DeepSeek V4 Pro</td>
+<td class="org-left"><a href="https://chat.deepseek.com">chat.deepseek.com</a></td>
+<td class="org-left">Cloud grátis</td>
+</tr>
+
+<tr>
+<td class="org-left">DeepSeek V4 Flash</td>
+<td class="org-left">Ollama cloud</td>
+<td class="org-left">Cloud</td>
+</tr>
+
+<tr>
+<td class="org-left">Qwen3.5:4b</td>
+<td class="org-left">Ollama local</td>
+<td class="org-left">Local</td>
+</tr>
+
+<tr>
+<td class="org-left">Qwen3.5:9b</td>
+<td class="org-left">Ollama local</td>
+<td class="org-left">Local</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+<section id="slide-orge8e14a3">
+<h2 id="orge8e14a3">DeepSeek V4 Pro — Novidade!</h2>
+<p>
+Lançado em 24/04/2026:
+</p>
+<ul>
+<li>1.6T parâmetros, 49B ativos (MoE), 1M contexto</li>
+<li>Open weights (MIT License)</li>
+<li>MMLU: 90.1% · HumanEval: 76.8%</li>
+<li>Chat: <a href="https://chat.deepseek.com">chat.deepseek.com</a></li>
+
+</ul>
+
+<p>
+1M contexto = 1 milhão de tokens.
+Cabe um livro inteiro no prompt!
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org23a5442">
+<h2 id="org23a5442">ask-ai: CLI local</h2>
+<p>
+O <code>ask-ai</code> é um CLI que conversa com modelos locais:
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="shell" ># Chat interativo
+ask-ai chat -m qwen3.5:4b
+# Pergunta direta
+ask-ai "Traduza para inglês: Bom dia"
+# Com system prompt (role prompting!)
+ask-ai -p tool_user "Como formato um JSON?"
+</code></pre>
+</div>
+
+<p>
+Os modos <code>default</code> vs <code>tool_user</code> são <b>role prompting aplicado!</b>
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org2434a4b">
+<h2 id="org2434a4b">Dicas práticas</h2>
+<p>
+✅ <b>Bom:</b>
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="text" >"Liste as 5 capitais mais populosas do Brasil
+ em ordem decrescente"
+"Explique recursão como se eu tivesse 12 anos"
+"Corrija o texto abaixo mantendo o estilo do autor"
+</code></pre>
+</div>
+
+<p>
+❌ <b>Ruim:</b>
+</p>
 <div class="org-src-container">
 
 <pre   ><code class="text" >"Me fale algo" (vago demais)
-
 "O que você acha?" (subjetivo)
-
 "Responda sim ou não: o número 7 é legal?" (não factual)
 </code></pre>
 </div>
 </section>
 </section>
 <section>
-<section id="slide-orgc2b04e6">
-<h2 id="orgc2b04e6">Para lembrar</h2>
-<blockquote  class="fragment (appear)">
+<section id="slide-orgc461df2">
+<h2 id="orgc461df2">Para lembrar</h2>
+<blockquote >
 <p>
 "O prompt é como uma receita.
 Ingredientes claros = prato previsível."
 </p>
 </blockquote>
 
-<p class="fragment (appear)">
+<p>
 Quanto mais específico você for,
 mais próxima a resposta do que você espera.
+</p>
+
+<p>
+Na próxima aula: vamos programar isso tudo em Python!
 </p>
 </section>
 </section>
 <section>
-<section id="slide-orge660791">
-<h2 id="orge660791">Próxima semana</h2>
+<section id="slide-org54b9b94">
+<h2 id="org54b9b94">Próxima semana</h2>
 <ul>
-<li class="fragment appear">Vamos começar a programar!</li>
-<li class="fragment appear">Python para chamar LLMs via API</li>
-<li class="fragment appear">Google Colab</li>
+<li>Python mínimo para LLMs</li>
+<li>Google Colab</li>
+<li>Chamando API com código</li>
+<li>System prompt via código = Role Prompting aplicado</li>
 
 </ul>
 </section>
 </section>
 <section>
-<section id="slide-org99d2512">
-<h2 id="org99d2512">Perguntas?</h2>
+<section id="slide-orga52c147" data-background="./slide_02.gif">
+<h2 id="orga52c147">Perguntas?</h2>
 </section>
 </section>
 </div>
