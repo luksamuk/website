@@ -19,7 +19,9 @@
 
 - Scripts Manim + áudio ficam em `src/pages/guilda-ia/videos/`
 - Cada aula tem sua subpasta (ex: `aula00/`, `aula01/`)
-- Pastas geradas (videos/, audio/) estão no `.gitignore` — só scripts e roteiros são commitados.
+- `.gitignore` consolidado em `src/pages/guilda-ia/videos/.gitignore` cobre: `videos/`, `synced/`, `audio/`, `media/`, `__pycache__/`, `*.mp3`, `*.mp4`, `*.wav`, `*.ogg`, `quality_check*/`, `backup/`, `*.bak*`
+- **Commitar apenas:** roteiros (`.md`), scripts Python (`.py`), thumbnails (`.png`)
+- **NÃO commitar:** vídeos finais, áudio TTS, cache Manim, backups, frames de quality check
 
 ## Navbar — Single Source of Truth
 
