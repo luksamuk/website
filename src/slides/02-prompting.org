@@ -11,49 +11,63 @@
 #+REVEAL_TITLE_SLIDE: <p style="font-size:0.7em;opacity:0.6;">%a</p><br/><h2>%t</h2><br/><p style="font-size:0.85em;opacity:0.8;">%s</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 #+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_02.gif
 
+* Fofoca da Semana 🗞️
+
+- *Kimi K2.6* (20/04) — 1T, 32B ativos, 256K ctx, open weights
+- *DeepSeek V4 Pro* (24/04) — 1.6T, 49B ativos, 1M ctx, MIT
+- *Claude Code* (21/04) — removido e reposto no Pro em 12h 👀
+
+** Claude Code — O Episódio
+
+21/04: plano Pro ($20/mês) perdeu o Claude Code.
+12h depois, voltou.
+
+#+begin_quote
+"Usage has changed a lot and our current plans
+weren't built for this." — Anthropic
+#+end_quote
+
 * O Problema
-#+ATTR_REVEAL: :frag (appear)
-- A mesma pergunta pode gerar respostas diferentes
-- Dependendo de como você formula
 
-** Exemplo
+A mesma pergunta pode gerar respostas completamente diferentes,
+dependendo de como você formula.
 
-*Vago:*
-#+BEGIN_SRC text
-"Me fale sobre gatos"
-→ resposta genérica
-#+END_SRC
+*Vago:* =Me fale sobre gatos= → resposta genérica
 
-*Específico:*
-#+BEGIN_SRC text
-"Quais as 3 raças de gatos mais populares no Brasil?"
-→ resposta específica
-#+END_SRC
+*Específico:* =Quais as 3 raças de gatos mais populares no Brasil e por quê?= → resposta específica
+
+* 🔴 Demo ao vivo (2 min)
+
+Abram um chat:
+- [[https://aistudio.google.com/][Gemini]] / [[https://chat.mistral.ai][Le Chat]] / =ollama run qwen3.5:4b= / =ollama run deepseek-v4-flash:cloud=
+
+Testem os dois prompts do slide anterior. Notem a diferença.
 
 * O que é prompt?
-#+ATTR_REVEAL: :frag (appear)
-- Prompt = instrução que você dá para o modelo
-- A pergunta, o comando, o contexto
-- Tudo junto
 
-#+ATTR_REVEAL: :frag (appear)
+- Prompt = instrução que você dá para o modelo
+- A pergunta, o comando, o contexto — tudo junto
+
 #+begin_quote
 O prompt é como uma receita.
 Ingredientes claros = prato previsível.
 #+end_quote
 
-* Técnicas básicas
+* Zero-shot
 
-** 1. Zero-shot
 Você pede algo sem dar exemplos.
 
 #+BEGIN_SRC text
 Traduza para inglês: "Bom dia"
 #+END_SRC
 
-O modelo nunca viu você traduzir antes, mas tenta fazer.
+O modelo nunca viu você traduzir antes, mas tenta.
 
-** 2. Few-shot
+💡 Ambíguo: ="Banco"= → =bank= ou =bench=?
+Sem contexto, o modelo chuta.
+
+* Few-shot
+
 Você dá exemplos antes de pedir.
 
 #+BEGIN_SRC text
@@ -63,114 +77,274 @@ Traduza para inglês:
 "Pássaro" → ?
 #+END_SRC
 
-#+ATTR_REVEAL: :frag (appear)
 O modelo aprende o padrão pelos exemplos.
 
-* Por que few-shot funciona?
-#+ATTR_REVEAL: :frag (appear)
-- O modelo vê o que você quer
-- Segue o molde
-- Reduz ambiguidade
-
-#+ATTR_REVEAL: :frag (appear)
 #+begin_quote
 Exemplos são como mostrar em vez de explicar.
 #+end_quote
 
-* Framework R-C-E-F
+* 🔴 Demo: Zero-shot vs Few-shot (3 min)
 
-#+ATTR_REVEAL: :frag (appear)
-Uma estrutura útil para prompts:
+#+BEGIN_SRC text
+# Zero-shot:
+Classifique: "Esse filme é incrível!"
+
+# Few-shot:
+Classifique o sentimento:
+"Odiei o filme" → Negativo
+"Adorei, recomendo" → Positivo
+"Esse filme é incrível!" → ?
+#+END_SRC
+
+💡 Testem com "Mais ou menos" — vejam a diferença.
+
+* Role Prompting
+
+Atribuir um *papel* ao modelo muda a qualidade da resposta.
+
+#+BEGIN_SRC text
+Você é uma professora de matemática do ensino
+médio, paciente e didática.
+#+END_SRC
+
+Role + contexto = o modelo opera dentro de um escopo.
+
+💡 *Vai ser essencial pra agentes:* o system prompt
+de um agente é role prompting.
+
+* 🔴 Demo: Role Prompting (3 min)
+
+#+BEGIN_SRC text
+# Sem role:
+"Explique derivadas"
+
+# Com role:
+"Você é uma professora de matemática do ensino
+médio, paciente e didática. Explique derivadas."
+#+END_SRC
+
+💡 Troque o role pra "professor universitário" —
+a resposta muda completamente.
+
+* Chain-of-Thought (CoT)
+
+Pedir ao modelo para *pensar passo a passo*.
+
+#+BEGIN_SRC text
+Pergunta: Roger tem 5 bolas. Ele compra 2 latas
+de 3 bolas cada. Quantas bolas ele tem?
+
+Pense passo a passo.
+#+END_SRC
+
+Sem CoT: pode errar. Com CoT: mostra o raciocínio.
+
+💡 Ferramentas exigem raciocínio sobre qual usar e quando.
+
+* 🔴 Demo: CoT (3 min)
+
+#+BEGIN_SRC text
+# Sem CoT:
+"Na livraria, um livro custa R$ 25.
+Comprei 3 livros e paguei com R$ 100.
+Quanto troco recebo?"
+
+# Com CoT: (mesma pergunta +)
+"Pense passo a passo."
+#+END_SRC
+
+💡 Em modelos menores (local), a diferença é dramática.
+
+* Framework RCEF
+
+Os 4 elementos de um prompt eficaz:
 
 | Letra | Significado | Exemplo |
 |-------+-------------+---------|
-| *R* | Role (papel) | "Você é um professor de matemática" |
+| *R* | Role | "Você é um tutor de matemática" |
 | *C* | Context | "O aluno está no ensino médio" |
-| *E* | Examples | "Explique como: 2x + 3 = 7 → x = 2" |
+| *E* | Examples | "2x + 3 = 7 → x = 2" |
 | *F* | Format | "Responda em bullets" |
 
-** Exemplo completo
+* RCEF + Task & Constraints
+
+Pra prompts completos, adicione:
+
+| Letra | Significado | Exemplo |
+|-------+-------------+---------|
+| *T* | Task | "Resolva esta equação" |
+| *C* | Constraints | "Máximo 3 passos" |
+
+*T* = o que fazer. *C* = o que não fazer.
+💡 Zero-shot = sem E. Few-shot = com E. Role = R.
+RCEF-TC vai virar a linguagem pra descrever ferramentas.
+
+* RCEF-TC na prática
 
 #+BEGIN_SRC text
-R: Você é um tutor de matemática paciente.
-C: O aluno tem dificuldade com equações.
-E: Para 2x + 4 = 10: subtraia 4 dos dois lados,
-   depois divida por 2.
-F: Responda passo a passo, numerando.
-
-Pergunta: Como resolvo 3x + 6 = 21?
+R: Você é um desenvolvedor Python sênior.
+C: A função processa dados de uma API externa.
+E: Input: [1,2,3] → Output: {"dados": [...]}
+T: Sugira melhorias de legibilidade e erros.
+F: Uma melhoria por tópico, com código antes/depois.
+C: Python 3.9+, soluções simples primeiro.
 #+END_SRC
 
-** Resultado comparado
+* Prompting para código
 
-*Sem R-C-E-F:*
-#+ATTR_REVEAL: :frag (appear)
-#+begin_quote
-"3x + 6 = 21, x = 5"
-#+end_quote
+❌ *"Escreve uma função pra mim"*
 
-*Com R-C-E-F:*
-#+ATTR_REVEAL: :frag (appear)
-#+begin_quote
-"Vamos resolver passo a passo:
+✅ Com RCEF-TC:
 
-1. Subtraia 6 de ambos os lados: 3x = 15
-2. Divida por 3: x = 5
-3. Verificação: 3 × 5 + 6 = 21 ✓"
-#+end_quote
+#+BEGIN_SRC text
+R: Você é um dev Python especialista em API design.
+T: Crie uma função que valida CPF brasileiro.
+C: A função será usada num form de cadastro.
+F: Retorne bool + mensagem de erro se inválido.
+C: Sem bibliotecas externas, máximo 20 linhas.
+#+END_SRC
+
+* 🔴 Demo: RCEF-TC (5 min)
+
+Exercício: Refatore =Me ajuda com meu TCC= com RCEF-TC
+
+- *R* — Quem é o modelo? (tutor, revisor, orientador?)
+- *C* — Qual área? Qual semestre?
+- *T* — Revisão? Escrita? Ideias?
+- *F* — Como quer a resposta?
+- *C* — Quantas páginas? Qual prazo?
+
+* Prompting para ferramentas (preview)
+
+Quando construímos agentes, precisamos *descrever
+ferramentas* para o modelo.
+
+Uma ferramenta é, essencialmente, um prompt estruturado:
+=description= segue RCEF-TC.
+
+* Tool calling — exemplo
+
+#+BEGIN_SRC python
+{
+  "name": "buscar_cpf",
+  "description": "Busca dados de uma pessoa
+     pelo CPF. Use para validar cadastros.",
+  "parameters": {
+    "cpf": "string — CPF com 11 dígitos"
+  }
+}
+#+END_SRC
 
 * Alucinações vs Prompt ruim
 
 Às vezes o modelo erra. Por quê?
 
-#+ATTR_REVEAL: :frag (appear)
-1. *Hallucinação* → modelo inventa (limitação)
-2. *Prompt ruim* → você não deixou claro
+1. *Alucinação* → modelo inventa (limitação dele)
+2. *Prompt ruim* → você não deixou claro (limitação sua)
 
-** Como distinguir
-#+ATTR_REVEAL: :frag (appear)
-- Refaça o prompt com mais contexto
-- Se ainda errar, é alucinação
-- Se melhorar, era prompt ruim
+Como distinguir: refaça o prompt com mais contexto.
+Se ainda errar → alucinação. Se melhorar → prompt ruim.
+
+* 🔴 Demo: Alucinação vs Prompt ruim (3 min)
+
+#+BEGIN_SRC text
+# Prompt vago:
+"Quem ganhou a copa de 2042?"
+#+END_SRC
+
+Se responder como se soubesse → alucinação.
+
+#+BEGIN_SRC text
+# Prompt com constraint:
+"Quem ganhou a copa de 2042?
+Responda apenas se tiver certeza.
+Se não souber, diga que não sabe."
+#+END_SRC
+
+* Modelos disponíveis hoje
+
+Para as demonstrações:
+- [[https://aistudio.google.com/][Gemini 2.5 Flash]] — Cloud grátis
+- [[https://chat.mistral.ai][Mistral Le Chat]] / [[https://chat.deepseek.com][DeepSeek V4]] — Cloud grátis
+- =ollama run deepseek-v4-flash:cloud= — Cloud
+- =ollama run qwen3.5:4b= / =qwen3.5:9b= — Local
+
+⚠ =:cloud= no Ollama = nuvem, não local.
+
+* Modelos — resumo
+
+| Modelo | Onde | Tipo |
+|--------+------+------|
+| Gemini 2.5 Flash | [[https://aistudio.google.com/][AI Studio]] | Cloud grátis |
+| Mistral Le Chat | [[https://chat.mistral.ai][chat.mistral.ai]] | Cloud grátis |
+| DeepSeek V4 Pro | [[https://chat.deepseek.com][chat.deepseek.com]] | Cloud grátis |
+| DeepSeek V4 Flash | Ollama cloud | Cloud |
+| Qwen3.5:4b | Ollama local | Local |
+| Qwen3.5:9b | Ollama local | Local |
+
+* DeepSeek V4 Pro — Novidade!
+
+Lançado em 24/04/2026:
+- 1.6T parâmetros, 49B ativos (MoE), 1M contexto
+- Open weights (MIT License)
+- MMLU: 90.1% · HumanEval: 76.8%
+- Chat: [[https://chat.deepseek.com][chat.deepseek.com]]
+
+1M contexto = 1 milhão de tokens.
+Cabe um livro inteiro no prompt!
+
+* ask-ai: CLI local
+
+O =ask-ai= é um CLI que conversa com modelos locais:
+
+#+BEGIN_SRC shell
+# Chat interativo
+ask-ai chat -m qwen3.5:4b
+# Pergunta direta
+ask-ai "Traduza para inglês: Bom dia"
+# Com system prompt (role prompting!)
+ask-ai -p tool_user "Como formato um JSON?"
+#+END_SRC
+
+Os modos =default= vs =tool_user= são *role prompting aplicado!*
 
 * Dicas práticas
 
-** ✅ Bom:
+✅ *Bom:*
 #+BEGIN_SRC text
 "Liste as 5 capitais mais populosas do Brasil
-em ordem decrescente"
-
+ em ordem decrescente"
 "Explique recursão como se eu tivesse 12 anos"
-
 "Corrija o texto abaixo mantendo o estilo do autor"
 #+END_SRC
 
-** ❌ Ruim:
+❌ *Ruim:*
 #+BEGIN_SRC text
 "Me fale algo" (vago demais)
-
 "O que você acha?" (subjetivo)
-
 "Responda sim ou não: o número 7 é legal?" (não factual)
 #+END_SRC
 
 * Para lembrar
 
-#+ATTR_REVEAL: :frag (appear)
 #+begin_quote
 "O prompt é como uma receita.
 Ingredientes claros = prato previsível."
 #+end_quote
 
-#+ATTR_REVEAL: :frag (appear)
 Quanto mais específico você for,
 mais próxima a resposta do que você espera.
 
+Na próxima aula: vamos programar isso tudo em Python!
+
 * Próxima semana
 
-#+ATTR_REVEAL: :frag (appear)
-- Vamos começar a programar!
-- Python para chamar LLMs via API
+- Python mínimo para LLMs
 - Google Colab
+- Chamando API com código
+- System prompt via código = Role Prompting aplicado
 
 * Perguntas?
+:PROPERTIES:
+:REVEAL_BACKGROUND: ./slide_02.gif
+:END:
