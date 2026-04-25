@@ -19,9 +19,10 @@
 
 - Scripts Manim + áudio ficam em `src/pages/guilda-ia/videos/`
 - Cada aula tem sua subpasta (ex: `aula00/`, `aula01/`)
-- `.gitignore` consolidado em `src/pages/guilda-ia/videos/.gitignore` cobre: `videos/`, `synced/`, `audio/`, `media/`, `__pycache__/`, `*.mp3`, `*.mp4`, `*.wav`, `*.ogg`, `quality_check*/`, `backup/`, `*.bak*`
+- `.gitignore` consolidado em `src/pages/guilda-ia/videos/.gitignore` cobre: `videos/`, `synced/`, `audio/`, `media/`, `subtitles/`, `__pycache__/`, `*.mp3`, `*.mp4`, `*.wav`, `*.ogg`, `*.srt`, `quality_check*/`, `backup/`, `*.bak*`
 - **Commitar apenas:** roteiros (`.md`), scripts Python (`.py`), thumbnails (`.png`)
-- **NÃO commitar:** vídeos finais, áudio TTS, cache Manim, backups, frames de quality check
+- **NÃO commitar:** vídeos finais, áudio TTS, cache Manim, backups, frames de quality check, legendas SRT
+- **Legendas SRT:** Gerar automaticamente (PT-BR + EN) ao finalizar cada vídeo. Usa roteiro + durações de vídeo/áudio, NÃO Whisper. Ficam em `subtitles/` (gitignored). Sempre gerar como parte do pipeline de vídeo.
 
 ## Navbar — Single Source of Truth
 

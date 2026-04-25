@@ -1,6 +1,6 @@
 #+TITLE: Python Mínimo
 #+AUTHOR: Lucas S. Vieira
-#+SUBTITLE: O essencial para começar
+#+SUBTITLE: O essencial para começar com IA
 #+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js@4/
 #+REVEAL_THEME: night
 #+REVEAL_PLUGINS: (highlight)
@@ -13,72 +13,109 @@
 
 * Por que Python?
 
-#+ATTR_REVEAL: :frag (appear)
-Python é a linguagem mais usada em IA por:
+- *Sintaxe simples* → parece pseudocódigo
+- *Bibliotecas* → milhões de pacotes prontos
+- *Comunidade* → documentação em todo lugar
+- *O ecossistema de IA vive em Python* → Gemini, HuggingFace, Anthropic — todos lançam API primeiro em Python
 
-1. *Sintaxe simples* → parece pseudocódigo
-2. *Bibliotecas* → milhões de pacotes prontos
-3. *Comunidade* → documentação em todo lugar
+* Variáveis
 
-* O mínimo que você precisa saber
-
-** Variáveis
 #+BEGIN_SRC python
 nome = "Maria"      # texto (string)
 idade = 25          # número inteiro (int)
 altura = 1.70       # número decimal (float)
 estudante = True    # verdadeiro/falso (bool)
+
+# F-strings
+mensagem = f"{nome} tem {idade} anos"
 #+END_SRC
 
-** Listas
+* Listas e Dicionários
+
 #+BEGIN_SRC python
+# Lista: sequência ordenada
 frutas = ["maçã", "banana", "laranja"]
-frutas.append("uva")       # adiciona
-frutas[0]                  # "maçã" (primeiro)
-frutas[-1]                 # "uva" (último)
+frutas.append("uva")
+frutas[0]    # "maçã"
+frutas[-1]   # "uva"
+
+# Dicionário: pares chave-valor
+pessoa = {"nome": "João", "idade": 30}
+pessoa["nome"]           # "João"
+pessoa["idade"] = 31     # atualiza
+pessoa["cidade"] = "BH"  # adiciona
 #+END_SRC
 
-** Funções
+* Funções
+
 #+BEGIN_SRC python
-def saudar(nome):
-    return f"Olá, {nome}!"
+def saudar(nome, saudacao="Olá"):
+    return f"{saudacao}, {nome}!"
 
-saudar("João")  # "Olá, João!"
+saudar("Maria")        # "Olá, Maria!"
+saudar("João", "Oi")  # "Oi, João!"
 #+END_SRC
 
-** Condicionais
+* Condicionais
+
 #+BEGIN_SRC python
 if idade >= 18:
     print("Maior de idade")
+elif idade >= 12:
+    print("Adolescente")
 else:
-    print("Menor de idade")
+    print("Criança")
 #+END_SRC
+
+* Loops
+
+#+BEGIN_SRC python
+# Iterar em lista
+for fruta in frutas:
+    print(fruta)
+
+# Range
+for i in range(5):
+    print(i)  # 0, 1, 2, 3, 4
+
+# While
+count = 0
+while count < 3:
+    print(count)
+    count += 1
+#+END_SRC
+
+* 🔴 Demo: Python no Colab (3 min)
+
+Abrir =colab.research.google.com= e testar:
+
+1. Variáveis e f-strings
+2. Listas e dicionários
+3. Funções com parâmetros padrão
+
+#+begin_quote
+Colab abre em modo SOMENTE LEITURA. Faça "Arquivo → Salvar uma cópia no Drive" antes de editar.
+#+end_quote
 
 * O que é uma API?
 
-#+ATTR_REVEAL: :frag (appear)
 API = Interface de Programação de Aplicações
 
-#+ATTR_REVEAL: :frag (appear)
 #+begin_quote
-Você manda uma mensagem (request)
-O servidor processa
-Ele devolve uma resposta (response)
-#+end_quote>
+Você manda uma mensagem (=request=) →
+O servidor processa →
+Ele devolve uma resposta (=response=)
+#+end_quote
 
-** Analogia restaurante
-
-#+ATTR_REVEAL: :frag (appear)
-- Você → garçom → *API* → cozinha → resposta (prato)
+Analogia: Você → Garçom (=API=) → Cozinha → Prato (resposta)
 
 * API de LLM
 
 Para usar um LLM via API:
 
-#+ATTR_REVEAL: :frag (appear)
-1. Você manda um prompt
+1. Você manda um *prompt* (request)
 2. O modelo processa
-3. Devolve a resposta
+3. Devolve a *resposta* (response)
 
 #+BEGIN_SRC python
 # Conceito (não roda assim):
@@ -86,35 +123,101 @@ resposta = llm.perguntar("Quanto é 2 + 2?")
 # resposta = "4"
 #+END_SRC
 
-* Google Colab
+* Google Gemini (Grátis!)
 
-#+ATTR_REVEAL: :frag (appear)
-Colab = Jupyter Notebook na nuvem
+- *1 milhão de tokens/dia* gratuito
+- Funciona direto no Colab
+- API key gratuita em =aistudio.google.com=
 
-**Vantagens:**
-- Não precisa instalar nada
-- Roda no navegador
-- Grátis (com limites)
+#+BEGIN_SRC python
+# Instalar: !pip install google-genai
+from google import genai
+from google.genai import types
+from google.colab import userdata
 
-** Como usar
-#+ATTR_REVEAL: :frag (appear)
-1. Acesse colab.research.google.com
-2. Crie um novo notebook
-3. Digite código em células
-4. Execute com Shift+Enter
+client = genai.Client(api_key=userdata.get('GEMINI_API_KEY'))
+response = client.models.generate_content(
+    model="gemini-2.5-flash-preview",
+    contents="Olá! Qual é a capital do Brasil?"
+)
+print(response.text)
+#+END_SRC
 
-* Para lembrar
+* Gemini: Chat com Memória
 
-#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_SRC python
+chat = client.chats.create(model="gemini-2.5-flash-preview")
+r1 = chat.send_message("Olá!")
+print(r1.text)
+
+r2 = chat.send_message("Qual a capital do Brasil?")
+print(r2.text)  # Lembra da conversa!
+#+END_SRC
+
+* Gemini: System Prompt
+
+#+BEGIN_SRC python
+response = client.models.generate_content(
+    model="gemini-2.5-flash-preview",
+    contents="O que é uma lista?",
+    config=types.GenerateContentConfig(
+        system_instruction="Você é um tutor de Python. Responda de forma didática."
+    )
+)
+print(response.text)
+#+END_SRC
+
+* 🔴 Demo: Gemini API (5 min)
+
+Abrir Colab e testar:
+
+1. Chamada simples (=generate_content=)
+2. Chat com memória (=chats.create=)
+3. System prompt (role prompting!)
+
+#+begin_quote
+⚠️ API key é SECRETA. Nunca compartilhe ou publique no GitHub!
+#+end_quote
+
+* Ollama (Rodando Local)
+
+Para quem tem GPU em casa:
+
+#+BEGIN_SRC bash
+ollama pull qwen3.5:4b    # baixa o modelo
+ollama run qwen3.5:4b      # roda no terminal
+#+END_SRC
+
+#+begin_quote
+Instalação: ollama.com (Windows, Mac, Linux)
+#+end_quote
+
+* Ollama via Python
+
+#+BEGIN_SRC python
+import ollama
+
+response = ollama.chat(model='qwen3.5:4b', messages=[
+    {'role': 'user', 'content': 'Por que o céu é azul?'}
+])
+print(response['message']['content'])
+#+END_SRC
+
+* Para Lembrar
+
 #+begin_quote
 "Python é a ferramenta.
 API é a ponte.
 O LLM é o cérebro."
 #+end_quote
 
-* Próxima semana
+- *Variáveis, listas, dicts, funções* → base Python
+- *Gemini SDK* → API gratuita, direto no Colab
+- *Ollama* → alternativa local e gratuita
+- *Próxima aula* → primeiro agente!
 
-#+ATTR_REVEAL: :frag (appear)
+* Próxima Semana
+
 - Estruturar nosso primeiro agente
 - Personalidade, memória, histórico
 - Classes em Python
