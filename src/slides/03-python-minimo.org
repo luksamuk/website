@@ -11,6 +11,44 @@
 #+REVEAL_TITLE_SLIDE: <p style="font-size:0.7em;opacity:0.6;">%a</p><br/><h2>%t</h2><br/><p style="font-size:0.85em;opacity:0.8;">%s</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 #+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_03.gif
 
+* 📰 Fofocas da Semana
+
+#+ATTR_HTML: :style font-size:0.6em;text-align:left;
+- *GPT-5.5 Instant* (8/mai) → novo modelo default do ChatGPT, 52% menos alucinação
+- *ZAYA1-8B* (7/mai) → MoE de 760M params ativos que bate modelos 30x maiores em math/coding
+- *Claude Sonnet 4.8 vazado* → source do Claude Code expôs 512K linhas e road map interno
+- *Mythos vs GPT-5.5 Cyber* → AISI testou: GPT-5.5 fez 71.4%, Mythos 68.6% em cyber — empate técnico
+- *Mistral Medium 3.5* → 128B params, 256K contexto, 77.6% SWE-bench, Apache 2.0
+
+* Fofoca: ZAYA1-8B
+
+#+ATTR_HTML: :style font-size:0.6em;text-align:left;
+#+begin_quote
+8.4B total, 760M ativos por token (MoE++).
+Apache 2.0. Treinado em AMD MI300x (1024 nós).
+
+Mas: arquitetura customizada (CCA + router MLP) → *não roda em llama.cpp*. Precisa de vLLM/SGLang.
+#+end_quote
+
+#+ATTR_HTML: :style font-size:0.6em;text-align:left;
+#+begin_quote
+Daniel Lougen (M.S.): "ZAYA1-8B usa até *5.5M tokens por problema* pra chegar nos benchmarks. DeepSeek-R1? ~23K tokens. Isso é 240x mais compute em inferência. O framing de '4B active' soa eficiente, mas o resultado vem queimando test-time compute que outros modelos não precisam."
+#+end_quote
+
+* Fofoca: Mythos vs GPT-5.5 Cyber
+
+#+ATTR_HTML: :style font-size:0.6em;text-align:left;
+#+begin_quote
+AISI (UK) testou os dois modelos em cybersecurity:
+
+- GPT-5.5: 71.4% (tarefas Expert)
+- Mythos Preview: 68.6% (margem de erro se sobrepõe)
+
+Mythos resolveu ataque end-to-end em 3/10 tentativas. GPT-5.5 em 2/10.
+
+O detalhe: Mythos é acesso restrito (11 parceiros). GPT-5.5 é público.
+#+end_quote
+
 * Por que Python?
 
 - *Sintaxe simples* → parece pseudocódigo
@@ -87,139 +125,25 @@ while count < 3:
 
 * 🔴 Demo: Python no Colab (3 min)
 
-Abrir =colab.research.google.com= e testar:
-
-1. Variáveis e f-strings
-2. Listas e dicionários
-3. Funções com parâmetros padrão
+1. Abrir =luksamuk.codes/pages/guilda-ia= → Semana 03
 
 #+begin_quote
 Colab abre em modo SOMENTE LEITURA. Faça "Arquivo → Salvar uma cópia no Drive" antes de editar.
 #+end_quote
 
-* O que é uma API?
-
-API = Interface de Programação de Aplicações
-
-#+begin_quote
-Você manda uma mensagem (=request=) →
-O servidor processa →
-Ele devolve uma resposta (=response=)
-#+end_quote
-
-Analogia: Você → Garçom (=API=) → Cozinha → Prato (resposta)
-
-* API de LLM
-
-Para usar um LLM via API:
-
-1. Você manda um *prompt* (request)
-2. O modelo processa
-3. Devolve a *resposta* (response)
-
-#+BEGIN_SRC python
-# Conceito (não roda assim):
-resposta = llm.perguntar("Quanto é 2 + 2?")
-# resposta = "4"
-#+END_SRC
-
-* Google Gemini (Grátis!)
-
-- *1 milhão de tokens/dia* gratuito
-- Funciona direto no Colab
-- API key gratuita em =aistudio.google.com=
-
-#+BEGIN_SRC python
-# Instalar: !pip install google-genai
-from google import genai
-from google.genai import types
-from google.colab import userdata
-
-client = genai.Client(api_key=userdata.get('GEMINI_API_KEY'))
-response = client.models.generate_content(
-    model="gemini-2.5-flash-preview",
-    contents="Olá! Qual é a capital do Brasil?"
-)
-print(response.text)
-#+END_SRC
-
-* Gemini: Chat com Memória
-
-#+BEGIN_SRC python
-chat = client.chats.create(model="gemini-2.5-flash-preview")
-r1 = chat.send_message("Olá!")
-print(r1.text)
-
-r2 = chat.send_message("Qual a capital do Brasil?")
-print(r2.text)  # Lembra da conversa!
-#+END_SRC
-
-* Gemini: System Prompt
-
-#+BEGIN_SRC python
-response = client.models.generate_content(
-    model="gemini-2.5-flash-preview",
-    contents="O que é uma lista?",
-    config=types.GenerateContentConfig(
-        system_instruction="Você é um tutor de Python. Responda de forma didática."
-    )
-)
-print(response.text)
-#+END_SRC
-
-* 🔴 Demo: Gemini API (5 min)
-
-Abrir Colab e testar:
-
-1. Chamada simples (=generate_content=)
-2. Chat com memória (=chats.create=)
-3. System prompt (role prompting!)
-
-#+begin_quote
-⚠️ API key é SECRETA. Nunca compartilhe ou publique no GitHub!
-#+end_quote
-
-* Ollama (Rodando Local)
-
-Para quem tem GPU em casa:
-
-#+BEGIN_SRC bash
-ollama pull qwen3.5:4b    # baixa o modelo
-ollama run qwen3.5:4b      # roda no terminal
-#+END_SRC
-
-#+begin_quote
-Instalação: ollama.com (Windows, Mac, Linux)
-#+end_quote
-
-* Ollama via Python
-
-#+BEGIN_SRC python
-import ollama
-
-response = ollama.chat(model='qwen3.5:4b', messages=[
-    {'role': 'user', 'content': 'Por que o céu é azul?'}
-])
-print(response['message']['content'])
-#+END_SRC
-
 * Para Lembrar
 
 #+begin_quote
 "Python é a ferramenta.
-API é a ponte.
-O LLM é o cérebro."
+O LLM é o cérebro.
+A API é a ponte entre eles."
 #+end_quote
 
 - *Variáveis, listas, dicts, funções* → base Python
-- *Gemini SDK* → API gratuita, direto no Colab
-- *Ollama* → alternativa local e gratuita
-- *Próxima aula* → primeiro agente!
-
-* Próxima Semana
-
-- Estruturar nosso primeiro agente
-- Personalidade, memória, histórico
-- Classes em Python
+- *JSON* → o formato que APIs entendem
+- *Próxima aula* → requisições HTTP, APIs de LLM e chat com memória!
 
 * Perguntas?
+:PROPERTIES:
+:REVEAL_BACKGROUND: ./slide_03.gif
+:END:
