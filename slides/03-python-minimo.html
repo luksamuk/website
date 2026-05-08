@@ -28,174 +28,202 @@
 <body>
 <div class="reveal">
 <div class="slides">
-<section id="sec-title-slide" data-background="./slide_03.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Python Mínimo</h2><br/><p style="font-size:0.85em;opacity:0.8;">O essencial para começar</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+<section id="sec-title-slide" data-background="./slide_03.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Python Mínimo</h2><br/><p style="font-size:0.85em;opacity:0.8;">O essencial para começar com IA</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 </section>
 <section>
-<section id="slide-orgc336063">
-<h2 id="orgc336063">Por que Python?</h2>
-<p class="fragment (appear)">
-Python é a linguagem mais usada em IA por:
+<section id="slide-orgb520eb2">
+<h2 id="orgb520eb2">📰 Fofocas da Semana</h2>
+<ul style="font-size:0.6em;text-align:left;">
+<li><b>GPT-5.5 Instant</b> (8/mai) → novo modelo default do ChatGPT, 52% menos alucinação</li>
+<li><b>ZAYA1-8B</b> (7/mai) → MoE de 760M params ativos que bate modelos 30x maiores em math/coding</li>
+<li><b>Claude Sonnet 4.8 vazado</b> → source do Claude Code expôs 512K linhas e road map interno</li>
+<li><b>Mythos vs GPT-5.5 Cyber</b> → AISI testou: GPT-5.5 fez 71.4%, Mythos 68.6% em cyber — empate técnico</li>
+<li><b>Mistral Medium 3.5</b> → 128B params, 256K contexto, 77.6% SWE-bench, Apache 2.0</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org2631481">
+<h2 id="org2631481">Fofoca: ZAYA1-8B</h2>
+<blockquote >
+<p>
+8.4B total, 760M ativos por token (MoE++).
+Apache 2.0. Treinado em AMD MI300x (1024 nós).
 </p>
 
-<ol>
+<p>
+Mas: arquitetura customizada (CCA + router MLP) → <b>não roda em llama.cpp</b>. Precisa de vLLM/SGLang.
+</p>
+</blockquote>
+
+<blockquote >
+<p>
+Daniel Lougen (M.S.): "ZAYA1-8B usa até <b>5.5M tokens por problema</b> pra chegar nos benchmarks. DeepSeek-R1? ~23K tokens. Isso é 240x mais compute em inferência. O framing de '4B active' soa eficiente, mas o resultado vem queimando test-time compute que outros modelos não precisam."
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-orgd319e83">
+<h2 id="orgd319e83">Fofoca: Mythos vs GPT-5.5 Cyber</h2>
+<blockquote >
+<p>
+AISI (UK) testou os dois modelos em cybersecurity:
+</p>
+
+<ul>
+<li>GPT-5.5: 71.4% (tarefas Expert)</li>
+<li>Mythos Preview: 68.6% (margem de erro se sobrepõe)</li>
+
+</ul>
+
+<p>
+Mythos resolveu ataque end-to-end em 3/10 tentativas. GPT-5.5 em 2/10.
+</p>
+
+<p>
+O detalhe: Mythos é acesso restrito (11 parceiros). GPT-5.5 é público.
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-orgf85f323">
+<h2 id="orgf85f323">Por que Python?</h2>
+<ul>
 <li><b>Sintaxe simples</b> → parece pseudocódigo</li>
 <li><b>Bibliotecas</b> → milhões de pacotes prontos</li>
 <li><b>Comunidade</b> → documentação em todo lugar</li>
+<li><b>O ecossistema de IA vive em Python</b> → Gemini, HuggingFace, Anthropic — todos lançam API primeiro em Python</li>
 
-</ol>
+</ul>
 </section>
 </section>
 <section>
-<section id="slide-org194ecb1">
-<h2 id="org194ecb1">O mínimo que você precisa saber</h2>
-<div class="outline-text-2" id="text-org194ecb1">
-</div>
-</section>
-<section id="slide-orgac34f5e">
-<h3 id="orgac34f5e">Variáveis</h3>
+<section id="slide-orgef3ea43">
+<h2 id="orgef3ea43">Variáveis</h2>
 <div class="org-src-container">
 
 <pre   ><code class="python" >nome = "Maria"      # texto (string)
 idade = 25          # número inteiro (int)
 altura = 1.70       # número decimal (float)
 estudante = True    # verdadeiro/falso (bool)
+
+# F-strings
+mensagem = f"{nome} tem {idade} anos"
 </code></pre>
 </div>
 </section>
-<section id="slide-org97049bf">
-<h3 id="org97049bf">Listas</h3>
+</section>
+<section>
+<section id="slide-orge0c013f">
+<h2 id="orge0c013f">Listas e Dicionários</h2>
 <div class="org-src-container">
 
-<pre   ><code class="python" >frutas = ["maçã", "banana", "laranja"]
-frutas.append("uva")       # adiciona
-frutas[0]                  # "maçã" (primeiro)
-frutas[-1]                 # "uva" (último)
+<pre   ><code class="python" ># Lista: sequência ordenada
+frutas = ["maçã", "banana", "laranja"]
+frutas.append("uva")
+frutas[0]    # "maçã"
+frutas[-1]   # "uva"
+
+# Dicionário: pares chave-valor
+pessoa = {"nome": "João", "idade": 30}
+pessoa["nome"]           # "João"
+pessoa["idade"] = 31     # atualiza
+pessoa["cidade"] = "BH"  # adiciona
 </code></pre>
 </div>
 </section>
-<section id="slide-orgea2b995">
-<h3 id="orgea2b995">Funções</h3>
+</section>
+<section>
+<section id="slide-org6786472">
+<h2 id="org6786472">Funções</h2>
 <div class="org-src-container">
 
-<pre   ><code class="python" >def saudar(nome):
-    return f"Olá, {nome}!"
+<pre   ><code class="python" >def saudar(nome, saudacao="Olá"):
+    return f"{saudacao}, {nome}!"
 
-saudar("João")  # "Olá, João!"
+saudar("Maria")        # "Olá, Maria!"
+saudar("João", "Oi")  # "Oi, João!"
 </code></pre>
 </div>
 </section>
-<section id="slide-org79ad2a7">
-<h3 id="org79ad2a7">Condicionais</h3>
+</section>
+<section>
+<section id="slide-orgefc1709">
+<h2 id="orgefc1709">Condicionais</h2>
 <div class="org-src-container">
 
 <pre   ><code class="python" >if idade &gt;= 18:
     print("Maior de idade")
+elif idade &gt;= 12:
+    print("Adolescente")
 else:
-    print("Menor de idade")
+    print("Criança")
 </code></pre>
 </div>
 </section>
 </section>
 <section>
-<section id="slide-orgc659c1a">
-<h2 id="orgc659c1a">O que é uma API?</h2>
-<p class="fragment (appear)">
-API = Interface de Programação de Aplicações
-</p>
-
-<p class="fragment (appear)">
-#+begin<sub>quote</sub>
-Você manda uma mensagem (request)
-O servidor processa
-Ele devolve uma resposta (response)
-#+end<sub>quote</sub>&gt;
-</p>
-</section>
-<section id="slide-org1f02e31">
-<h3 id="org1f02e31">Analogia restaurante</h3>
-<ul>
-<li class="fragment appear">Você → garçom → <b>API</b> → cozinha → resposta (prato)</li>
-
-</ul>
-</section>
-</section>
-<section>
-<section id="slide-org4009acb">
-<h2 id="org4009acb">API de LLM</h2>
-<p>
-Para usar um LLM via API:
-</p>
-
-<ol>
-<li class="fragment appear">Você manda um prompt</li>
-<li class="fragment appear">O modelo processa</li>
-<li class="fragment appear">Devolve a resposta</li>
-
-</ol>
-
+<section id="slide-org602969a">
+<h2 id="org602969a">Loops</h2>
 <div class="org-src-container">
 
-<pre   ><code class="python" ># Conceito (não roda assim):
-resposta = llm.perguntar("Quanto é 2 + 2?")
-# resposta = "4"
+<pre   ><code class="python" ># Iterar em lista
+for fruta in frutas:
+    print(fruta)
+
+# Range
+for i in range(5):
+    print(i)  # 0, 1, 2, 3, 4
+
+# While
+count = 0
+while count &lt; 3:
+    print(count)
+    count += 1
 </code></pre>
 </div>
 </section>
 </section>
 <section>
-<section id="slide-org7ef2c43">
-<h2 id="org7ef2c43">Google Colab</h2>
-<p class="fragment (appear)">
-Colab = Jupyter Notebook na nuvem
-</p>
-
-<p>
-<b><b>Vantagens:</b></b>
-</p>
-<ul>
-<li>Não precisa instalar nada</li>
-<li>Roda no navegador</li>
-<li>Grátis (com limites)</li>
-
-</ul>
-</section>
-<section id="slide-org4900304">
-<h3 id="org4900304">Como usar</h3>
+<section id="slide-orgb667167">
+<h2 id="orgb667167">🔴 Demo: Python no Colab (3 min)</h2>
 <ol>
-<li class="fragment appear">Acesse colab.research.google.com</li>
-<li class="fragment appear">Crie um novo notebook</li>
-<li class="fragment appear">Digite código em células</li>
-<li class="fragment appear">Execute com Shift+Enter</li>
+<li>Abrir <code>luksamuk.codes/pages/guilda-ia</code> → Semana 03</li>
 
 </ol>
-</section>
-</section>
-<section>
-<section id="slide-orge988c82">
-<h2 id="orge988c82">Para lembrar</h2>
-<blockquote  class="fragment (appear)">
+
+<blockquote >
 <p>
-"Python é a ferramenta.
-API é a ponte.
-O LLM é o cérebro."
+Colab abre em modo SOMENTE LEITURA. Faça "Arquivo → Salvar uma cópia no Drive" antes de editar.
 </p>
 </blockquote>
 </section>
 </section>
 <section>
-<section id="slide-org4e33548">
-<h2 id="org4e33548">Próxima semana</h2>
+<section id="slide-org8c4e830">
+<h2 id="org8c4e830">Para Lembrar</h2>
+<blockquote >
+<p>
+"Python é a ferramenta.
+O LLM é o cérebro.
+A API é a ponte entre eles."
+</p>
+</blockquote>
+
 <ul>
-<li class="fragment appear">Estruturar nosso primeiro agente</li>
-<li class="fragment appear">Personalidade, memória, histórico</li>
-<li class="fragment appear">Classes em Python</li>
+<li><b>Variáveis, listas, dicts, funções</b> → base Python</li>
+<li><b>JSON</b> → o formato que APIs entendem</li>
+<li><b>Próxima aula</b> → requisições HTTP, APIs de LLM e chat com memória!</li>
 
 </ul>
 </section>
 </section>
 <section>
-<section id="slide-org0154560">
-<h2 id="org0154560">Perguntas?</h2>
+<section id="slide-org2791728" data-background="./slide_03.gif">
+<h2 id="org2791728">Perguntas?</h2>
 </section>
 </section>
 </div>
