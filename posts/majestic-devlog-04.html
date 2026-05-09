@@ -266,55 +266,55 @@ gtag('config', 'G-22RF3F5XE0');
 <h2>&Iacute;ndice</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org4fa4871">Alguns conceitos antes de começarmos</a>
+<li><a href="#orge445f81">Alguns conceitos antes de começarmos</a>
 <ul>
-<li><a href="#org5b949b2">Notação auxiliar</a></li>
+<li><a href="#org7a992a5">Notação auxiliar</a></li>
 </ul>
 </li>
-<li><a href="#orgcb3ef5f">Funções principais do interpretador</a>
+<li><a href="#orgb10bea8">Funções principais do interpretador</a>
 <ul>
-<li><a href="#org8b78b84">Eval</a>
+<li><a href="#org61a20be">Eval</a>
 <ul>
-<li><a href="#orgd0be759">Iniciando a função</a></li>
-<li><a href="#org54eac2b">Expressões auto-interpretáveis</a></li>
-<li><a href="#org58c823d">Símbolos</a></li>
-<li><a href="#orgb51ed44">Quoting</a></li>
-<li><a href="#org411e689">Clausuras</a></li>
-<li><a href="#orga74ce00">Condicionais</a></li>
-<li><a href="#orgf336ce7">Definições de valores</a></li>
-<li><a href="#org90b5c5d">Aplicação de funções</a></li>
+<li><a href="#orgbccc8bd">Iniciando a função</a></li>
+<li><a href="#orgdaef255">Expressões auto-interpretáveis</a></li>
+<li><a href="#org1a29a92">Símbolos</a></li>
+<li><a href="#org49ea310">Quoting</a></li>
+<li><a href="#org8f53de8">Clausuras</a></li>
+<li><a href="#org4825d82">Condicionais</a></li>
+<li><a href="#orgb27fa7d">Definições de valores</a></li>
+<li><a href="#org6763619">Aplicação de funções</a></li>
 </ul>
 </li>
-<li><a href="#org3b2457f">Apply</a>
+<li><a href="#org4dc5c71">Apply</a>
 <ul>
-<li><a href="#org7de2c88">Iniciando a função</a></li>
-<li><a href="#orgde048a5">Aplicação de primitivas</a></li>
-<li><a href="#org63ee7ce">Aplicação de clausuras</a></li>
-<li><a href="#org91d277c">Outras disposições</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#org9849274">Funções auxiliares</a>
-<ul>
-<li><a href="#org2143a79">Evlist</a></li>
-<li><a href="#orgfcd40b7">Evcond</a></li>
-<li><a href="#org19db337">Contextos</a>
-<ul>
-<li><a href="#orgba90418">Ligação entre símbolos e valores</a></li>
-<li><a href="#orgb5a9d99">Consulta</a></li>
-<li><a href="#org291dfba">Definição de variáveis</a></li>
+<li><a href="#org76898e3">Iniciando a função</a></li>
+<li><a href="#orgf73fb1b">Aplicação de primitivas</a></li>
+<li><a href="#orgce0d96c">Aplicação de clausuras</a></li>
+<li><a href="#org5e7ac78">Outras disposições</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgbdd7a94">Testando o interpretador</a>
+<li><a href="#orgac2f5da">Funções auxiliares</a>
 <ul>
-<li><a href="#orgffdf594">Contexto global</a></li>
-<li><a href="#org76efb34">Testes</a></li>
+<li><a href="#org2b7acd3">Evlist</a></li>
+<li><a href="#org652ef6d">Evcond</a></li>
+<li><a href="#orga883911">Contextos</a>
+<ul>
+<li><a href="#org23b1efd">Ligação entre símbolos e valores</a></li>
+<li><a href="#org52d642e">Consulta</a></li>
+<li><a href="#orged381cf">Definição de variáveis</a></li>
 </ul>
 </li>
-<li><a href="#org233ae33">Conclusão</a></li>
+</ul>
+</li>
+<li><a href="#org18397c0">Testando o interpretador</a>
+<ul>
+<li><a href="#orgf226ce2">Contexto global</a></li>
+<li><a href="#org882c34b">Testes</a></li>
+</ul>
+</li>
+<li><a href="#org3ef4c87">Conclusão</a></li>
 </ul>
 </div>
 </div>
@@ -334,14 +334,14 @@ ver com a ideia de testá-la.
 </p>
 
 
-<div id="orgb55ddc6" class="figure">
+<div id="org5392487" class="figure">
 <p><img src="./img/metacircular_sicp.svg" alt="metacircular_sicp.svg" class="org-svg" />
 </p>
 <p><span class="figure-number">Figura 1: </span>Representação visual de um interpretador metacircular.<br/>Fonte: <a href="https://sarabander.github.io/sicp/html/4_002e1.xhtml">Structure and Interpretation of Computer Programs</a> (editado).</p>
 </div>
-<div id="outline-container-org4fa4871" class="outline-2">
-<h2 id="org4fa4871">Alguns conceitos antes de começarmos</h2>
-<div class="outline-text-2" id="text-org4fa4871">
+<div id="outline-container-orge445f81" class="outline-2">
+<h2 id="orge445f81">Alguns conceitos antes de começarmos</h2>
+<div class="outline-text-2" id="text-orge445f81">
 <p>
 De acordo com  a Wiki Wiki Web<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>, um  interpretador metacircular é
 um  interpretador  escrito na  mesma  linguagem  que interpreta.  Para
@@ -365,9 +365,9 @@ zero, mas sim uma  abstração em alto nível de uma  linguagem (ou de um
 <i>subset</i> dela), feita nela mesma.
 </p>
 </div>
-<div id="outline-container-org5b949b2" class="outline-3">
-<h3 id="org5b949b2">Notação auxiliar</h3>
-<div class="outline-text-3" id="text-org5b949b2">
+<div id="outline-container-org7a992a5" class="outline-3">
+<h3 id="org7a992a5">Notação auxiliar</h3>
+<div class="outline-text-3" id="text-org7a992a5">
 <p>
 O interpretador metacircular nada mais é  que testes feitos em cima de
 expressões  de  Lisp, no  nosso  caso  S-expressions, que  na  verdade
@@ -423,9 +423,9 @@ uma função auxiliar do interpretador, por exemplo.
 </div>
 </div>
 </div>
-<div id="outline-container-orgcb3ef5f" class="outline-2">
-<h2 id="orgcb3ef5f">Funções principais do interpretador</h2>
-<div class="outline-text-2" id="text-orgcb3ef5f">
+<div id="outline-container-orgb10bea8" class="outline-2">
+<h2 id="orgb10bea8">Funções principais do interpretador</h2>
+<div class="outline-text-2" id="text-orgb10bea8">
 <p>
 O  nosso  interpretador  é,  na verdade,  uma  aplicação  extremamente
 simples:  vamos definir  duas  funções, chamadas  <code>eval.</code>  e <code>apply.</code>  (os
@@ -438,9 +438,9 @@ Nos próximos passos, nós vamos programar ambas essas funções, cláusula
 por cláusula.
 </p>
 </div>
-<div id="outline-container-org8b78b84" class="outline-3">
-<h3 id="org8b78b84">Eval</h3>
-<div class="outline-text-3" id="text-org8b78b84">
+<div id="outline-container-org61a20be" class="outline-3">
+<h3 id="org61a20be">Eval</h3>
+<div class="outline-text-3" id="text-org61a20be">
 <p>
 A  função <code>eval.</code>  nada  mais é  que  uma análise  de  casos; em  outras
 palavras, um encadeamento de verificações de condições e despachos com
@@ -477,9 +477,9 @@ A função completa é extremamente sucinta:
 Vamos esmiuçar a sua programação.
 </p>
 </div>
-<div id="outline-container-orgd0be759" class="outline-4">
-<h4 id="orgd0be759">Iniciando a função</h4>
-<div class="outline-text-4" id="text-orgd0be759">
+<div id="outline-container-orgbccc8bd" class="outline-4">
+<h4 id="orgbccc8bd">Iniciando a função</h4>
+<div class="outline-text-4" id="text-orgbccc8bd">
 <p>
 Aqui, realizaremos a avaliação da expressão  <code>exp</code> sob o contexto <code>env</code>. O
 contexto  é  algo  como  uma tabela  de  relações  \(\textrm{símbolo}\,
@@ -495,9 +495,9 @@ criada usando apenas S-expressions.
 </div>
 </div>
 </div>
-<div id="outline-container-org54eac2b" class="outline-4">
-<h4 id="org54eac2b">Expressões auto-interpretáveis</h4>
-<div class="outline-text-4" id="text-org54eac2b">
+<div id="outline-container-orgdaef255" class="outline-4">
+<h4 id="orgdaef255">Expressões auto-interpretáveis</h4>
+<div class="outline-text-4" id="text-orgdaef255">
 <p>
 Alguns tipos  de S-expressions,  quando interpretadas, resultam  em si
 mesmas.      Chamamos     estas    S-expressions     de     expressões
@@ -525,9 +525,9 @@ e não tocaremos em suas definições.
 </div>
 </div>
 </div>
-<div id="outline-container-org58c823d" class="outline-4">
-<h4 id="org58c823d">Símbolos</h4>
-<div class="outline-text-4" id="text-org58c823d">
+<div id="outline-container-org1a29a92" class="outline-4">
+<h4 id="org1a29a92">Símbolos</h4>
+<div class="outline-text-4" id="text-org1a29a92">
 <p>
 Se a expressão  em questão for um símbolo, então  retornaremos o valor
 que estiver associado ao símbolo. Não  vamos nos preocupar agora com o
@@ -552,9 +552,9 @@ melhor esta possibilidade mais tarde.
 </div>
 </div>
 </div>
-<div id="outline-container-orgb51ed44" class="outline-4">
-<h4 id="orgb51ed44">Quoting</h4>
-<div class="outline-text-4" id="text-orgb51ed44">
+<div id="outline-container-org49ea310" class="outline-4">
+<h4 id="org49ea310">Quoting</h4>
+<div class="outline-text-4" id="text-org49ea310">
 <p>
 Se a  expressão for uma lista  adequada cujo primeiro elemento  seja o
 símbolo  <code>quote</code>, então  sua  interpretação é  o  segundo símbolo.  Isto
@@ -584,9 +584,9 @@ interessante  pensar  que  o  leitor transformará  essa  expressão  em
 </div>
 </div>
 </div>
-<div id="outline-container-org411e689" class="outline-4">
-<h4 id="org411e689">Clausuras</h4>
-<div class="outline-text-4" id="text-org411e689">
+<div id="outline-container-org8f53de8" class="outline-4">
+<h4 id="org8f53de8">Clausuras</h4>
+<div class="outline-text-4" id="text-org8f53de8">
 <p>
 A  próxima   possibilidade  é  uma   forma  que  indique   uma  função
 anônima. Precisamos criar algum tipo  de objeto que descreva a função,
@@ -616,9 +616,9 @@ aqui, está contido na variável <code>env</code>.
 </div>
 </div>
 </div>
-<div id="outline-container-orga74ce00" class="outline-4">
-<h4 id="orga74ce00">Condicionais</h4>
-<div class="outline-text-4" id="text-orga74ce00">
+<div id="outline-container-org4825d82" class="outline-4">
+<h4 id="org4825d82">Condicionais</h4>
+<div class="outline-text-4" id="text-org4825d82">
 <p>
 Outra  possibilidade é  a  condicional  <code>cond</code>. Originalmente,  Majestic
 implementa <code>cond</code> como um <i>macro</i> que utiliza <code>if</code> por baixo dos panos. Aqui
@@ -664,9 +664,9 @@ adequada dele sob o <i>contexto</i> <code>env</code>.
 </div>
 </div>
 </div>
-<div id="outline-container-orgf336ce7" class="outline-4">
-<h4 id="orgf336ce7">Definições de valores</h4>
-<div class="outline-text-4" id="text-orgf336ce7">
+<div id="outline-container-orgb27fa7d" class="outline-4">
+<h4 id="orgb27fa7d">Definições de valores</h4>
+<div class="outline-text-4" id="text-orgb27fa7d">
 <p>
 Quando estamos lidando  com uma expressão iniciada por  <code>def</code>, esta será
 uma forma de  definir, globalmente, um valor \(y\) associado  a um certo
@@ -696,9 +696,9 @@ por parâmetro à  função em questão, e não o  valor definido através de
 </div>
 </div>
 </div>
-<div id="outline-container-org90b5c5d" class="outline-4">
-<h4 id="org90b5c5d">Aplicação de funções</h4>
-<div class="outline-text-4" id="text-org90b5c5d">
+<div id="outline-container-org6763619" class="outline-4">
+<h4 id="org6763619">Aplicação de funções</h4>
+<div class="outline-text-4" id="text-org6763619">
 <p>
 Até agora, tudo o que foi apresentado está relacionado ao que chamamos
 de  <i>formas   especiais</i>.  Estas   formas  são  formas   específicas  de
@@ -746,9 +746,9 @@ que abordaremos agora.
 </div>
 </div>
 </div>
-<div id="outline-container-org3b2457f" class="outline-3">
-<h3 id="org3b2457f">Apply</h3>
-<div class="outline-text-3" id="text-org3b2457f">
+<div id="outline-container-org4dc5c71" class="outline-3">
+<h3 id="org4dc5c71">Apply</h3>
+<div class="outline-text-3" id="text-org4dc5c71">
 <p>
 A função <code>apply.</code> é bem mais simples. Trata-se da mesma ideia de análise
 de  casos.  Porém,  aqui  vamos  tratar apenas  de  três situações  em
@@ -777,9 +777,9 @@ específico.
 Veremos agora sua construção passo-a-passo.
 </p>
 </div>
-<div id="outline-container-org7de2c88" class="outline-4">
-<h4 id="org7de2c88">Iniciando a função</h4>
-<div class="outline-text-4" id="text-org7de2c88">
+<div id="outline-container-org76898e3" class="outline-4">
+<h4 id="org76898e3">Iniciando a função</h4>
+<div class="outline-text-4" id="text-org76898e3">
 <p>
 <code>apply.</code> recebe  uma certa função  <code>proc</code> e  uma lista de  argumentos <code>args</code>
 como parâmetro.   Vamos assumir  que os  argumentos já  tenham passado
@@ -795,9 +795,9 @@ portanto de serem interpretados novamente antes de seu uso.
 </div>
 </div>
 </div>
-<div id="outline-container-orgde048a5" class="outline-4">
-<h4 id="orgde048a5">Aplicação de primitivas</h4>
-<div class="outline-text-4" id="text-orgde048a5">
+<div id="outline-container-orgf73fb1b" class="outline-4">
+<h4 id="orgf73fb1b">Aplicação de primitivas</h4>
+<div class="outline-text-4" id="text-orgf73fb1b">
 <p>
 O primeiro passo  é avaliar se o procedimento em  questão é uma função
 primitiva. Em  Majestic, isso possui um  significado muito específico,
@@ -826,9 +826,9 @@ recurso subjacente da linguagem utilizada na programação.
 </div>
 </div>
 </div>
-<div id="outline-container-org63ee7ce" class="outline-4">
-<h4 id="org63ee7ce">Aplicação de clausuras</h4>
-<div class="outline-text-4" id="text-org63ee7ce">
+<div id="outline-container-orgce0d96c" class="outline-4">
+<h4 id="orgce0d96c">Aplicação de clausuras</h4>
+<div class="outline-text-4" id="text-orgce0d96c">
 <p>
 Caso o procedimento  em questão seja uma função  definida pelo usuário
 &#x2013; uma <i>clausura</i> &#x2013;, então teremos uma forma bem explícita de lidar com
@@ -872,9 +872,9 @@ especial da operação  \(e\) definida acima. Em  outras palavras, \(v[\texttt{E
 </div>
 </div>
 </div>
-<div id="outline-container-org91d277c" class="outline-4">
-<h4 id="org91d277c">Outras disposições</h4>
-<div class="outline-text-4" id="text-org91d277c">
+<div id="outline-container-org5e7ac78" class="outline-4">
+<h4 id="org5e7ac78">Outras disposições</h4>
+<div class="outline-text-4" id="text-org5e7ac78">
 <p>
 Poderiam ocorrer outros casos  de aplicação no interpretador. Todavia,
 isto não ocorre aqui.
@@ -894,17 +894,17 @@ a primitiva <code>err</code> de Majestic para propagar tal erro quando ocorrer.
 </div>
 </div>
 </div>
-<div id="outline-container-org9849274" class="outline-2">
-<h2 id="org9849274">Funções auxiliares</h2>
-<div class="outline-text-2" id="text-org9849274">
+<div id="outline-container-orgac2f5da" class="outline-2">
+<h2 id="orgac2f5da">Funções auxiliares</h2>
+<div class="outline-text-2" id="text-orgac2f5da">
 <p>
 As funções  que descrevo a  seguir são auxiliares, portanto  não serei
 muito rigoroso, só explicarei por alto o que fazem.
 </p>
 </div>
-<div id="outline-container-org2143a79" class="outline-3">
-<h3 id="org2143a79">Evlist</h3>
-<div class="outline-text-3" id="text-org2143a79">
+<div id="outline-container-org2b7acd3" class="outline-3">
+<h3 id="org2b7acd3">Evlist</h3>
+<div class="outline-text-3" id="text-org2b7acd3">
 <p>
 Interpreta  uma  lista de  expressões,  retornando  uma lista  com  os
 resultados das interpretações. Simples assim.
@@ -921,9 +921,9 @@ resultados das interpretações. Simples assim.
 </div>
 </div>
 </div>
-<div id="outline-container-orgfcd40b7" class="outline-3">
-<h3 id="orgfcd40b7">Evcond</h3>
-<div class="outline-text-3" id="text-orgfcd40b7">
+<div id="outline-container-org652ef6d" class="outline-3">
+<h3 id="org652ef6d">Evcond</h3>
+<div class="outline-text-3" id="text-org652ef6d">
 <p>
 A ideia é  simples: O corpo de  <code>cond</code> é composto de \(n\)  listas de dois
 elementos.  Os  elementos  são,  respectivamente, um  <i>predicado</i>  e  um
@@ -955,9 +955,9 @@ Se não houver mais listas a serem varridas, <code>nil</code> é retornado.
 </div>
 </div>
 </div>
-<div id="outline-container-org19db337" class="outline-3">
-<h3 id="org19db337">Contextos</h3>
-<div class="outline-text-3" id="text-org19db337">
+<div id="outline-container-orga883911" class="outline-3">
+<h3 id="orga883911">Contextos</h3>
+<div class="outline-text-3" id="text-orga883911">
 <p>
 O  próximo  tópico   auxiliar  é  o  gerenciamento   de  contextos  de
 interpretação,   relacionados  à   notação  \(e[...]\)   que  utilizamos
@@ -970,9 +970,9 @@ vazio.  E  geralmente,  esses  contextos  são  criados  ou  estendidos
 temporariamente durante a aplicação de clausuras, funções do usuário.
 </p>
 </div>
-<div id="outline-container-orgba90418" class="outline-4">
-<h4 id="orgba90418">Ligação entre símbolos e valores</h4>
-<div class="outline-text-4" id="text-orgba90418">
+<div id="outline-container-org23b1efd" class="outline-4">
+<h4 id="org23b1efd">Ligação entre símbolos e valores</h4>
+<div class="outline-text-4" id="text-org23b1efd">
 <p>
 As funções auxiliares  <code>bind.</code> e <code>pair-up.</code> são responsáveis  por ligar um
 conjunto de  variáveis a  seus respectivos valores,  e então  criar um
@@ -1008,9 +1008,9 @@ contexto antigo (sem modificá-lo).
 </div>
 </div>
 </div>
-<div id="outline-container-orgb5a9d99" class="outline-4">
-<h4 id="orgb5a9d99">Consulta</h4>
-<div class="outline-text-4" id="text-orgb5a9d99">
+<div id="outline-container-org52d642e" class="outline-4">
+<h4 id="org52d642e">Consulta</h4>
+<div class="outline-text-4" id="text-org52d642e">
 <p>
 A consulta de um símbolo em um contexto nada mais é que varrer cada um
 de seus <i>frames</i> e, nestes <i>frames</i>, procurar nos pares de variáveis se há
@@ -1050,9 +1050,9 @@ correspondente.
 </div>
 </div>
 </div>
-<div id="outline-container-org291dfba" class="outline-4">
-<h4 id="org291dfba">Definição de variáveis</h4>
-<div class="outline-text-4" id="text-org291dfba">
+<div id="outline-container-orged381cf" class="outline-4">
+<h4 id="orged381cf">Definição de variáveis</h4>
+<div class="outline-text-4" id="text-orged381cf">
 <p>
 Durante o  uso da  forma especial  <code>def</code>, o  que se  faz é  modificar um
 contexto inicial, que aqui armazenaremos na variável <code>*env*</code>, sendo esta
@@ -1083,17 +1083,17 @@ apontar para esse novo contexto, sendo, portanto, <b>modificado</b>.
 </div>
 </div>
 </div>
-<div id="outline-container-orgbdd7a94" class="outline-2">
-<h2 id="orgbdd7a94">Testando o interpretador</h2>
-<div class="outline-text-2" id="text-orgbdd7a94">
+<div id="outline-container-org18397c0" class="outline-2">
+<h2 id="org18397c0">Testando o interpretador</h2>
+<div class="outline-text-2" id="text-org18397c0">
 <p>
 Agora que  temos todas as  partes do interpretador,  basta realizarmos
 testes com ele.
 </p>
 </div>
-<div id="outline-container-orgffdf594" class="outline-3">
-<h3 id="orgffdf594">Contexto global</h3>
-<div class="outline-text-3" id="text-orgffdf594">
+<div id="outline-container-orgf226ce2" class="outline-3">
+<h3 id="orgf226ce2">Contexto global</h3>
+<div class="outline-text-3" id="text-orgf226ce2">
 <p>
 Vamos começar  definindo o  contexto global, <code>*env*</code>.  Definimos algumas
 funções essenciais.
@@ -1134,9 +1134,9 @@ metacircular.
 </div>
 </div>
 </div>
-<div id="outline-container-org76efb34" class="outline-3">
-<h3 id="org76efb34">Testes</h3>
-<div class="outline-text-3" id="text-org76efb34">
+<div id="outline-container-org882c34b" class="outline-3">
+<h3 id="org882c34b">Testes</h3>
+<div class="outline-text-3" id="text-org882c34b">
 <p>
 Os testes em si podem ser  feitos diretamente através do uso da função
 <code>eval.</code>,   bastando  fornecer   o  contexto   <code>*env*</code>  como   contexto  de
@@ -1187,9 +1187,9 @@ v[(((fn (x) (fn (y) (+ x y))) 3) 4)] = 7
 </div>
 </div>
 </div>
-<div id="outline-container-org233ae33" class="outline-2">
-<h2 id="org233ae33">Conclusão</h2>
-<div class="outline-text-2" id="text-org233ae33">
+<div id="outline-container-org3ef4c87" class="outline-2">
+<h2 id="org3ef4c87">Conclusão</h2>
+<div class="outline-text-2" id="text-org3ef4c87">
 <p>
 O interpretador metacircular aqui produzido é uma versão modificada do
 interpretador construído  no <a href="https://sarabander.github.io/sicp/html/4_002e1.xhtml#g_t4_002e1">Structure and Interpretation  of Computer
