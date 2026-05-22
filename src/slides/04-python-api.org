@@ -10,12 +10,35 @@
 #+OPTIONS: toc:nil num:nil
 #+REVEAL_TITLE_SLIDE: <p style="font-size:0.7em;opacity:0.6;">%a</p><br/><h2>%t</h2><br/><p style="font-size:0.85em;opacity:0.8;">%s</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 #+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_04.gif
-#+HTML_HEAD_EXTRA: <style>.reveal .slides > section { background-image: url('./slide_04.gif'); background-size: cover; }</style>
+#+HTML_HEAD_EXTRA: <style>.reveal .slide-background { background-size: cover !important; background-position: center !important; }</style>
 
 * 📰 Fofocas da Semana
 
 #+ATTR_HTML: :style font-size:0.6em;text-align:left;
-- *Nova aula, novas fofocas* → atualizar na hora da aula!
+- *Microsoft cancela licenças do Claude Code* — billing por token ficou inviável, mesmo pra eles
+- *Uber queimou orçamento de IA de 2026 inteiro* em semanas — CTO mandou memo interno
+- *Qwen 3.7 Max* — novo modelo da Alibaba, topo da linha
+- *Tencent Hy-MT2* — modelo de tradução 1.8B que bate APIs comerciais; testamos ontem vs TranslateGemma
+
+* Fofoca: Microsoft + Uber gastaram demais com IA
+
+#+HTML: <blockquote style="font-size:0.55em;text-align:left;">
+Microsoft cancelou licenças internas do Claude Code esta semana — o billing por token tornou o custo inviável, mesmo pra uma empresa com recursos de cloud praticamente infinitos.
+#+HTML: </blockquote>
+
+#+HTML: <blockquote style="font-size:0.55em;text-align:left;">
+O CTO da Uber mandou memo interno: a empresa queimou o orçamento de IA de 2026 inteiro em semanas. Token-based billing sem limites = risco real pra empresas.
+#+HTML: </blockquote>
+
+* Fofoca: Tencent Hy-MT2 vs TranslateGemma
+
+#+HTML: <blockquote style="font-size:0.55em;text-align:left;">
+Tencent lançou Hy-MT2-1.8B: modelo de tradução de 1.8B parâmetros que supera APIs comerciais (Microsoft Translator, Doubao). 33 línguas + 5 dialetos. GGUF com 1.1GB.
+#+HTML: </blockquote>
+
+#+HTML: <blockquote style="font-size:0.55em;text-align:left;">
+Testamos ontem: Hy-MT2 é ~1.5x mais rápida que TranslateGemma 4B (67 vs 46 tok/s), mas TranslateGemma lida melhor com gíria PT-BR. Hy-MT2 traduz literal demais em expressões culturais.
+#+HTML: </blockquote>
 
 * Recap: Semana 03
 
@@ -42,6 +65,7 @@ Entender HTTP = entender todas as APIs de LLM.
 
 * Cloud vs Local
 
+#+ATTR_HTML: :style font-size:0.7em;
 | Aspecto | Cloud (Gemini) | Local (Ollama) |
 |---------+---------------+----------------|
 | Setup | API key (2 min) | Install + download |
@@ -107,6 +131,7 @@ System prompt = "Você é um tutor de Python." → muda completamente o comporta
 
 * Tratamento de Erros
 
+#+ATTR_HTML: :style font-size:0.7em;
 | Código | Significado | O que fazer |
 |--------+-------------+-------------|
 | 401 | Não autorizado | Verificar API key |
