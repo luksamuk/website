@@ -13,6 +13,11 @@ cp -r \
    docs/pages/
 
 # Copy nested img directories for sub-pages
+# Ensure target parent dir exists first — cp -r behaves differently
+# depending on whether the destination dir exists or not:
+#   exists:   cp -r img  dest/  →  dest/img/  (correct)
+#   missing:  cp -r img  dest/  →  dest/       (files in wrong place!)
+mkdir -p docs/pages/guilda-ia
 cp -r src/pages/guilda-ia/img docs/pages/guilda-ia/ 2>/dev/null || true
 
 cp -r \
