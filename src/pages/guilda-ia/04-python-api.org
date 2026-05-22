@@ -12,45 +12,110 @@ Na semana passada ([[./03-python-minimo.org][Python Mínimo]]), aprendemos os fu
 
 Agora vamos colocar a mão na massa: conectar nosso código Python a modelos de linguagem reais usando APIs.
 
+* Preparação e Setup
 
-* APIs de LLM: Opções Gratuitas
-
-** Visão Geral
-
-|| Provedor | Gratuito? | Limite | Onde roda |
-||----------+-----------+--------+-----------|
-|| Google Gemini | ✅ Sim | 1M tokens/dia | Cloud (Colab) |
-|| HuggingFace | ✅ Sim | Rate limit | Cloud (Colab) |
-|| OpenRouter | ✅ Sim* | Crédito inicial | Cloud (Colab) |
-|| Ollama | ✅ Sim | Ilimitado | Local (GPU) |
-|| LM Studio | ✅ Sim | Ilimitado | Local (GUI) |
-|| OpenAI | ❌ Pago | Por uso | Cloud |
+Antes de escrever qualquer código, precisamos preparar o ambiente. O conceito-chave desta aula é:
 
 #+begin_quote
-Para o curso: use Gemini ou HuggingFace no Colab!
+*Toda API de LLM funciona com o mesmo padrão:* você manda um JSON via HTTP e recebe um JSON de volta. Muda a URL, muda o formato, mas o conceito é universal. Entender HTTP = entender todas as APIs de LLM.
 #+end_quote
 
-* Opção 1: Google Gemini (Recomendado)
+** O que você precisa ter
+
+| Item | Cloud (Gemini) | Local (Ollama) |
+|------+-----------------+-----------------|
+| Conta Google | ✅ Obrigatório | ❌ Não precisa |
+| GPU | ❌ Não precisa | ✅ Recomendado (T4 ou superior) |
+| Internet | ✅ Sempre | ⚠️ Só pra baixar o modelo |
+| API key | ✅ Sim (grátis) | ❌ Não precisa |
+| Python 3.10+ | ✅ Sim | ✅ Sim |
+| Biblioteca =requests= | ✅ Sim | ✅ Sim |
+
+#+begin_quote
+*Recomendação:* Comece pelo Gemini (setup rápido, sem GPU). Depois experimente o Ollama no Colab para entender como funciona localmente.
+#+end_quote
+
+** Conta Google e API key do Gemini
+
+#+CAPTION: Google AI Studio — Playground principal
+[[./img/s04-aistudio-home.png]]
+
+1. Acesse o Google AI Studio: https://aistudio.google.com
+2. Faça login com sua conta Google
+3. No menu lateral, clique em *"Get API Key"*
+
+#+CAPTION: Página de gerenciamento de chaves de API
+[[./img/s04-aistudio-apikey-page.png]]
+
+4. Clique em *"Criar chave de API"*
+
+#+CAPTION: Dialog para criar uma nova chave
+[[./img/s04-aistudio-create-dialog.png]]
+
+5. Escolha um projeto do Google Cloud (ou crie um novo)
+6. *Copie a chave e guarde bem!*
+
+#+CAPTION: Chave criada — copie e armazene em local seguro!
+[[./img/s04-apikey-created.png]]
+
+#+begin_quote
+⚠️ API key é **SECRETA**. Nunca compartilhe, nunca publique no GitHub, nunca cole em chat público.
+#+end_quote
+
+** Google Colab
+
+O Colab é um ambiente Python gratuito no navegador que vamos usar durante a aula.
+
+- Acesse: https://colab.research.google.com
+- Crie um novo notebook (=Arquivo → Novo notebook=)
+- Para usar GPU: =Runtime → Change runtime type → T4 GPU= (necessário para Ollama)
+- Para guardar a API key com segurança: use o *Secrets* do Colab (=🔑 ícone na barra lateral=)
+
+#+begin_quote
+*Onde guardar a API key no Colab:* No painel lateral, clique no ícone 🔑 (Secrets). Adicione uma chave chamada =GEMINI_API_KEY= com o valor da sua API key. Nunca escreva a chave diretamente no código!
+#+end_quote
+
+** Instalando dependências
+
+No Colab ou local, você vai precisar de:
+
+#+BEGIN_SRC python
+# Cloud (Gemini) — SDK oficial do Google
+pip install google-genai
+
+# Local (Ollama) — apenas requests, que já vem com Python
+pip install requests
+#+END_SRC
+
+#+begin_quote
+*No Colab:* Use =!pip install= (com exclamação) no início da célula. Locally, use o terminal normalmente.
+#+end_quote
+
+** Outras opções (referência)
+
+Além de Gemini e Ollama, existem outros provedores que usam o mesmo padrão HTTP:
+
+| Provedor | Gratuito? | API key | Observação |
+|----------+-----------+---------+------------|
+| HuggingFace | Rate limit | Sim (HF Token) | Vários modelos, bom para experimentar |
+| OpenRouter | Crédito inicial | Sim | Agregador de modelos, tem modelos =:free= |
+| Nous Portal | Rate limit | Sim | Acesso a modelos da Nous Research |
+| OpenCode Go | — | Sim | CLI/SDK para múltiplos provedores |
+| OpenAI | ❌ Pago | Sim | Referência de mercado, custo por uso |
+| LM Studio | Ilimitado | Não (local) | Interface gráfica, mesma API do Ollama |
+
+#+begin_quote
+Esses provedores são *opções extras para quem quiser explorar depois*. Na aula, vamos focar em **Gemini** (cloud) e **Ollama** (local).
+#+end_quote
+
+* Opção 1: Google Gemini (Cloud)
 
 ** Por que Gemini?
 
 - **1 milhão de tokens/dia gratuito**
-- Funciona direto no Google Colab
+- Funciona direto no Google Colab, sem GPU
 - Modelos rápidos e capazes
 - API key gratuita
-
-** Como obter API key
-
-1. Acesse: https://aistudio.google.com
-2. Faça login com sua conta Google
-3. Clique em *"Get API Key"* no menu lateral
-4. Clique em *"Create API Key"*
-5. Escolha um projeto (ou crie um novo)
-6. *Copie a chave e guarde bem!*
-
-#+begin_quote
-⚠️ API key é SECRETA. Nunca compartilhe ou publique no GitHub!
-#+end_quote
 
 ** Modelos disponíveis
 
@@ -184,541 +249,336 @@ while True:
     print(f"IA: {resposta.text}\n")
 #+END_SRC
 
-* Opção 2: HuggingFace
+* Opção 2: Ollama no Google Colab (Local)
 
-** Por que HuggingFace?
+** Por que Ollama?
 
-- Gratuito com *rate limit*
-- Vários modelos disponíveis
-- Comunidade ativa
-- Alternativa ao Gemini
+- **Gratuito e ilimitado** — sem API key, sem limite de tokens
+- **Privacidade** — dados não saem da máquina
+- **API REST HTTP** — usa =requests.post()=, o mesmo padrão que qualquer API
+- **OpenAI-compatible** — =/v1/chat/completions= funciona como a API da OpenAI
 
-** Como obter token
+#+begin_quote
+*Ponto pedagógico:* Tanto Gemini quanto Ollama usam o mesmo padrão HTTP (request/response). A URL muda, o JSON muda um pouco, mas o conceito é universal. Entender HTTP = entender todas as APIs de LLM.
+#+end_quote
 
-1. Acesse: https://huggingface.co
-2. Crie uma conta gratuita
-3. Vá em *Settings → Access Tokens*
-4. Clique em *"New token"*
-5. Escolha *"Read"* como permissão
-6. *Copie o token!*
+** O que é Ollama?
 
-** Configuração no Colab
+Ollama é um servidor que roda modelos de linguagem localmente. Na prática:
+
+1. Você instala o Ollama
+2. Baixa um modelo (=ollama pull gemma4:e2b=)
+3. O Ollama fica servindo na porta 11434
+4. Qualquer programa pode fazer =requests.post()= para conversar com o modelo
+
+** Setup no Google Colab
+
+Essas 3 células preparam o ambiente. Execute na ordem:
 
 #+BEGIN_SRC python
-# Instalar
-!pip install huggingface_hub
-
-from huggingface_hub import InferenceClient
-from google.colab import userdata
-
-# Configurar cliente
-client = InferenceClient(
-    model="Qwen/Qwen2.5-7B-Instruct",
-    token=userdata.get('HF_TOKEN')
-)
+# Célula 1: Verificar GPU
+# Vá em Runtime → Change runtime type → T4 GPU
+!nvidia-smi
 #+END_SRC
 
-** Exemplo de uso
+#+BEGIN_SRC python
+# Célula 2: Instalar Ollama + dependências
+!apt-get install -y zstd pciutils lshw > /dev/null 2>&1
+!curl -fsSL https://ollama.com/install.sh | sh
+
+import os
+os.environ["LD_LIBRARY_PATH"] = "/usr/lib64-nvidia:" + os.environ.get("LD_LIBRARY_PATH", "")
+
+print("✅ Ollama instalado!")
+#+END_SRC
 
 #+BEGIN_SRC python
-# Texto simples
-response = client.text_generation(
-    "Olá! Como você está?",
-    max_new_tokens=100
-)
-print(response)
+# Célula 3: Iniciar servidor + baixar modelo
+import subprocess, time, requests
 
-# Com chat
-messages = [
-    {"role": "system", "content": "Você é um assistente útil."},
-    {"role": "user", "content": "Qual é a capital do Brasil?"}
+subprocess.run(["pkill", "-f", "ollama"], capture_output=True)
+time.sleep(1)
+
+# Manter modelo carregado indefinidamente (sem isso, descarrega após 5 min)
+os.environ["OLLAMA_KEEP_ALIVE"] = "-1"
+
+subprocess.Popen(
+    ["ollama", "serve"],
+    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+    env={**os.environ}
+)
+
+print("⏳ Aguardando Ollama iniciar...")
+for i in range(30):
+    try:
+        r = requests.get("http://localhost:11434/api/tags", timeout=2)
+        if r.status_code == 200:
+            print("✅ Ollama rodando!")
+            break
+    except:
+        time.sleep(1)
+
+# Baixar modelo (~7.2 GB para gemma4:e2b, ~2.7 GB para qwen3.5:4b)
+!ollama pull gemma4:e2b
+#+END_SRC
+
+#+begin_quote
+⚠️ *Warm up:* A primeira inferência demora ~2-3 minutos (o modelo carrega na GPU). Depois disso, as respostas são rápidas (~70 tokens/s). Configuramos =OLLAMA_KEEP_ALIVE=-1= para o modelo ficar na VRAM e não precisar recarregar.
+#+end_quote
+
+** Modelos recomendados (benchmarks na T4)
+
+| Modelo | Download | VRAM | Warm up | Velocidade | Qualidade |
+|--------+----------+------+---------+------------+-----------|
+| qwen3.5:4b | ~2.7 GB | ~3 GB | 141s | ~80 tok/s | Boa |
+| gemma4:e2b | ~7.2 GB | ~5-6 GB | 161s | ~70 tok/s | Boa (estável) |
+| qwen3.5:9b | ~5.8 GB | ~7.7 GB | 153s | ~25 tok/s | Boa (maior) |
+| gemma4:e4b | ~14 GB | ~9.4 GB | 199s | ~18 tok/s | Alta (lento) |
+
+#+begin_quote
+*Nota sobre modelos:* O =qwen3.5:4b= é o mais rápido e leve — ideal para aula. O =gemma4:e2b= é mais estável nas respostas. Modelos maiores (9B, E4B) cabem na T4 mas são significativamente mais lentos. Os tempos de warm up são reais, medidos em POC no Colab T4.
+#+end_quote
+
+** Chamada básica com =requests.post()=
+
+Aqui está o **coração da aula**: usamos =requests= puro, sem SDK.
+
+#+BEGIN_SRC python
+import requests
+import json
+
+OLLAMA_URL = "http://localhost:11434/api/chat"
+MODEL = "gemma4:e2b"
+
+def chat(messages, model=None, stream=False):
+    """Envia mensagens pro Ollama e retorna a resposta.
+
+    Args:
+        messages: lista [{"role": "...", "content": "..."}]
+        model: nome do modelo (padrão: gemma4:e2b)
+        stream: se True, retorna response object para iterar
+
+    Returns:
+        dict com a resposta (ou response se stream=True)
+    """
+    if model is None:
+        model = MODEL
+    payload = {"model": model, "messages": messages, "stream": stream, "keep_alive": -1}
+    response = requests.post(OLLAMA_URL, json=payload, timeout=300)
+    if response.status_code != 200:
+        raise Exception(f"Erro {response.status_code}: {response.text}")
+    return response if stream else response.json()
+
+# Teste
+resultado = chat([
+    {"role": "system", "content": "Você é um assistente útil. Responda em português."},
+    {"role": "user", "content": "Qual é a capital de Minas Gerais?"}
+])
+print(f"🤖 {resultado['message']['content']}")
+print(f"📊 Tokens: prompt={resultado.get('prompt_eval_count', '?')}, "
+      f"completion={resultado.get('eval_count', '?')}")
+#+END_SRC
+
+#+begin_quote
+*Compare com o Gemini:* A estrutura é quase idêntica — mandamos mensagens (system + user), recebemos uma resposta. A diferença é a URL e o formato do JSON. O conceito HTTP é o mesmo.
+#+end_quote
+
+** Chat com memória (multi-turno)
+
+Cada chamada envia o histórico completo. O modelo mantém o contexto.
+
+#+BEGIN_SRC python
+historico = [
+    {"role": "system", "content": "Você é um assistente útil. Responda em português. Seja conciso."}
 ]
 
-response = client.chat_completion(messages=messages)
-print(response.choices[0].message.content)
+historico.append({"role": "user", "content": "Meu nome é Lucas e eu ense IA."})
+r1 = chat(historico)
+historico.append({"role": "assistant", "content": r1["message"]["content"]})
+print(f"🤖: {r1['message']['content']}")
+
+historico.append({"role": "user", "content": "Qual é o meu nome?"})
+r2 = chat(historico)
+historico.append({"role": "assistant", "content": r2["message"]["content"]})
+print(f"🤖: {r2['message']['content']}")
 #+END_SRC
 
-** Modelos recomendados
+** Modo Thinking (raciocínio interno)
 
-| Modelo | Tamanho | Uso |
-|--------+---------+-----|
-|| Qwen/Qwen3.5-27B | 27B | Chat geral (recomendado) |
-|| Qwen/Qwen2.5-7B-Instruct | 7B | Mais rápido |
-|| meta-llama/Llama-3.2-3B-Instruct | 3B | Mais leve |
-
-* Opção 3: OpenRouter
-
-** O que é OpenRouter?
-
-OpenRouter é um *agregador de modelos* que permite acessar múltiplos provedores através de uma única API.
-
-#+begin_quote
-*Vantagem:* Modelos gratuitos com crédito inicial, sem precisar de GPU!
-#+end_quote
-
-** Por que usar OpenRouter?
-
-- Modelos gratuitos disponíveis (com sufixo =:free=)
-- Crédito inicial gratuito para novos usuários
-- Múltiplos provedores em um só lugar
-- Integração fácil com LangChain
-- Alternativa ao Gemini quando atingir limite
-
-** Como obter API key
-
-1. Acesse: https://openrouter.ai
-2. Crie uma conta (pode usar Google/GitHub)
-3. Vá em *Settings → Keys*
-4. Clique em *\"Create Key\"*
-5. *Copie a chave!*
-
-#+begin_quote
-⚠️ Configure como variável de ambiente: =OPENROUTER_API_KEY=
-#+end_quote
-
-** Configuração no Colab
+O Gemma 4 suporta thinking mode — o modelo raciocina antes de responder.
 
 #+BEGIN_SRC python
-# Instalar
-!pip install langchain-openrouter
+resultado = chat([
+    {"role": "system", "content": "Você é um assistente útil. Responda em português."},
+    {"role": "user", "content": "Quantos números primos existem entre 1 e 20? /think"}
+])
 
-from langchain_openrouter import ChatOpenRouter
-from google.colab import userdata
-import os
-
-# Configurar API key
-os.environ["OPENROUTER_API_KEY"] = userdata.get('OPENROUTER_API_KEY')
+msg = resultado["message"]
+thinking = msg.get("thinking", "(sem thinking)")
+content = msg.get("content", "")
+print(f"💭 Thinking:\n{thinking[:500]}...")
+print(f"\n🤖 Resposta: {content}")
 #+END_SRC
 
-** Exemplo de uso com Qwen 3.6 Plus
+** Streaming (resposta em tempo real)
 
 #+BEGIN_SRC python
-from langchain_openrouter import ChatOpenRouter
-
-# Modelo gratuito
-llm = ChatOpenRouter(
-    model="qwen/qwen3.6-plus:free",
-    temperature=0.8,
+print("🤖 ", end="")
+response = chat(
+    [
+        {"role": "system", "content": "Você é um assistente útil. Responda em português."},
+        {"role": "user", "content": "Explique o que é uma API em 3 frases."}
+    ],
+    stream=True
 )
-
-# Chamada simples
-response = llm.invoke("Olá! Qual é a capital do Brasil?")
-print(response.content)
+for line in response.iter_lines():
+    if line:
+        chunk = json.loads(line)
+        if "message" in chunk and "content" in chunk["message"]:
+            print(chunk["message"]["content"], end="", flush=True)
+print()
 #+END_SRC
 
-** Modelos gratuitos disponíveis
+* API Compatível com OpenAI
 
-|| Modelo | Provedor | Uso |
-||--------+----------+-----|
-|| qwen/qwen3.6-plus:free | Qwen | Chat geral, recomendado |
-|| meta-llama/llama-3.2-3b-instruct:free | Meta | Rápido, leve |
-|| deepseek/deepseek-r1:free | DeepSeek | Raciocínio |
+O Ollama também tem um endpoint compatível com a OpenAI em =/v1/chat/completions=.
 
-#+begin_quote
-*Importante:* Modelos =:free= têm limites diários. Verifique em openrouter.ai/collections/free-models
-#+end_quote
-
-** Links úteis
-
-- Modelos gratuitos: https://openrouter.ai/collections/free-models
-- Documentação LangChain: https://docs.langchain.com/oss/python/integrations/chat/openrouter
-- Guia OpenRouter: https://openrouter.ai/docs/guides/community/langchain
-
-* Opção 4: LangChain
-
-** O que é LangChain?
-
-LangChain é um framework para construir aplicações com LLMs. Ele abstrai diferenças entre provedores.
-
-#+begin_quote
-*Vantagem:* Mesmo código funciona com Gemini, HuggingFace, OpenRouter ou Ollama!
-#+end_quote
-
-** Com Gemini
+Isso significa que **qualquer código que usa a OpenAI SDK pode apontar pro Ollama local** trocando só a =base_url=.
 
 #+BEGIN_SRC python
-# Instalar
-!pip install langchain-google-genai
+OPENAI_URL = "http://localhost:11434/v1/chat/completions"
 
-from langchain_google_genai import ChatGoogleGenerativeAI
-from google.colab import userdata
-import os
+payload = {
+    "model": "gemma4:e2b",
+    "messages": [
+        {"role": "system", "content": "Você é um assistente útil. Responda em português."},
+        {"role": "user", "content": "O que é Python em uma frase?"}
+    ],
+    "temperature": 0.7,
+    "max_tokens": 64,
+    "keep_alive": -1
+}
 
-os.environ["GOOGLE_API_KEY"] = userdata.get('GEMINI_API_KEY')
-
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-preview")
-resposta = llm.invoke("Olá!")
-print(resposta.content)
+response = requests.post(OPENAI_URL, json=payload, timeout=300)
+data = response.json()
+print(f"🤖 {data['choices'][0]['message']['content']}")
+print(f"📊 Model: {data['model']}, Usage: {data['usage']}")
 #+END_SRC
 
-** Com HuggingFace
+#+begin_quote
+*Ponto-chave:* O formato é **idêntico** ao da OpenAI. A única diferença é a URL (=localhost= em vez de =api.openai.com=) e o modelo (=gemma4:e2b= em vez de =gpt-4o=). Isso é poderoso: o mesmo código funciona com qualquer provedor.
+#+end_quote
+
+* Nota: LM Studio
+
+Se você prefere uma interface gráfica, o **LM Studio** é uma alternativa ao Ollama:
+
+- Disponível em: https://lmstudio.ai
+- Interface gráfica para baixar e rodar modelos
+- Expõe a **mesma API OpenAI-compatible** em =localhost:1234=
+- Não precisa de terminal — tudo é clique e arraste
+
+Para usar com =requests=, basta trocar a URL:
 
 #+BEGIN_SRC python
-# Instalar
-!pip install langchain-huggingface
+# LM Studio em vez de Ollama — só muda a URL!
+LMSTUDIO_URL = "http://localhost:1234/v1/chat/completions"
 
-from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
-from google.colab import userdata
-
-endpoint = HuggingFaceEndpoint(
-    repo_id="Qwen/Qwen3.5-27B",
-    huggingfacehub_api_token=userdata.get("HF_TOKEN")
-)
-
-llm = ChatHuggingFace(llm=endpoint)
-resposta = llm.invoke("Olá! Qual é a capital do Brasil?")
-print(resposta.content)
+# O resto é idêntico
+payload = {
+    "model": "model-name-here",  # nome do modelo carregado no LM Studio
+    "messages": [{"role": "user", "content": "Olá!"}],
+    "temperature": 0.7
+}
+response = requests.post(LMSTUDIO_URL, json=payload, timeout=120)
 #+END_SRC
 
-** Com Ollama (local)
+#+begin_quote
+*Dica:* No LM Studio, vá em *Local Server → Start Server* antes de rodar o código. Escolha o modelo desejado na interface. A API key pode ser qualquer string (ex: ="not-needed"=).
+#+end_quote
+
+* Comparação: Cloud vs Local
+
+| Aspecto | Gemini (Cloud) | Ollama (Local) |
+|----------+---------------+----------------|
+| Setup | API key (2 min) | Install + download (~5-7 min) |
+| Warm up | Instantâneo | 141-199s (primeira req, depende do modelo) |
+| Velocidade | ~100+ tok/s | 18-80 tok/s (depende do modelo) |
+| Custos | Grátis com limites | 100% grátis |
+| Privacidade | Dados vão pro Google | Fica na máquina |
+| Qualidade | Muito alta | Boa a alta |
+| Internet | Necessária | Não (após setup) |
+| API key | Sim | Não |
+
+#+begin_quote
+*Recomendação:* Use Gemini para desenvolvimento (rápido, sem setup) e Ollama para demonstrar privacidade e independência de cloud. O padrão HTTP é o mesmo nos dois.
+#+end_quote
+
+* Tratamento de Erros
+
+Erros são iguais com qualquer API — o padrão é =try/except= com =requests=.
 
 #+BEGIN_SRC python
-# Instalar
-!pip install langchain-ollama
+import requests
 
-from langchain_ollama import OllamaLLM
-
-# Primeiro baixe o modelo: ollama pull qwen3.5:4b
-llm = OllamaLLM(model="qwen3.5:4b")
-
-resposta = llm.invoke("Olá!")
-print(resposta)
+def chamar_api(url, payload, timeout=30, tentativas=3):
+    """Faz request com retry automático."""
+    for tentativa in range(tentativas):
+        try:
+            response = requests.post(url, json=payload, timeout=timeout)
+            response.raise_for_status()  # Levanta exceção para erros HTTP
+            return response.json()
+        except requests.exceptions.ConnectionError:
+            print(f"⚠️ Sem conexão. Tentativa {tentativa + 1}/{tentativas}...")
+            time.sleep(2)
+        except requests.exceptions.Timeout:
+            print(f"⚠️ Timeout. Tentativa {tentativa + 1}/{tentativas}...")
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 401:
+                raise Exception("❌ API key inválida")
+            elif e.response.status_code == 429:
+                print(f"⚠️ Rate limit. Aguardando...")
+                time.sleep(5)
+            else:
+                raise Exception(f"❌ Erro HTTP {e.response.status_code}: {e.response.text}")
+    raise Exception("❌ Número máximo de tentativas excedido")
 #+END_SRC
 
-** Vantagens do LangChain
+** Códigos de erro comuns
 
-#+ATTR_REVEAL: :frag (appear)
-- Trocar de provedor sem mudar código
-- Acesso a modelos diferentes
-- Mesma interface para todos
+| Código | Significado | O que fazer |
+|--------+-------------+-------------|
+| 401 | Não autorizado | Verificar API key |
+| 429 | Rate limit | Aguardar e tentar novamente |
+| 500 | Erro do servidor | Tentar novamente mais tarde |
+| 503 | Serviço indisponível | Servidor sobrecarregado |
 
-#+begin_quote
-*Dica:* Comece com Gemini (gratuito), depois mude para Ollama (local) se precisar.
-#+end_quote
-
-* Para Aventureiros: Rodando Local
-
-** Quando rodar localmente?**
-
-- Você tem GPU em casa (NVIDIA)
-- Quer privacidade total
-- Não depende de internet
-- Quer modelos sem censura
-
-** Opções disponíveis**
-
-| Opção | Interface | Dificuldade |
-|-------+-----------+-------------|
-| LM Studio | Gráfica (GUI) | Fácil |
-| Ollama | Terminal | Média |
-| llama.cpp | Terminal (C++) | Avançada |
-
-** LM Studio (recomendado para iniciantes)**
-
-1. Baixe em: https://lmstudio.ai
-2. Instale e abra o programa
-3. Busque um modelo (ex: Qwen2.5-7B)
-4. Vá em *"Local Server"* → *"Start Server"*
-5. Use a API em =localhost:1234=
-
-** Ollama (terminal)**
-
-#+BEGIN_SRC bash
-# Baixar modelo
-ollama pull qwen3.5:4b
-
-# Rodar
-ollama run qwen3.5:4b
-#+END_SRC
-
-#+begin_quote
-*Instalação:* Baixe em ollama.com (Windows, Mac, Linux)
-#+end_quote
-
-** Configurar projeto local com uv**
-
-#+BEGIN_SRC bash
-# Instalar uv
-pip install uv
-
-# Criar projeto
-uv init meu-agente
-cd meu-agente
-
-# Adicionar dependências
-uv add langchain-ollama
-
-# Criar ambiente virtual
-uv venv
-source .venv/bin/activate  # Linux/Mac
-# ou: .venv\Scripts\activate  # Windows
-#+END_SRC
-
-** Usar Ollama com LangChain**
-
-#+BEGIN_SRC python
-# primeiro: ollama pull qwen3.5:4b
-from langchain_ollama import OllamaLLM
-
-model = OllamaLLM(model="qwen3.5:4b")
-
-resposta = model.invoke("Olá! Como você está?")
-print(resposta)
-#+END_SRC
-
-** Usar LM Studio (OpenAI-compatible)**
-
-#+begin_quote
-*Vantagem:* Interface gráfica fácil + API compatível com OpenAI!
-#+end_quote
-
-LM Studio roda modelos locais e expõe uma API compatível com OpenAI. Isso significa que você pode usar =langchain-openai= para conectar:
-
-#+BEGIN_SRC bash
-# Instalar dependência
-uv add langchain-openai
-#+END_SRC
-
-#+BEGIN_SRC python
-from langchain_openai import ChatOpenAI
-
-# Conectar ao LM Studio (roda em localhost:1234)
-llm = ChatOpenAI(
-    openai_api_base="http://127.0.0.1:1234/v1",
-    openai_api_key="not-needed",  # LM Studio não precisa de key
-    model_name="nvidia/nemotron-3-nano-4b",
-)
-
-resposta = llm.invoke("Qual é a capital do Brasil?")
-print(resposta.content)
-#+END_SRC
-
-#+begin_quote
-*Dica:* No LM Studio, vá em *Local Server* → *Start Server* antes de rodar o código. Escolha o modelo desejado na interface.
-#+end_quote
-
-** Modelos recomendados para LM Studio**
-
-| Modelo | Tamanho | Uso |
-|--------+---------+-----|
-| Qwen2.5-7B-Instruct | 7B | Chat geral |
-| nvidia/nemotron-3-nano-4b | 4B | Rápido, leve |
-| llama-3.2-3b-instruct | 3B | Mais leve ainda |
-
-** Estrutura de projeto com uv**
-
-Para projetos locais, use =uv= para gerenciar dependências:
-
-#+BEGIN_SRC bash
-# Criar projeto
-mkdir guilda && cd guilda
-uv init
-uv venv
-
-# Ativar ambiente virtual
-source .venv/bin/activate  # Linux/Mac
-# ou: .venv\Scripts\activate  # Windows
-
-# Instalar dependências
-uv pip install langchain-openai  # Para LM Studio (OpenAI-compatible)
-uv pip install langchain-ollama   # Para Ollama
-uv pip install langchain-community llama-cpp-python  # Para llama.cpp
-#+END_SRC
-
-#+begin_quote
-*Por que uv?* Mais rápido que pip, resolve dependências melhor, cria ambientes virtuais automaticamente.
-#+end_quote
-
-** Comparação: Local vs Cloud**
-
-|| Aspecto | Local (LM Studio/Ollama) | Cloud (Gemini/HuggingFace) |
-||----------+-------------------------+----------------------------|
-|| Custo | Grátis (precisa de GPU) | Grátis com limites |
-|| Privacidade | Total | Dados vão para o servidor |
-|| Velocidade | Depende da GPU | Rápido (servidor deles) |
-|| Modelos | Você escolhe | Disponíveis no provedor |
-|| Offline | ✅ Sim | ❌ Não |
-
-*Parâmetros de Geração*
+* Parâmetros de Geração
 
 | Valor   | Comportamento         | Uso                                    |
 |---------+-----------------------+----------------------------------------|
 | 0.0-0.3 | Muito determinístico | Código, fatos, análises               |
 | 0.4-0.7 | Equilibrado          | Conversa geral                        |
 | 0.8-1.0 | Criativo             | Escrita criativa, brainstorming       |
-| 1.0+    | Muito criativo       | Arte, experimentação                   |
-
-* Streaming de Respostas
-
-** Por que Streaming?
-
-*Sem streaming:* Você espera a resposta completa antes de ver qualquer coisa.
-- Bom para: processamento batch, respostas curtas
-- Ruim para: respostas longas, experiência de usuário
-
-*Com streaming:* Você recebe pedaços da resposta conforme são gerados.
-- Bom para: respostas longas, UX interativa
-- Ruim para: quando precisa da resposta completa antes de processar
-
-** Implementação com OpenAI
-
-#+BEGIN_SRC python
-# Com streaming
-stream = client.chat.completions.create(
-    model="gpt-4o-mini",
-    messages=[{"role": "user", "content": "Conte uma história longa"}],
-    stream=True  # Ativa streaming
-)
-
-# Processa chunks conforme chegam
-for chunk in stream:
-    if chunk.choices[0].delta.content is not None:
-        print(chunk.choices[0].delta.content, end="", flush=True)
-#+END_SRC
-
-* APIs de LLM: Ollama (Local)
-
-** O que é Ollama?
-
-*Definição:* Ollama é uma ferramenta para rodar LLMs localmente, sem necessidade de API externa ou conexão com a internet.
-
-*Vantagens:*
-- Gratuito (sem custos de API)
-- Privacidade (dados não saem da sua máquina)
-- Latência (sem latência de rede)
-- Offline (funciona sem internet)
-
-*Desvantagens:*
-- Requer hardware potente (GPU recomendada)
-- Modelos menores que os da OpenAI
-- Não tem conhecimento atualizado
-
-** Instalação
-
-#+BEGIN_SRC bash
-# Linux/macOS
-curl -fsSL https://ollama.com/install.sh | sh
-
-# Baixar modelo
-ollama pull llama3.2
-
-# Rodar interativamente
-ollama run llama3.2
-#+END_SRC
-
-** Usando via Python
-
-#+BEGIN_SRC python
-# Instalação
-# pip install ollama
-
-import ollama
-
-# Chamada simples
-response = ollama.chat(model='llama3.2', messages=[
-    {'role': 'user', 'content': 'Por que o céu é azul?'}
-])
-
-print(response['message']['content'])
-#+END_SRC
-
-** Modelos Disponíveis
-
-| Modelo        | Tamanho | Uso Recomendado       |
-|---------------+---------+-----------------------|
-| llama3.2      | 3B      | Uso geral, rápido    |
-| llama3.2:1b   | 1B      | Muito rápido, básico |
-| mistral       | 7B      | Bom equilíbrio       |
-| codellama     | 7B      | Código               |
-| phi3          | 3.8B    | Eficiente, pequeno   |
-
-* Tratamento de Erros
-
-** Tipos de Erros
-
-#+BEGIN_SRC python
-from openai import OpenAI, APIError, APIConnectionError, RateLimitError, AuthenticationError
-
-client = OpenAI()
-
-try:
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": "Olá"}]
-    )
-    
-except AuthenticationError:
-    print("Erro: API Key inválida ou não configurada")
-    
-except RateLimitError as e:
-    print(f"Erro: Limite de requisições excedido. Aguarde {e.retry_after} segundos")
-    
-except APIConnectionError:
-    print("Erro: Não foi possível conectar ao servidor da OpenAI")
-    
-except APIError as e:
-    print(f"Erro da API: {e.message}")
-    print(f"Status code: {e.status_code}")
-    
-except Exception as e:
-    print(f"Erro inesperado: {e}")
-#+END_SRC
-
-** Retry com Exponential Backoff
-
-#+BEGIN_SRC python
-import time
-import random
-from openai import RateLimitError, APIConnectionError
-
-def completar_com_retry(mensagens, max_tentativas=5, espera_inicial=1):
-    """
-    Faz chamada à API com retry automático.
-    
-    Args:
-        mensagens: Lista de mensagens
-        max_tentativas: Número máximo de tentativas
-        espera_inicial: Tempo inicial de espera (segundos)
-    
-    Returns:
-        Resposta da API ou None se falhar
-    """
-    cliente = OpenAI()
-    espera = espera_inicial
-    
-    for tentativa in range(max_tentativas):
-        try:
-            return cliente.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=mensagens
-            )
-            
-        except RateLimitError as e:
-            if tentativa == max_tentativas - 1:
-                raise
-            print(f"Rate limit. Tentativa {tentativa + 1}. Esperando {espera}s...")
-            time.sleep(espera)
-            espera *= 2  # Exponential backoff
-            
-        except APIConnectionError as e:
-            if tentativa == max_tentativas - 1:
-                raise
-            print(f"Erro de conexão. Tentativa {tentativa + 1}")
-            time.sleep(espera)
-            espera *= 2
-            
-    return None
-#+END_SRC
+| 1.0+    | Muito criativo        | Arte, experimentação                   |
 
 * Exercícios Práticos
 
-** Exercício 1: Cliente Básico
+** Exercício 1: Duas APIs, um padrão
 
-Crie uma função que faz uma pergunta para a API e retorna a resposta:
+Crie uma função =perguntar()= que funciona com **qualquer API** — só mudando a URL:
 
 #+BEGIN_SRC python
-def perguntar(pergunta: str, sistema: str = "Você é um assistente útil.") -> str:
-    """Faz uma pergunta à API e retorna a resposta."""
+def perguntar(mensagem, url, model, api_key=None, system="Você é um assistente útil."):
+    """Faz uma pergunta a qualquer API de LLM usando requests.post().
+
+    Args:
+        mensagem: pergunta do usuário
+        url: URL da API (Gemini ou Ollama)
+        model: nome do modelo
+        api_key: API key (None para Ollama)
+        system: instrução de sistema
+    """
     # Implemente aqui
     pass
 #+END_SRC
@@ -727,47 +587,69 @@ def perguntar(pergunta: str, sistema: str = "Você é um assistente útil.") -> 
 📝 Gabarito
 
 #+BEGIN_SRC python
-from openai import OpenAI
+def perguntar(mensagem, url, model, api_key=None, system="Você é um assistente útil."):
+    """Faz uma pergunta a qualquer API de LLM usando requests.post()."""
+    headers = {"Content-Type": "application/json"}
+    if api_key:
+        headers["Authorization"] = f"Bearer {api_key}"
 
-client = OpenAI()
+    payload = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": system},
+            {"role": "user", "content": mensagem}
+        ],
+        "temperature": 0.7,
+        "keep_alive": -1  # Ollama: manter modelo carregado
+    }
 
-def perguntar(pergunta: str, sistema: str = "Você é um assistente útil.") -> str:
-    """Faz uma pergunta à API e retorna a resposta."""
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": sistema},
-            {"role": "user", "content": pergunta}
-        ]
-    )
-    return response.choices[0].message.content
+    response = requests.post(url, json=payload, headers=headers, timeout=120)
+    response.raise_for_status()
+    data = response.json()
 
-# Uso
-resposta = perguntar("Qual a capital da França?")
-print(resposta)  # "A capital da França é Paris."
+    # Formato OpenAI/Ollama
+    if "choices" in data:
+        return data["choices"][0]["message"]["content"]
+    # Formato Ollama nativo
+    elif "message" in data:
+        return data["message"]["content"]
+    else:
+        return str(data)
+
+# Uso com Ollama (local)
+resposta = perguntar(
+    "Qual é a capital de Minas Gerais?",
+    url="http://localhost:11434/v1/chat/completions",
+    model="gemma4:e2b"
+)
+print(f"Ollama: {resposta}")
+
+# Uso com Gemini (cloud) — via OpenAI-compatible endpoint
+# Nota: Gemini não tem endpoint OpenAI-compatible direto,
+# mas o padrão é o mesmo!
 #+END_SRC
 
 #+END_DETAILS
 
-** Exercício 2: Chat com Memória
+** Exercício 2: Chat com memória
 
-Crie funções que mantêm o histórico de conversas usando um dicionário:
+Implemente um chat com histórico usando dicionários (sem classes!):
 
 #+BEGIN_SRC python
-# Dicionário para guardar o histórico
-historico = {"mensagens": []}
+historico = {"mensagens": [{"role": "system", "content": "Você é um assistente útil. Responda em português."}]}
 
-def iniciar_chat(sistema: str = "Você é um assistente útil."):
-    """Inicia o chat com system prompt."""
-    historico["mensagens"] = [{"role": "system", "content": sistema}]
+def conversar(mensagem):
+    """Adiciona mensagem ao histórico, chama a API, retorna resposta."""
+    # Implemente
+    pass
 
-def conversar(mensagem: str) -> str:
-    """Envia mensagem e retorna resposta."""
+def ver_historico():
+    """Retorna histórico sem o system prompt."""
     # Implemente
     pass
 
 def limpar_historico():
-    """Limpa o histórico mantendo o system prompt."""
+    """Limpa histórico mantendo system prompt."""
     # Implemente
     pass
 #+END_SRC
@@ -776,50 +658,53 @@ def limpar_historico():
 📝 Gabarito
 
 #+BEGIN_SRC python
-from openai import OpenAI
-from typing import List, Dict
+historico = {"mensagens": [{"role": "system", "content": "Você é um assistente útil. Responda em português."}]}
 
-# Estado global do chat
-_estado = {"mensagens": [], "client": None}
+def conversar(mensagem):
+    """Adiciona mensagem ao histórico, chama a API, retorna resposta."""
+    historico["mensagens"].append({"role": "user", "content": mensagem})
 
-def iniciar_chat(sistema: str = "Você é um assistente útil."):
-    """Inicia o chat com system prompt."""
-    _estado["client"] = OpenAI()
-    _estado["mensagens"] = [{"role": "system", "content": sistema}]
+    resultado = chat(historico)
+    resposta = resultado["message"]["content"]
 
-def conversar(mensagem: str) -> str:
-    """Envia mensagem e retorna resposta mantendo histórico."""
-    # Adiciona mensagem do usuário
-    _estado["mensagens"].append({"role": "user", "content": mensagem})
-    
-    # Chama a API
-    response = _estado["client"].chat.completions.create(
-        model="gpt-4o-mini",
-        messages=_estado["mensagens"]
-    )
-    
-    # Extrai resposta
-    resposta = response.choices[0].message.content
-    
-    # Adiciona ao histórico
-    _estado["mensagens"].append({"role": "assistant", "content": resposta})
-    
+    historico["mensagens"].append({"role": "assistant", "content": resposta})
     return resposta
+
+def ver_historico():
+    """Retorna histórico sem o system prompt."""
+    return historico["mensagens"][1:]
 
 def limpar_historico():
     """Limpa histórico mantendo system prompt."""
-    sistema = _estado["mensagens"][0]
-    _estado["mensagens"] = [sistema]
-
-def ver_historico() -> List[Dict[str, str]]:
-    """Retorna histórico sem o system prompt."""
-    return _estado["mensagens"][1:]
+    sistema = historico["mensagens"][0]
+    historico["mensagens"] = [sistema]
 
 # Uso
-iniciar_chat("Você é um tutor de Python.")
-print(conversar("O que é uma lista?"))
-print(conversar("E como adiciono elementos?"))  # Lembra da conversa anterior
-print(ver_historico())  # Mostra o histórico
+print(conversar("Meu nome é Lucas e eu ensino IA."))
+print(conversar("Qual é o meu nome?"))  # Deve lembrar!
+print(ver_historico())
 #+END_SRC
 
 #+END_DETAILS
+
+** Exercício 3: Trocar de provedor
+
+Modifique o Exercício 1 para aceitar tanto Ollama quanto Gemini. Dica: use um parâmetro =provedor= com valores ="ollama"= ou ="gemini"=.
+
+** Exercício 4: Tratamento de erros
+
+Adicione =try/except= ao Exercício 2 para tratar:
+- API key inválida (401)
+- Rate limit (429)
+- Servidor offline (ConnectionError)
+
+* Para ir mais longe
+
+- **HuggingFace:** Gratuito com rate limit, vários modelos. Acesso: https://huggingface.co
+- **OpenRouter:** Agregador de modelos, crédito inicial gratuito. Acesso: https://openrouter.ai
+- **OpenAI:** Pago, mas referência de mercado. Documentação: https://platform.openai.com/docs
+- **LangChain:** Framework que abstrai diferenças entre provedores — veremos na Semana 06!
+
+#+begin_quote
+*Dica:* Comece com Gemini (gratuito e sem setup) ou Ollama no Colab (gratuito e sem API key). Depois explore outros provedores na Semana 06 quando falarmos de LangChain.
+#+end_quote
