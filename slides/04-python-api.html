@@ -24,6 +24,7 @@
         document.getElementsByTagName( 'head' )[0].appendChild( link );
     }
 </script>
+<style>.reveal .slide-background { background-size: cover !important; background-position: center !important; }</style>
 </head>
 <body>
 <div class="reveal">
@@ -31,483 +32,278 @@
 <section id="sec-title-slide" data-background="./slide_04.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Python + API de LLM</h2><br/><p style="font-size:0.85em;opacity:0.8;">Conectando com modelos</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 </section>
 <section>
-<section id="slide-org97ca0dc">
-<h2 id="org97ca0dc">O que é uma API?</h2>
+<section id="slide-orgbcc9c67">
+<h2 id="orgbcc9c67">📰 Fofocas da Semana</h2>
+<ul style="font-size:0.6em;text-align:left;">
+<li><b>Gemini 3.5 Flash</b> (19/mai) — Google I/O: 4x mais rápido que 3.1 Pro em agentes/coding, já default no app</li>
+<li><b>Qwen 3.7 Max</b> (20/mai) — modelo agêntico da Alibaba, foco em execução autônoma longa</li>
+<li><b>Microsoft cancela Claude Code</b> — billing por token inviável, Uber queimou orçamento 2026 em semanas</li>
+<li><b>Tencent Hy-MT2</b> — tradução 1.8B: 67 tok/s vs TranslateGemma 4B: 46 tok/s (testamos ontem!)</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org8bd873b">
+<h2 id="org8bd873b">Recap: Semana 03</h2>
 <ul>
-<li class="fragment appear"><b>API</b> = Application Programming Interface</li>
-<li class="fragment appear">Forma de programas "conversarem"</li>
-<li class="fragment appear">Você <b>envia</b> uma requisição, <b>recebe</b> uma resposta</li>
+<li class="fragment appear">Variáveis, listas, dicionários</li>
+<li class="fragment appear">Funções com estado (sem classes!)</li>
+<li class="fragment appear">Strings, JSON, loops e condicionais</li>
+<li class="fragment appear"><b>Mensagens de LLM = lista de dicts</b></li>
 
 </ul>
 
 <blockquote >
 <p>
-Analogia: API é como um garçom.
-Você pede, ele leva pra cozinha, traz a resposta.
+"Python é a ferramenta. O LLM é o cérebro. A API é a ponte."
 </p>
 </blockquote>
 </section>
 </section>
 <section>
-<section id="slide-org08a3845">
-<h2 id="org08a3845">APIs Gratuitas de LLM</h2>
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="fragment (appear)">
+<section id="slide-orgb03dba4">
+<h2 id="orgb03dba4">O que é uma API de LLM?</h2>
+<ul>
+<li class="fragment appear">API = garçom entre seu código e o modelo</li>
+<li class="fragment appear">Você manda JSON, recebe JSON</li>
+<li class="fragment appear"><b>Esse padrão é universal</b> — Gemini, Ollama, OpenAI, todos igual</li>
+
+</ul>
+
+<blockquote >
+<p>
+Entender HTTP = entender todas as APIs de LLM.
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org76c748d">
+<h2 id="org76c748d">Cloud vs Local</h2>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" style="font-size:0.7em;">
 
 
 <colgroup>
 <col  class="org-left" />
 
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<tbody>
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">Provedor</td>
-<td class="org-left">Gratuito?</td>
-<td class="org-left">Limite</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">----------<del>-----------</del>---------</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">Google Gemini</td>
-<td class="org-left">✅ Sim</td>
-<td class="org-left">1M tokens/dia</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">HuggingFace</td>
-<td class="org-left">✅ Sim</td>
-<td class="org-left">Rate limit</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">OpenRouter</td>
-<td class="org-left">✅ Sim*</td>
-<td class="org-left">Crédito inicial</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">Ollama (local)</td>
-<td class="org-left">✅ Sim</td>
-<td class="org-left">Ilimitado</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">LM Studio (local)</td>
-<td class="org-left">✅ Sim</td>
-<td class="org-left">Ilimitado</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">OpenAI</td>
-<td class="org-left">❌ Pago</td>
-<td class="org-left">Por uso</td>
-</tr>
-</tbody>
-</table>
-
-<blockquote >
-<p>
-Vamos usar Gemini e HuggingFace no Colab!
-</p>
-</blockquote>
-</section>
-</section>
-<section>
-<section id="slide-orgd940f5a">
-<h2 id="orgd940f5a">Opção 1: Google Gemini</h2>
-<ul>
-<li class="fragment appear"><b><b>1 milhão de tokens/dia GRATUITO</b></b></li>
-<li class="fragment appear">Precisa de conta Google</li>
-<li class="fragment appear">API key: aistudio.google.com</li>
-
-</ul>
-
-<div class="org-src-container">
-
-<pre   ><code class="python" >from google import genai
-from google.genai import types
-import os
-
-# Novo SDK google-genai: usar Client
-client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
-
-# Chamada simples
-response = client.models.generate_content(
-    model="gemini-2.0-flash",
-    contents="Olá!"
-)
-print(response.text)
-</code></pre>
-</div>
-</section>
-</section>
-<section>
-<section id="slide-org46c6066">
-<h2 id="org46c6066">Como obter API key do Gemini</h2>
-<ol>
-<li class="fragment appear">Acesse: aistudio.google.com</li>
-<li class="fragment appear">Faça login com sua conta Google</li>
-<li class="fragment appear">Clique em "Get API Key"</li>
-<li class="fragment appear">Crie uma nova chave</li>
-<li class="fragment appear">Copie e guarde bem!</li>
-
-</ol>
-
-<blockquote >
-<p>
-API key é SECRETA. Não compartilhe!
-</p>
-</blockquote>
-</section>
-</section>
-<section>
-<section id="slide-org35a8f6b">
-<h2 id="org35a8f6b">Opção 2: HuggingFace</h2>
-<ul>
-<li class="fragment appear"><b><b>Gratuito</b></b> com rate limiting</li>
-<li class="fragment appear">Vários modelos disponíveis</li>
-<li class="fragment appear">Precisa de conta no HuggingFace (gratuita)</li>
-
-</ul>
-
-<div class="org-src-container">
-
-<pre   ><code class="python" >from huggingface_hub import InferenceClient
-import os
-
-client = InferenceClient(
-    model="Qwen/Qwen2.5-7B-Instruct",
-    token=os.environ["HF_TOKEN"]
-)
-
-response = client.text_generation("Olá!")
-print(response)
-</code></pre>
-</div>
-</section>
-</section>
-<section>
-<section id="slide-org5071cc2">
-<h2 id="org5071cc2">Como obter token do HuggingFace</h2>
-<ol>
-<li class="fragment appear">Acesse: huggingface.co</li>
-<li class="fragment appear">Crie uma conta gratuita</li>
-<li class="fragment appear">Settings → Access Tokens → New token</li>
-<li class="fragment appear">Copie o token</li>
-
-</ol>
-
-<blockquote >
-<p>
-Token é diferente de API key!
-</p>
-</blockquote>
-</section>
-</section>
-<section>
-<section id="slide-org0dcb14d">
-<h2 id="org0dcb14d">Opção 3: OpenRouter</h2>
-<ul>
-<li class="fragment appear"><b>Agregador de modelos</b> de múltiplos provedores</li>
-<li class="fragment appear">Modelos gratuitos disponíveis</li>
-<li class="fragment appear">Crédito inicial gratuito</li>
-<li class="fragment appear">Integração com LangChain</li>
-
-</ul>
-</section>
-<section id="slide-org11f0d2e">
-<h3 id="org11f0d2e">Modelos gratuitos populares:</h3>
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" class="fragment (appear)">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<tbody>
-<tr>
-<td class="org-left">Modelo</td>
-<td class="org-left">Provedor</td>
-<td class="org-left">Uso</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">--------<del>----------</del>-----</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">qwen/qwen3.6-plus:free</td>
-<td class="org-left">Qwen</td>
-<td class="org-left">Chat geral</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">meta-llama/llama-3.2-3b-instruct:free</td>
-<td class="org-left">Meta</td>
-<td class="org-left">Rápido</td>
-</tr>
-</tbody>
-</table>
-
-<div class="org-src-container">
-
-<pre   ><code class="python" >from langchain_openrouter import ChatOpenRouter
-
-llm = ChatOpenRouter(
-    model="qwen/qwen3.6-plus:free",
-    temperature=0.8,
-)
-
-response = llm.invoke("Olá! Qual é a capital do Brasil?")
-print(response.content)
-</code></pre>
-</div>
-</section>
-</section>
-<section>
-<section id="slide-org20b509c">
-<h2 id="org20b509c">Como usar OpenRouter</h2>
-<ol>
-<li class="fragment appear">Acesse: openrouter.ai</li>
-<li class="fragment appear">Crie uma conta</li>
-<li class="fragment appear">Gere sua API key</li>
-<li class="fragment appear">Configure: <code>OPENROUTER_API_KEY</code></li>
-
-</ol>
-</section>
-<section id="slide-org827b831">
-<h3 id="org827b831">Links úteis:</h3>
-<ul>
-<li class="fragment appear"><b>Modelos gratuitos:</b> openrouter.ai/collections/free-models</li>
-<li class="fragment appear"><b>Docs LangChain:</b> docs.langchain.com/oss/python/integrations/chat/openrouter</li>
-
-</ul>
-</section>
-</section>
-<section>
-<section id="slide-orgd6441ef">
-<h2 id="orgd6441ef">Estrutura da Mensagem (padrão)</h2>
-<p class="fragment (appear)">
-Todas as APIs usam formato similar:
-</p>
-
-<div class="org-src-container">
-
-<pre   ><code class="python" >messages = [
-    {"role": "system", "content": "Você é um tutor."},
-    {"role": "user", "content": "O que é Python?"},
-    {"role": "assistant", "content": "Python é..."},
-    {"role": "user", "content": "E como instalo?"}
-]
-</code></pre>
-</div>
-</section>
-</section>
-<section>
-<section id="slide-orge328c2a">
-<h2 id="orge328c2a">System Instruction (Gemini)</h2>
-<div class="org-src-container">
-
-<pre   ><code class="python" >from google import genai
-from google.genai import types
-
-client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
-
-# Configurar com system instruction
-response = client.models.generate_content(
-    model="gemini-2.0-flash",
-    contents="O que é uma lista?",
-    config=types.GenerateContentConfig(
-        system_instruction="Você é um tutor de Python. Responda de forma didática."
-    )
-)
-print(response.text)
-</code></pre>
-</div>
-</section>
-</section>
-<section>
-<section id="slide-orgf3c1809">
-<h2 id="orgf3c1809">Parâmetros Importantes</h2>
-<ul>
-<li class="fragment appear"><b>temperature:</b> 0.0 (determinístico) a 2.0 (criativo)</li>
-<li class="fragment appear"><b>max<sub>output</sub><sub>tokens</sub>:</b> Limite de tokens na resposta</li>
-
-</ul>
-
-<div class="org-src-container">
-
-<pre   ><code class="python" ># Exemplo com Gemini (novo SDK)
-from google import genai
-from google.genai import types
-
-client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
-
-response = client.models.generate_content(
-    model="gemini-2.0-flash",
-    contents="Conte uma piada!",
-    config=types.GenerateContentConfig(
-        temperature=0.7,
-        max_output_tokens=100
-    )
-)
-print(response.text)
-</code></pre>
-</div>
-</section>
-</section>
-<section>
-<section id="slide-orgba81424">
-<h2 id="orgba81424">Chat com Histórico (Gemini)</h2>
-<div class="org-src-container">
-
-<pre   ><code class="python" >from google import genai
-from google.genai import types
-
-client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
-
-# Criar chat
-chat = client.chats.create(model="gemini-2.0-flash")
-
-# Enviar mensagens
-response1 = chat.send_message("Olá!")
-print(response1.text)
-
-response2 = chat.send_message("Qual é a capital do Brasil?")
-print(response2.text)
-</code></pre>
-</div>
-</section>
-</section>
-<section>
-<section id="slide-orgaa795a7">
-<h2 id="orgaa795a7">Tratamento de Erros</h2>
-<div class="org-src-container">
-
-<pre   ><code class="python" >from google import genai
-from google.genai import types
-from google.api_core.exceptions import NotFound, PermissionDenied
-
-client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
-
-try:
-    response = client.models.generate_content(
-        model="gemini-2.0-flash",
-        contents="Olá!"
-    )
-    print(response.text)
-except PermissionDenied:
-    print("API key inválida!")
-except NotFound:
-    print("Modelo não encontrado!")
-except Exception as e:
-    print(f"Erro: {e}")
-</code></pre>
-</div>
-</section>
-</section>
-<section>
-<section id="slide-orgcd322d4">
-<h2 id="orgcd322d4">Para os Aventureiros: Rodando Local</h2>
-<p class="fragment (appear)">
-Se você tem GPU em casa:
-</p>
-
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
 <col  class="org-left" />
 
 <col  class="org-left" />
 </colgroup>
 <thead>
 <tr>
-<th scope="col" class="org-left">Opção</th>
-<th scope="col" class="org-left">Interface</th>
+<th scope="col" class="org-left">Aspecto</th>
+<th scope="col" class="org-left">Cloud (Gemini)</th>
+<th scope="col" class="org-left">Local (Ollama)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="org-left">Ollama</td>
-<td class="org-left">Terminal</td>
+<td class="org-left">Setup</td>
+<td class="org-left">API key (2 min)</td>
+<td class="org-left">Install + download</td>
 </tr>
 
 <tr>
-<td class="org-left">LM Studio</td>
-<td class="org-left">Gráfica</td>
+<td class="org-left">Velocidade</td>
+<td class="org-left">~100+ tok/s</td>
+<td class="org-left">18-80 tok/s</td>
 </tr>
 
 <tr>
-<td class="org-left">llama.cpp</td>
-<td class="org-left">Terminal (C++)</td>
+<td class="org-left">Custos</td>
+<td class="org-left">Grátis com limites</td>
+<td class="org-left">100% grátis</td>
+</tr>
+
+<tr>
+<td class="org-left">Privacidade</td>
+<td class="org-left">Dados vão pro Google</td>
+<td class="org-left">Fica na máquina</td>
+</tr>
+
+<tr>
+<td class="org-left">Internet</td>
+<td class="org-left">Necessária</td>
+<td class="org-left">Não (após setup)</td>
 </tr>
 </tbody>
 </table>
 
 <blockquote >
 <p>
-Intruções completas na apostila!
+Recomendação: comece pelo Gemini (rápido), depois experimente Ollama e LM Studio.
 </p>
 </blockquote>
 </section>
 </section>
 <section>
-<section id="slide-org3dd0968">
-<h2 id="org3dd0968">Exercício</h2>
-<ol>
-<li class="fragment appear">Acesse aistudio.google.com</li>
-<li class="fragment appear">Crie sua API key gratuita</li>
-<li class="fragment appear">Abra o Google Colab</li>
-<li class="fragment appear">Teste o código do slide "Opção 1: Google Gemini"</li>
-<li class="fragment appear">Tente mudar a temperatura e ver a diferença</li>
-
-</ol>
-
-<blockquote >
-<p>
-Use o Gemini! É gratuito e simples.
-</p>
-</blockquote>
-</section>
-</section>
-<section>
-<section id="slide-orgea435c7">
-<h2 id="orgea435c7">Para a próxima aula</h2>
+<section id="slide-org6cd242d">
+<h2 id="org6cd242d">System Prompt e Parâmetros</h2>
 <ul>
-<li class="fragment appear">Ter uma conta Google funcionando</li>
-<li class="fragment appear">Ter API key do Gemini</li>
-<li class="fragment appear">(Opcional) Conta no HuggingFace</li>
-<li class="fragment appear">Ler o material da semana 05</li>
+<li class="fragment appear"><b>System prompt</b> → instrução que guia o modelo</li>
+<li class="fragment appear"><b>temperature</b> → 0.0 (determinístico) a 2.0 (criativo)</li>
+<li class="fragment appear"><b>max<sub>tokens</sub></b> → limite de tamanho da resposta</li>
 
 </ul>
 
 <blockquote >
 <p>
-Próxima aula: vamos construir nosso primeiro agente!
+System prompt = "Você é um tutor de Python." → muda completamente o comportamento.
 </p>
 </blockquote>
+</section>
+</section>
+<section>
+<section id="slide-orgbb84aef">
+<h2 id="orgbb84aef">Chat com Memória</h2>
+<ul>
+<li class="fragment appear">Cada chamada manda o <b>histórico completo</b></li>
+<li class="fragment appear">O modelo não "lembra" — <b>recebe tudo de novo</b></li>
+<li class="fragment appear">É uma lista de dicts: <code>system → user → assistant → user → ...</code></li>
+
+</ul>
+
+<blockquote >
+<p>
+É como repetir toda a conversa toda vez que você fala.
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-orgc072790">
+<h2 id="orgc072790">Tratamento de Erros</h2>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" style="font-size:0.7em;">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Código</th>
+<th scope="col" class="org-left">Significado</th>
+<th scope="col" class="org-left">O que fazer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">401</td>
+<td class="org-left">Não autorizado</td>
+<td class="org-left">Verificar API key</td>
+</tr>
+
+<tr>
+<td class="org-right">429</td>
+<td class="org-left">Rate limit</td>
+<td class="org-left">Aguardar e tentar</td>
+</tr>
+
+<tr>
+<td class="org-right">500</td>
+<td class="org-left">Erro do servidor</td>
+<td class="org-left">Tentar mais tarde</td>
+</tr>
+
+<tr>
+<td class="org-right">503</td>
+<td class="org-left">Indisponível</td>
+<td class="org-left">Servidor sobrecarregado</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote >
+<p>
+Na apostila: <code>chamar_api()</code> com retry automático e backoff.
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org317a977">
+<h2 id="org317a977">🔴 Demo 1: Gemini API (Cloud)</h2>
+<ol>
+<li>Abrir <code>luksamuk.codes/pages/guilda-ia</code> → Semana 04</li>
+<li>Clicar em 📓 <b><b>Colab Gemini</b></b></li>
+<li>Rodar as células: API key, chat, system prompt</li>
+
+</ol>
+
+<blockquote >
+<p>
+Gemini = 1M tokens/dia gratuito. Sem GPU, sem instalação.
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org93a58c8">
+<h2 id="org93a58c8">🔴 Demo 2: Ollama no Colab (Local)</h2>
+<ol>
+<li>No mesmo site → 📓 <b><b>Colab Ollama</b></b></li>
+<li>Mudar runtime pra T4 GPU</li>
+<li>Rodar setup → warm up (~2-3 min) → chat</li>
+
+</ol>
+
+<blockquote >
+<p>
+Warm up é de ~2-3 min na primeira vez. Depois: ~80 tok/s com Qwen 3.5 4B.
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-orgf8f768c">
+<h2 id="orgf8f768c">🔴 Demo 3: Terminal — Ollama, LM Studio, llama-swap</h2>
+<ol>
+<li>Abrir <code>chat.py</code> no editor</li>
+<li><code>uv run chat.py</code> — mesma requisição, 3 backends</li>
+<li><b>Mesmo código, mesma API, só muda a URL</b></li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-org3368bf5">
+<h2 id="org3368bf5">Exercícios</h2>
+<ol>
+<li>Função <code>perguntar()</code> que funciona com qualquer API</li>
+<li>Chat com memória (dicts, sem classes)</li>
+<li>Trocar de provedor (Gemini → Ollama → LM Studio)</li>
+<li>Tratamento de erros com <code>try/except</code></li>
+
+</ol>
+
+<blockquote >
+<p>
+Todos os exercícios estão na apostila com gabarito.
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org86d39c4">
+<h2 id="org86d39c4">Para a próxima aula</h2>
+<ul>
+<li class="fragment appear">Ter uma conta Google funcionando</li>
+<li class="fragment appear">Ter API key do Gemini</li>
+<li class="fragment appear">Começar a criar seus próprios códigos — Colab ou local, você escolhe</li>
+<li class="fragment appear"><b>Próxima aula:</b> vamos construir nosso primeiro agente!</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgc611e56" data-background="./slide_04.gif">
+<h2 id="orgc611e56">Perguntas?</h2>
 </section>
 </section>
 </div>

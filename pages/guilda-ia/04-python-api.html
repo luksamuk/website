@@ -231,9 +231,9 @@ Material didático do curso de IA Generativa da Guilda de IA">
 <div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">Python e APIs: Ferramentas do Ofício</h1>
 </div>
 <div id="content" class="content">
-<div id="outline-container-org2e51785" class="outline-2">
-<h2 id="org2e51785">Continuação: Python e APIs</h2>
-<div class="outline-text-2" id="text-org2e51785">
+<div id="outline-container-orgcc9ec97" class="outline-2">
+<h2 id="orgcc9ec97">Continuação: Python e APIs</h2>
+<div class="outline-text-2" id="text-orgcc9ec97">
 <p>
 Na semana passada (<a href="./03-python-minimo.html">Python Mínimo</a>), aprendemos os fundamentos de Python: variáveis, listas, dicionários, funções e tratamento de erros. Também vimos conceitos de API e arquitetura cliente-servidor.
 </p>
@@ -243,13 +243,189 @@ Agora vamos colocar a mão na massa: conectar nosso código Python a modelos de 
 </p>
 </div>
 </div>
-<div id="outline-container-org1e085c8" class="outline-2">
-<h2 id="org1e085c8">APIs de LLM: Opções Gratuitas</h2>
-<div class="outline-text-2" id="text-org1e085c8">
+<div id="outline-container-org6b924f8" class="outline-2">
+<h2 id="org6b924f8">Preparação e Setup</h2>
+<div class="outline-text-2" id="text-org6b924f8">
+<p>
+Antes de escrever qualquer código, precisamos preparar o ambiente. O conceito-chave desta aula é:
+</p>
+
+<blockquote>
+<p>
+<b>Toda API de LLM funciona com o mesmo padrão:</b> você manda um JSON via HTTP e recebe um JSON de volta. Muda a URL, muda o formato, mas o conceito é universal. Entender HTTP = entender todas as APIs de LLM.
+</p>
+</blockquote>
 </div>
-<div id="outline-container-org18909ab" class="outline-3">
-<h3 id="org18909ab">Visão Geral</h3>
-<div class="outline-text-3" id="text-org18909ab">
+<div id="outline-container-org32615f1" class="outline-3">
+<h3 id="org32615f1">O que você precisa ter</h3>
+<div class="outline-text-3" id="text-org32615f1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Item</th>
+<th scope="col" class="org-left">Cloud (Gemini)</th>
+<th scope="col" class="org-left">Local (Ollama)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Conta Google</td>
+<td class="org-left">✅ Obrigatório</td>
+<td class="org-left">❌ Não precisa</td>
+</tr>
+
+<tr>
+<td class="org-left">GPU</td>
+<td class="org-left">❌ Não precisa</td>
+<td class="org-left">✅ Recomendado (T4 ou superior)</td>
+</tr>
+
+<tr>
+<td class="org-left">Internet</td>
+<td class="org-left">✅ Sempre</td>
+<td class="org-left">⚠️ Só pra baixar o modelo</td>
+</tr>
+
+<tr>
+<td class="org-left">API key</td>
+<td class="org-left">✅ Sim (grátis)</td>
+<td class="org-left">❌ Não precisa</td>
+</tr>
+
+<tr>
+<td class="org-left">Python 3.10+</td>
+<td class="org-left">✅ Sim</td>
+<td class="org-left">✅ Sim</td>
+</tr>
+
+<tr>
+<td class="org-left">Biblioteca <code>requests</code></td>
+<td class="org-left">✅ Sim</td>
+<td class="org-left">✅ Sim</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>
+<b>Recomendação:</b> Comece pelo Gemini (setup rápido, sem GPU). Depois experimente o Ollama no Colab para entender como funciona localmente.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-org9103933" class="outline-3">
+<h3 id="org9103933">Conta Google e API key do Gemini</h3>
+<div class="outline-text-3" id="text-org9103933">
+
+<div id="orgd9de582" class="figure">
+<p><img src="./img/s04-aistudio-home.png" alt="s04-aistudio-home.png" />
+</p>
+<p><span class="figure-number">Figura 1: </span>Google AI Studio — Playground principal</p>
+</div>
+
+<ol class="org-ol">
+<li>Acesse o Google AI Studio: <a href="https://aistudio.google.com">https://aistudio.google.com</a></li>
+<li>Faça login com sua conta Google</li>
+<li>No menu lateral, clique em <b>"Get API Key"</b></li>
+</ol>
+
+
+<div id="orge9ada3c" class="figure">
+<p><img src="./img/s04-aistudio-apikey-page.png" alt="s04-aistudio-apikey-page.png" />
+</p>
+<p><span class="figure-number">Figura 2: </span>Página de gerenciamento de chaves de API</p>
+</div>
+
+<ol class="org-ol">
+<li>Clique em <b>"Criar chave de API"</b></li>
+</ol>
+
+
+<div id="org2cf1a1c" class="figure">
+<p><img src="./img/s04-aistudio-create-dialog.png" alt="s04-aistudio-create-dialog.png" />
+</p>
+<p><span class="figure-number">Figura 3: </span>Dialog para criar uma nova chave</p>
+</div>
+
+<ol class="org-ol">
+<li>Escolha um projeto do Google Cloud (ou crie um novo)</li>
+<li><b>Copie a chave e guarde bem!</b></li>
+</ol>
+
+
+<div id="orge40d51d" class="figure">
+<p><img src="./img/s04-apikey-created.png" alt="s04-apikey-created.png" />
+</p>
+<p><span class="figure-number">Figura 4: </span>Chave criada — copie e armazene em local seguro!</p>
+</div>
+
+<blockquote>
+<p>
+⚠️ API key é <b><b>SECRETA</b></b>. Nunca compartilhe, nunca publique no GitHub, nunca cole em chat público.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-orgbda1c47" class="outline-3">
+<h3 id="orgbda1c47">Google Colab</h3>
+<div class="outline-text-3" id="text-orgbda1c47">
+<p>
+O Colab é um ambiente Python gratuito no navegador que vamos usar durante a aula.
+</p>
+
+<ul class="org-ul">
+<li>Acesse: <a href="https://colab.research.google.com">https://colab.research.google.com</a></li>
+<li>Crie um novo notebook (<code>Arquivo → Novo notebook</code>)</li>
+<li>Para usar GPU: <code>Runtime → Change runtime type → T4 GPU</code> (necessário para Ollama)</li>
+<li>Para guardar a API key com segurança: use o <b>Secrets</b> do Colab (<code>🔑 ícone na barra lateral</code>)</li>
+</ul>
+
+<blockquote>
+<p>
+<b>Onde guardar a API key no Colab:</b> No painel lateral, clique no ícone 🔑 (Secrets). Adicione uma chave chamada <code>GEMINI_API_KEY</code> com o valor da sua API key. Nunca escreva a chave diretamente no código!
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-org3828569" class="outline-3">
+<h3 id="org3828569">Instalando dependências</h3>
+<div class="outline-text-3" id="text-org3828569">
+<p>
+No Colab ou local, você vai precisar de:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Cloud (Gemini) &#8212; SDK oficial do Google
+</span>pip install google<span class="org-operator">-</span>genai
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Local (Ollama) &#8212; apenas requests, que j&#225; vem com Python
+</span>pip install requests
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>No Colab:</b> Use <code>!pip install</code> (com exclamação) no início da célula. Locally, use o terminal normalmente.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-org93069a6" class="outline-3">
+<h3 id="org93069a6">Outras opções (referência)</h3>
+<div class="outline-text-3" id="text-org93069a6">
+<p>
+Além de Gemini e Ollama, existem outros provedores que usam o mesmo padrão HTTP:
+</p>
+
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -261,118 +437,86 @@ Agora vamos colocar a mão na massa: conectar nosso código Python a modelos de 
 <col  class="org-left" />
 
 <col  class="org-left" />
-
-<col  class="org-left" />
 </colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Provedor</th>
+<th scope="col" class="org-left">Gratuito?</th>
+<th scope="col" class="org-left">API key</th>
+<th scope="col" class="org-left">Observação</th>
+</tr>
+</thead>
 <tbody>
 <tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">Provedor</td>
-<td class="org-left">Gratuito?</td>
-<td class="org-left">Limite</td>
-<td class="org-left">Onde roda</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">----------<del>-----------</del>---&#x2013;&#x2014;+-----------</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">Google Gemini</td>
-<td class="org-left">✅ Sim</td>
-<td class="org-left">1M tokens/dia</td>
-<td class="org-left">Cloud (Colab)</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
 <td class="org-left">HuggingFace</td>
-<td class="org-left">✅ Sim</td>
 <td class="org-left">Rate limit</td>
-<td class="org-left">Cloud (Colab)</td>
+<td class="org-left">Sim (HF Token)</td>
+<td class="org-left">Vários modelos, bom para experimentar</td>
 </tr>
 
 <tr>
-<td class="org-left">&#xa0;</td>
 <td class="org-left">OpenRouter</td>
-<td class="org-left">✅ Sim*</td>
 <td class="org-left">Crédito inicial</td>
-<td class="org-left">Cloud (Colab)</td>
+<td class="org-left">Sim</td>
+<td class="org-left">Agregador de modelos, tem modelos <code>:free</code></td>
 </tr>
 
 <tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">Ollama</td>
-<td class="org-left">✅ Sim</td>
-<td class="org-left">Ilimitado</td>
-<td class="org-left">Local (GPU)</td>
+<td class="org-left">Nous Portal</td>
+<td class="org-left">Rate limit</td>
+<td class="org-left">Sim</td>
+<td class="org-left">Acesso a modelos da Nous Research</td>
 </tr>
 
 <tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">LM Studio</td>
-<td class="org-left">✅ Sim</td>
-<td class="org-left">Ilimitado</td>
-<td class="org-left">Local (GUI)</td>
+<td class="org-left">OpenCode Go</td>
+<td class="org-left">—</td>
+<td class="org-left">Sim</td>
+<td class="org-left">CLI/SDK para múltiplos provedores</td>
 </tr>
 
 <tr>
-<td class="org-left">&#xa0;</td>
 <td class="org-left">OpenAI</td>
 <td class="org-left">❌ Pago</td>
-<td class="org-left">Por uso</td>
-<td class="org-left">Cloud</td>
+<td class="org-left">Sim</td>
+<td class="org-left">Referência de mercado, custo por uso</td>
+</tr>
+
+<tr>
+<td class="org-left">LM Studio</td>
+<td class="org-left">Ilimitado</td>
+<td class="org-left">Não (local)</td>
+<td class="org-left">Interface gráfica, mesma API do Ollama</td>
 </tr>
 </tbody>
 </table>
 
 <blockquote>
 <p>
-Para o curso: use Gemini ou HuggingFace no Colab!
+Esses provedores são <b>opções extras para quem quiser explorar depois</b>. Na aula, vamos focar em <b><b>Gemini</b></b> (cloud) e <b><b>Ollama</b></b> (local).
 </p>
 </blockquote>
 </div>
 </div>
 </div>
-<div id="outline-container-org959078a" class="outline-2">
-<h2 id="org959078a">Opção 1: Google Gemini (Recomendado)</h2>
-<div class="outline-text-2" id="text-org959078a">
+<div id="outline-container-orgaa38780" class="outline-2">
+<h2 id="orgaa38780">Opção 1: Google Gemini (Cloud)</h2>
+<div class="outline-text-2" id="text-orgaa38780">
 </div>
-<div id="outline-container-org53934e0" class="outline-3">
-<h3 id="org53934e0">Por que Gemini?</h3>
-<div class="outline-text-3" id="text-org53934e0">
+<div id="outline-container-org07e178f" class="outline-3">
+<h3 id="org07e178f">Por que Gemini?</h3>
+<div class="outline-text-3" id="text-org07e178f">
 <ul class="org-ul">
 <li><b><b>1 milhão de tokens/dia gratuito</b></b></li>
-<li>Funciona direto no Google Colab</li>
+<li>Funciona direto no Google Colab, sem GPU</li>
 <li>Modelos rápidos e capazes</li>
 <li>API key gratuita</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org0fac57d" class="outline-3">
-<h3 id="org0fac57d">Como obter API key</h3>
-<div class="outline-text-3" id="text-org0fac57d">
-<ol class="org-ol">
-<li>Acesse: <a href="https://aistudio.google.com">https://aistudio.google.com</a></li>
-<li>Faça login com sua conta Google</li>
-<li>Clique em <b>"Get API Key"</b> no menu lateral</li>
-<li>Clique em <b>"Create API Key"</b></li>
-<li>Escolha um projeto (ou crie um novo)</li>
-<li><b>Copie a chave e guarde bem!</b></li>
-</ol>
-
-<blockquote>
-<p>
-⚠️ API key é SECRETA. Nunca compartilhe ou publique no GitHub!
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-org39af5e0" class="outline-3">
-<h3 id="org39af5e0">Modelos disponíveis</h3>
-<div class="outline-text-3" id="text-org39af5e0">
+<div id="outline-container-org826da59" class="outline-3">
+<h3 id="org826da59">Modelos disponíveis</h3>
+<div class="outline-text-3" id="text-org826da59">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -438,9 +582,9 @@ Para o curso: use Gemini ou HuggingFace no Colab!
 </blockquote>
 </div>
 </div>
-<div id="outline-container-org72f98a5" class="outline-3">
-<h3 id="org72f98a5">Como escolher o modelo</h3>
-<div class="outline-text-3" id="text-org72f98a5">
+<div id="outline-container-org90efc74" class="outline-3">
+<h3 id="org90efc74">Como escolher o modelo</h3>
+<div class="outline-text-3" id="text-org90efc74">
 <ul class="org-ul">
 <li><b>gemini-2.0-flash:</b> Recomendado para maioria dos casos</li>
 <li><b>gemini-2.5-flash-preview:</b> Mais recente, mais inteligente</li>
@@ -448,9 +592,9 @@ Para o curso: use Gemini ou HuggingFace no Colab!
 </ul>
 </div>
 </div>
-<div id="outline-container-orgb83ddfb" class="outline-3">
-<h3 id="orgb83ddfb">Configuração no Colab</h3>
-<div class="outline-text-3" id="text-orgb83ddfb">
+<div id="outline-container-orgb0b1dc2" class="outline-3">
+<h3 id="orgb0b1dc2">Configuração no Colab</h3>
+<div class="outline-text-3" id="text-orgb0b1dc2">
 <div class="org-src-container">
 <pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Instalar SDK
 </span>!pip install google<span class="org-operator">-</span>genai
@@ -466,9 +610,9 @@ Para o curso: use Gemini ou HuggingFace no Colab!
 </div>
 </div>
 </div>
-<div id="outline-container-org7a6557e" class="outline-3">
-<h3 id="org7a6557e">Chamada básica</h3>
-<div class="outline-text-3" id="text-org7a6557e">
+<div id="outline-container-org1884cfc" class="outline-3">
+<h3 id="org1884cfc">Chamada básica</h3>
+<div class="outline-text-3" id="text-org1884cfc">
 <div class="org-src-container">
 <pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Mensagem simples (novo SDK)
 </span><span class="org-variable-name">response</span> <span class="org-operator">=</span> client.models.generate_content(
@@ -488,9 +632,9 @@ Para o curso: use Gemini ou HuggingFace no Colab!
 </div>
 </div>
 </div>
-<div id="outline-container-org7193fe7" class="outline-3">
-<h3 id="org7193fe7">Estrutura da mensagem completa</h3>
-<div class="outline-text-3" id="text-org7193fe7">
+<div id="outline-container-orgb03159a" class="outline-3">
+<h3 id="orgb03159a">Estrutura da mensagem completa</h3>
+<div class="outline-text-3" id="text-orgb03159a">
 <div class="org-src-container">
 <pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Com instru&#231;&#245;es de sistema (novo SDK)
 </span><span class="org-variable-name">response</span> <span class="org-operator">=</span> client.models.generate_content(
@@ -505,9 +649,9 @@ Para o curso: use Gemini ou HuggingFace no Colab!
 </div>
 </div>
 </div>
-<div id="outline-container-orgff731b9" class="outline-3">
-<h3 id="orgff731b9">Parâmetros importantes</h3>
-<div class="outline-text-3" id="text-orgff731b9">
+<div id="outline-container-org7e97e2b" class="outline-3">
+<h3 id="org7e97e2b">Parâmetros importantes</h3>
+<div class="outline-text-3" id="text-org7e97e2b">
 <div class="org-src-container">
 <pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Novo SDK: usar types.GenerateContentConfig
 </span><span class="org-variable-name">response</span> <span class="org-operator">=</span> client.models.generate_content(
@@ -525,9 +669,9 @@ Para o curso: use Gemini ou HuggingFace no Colab!
 </div>
 </div>
 </div>
-<div id="outline-container-orgfe4b238" class="outline-3">
-<h3 id="orgfe4b238">Tratamento de erros</h3>
-<div class="outline-text-3" id="text-orgfe4b238">
+<div id="outline-container-org728ef75" class="outline-3">
+<h3 id="org728ef75">Tratamento de erros</h3>
+<div class="outline-text-3" id="text-org728ef75">
 <div class="org-src-container">
 <pre class="src src-python"><span class="org-keyword">from</span> google.api_core.exceptions <span class="org-keyword">import</span> NotFound, PermissionDenied, ResourceExhausted
 
@@ -549,9 +693,9 @@ Para o curso: use Gemini ou HuggingFace no Colab!
 </div>
 </div>
 </div>
-<div id="outline-container-org0ff0e3f" class="outline-3">
-<h3 id="org0ff0e3f">Exemplo completo no Colab</h3>
-<div class="outline-text-3" id="text-org0ff0e3f">
+<div id="outline-container-orgd570d44" class="outline-3">
+<h3 id="orgd570d44">Exemplo completo no Colab</h3>
+<div class="outline-text-3" id="text-orgd570d44">
 <div class="org-src-container">
 <pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Instalar SDK
 </span>!pip install google<span class="org-operator">-</span>genai
@@ -578,79 +722,383 @@ Para o curso: use Gemini ou HuggingFace no Colab!
 </div>
 </div>
 </div>
-<div id="outline-container-orgdf83edf" class="outline-2">
-<h2 id="orgdf83edf">Opção 2: HuggingFace</h2>
-<div class="outline-text-2" id="text-orgdf83edf">
+<div id="outline-container-org069a857" class="outline-2">
+<h2 id="org069a857">Opção 2: Ollama no Google Colab (Local)</h2>
+<div class="outline-text-2" id="text-org069a857">
 </div>
-<div id="outline-container-org4dfa7c0" class="outline-3">
-<h3 id="org4dfa7c0">Por que HuggingFace?</h3>
-<div class="outline-text-3" id="text-org4dfa7c0">
+<div id="outline-container-org8605246" class="outline-3">
+<h3 id="org8605246">Por que Ollama?</h3>
+<div class="outline-text-3" id="text-org8605246">
 <ul class="org-ul">
-<li>Gratuito com <b>rate limit</b></li>
-<li>Vários modelos disponíveis</li>
-<li>Comunidade ativa</li>
-<li>Alternativa ao Gemini</li>
+<li><b><b>Gratuito e ilimitado</b></b> — sem API key, sem limite de tokens</li>
+<li><b><b>Privacidade</b></b> — dados não saem da máquina</li>
+<li><b><b>API REST HTTP</b></b> — usa <code>requests.post()</code>, o mesmo padrão que qualquer API</li>
+<li><b><b>OpenAI-compatible</b></b> — <code>/v1/chat/completions</code> funciona como a API da OpenAI</li>
 </ul>
+
+<blockquote>
+<p>
+<b>Ponto pedagógico:</b> Tanto Gemini quanto Ollama usam o mesmo padrão HTTP (request/response). A URL muda, o JSON muda um pouco, mas o conceito é universal. Entender HTTP = entender todas as APIs de LLM.
+</p>
+</blockquote>
 </div>
 </div>
-<div id="outline-container-orga086b0d" class="outline-3">
-<h3 id="orga086b0d">Como obter token</h3>
-<div class="outline-text-3" id="text-orga086b0d">
+<div id="outline-container-orgb31881d" class="outline-3">
+<h3 id="orgb31881d">O que é Ollama?</h3>
+<div class="outline-text-3" id="text-orgb31881d">
+<p>
+Ollama é um servidor que roda modelos de linguagem localmente. Na prática:
+</p>
+
 <ol class="org-ol">
-<li>Acesse: <a href="https://huggingface.co">https://huggingface.co</a></li>
-<li>Crie uma conta gratuita</li>
-<li>Vá em <b>Settings → Access Tokens</b></li>
-<li>Clique em <b>"New token"</b></li>
-<li>Escolha <b>"Read"</b> como permissão</li>
-<li><b>Copie o token!</b></li>
+<li>Você instala o Ollama</li>
+<li>Baixa um modelo (<code>ollama pull gemma4:e2b</code>)</li>
+<li>O Ollama fica servindo na porta 11434</li>
+<li>Qualquer programa pode fazer <code>requests.post()</code> para conversar com o modelo</li>
 </ol>
 </div>
 </div>
-<div id="outline-container-org895efd5" class="outline-3">
-<h3 id="org895efd5">Configuração no Colab</h3>
-<div class="outline-text-3" id="text-org895efd5">
+<div id="outline-container-orge00d7f5" class="outline-3">
+<h3 id="orge00d7f5">Setup no Google Colab</h3>
+<div class="outline-text-3" id="text-orge00d7f5">
+<p>
+Essas 3 células preparam o ambiente. Execute na ordem:
+</p>
+
 <div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Instalar
-</span>!pip install huggingface_hub
-
-<span class="org-keyword">from</span> huggingface_hub <span class="org-keyword">import</span> InferenceClient
-<span class="org-keyword">from</span> google.colab <span class="org-keyword">import</span> userdata
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Configurar cliente
-</span><span class="org-variable-name">client</span> <span class="org-operator">=</span> InferenceClient(
-    model<span class="org-operator">=</span><span class="org-string">"Qwen/Qwen2.5-7B-Instruct"</span>,
-    token<span class="org-operator">=</span>userdata.get(<span class="org-string">'HF_TOKEN'</span>)
-)
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">C&#233;lula 1: Verificar GPU
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">V&#225; em Runtime &#8594; Change runtime type &#8594; T4 GPU
+</span>!nvidia<span class="org-operator">-</span>smi
 </pre>
 </div>
-</div>
-</div>
-<div id="outline-container-orgf6fcfd1" class="outline-3">
-<h3 id="orgf6fcfd1">Exemplo de uso</h3>
-<div class="outline-text-3" id="text-orgf6fcfd1">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Texto simples
-</span><span class="org-variable-name">response</span> <span class="org-operator">=</span> client.text_generation(
-    <span class="org-string">"Ol&#225;! Como voc&#234; est&#225;?"</span>,
-    max_new_tokens<span class="org-operator">=</span>100
-)
-<span class="org-builtin">print</span>(response)
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Com chat
-</span><span class="org-variable-name">messages</span> <span class="org-operator">=</span> [
-    {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til."</span>},
-    {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Qual &#233; a capital do Brasil?"</span>}
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">C&#233;lula 2: Instalar Ollama + depend&#234;ncias
+</span>!apt<span class="org-operator">-</span>get install <span class="org-operator">-</span>y zstd pciutils lshw <span class="org-operator">&gt;</span> <span class="org-operator">/</span>dev<span class="org-operator">/</span>null 2<span class="org-operator">&gt;&amp;</span>1
+!curl <span class="org-operator">-</span>fsSL https:<span class="org-operator">//</span>ollama.com<span class="org-operator">/</span>install.sh <span class="org-operator">|</span> sh
+
+<span class="org-keyword">import</span> os
+os.<span class="org-variable-name">environ</span>[<span class="org-string">"LD_LIBRARY_PATH"</span>] <span class="org-operator">=</span> <span class="org-string">"/usr/lib64-nvidia:"</span> <span class="org-operator">+</span> os.environ.get(<span class="org-string">"LD_LIBRARY_PATH"</span>, <span class="org-string">""</span>)
+
+<span class="org-builtin">print</span>(<span class="org-string">"&#9989; Ollama instalado!"</span>)
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">C&#233;lula 3: Iniciar servidor + baixar modelo
+</span><span class="org-keyword">import</span> subprocess, time, requests
+
+subprocess.run([<span class="org-string">"pkill"</span>, <span class="org-string">"-f"</span>, <span class="org-string">"ollama"</span>], capture_output<span class="org-operator">=</span><span class="org-constant">True</span>)
+time.sleep(1)
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Manter modelo carregado indefinidamente (sem isso, descarrega ap&#243;s 5 min)
+</span>os.<span class="org-variable-name">environ</span>[<span class="org-string">"OLLAMA_KEEP_ALIVE"</span>] <span class="org-operator">=</span> <span class="org-string">"-1"</span>
+
+subprocess.Popen(
+    [<span class="org-string">"ollama"</span>, <span class="org-string">"serve"</span>],
+    stdout<span class="org-operator">=</span>subprocess.DEVNULL, stderr<span class="org-operator">=</span>subprocess.DEVNULL,
+    env<span class="org-operator">=</span>{<span class="org-operator">**</span>os.environ}
+)
+
+<span class="org-builtin">print</span>(<span class="org-string">"&#9203; Aguardando Ollama iniciar..."</span>)
+<span class="org-keyword">for</span> i <span class="org-keyword">in</span> <span class="org-builtin">range</span>(30):
+    <span class="org-keyword">try</span>:
+        <span class="org-variable-name">r</span> <span class="org-operator">=</span> requests.get(<span class="org-string">"http://localhost:11434/api/tags"</span>, timeout<span class="org-operator">=</span>2)
+        <span class="org-keyword">if</span> r.status_code <span class="org-operator">==</span> 200:
+            <span class="org-builtin">print</span>(<span class="org-string">"&#9989; Ollama rodando!"</span>)
+            <span class="org-keyword">break</span>
+    <span class="org-keyword">except</span>:
+        time.sleep(1)
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Baixar modelo (~7.2 GB para gemma4:e2b, ~2.7 GB para qwen3.5:4b)
+</span>!ollama pull gemma4:e2b
+</pre>
+</div>
+
+<blockquote>
+<p>
+⚠️ <b>Warm up:</b> A primeira inferência demora ~2-3 minutos (o modelo carrega na GPU). Depois disso, as respostas são rápidas (~70 tokens/s). Configuramos <code>OLLAMA_KEEP_ALIVE</code>-1= para o modelo ficar na VRAM e não precisar recarregar.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-orgdb96a9a" class="outline-3">
+<h3 id="orgdb96a9a">Modelos recomendados (benchmarks na T4)</h3>
+<div class="outline-text-3" id="text-orgdb96a9a">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Modelo</th>
+<th scope="col" class="org-left">Download</th>
+<th scope="col" class="org-left">VRAM</th>
+<th scope="col" class="org-left">Warm up</th>
+<th scope="col" class="org-left">Velocidade</th>
+<th scope="col" class="org-left">Qualidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">qwen3.5:4b</td>
+<td class="org-left">~2.7 GB</td>
+<td class="org-left">~3 GB</td>
+<td class="org-left">141s</td>
+<td class="org-left">~80 tok/s</td>
+<td class="org-left">Boa</td>
+</tr>
+
+<tr>
+<td class="org-left">gemma4:e2b</td>
+<td class="org-left">~7.2 GB</td>
+<td class="org-left">~5-6 GB</td>
+<td class="org-left">161s</td>
+<td class="org-left">~70 tok/s</td>
+<td class="org-left">Boa (estável)</td>
+</tr>
+
+<tr>
+<td class="org-left">qwen3.5:9b</td>
+<td class="org-left">~5.8 GB</td>
+<td class="org-left">~7.7 GB</td>
+<td class="org-left">153s</td>
+<td class="org-left">~25 tok/s</td>
+<td class="org-left">Boa (maior)</td>
+</tr>
+
+<tr>
+<td class="org-left">gemma4:e4b</td>
+<td class="org-left">~14 GB</td>
+<td class="org-left">~9.4 GB</td>
+<td class="org-left">199s</td>
+<td class="org-left">~18 tok/s</td>
+<td class="org-left">Alta (lento)</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>
+<b>Nota sobre modelos:</b> O <code>qwen3.5:4b</code> é o mais rápido e leve — ideal para aula. O <code>gemma4:e2b</code> é mais estável nas respostas. Modelos maiores (9B, E4B) cabem na T4 mas são significativamente mais lentos. Os tempos de warm up são reais, medidos em POC no Colab T4.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-orga107da1" class="outline-3">
+<h3 id="orga107da1">Chamada básica com <code>requests.post()</code></h3>
+<div class="outline-text-3" id="text-orga107da1">
+<p>
+Aqui está o <b><b>coração da aula</b></b>: usamos <code>requests</code> puro, sem SDK.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">import</span> requests
+<span class="org-keyword">import</span> json
+
+<span class="org-variable-name">OLLAMA_URL</span> <span class="org-operator">=</span> <span class="org-string">"http://localhost:11434/api/chat"</span>
+<span class="org-variable-name">MODEL</span> <span class="org-operator">=</span> <span class="org-string">"gemma4:e2b"</span>
+
+<span class="org-keyword">def</span> <span class="org-function-name">chat</span>(messages, model<span class="org-operator">=</span><span class="org-constant">None</span>, stream<span class="org-operator">=</span><span class="org-constant">False</span>):
+    <span class="org-doc">"""Envia mensagens pro Ollama e retorna a resposta.
+
+    Args:
+        messages: lista [{"role": "...", "content": "..."}]
+        model: nome do modelo (padr&#227;o: gemma4:e2b)
+        stream: se True, retorna response object para iterar
+
+    Returns:
+        dict com a resposta (ou response se stream=True)
+    """</span>
+    <span class="org-keyword">if</span> model <span class="org-keyword">is</span> <span class="org-constant">None</span>:
+        <span class="org-variable-name">model</span> <span class="org-operator">=</span> MODEL
+    <span class="org-variable-name">payload</span> <span class="org-operator">=</span> {<span class="org-string">"model"</span>: model, <span class="org-string">"messages"</span>: messages, <span class="org-string">"stream"</span>: stream, <span class="org-string">"keep_alive"</span>: <span class="org-operator">-</span>1}
+    <span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(OLLAMA_URL, json<span class="org-operator">=</span>payload, timeout<span class="org-operator">=</span>300)
+    <span class="org-keyword">if</span> response.status_code <span class="org-operator">!=</span> 200:
+        <span class="org-keyword">raise</span> <span class="org-type">Exception</span>(f<span class="org-string">"Erro </span>{response.status_code}<span class="org-string">: </span>{response.text}<span class="org-string">"</span>)
+    <span class="org-keyword">return</span> response <span class="org-keyword">if</span> stream <span class="org-keyword">else</span> response.json()
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Teste
+</span><span class="org-variable-name">resultado</span> <span class="org-operator">=</span> chat([
+    {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s."</span>},
+    {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Qual &#233; a capital de Minas Gerais?"</span>}
+])
+<span class="org-builtin">print</span>(f<span class="org-string">"&#129302; </span>{resultado['message']['content']}<span class="org-string">"</span>)
+<span class="org-builtin">print</span>(f<span class="org-string">"&#128202; Tokens: prompt=</span>{resultado.get('prompt_eval_count', '?')}<span class="org-string">, "</span>
+      f<span class="org-string">"completion=</span>{resultado.get('eval_count', '?')}<span class="org-string">"</span>)
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>Compare com o Gemini:</b> A estrutura é quase idêntica — mandamos mensagens (system + user), recebemos uma resposta. A diferença é a URL e o formato do JSON. O conceito HTTP é o mesmo.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-org0732e91" class="outline-3">
+<h3 id="org0732e91">Chat com memória (multi-turno)</h3>
+<div class="outline-text-3" id="text-org0732e91">
+<p>
+Cada chamada envia o histórico completo. O modelo mantém o contexto.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-variable-name">historico</span> <span class="org-operator">=</span> [
+    {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s. Seja conciso."</span>}
 ]
 
-<span class="org-variable-name">response</span> <span class="org-operator">=</span> client.chat_completion(messages<span class="org-operator">=</span>messages)
-<span class="org-builtin">print</span>(response.choices[0].message.content)
+historico.append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Meu nome &#233; Lucas e eu ense IA."</span>})
+<span class="org-variable-name">r1</span> <span class="org-operator">=</span> chat(historico)
+historico.append({<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: r1[<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]})
+<span class="org-builtin">print</span>(f<span class="org-string">"&#129302;: </span>{r1['message']['content']}<span class="org-string">"</span>)
+
+historico.append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Qual &#233; o meu nome?"</span>})
+<span class="org-variable-name">r2</span> <span class="org-operator">=</span> chat(historico)
+historico.append({<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: r2[<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]})
+<span class="org-builtin">print</span>(f<span class="org-string">"&#129302;: </span>{r2['message']['content']}<span class="org-string">"</span>)
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org4dae94b" class="outline-3">
-<h3 id="org4dae94b">Modelos recomendados</h3>
-<div class="outline-text-3" id="text-org4dae94b">
+<div id="outline-container-orgfcf1088" class="outline-3">
+<h3 id="orgfcf1088">Modo Thinking (raciocínio interno)</h3>
+<div class="outline-text-3" id="text-orgfcf1088">
+<p>
+O Gemma 4 suporta thinking mode — o modelo raciocina antes de responder.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-variable-name">resultado</span> <span class="org-operator">=</span> chat([
+    {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s."</span>},
+    {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Quantos n&#250;meros primos existem entre 1 e 20? /think"</span>}
+])
+
+<span class="org-variable-name">msg</span> <span class="org-operator">=</span> resultado[<span class="org-string">"message"</span>]
+<span class="org-variable-name">thinking</span> <span class="org-operator">=</span> msg.get(<span class="org-string">"thinking"</span>, <span class="org-string">"(sem thinking)"</span>)
+<span class="org-variable-name">content</span> <span class="org-operator">=</span> msg.get(<span class="org-string">"content"</span>, <span class="org-string">""</span>)
+<span class="org-builtin">print</span>(f<span class="org-string">"&#128173; Thinking:</span><span class="org-constant">\n</span>{thinking[:500]}<span class="org-string">..."</span>)
+<span class="org-builtin">print</span>(f<span class="org-string">"</span><span class="org-constant">\n</span><span class="org-string">&#129302; Resposta: </span>{content}<span class="org-string">"</span>)
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org5960dfe" class="outline-3">
+<h3 id="org5960dfe">Streaming (resposta em tempo real)</h3>
+<div class="outline-text-3" id="text-org5960dfe">
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-builtin">print</span>(<span class="org-string">"&#129302; "</span>, end<span class="org-operator">=</span><span class="org-string">""</span>)
+<span class="org-variable-name">response</span> <span class="org-operator">=</span> chat(
+    [
+        {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s."</span>},
+        {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Explique o que &#233; uma API em 3 frases."</span>}
+    ],
+    stream<span class="org-operator">=</span><span class="org-constant">True</span>
+)
+<span class="org-keyword">for</span> line <span class="org-keyword">in</span> response.iter_lines():
+    <span class="org-keyword">if</span> line:
+        <span class="org-variable-name">chunk</span> <span class="org-operator">=</span> json.loads(line)
+        <span class="org-keyword">if</span> <span class="org-string">"message"</span> <span class="org-keyword">in</span> chunk <span class="org-keyword">and</span> <span class="org-string">"content"</span> <span class="org-keyword">in</span> chunk[<span class="org-string">"message"</span>]:
+            <span class="org-builtin">print</span>(chunk[<span class="org-string">"message"</span>][<span class="org-string">"content"</span>], end<span class="org-operator">=</span><span class="org-string">""</span>, flush<span class="org-operator">=</span><span class="org-constant">True</span>)
+<span class="org-builtin">print</span>()
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org8b04a4b" class="outline-2">
+<h2 id="org8b04a4b">API Compatível com OpenAI</h2>
+<div class="outline-text-2" id="text-org8b04a4b">
+<p>
+O Ollama também tem um endpoint compatível com a OpenAI em <code>/v1/chat/completions</code>.
+</p>
+
+<p>
+Isso significa que <b><b>qualquer código que usa a OpenAI SDK pode apontar pro Ollama local</b></b> trocando só a <code>base_url</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-variable-name">OPENAI_URL</span> <span class="org-operator">=</span> <span class="org-string">"http://localhost:11434/v1/chat/completions"</span>
+
+<span class="org-variable-name">payload</span> <span class="org-operator">=</span> {
+    <span class="org-string">"model"</span>: <span class="org-string">"gemma4:e2b"</span>,
+    <span class="org-string">"messages"</span>: [
+        {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s."</span>},
+        {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"O que &#233; Python em uma frase?"</span>}
+    ],
+    <span class="org-string">"temperature"</span>: 0.7,
+    <span class="org-string">"max_tokens"</span>: 64,
+    <span class="org-string">"keep_alive"</span>: <span class="org-operator">-</span>1
+}
+
+<span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(OPENAI_URL, json<span class="org-operator">=</span>payload, timeout<span class="org-operator">=</span>300)
+<span class="org-variable-name">data</span> <span class="org-operator">=</span> response.json()
+<span class="org-builtin">print</span>(f<span class="org-string">"&#129302; </span>{data['choices'][0]['message']['content']}<span class="org-string">"</span>)
+<span class="org-builtin">print</span>(f<span class="org-string">"&#128202; Model: </span>{data['model']}<span class="org-string">, Usage: </span>{data['usage']}<span class="org-string">"</span>)
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>Ponto-chave:</b> O formato é <b><b>idêntico</b></b> ao da OpenAI. A única diferença é a URL (<code>localhost</code> em vez de <code>api.openai.com</code>) e o modelo (<code>gemma4:e2b</code> em vez de <code>gpt-4o</code>). Isso é poderoso: o mesmo código funciona com qualquer provedor.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-orgabb2aef" class="outline-2">
+<h2 id="orgabb2aef">Nota: LM Studio</h2>
+<div class="outline-text-2" id="text-orgabb2aef">
+<p>
+Se você prefere uma interface gráfica, o <b><b>LM Studio</b></b> é uma alternativa ao Ollama:
+</p>
+
+<ul class="org-ul">
+<li>Disponível em: <a href="https://lmstudio.ai">https://lmstudio.ai</a></li>
+<li>Interface gráfica para baixar e rodar modelos</li>
+<li>Expõe a <b><b>mesma API OpenAI-compatible</b></b> em <code>localhost:1234</code></li>
+<li>Não precisa de terminal — tudo é clique e arraste</li>
+</ul>
+
+<p>
+Para usar com <code>requests</code>, basta trocar a URL:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">LM Studio em vez de Ollama &#8212; s&#243; muda a URL!
+</span><span class="org-variable-name">LMSTUDIO_URL</span> <span class="org-operator">=</span> <span class="org-string">"http://localhost:1234/v1/chat/completions"</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">O resto &#233; id&#234;ntico
+</span><span class="org-variable-name">payload</span> <span class="org-operator">=</span> {
+    <span class="org-string">"model"</span>: <span class="org-string">"model-name-here"</span>,  <span class="org-comment-delimiter"># </span><span class="org-comment">nome do modelo carregado no LM Studio
+</span>    <span class="org-string">"messages"</span>: [{<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Ol&#225;!"</span>}],
+    <span class="org-string">"temperature"</span>: 0.7
+}
+<span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(LMSTUDIO_URL, json<span class="org-operator">=</span>payload, timeout<span class="org-operator">=</span>120)
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>Dica:</b> No LM Studio, vá em <b>Local Server → Start Server</b> antes de rodar o código. Escolha o modelo desejado na interface. A API key pode ser qualquer string (ex: <code>"not-needed"</code>).
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-orga654e9c" class="outline-2">
+<h2 id="orga654e9c">Comparação: Cloud vs Local</h2>
+<div class="outline-text-2" id="text-orga654e9c">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -663,593 +1111,155 @@ Para o curso: use Gemini ou HuggingFace no Colab!
 </colgroup>
 <thead>
 <tr>
-<th scope="col" class="org-left">Modelo</th>
-<th scope="col" class="org-left">Tamanho</th>
-<th scope="col" class="org-left">Uso</th>
+<th scope="col" class="org-left">Aspecto</th>
+<th scope="col" class="org-left">Gemini (Cloud)</th>
+<th scope="col" class="org-left">Ollama (Local)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">Qwen/Qwen3.5-27B</td>
-<td class="org-left">27B</td>
-<td class="org-left">Chat geral (recomendado)</td>
+<td class="org-left">Setup</td>
+<td class="org-left">API key (2 min)</td>
+<td class="org-left">Install + download (~5-7 min)</td>
 </tr>
 
 <tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">Qwen/Qwen2.5-7B-Instruct</td>
-<td class="org-left">7B</td>
-<td class="org-left">Mais rápido</td>
+<td class="org-left">Warm up</td>
+<td class="org-left">Instantâneo</td>
+<td class="org-left">141-199s (primeira req, depende do modelo)</td>
 </tr>
 
 <tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">meta-llama/Llama-3.2-3B-Instruct</td>
-<td class="org-left">3B</td>
-<td class="org-left">Mais leve</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="outline-container-org216cec9" class="outline-2">
-<h2 id="org216cec9">Opção 3: OpenRouter</h2>
-<div class="outline-text-2" id="text-org216cec9">
-</div>
-<div id="outline-container-org594f78b" class="outline-3">
-<h3 id="org594f78b">O que é OpenRouter?</h3>
-<div class="outline-text-3" id="text-org594f78b">
-<p>
-OpenRouter é um <b>agregador de modelos</b> que permite acessar múltiplos provedores através de uma única API.
-</p>
-
-<blockquote>
-<p>
-<b>Vantagem:</b> Modelos gratuitos com crédito inicial, sem precisar de GPU!
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-org79b5f0d" class="outline-3">
-<h3 id="org79b5f0d">Por que usar OpenRouter?</h3>
-<div class="outline-text-3" id="text-org79b5f0d">
-<ul class="org-ul">
-<li>Modelos gratuitos disponíveis (com sufixo <code>:free</code>)</li>
-<li>Crédito inicial gratuito para novos usuários</li>
-<li>Múltiplos provedores em um só lugar</li>
-<li>Integração fácil com LangChain</li>
-<li>Alternativa ao Gemini quando atingir limite</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-orge6ede30" class="outline-3">
-<h3 id="orge6ede30">Como obter API key</h3>
-<div class="outline-text-3" id="text-orge6ede30">
-<ol class="org-ol">
-<li>Acesse: <a href="https://openrouter.ai">https://openrouter.ai</a></li>
-<li>Crie uma conta (pode usar Google/GitHub)</li>
-<li>Vá em <b>Settings → Keys</b></li>
-<li>Clique em <b>\"Create Key\"</b></li>
-<li><b>Copie a chave!</b></li>
-</ol>
-
-<blockquote>
-<p>
-⚠️ Configure como variável de ambiente: <code>OPENROUTER_API_KEY</code>
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-org285e799" class="outline-3">
-<h3 id="org285e799">Configuração no Colab</h3>
-<div class="outline-text-3" id="text-org285e799">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Instalar
-</span>!pip install langchain<span class="org-operator">-</span>openrouter
-
-<span class="org-keyword">from</span> langchain_openrouter <span class="org-keyword">import</span> ChatOpenRouter
-<span class="org-keyword">from</span> google.colab <span class="org-keyword">import</span> userdata
-<span class="org-keyword">import</span> os
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Configurar API key
-</span>os.<span class="org-variable-name">environ</span>[<span class="org-string">"OPENROUTER_API_KEY"</span>] <span class="org-operator">=</span> userdata.get(<span class="org-string">'OPENROUTER_API_KEY'</span>)
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-orga449c41" class="outline-3">
-<h3 id="orga449c41">Exemplo de uso com Qwen 3.6 Plus</h3>
-<div class="outline-text-3" id="text-orga449c41">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-keyword">from</span> langchain_openrouter <span class="org-keyword">import</span> ChatOpenRouter
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Modelo gratuito
-</span><span class="org-variable-name">llm</span> <span class="org-operator">=</span> ChatOpenRouter(
-    model<span class="org-operator">=</span><span class="org-string">"qwen/qwen3.6-plus:free"</span>,
-    temperature<span class="org-operator">=</span>0.8,
-)
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Chamada simples
-</span><span class="org-variable-name">response</span> <span class="org-operator">=</span> llm.invoke(<span class="org-string">"Ol&#225;! Qual &#233; a capital do Brasil?"</span>)
-<span class="org-builtin">print</span>(response.content)
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-org3c21c1f" class="outline-3">
-<h3 id="org3c21c1f">Modelos gratuitos disponíveis</h3>
-<div class="outline-text-3" id="text-org3c21c1f">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<tbody>
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">Modelo</td>
-<td class="org-left">Provedor</td>
-<td class="org-left">Uso</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">--------<del>----------</del>-----</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">qwen/qwen3.6-plus:free</td>
-<td class="org-left">Qwen</td>
-<td class="org-left">Chat geral, recomendado</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">meta-llama/llama-3.2-3b-instruct:free</td>
-<td class="org-left">Meta</td>
-<td class="org-left">Rápido, leve</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">deepseek/deepseek-r1:free</td>
-<td class="org-left">DeepSeek</td>
-<td class="org-left">Raciocínio</td>
-</tr>
-</tbody>
-</table>
-
-<blockquote>
-<p>
-<b>Importante:</b> Modelos <code>:free</code> têm limites diários. Verifique em openrouter.ai/collections/free-models
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-org35d40f5" class="outline-3">
-<h3 id="org35d40f5">Links úteis</h3>
-<div class="outline-text-3" id="text-org35d40f5">
-<ul class="org-ul">
-<li>Modelos gratuitos: <a href="https://openrouter.ai/collections/free-models">https://openrouter.ai/collections/free-models</a></li>
-<li>Documentação LangChain: <a href="https://docs.langchain.com/oss/python/integrations/chat/openrouter">https://docs.langchain.com/oss/python/integrations/chat/openrouter</a></li>
-<li>Guia OpenRouter: <a href="https://openrouter.ai/docs/guides/community/langchain">https://openrouter.ai/docs/guides/community/langchain</a></li>
-</ul>
-</div>
-</div>
-</div>
-<div id="outline-container-orgf4f841c" class="outline-2">
-<h2 id="orgf4f841c">Opção 4: LangChain</h2>
-<div class="outline-text-2" id="text-orgf4f841c">
-</div>
-<div id="outline-container-org4d25d72" class="outline-3">
-<h3 id="org4d25d72">O que é LangChain?</h3>
-<div class="outline-text-3" id="text-org4d25d72">
-<p>
-LangChain é um framework para construir aplicações com LLMs. Ele abstrai diferenças entre provedores.
-</p>
-
-<blockquote>
-<p>
-<b>Vantagem:</b> Mesmo código funciona com Gemini, HuggingFace, OpenRouter ou Ollama!
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-org4b461b2" class="outline-3">
-<h3 id="org4b461b2">Com Gemini</h3>
-<div class="outline-text-3" id="text-org4b461b2">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Instalar
-</span>!pip install langchain<span class="org-operator">-</span>google<span class="org-operator">-</span>genai
-
-<span class="org-keyword">from</span> langchain_google_genai <span class="org-keyword">import</span> ChatGoogleGenerativeAI
-<span class="org-keyword">from</span> google.colab <span class="org-keyword">import</span> userdata
-<span class="org-keyword">import</span> os
-
-os.<span class="org-variable-name">environ</span>[<span class="org-string">"GOOGLE_API_KEY"</span>] <span class="org-operator">=</span> userdata.get(<span class="org-string">'GEMINI_API_KEY'</span>)
-
-<span class="org-variable-name">llm</span> <span class="org-operator">=</span> ChatGoogleGenerativeAI(model<span class="org-operator">=</span><span class="org-string">"gemini-2.5-flash-preview"</span>)
-<span class="org-variable-name">resposta</span> <span class="org-operator">=</span> llm.invoke(<span class="org-string">"Ol&#225;!"</span>)
-<span class="org-builtin">print</span>(resposta.content)
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-org5fac663" class="outline-3">
-<h3 id="org5fac663">Com HuggingFace</h3>
-<div class="outline-text-3" id="text-org5fac663">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Instalar
-</span>!pip install langchain<span class="org-operator">-</span>huggingface
-
-<span class="org-keyword">from</span> langchain_huggingface <span class="org-keyword">import</span> ChatHuggingFace, HuggingFaceEndpoint
-<span class="org-keyword">from</span> google.colab <span class="org-keyword">import</span> userdata
-
-<span class="org-variable-name">endpoint</span> <span class="org-operator">=</span> HuggingFaceEndpoint(
-    repo_id<span class="org-operator">=</span><span class="org-string">"Qwen/Qwen3.5-27B"</span>,
-    huggingfacehub_api_token<span class="org-operator">=</span>userdata.get(<span class="org-string">"HF_TOKEN"</span>)
-)
-
-<span class="org-variable-name">llm</span> <span class="org-operator">=</span> ChatHuggingFace(llm<span class="org-operator">=</span>endpoint)
-<span class="org-variable-name">resposta</span> <span class="org-operator">=</span> llm.invoke(<span class="org-string">"Ol&#225;! Qual &#233; a capital do Brasil?"</span>)
-<span class="org-builtin">print</span>(resposta.content)
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-org0b54c76" class="outline-3">
-<h3 id="org0b54c76">Com Ollama (local)</h3>
-<div class="outline-text-3" id="text-org0b54c76">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Instalar
-</span>!pip install langchain<span class="org-operator">-</span>ollama
-
-<span class="org-keyword">from</span> langchain_ollama <span class="org-keyword">import</span> OllamaLLM
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Primeiro baixe o modelo: ollama pull qwen3.5:4b
-</span><span class="org-variable-name">llm</span> <span class="org-operator">=</span> OllamaLLM(model<span class="org-operator">=</span><span class="org-string">"qwen3.5:4b"</span>)
-
-<span class="org-variable-name">resposta</span> <span class="org-operator">=</span> llm.invoke(<span class="org-string">"Ol&#225;!"</span>)
-<span class="org-builtin">print</span>(resposta)
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-org2ab1142" class="outline-3">
-<h3 id="org2ab1142">Vantagens do LangChain</h3>
-<div class="outline-text-3" id="text-org2ab1142">
-<ul class="org-ul">
-<li>Trocar de provedor sem mudar código</li>
-<li>Acesso a modelos diferentes</li>
-<li>Mesma interface para todos</li>
-</ul>
-
-<blockquote>
-<p>
-<b>Dica:</b> Comece com Gemini (gratuito), depois mude para Ollama (local) se precisar.
-</p>
-</blockquote>
-</div>
-</div>
-</div>
-<div id="outline-container-org8de9db1" class="outline-2">
-<h2 id="org8de9db1">Para Aventureiros: Rodando Local</h2>
-<div class="outline-text-2" id="text-org8de9db1">
-</div>
-<div id="outline-container-org4be403a" class="outline-3">
-<h3 id="org4be403a">Quando rodar localmente?**</h3>
-<div class="outline-text-3" id="text-org4be403a">
-<ul class="org-ul">
-<li>Você tem GPU em casa (NVIDIA)</li>
-<li>Quer privacidade total</li>
-<li>Não depende de internet</li>
-<li>Quer modelos sem censura</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-orgea3a192" class="outline-3">
-<h3 id="orgea3a192">Opções disponíveis**</h3>
-<div class="outline-text-3" id="text-orgea3a192">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">Opção</th>
-<th scope="col" class="org-left">Interface</th>
-<th scope="col" class="org-left">Dificuldade</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">LM Studio</td>
-<td class="org-left">Gráfica (GUI)</td>
-<td class="org-left">Fácil</td>
-</tr>
-
-<tr>
-<td class="org-left">Ollama</td>
-<td class="org-left">Terminal</td>
-<td class="org-left">Média</td>
-</tr>
-
-<tr>
-<td class="org-left">llama.cpp</td>
-<td class="org-left">Terminal (C++)</td>
-<td class="org-left">Avançada</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div id="outline-container-orgcaf06a2" class="outline-3">
-<h3 id="orgcaf06a2">LM Studio (recomendado para iniciantes)**</h3>
-<div class="outline-text-3" id="text-orgcaf06a2">
-<ol class="org-ol">
-<li>Baixe em: <a href="https://lmstudio.ai">https://lmstudio.ai</a></li>
-<li>Instale e abra o programa</li>
-<li>Busque um modelo (ex: Qwen2.5-7B)</li>
-<li>Vá em <b>"Local Server"</b> → <b>"Start Server"</b></li>
-<li>Use a API em <code>localhost:1234</code></li>
-</ol>
-</div>
-</div>
-<div id="outline-container-orgfefd057" class="outline-3">
-<h3 id="orgfefd057">Ollama (terminal)**</h3>
-<div class="outline-text-3" id="text-orgfefd057">
-<div class="org-src-container">
-<pre class="src src-bash"><span class="org-comment-delimiter"># </span><span class="org-comment">Baixar modelo
-</span>ollama pull qwen3.5:4b
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Rodar
-</span>ollama run qwen3.5:4b
-</pre>
-</div>
-
-<blockquote>
-<p>
-<b>Instalação:</b> Baixe em ollama.com (Windows, Mac, Linux)
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-org912ca51" class="outline-3">
-<h3 id="org912ca51">Configurar projeto local com uv**</h3>
-<div class="outline-text-3" id="text-org912ca51">
-<div class="org-src-container">
-<pre class="src src-bash"><span class="org-comment-delimiter"># </span><span class="org-comment">Instalar uv
-</span>pip install uv
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Criar projeto
-</span>uv init meu-agente
-<span class="org-builtin">cd</span> meu-agente
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Adicionar depend&#234;ncias
-</span>uv add langchain-ollama
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Criar ambiente virtual
-</span>uv venv
-source .venv/bin/activate  <span class="org-comment-delimiter"># </span><span class="org-comment">Linux/Mac
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">ou: .venv\Scripts\activate  # Windows</span>
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-org551f148" class="outline-3">
-<h3 id="org551f148">Usar Ollama com LangChain**</h3>
-<div class="outline-text-3" id="text-org551f148">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">primeiro: ollama pull qwen3.5:4b
-</span><span class="org-keyword">from</span> langchain_ollama <span class="org-keyword">import</span> OllamaLLM
-
-<span class="org-variable-name">model</span> <span class="org-operator">=</span> OllamaLLM(model<span class="org-operator">=</span><span class="org-string">"qwen3.5:4b"</span>)
-
-<span class="org-variable-name">resposta</span> <span class="org-operator">=</span> model.invoke(<span class="org-string">"Ol&#225;! Como voc&#234; est&#225;?"</span>)
-<span class="org-builtin">print</span>(resposta)
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-orgd36cf9a" class="outline-3">
-<h3 id="orgd36cf9a">Usar LM Studio (OpenAI-compatible)**</h3>
-<div class="outline-text-3" id="text-orgd36cf9a">
-<blockquote>
-<p>
-<b>Vantagem:</b> Interface gráfica fácil + API compatível com OpenAI!
-</p>
-</blockquote>
-
-<p>
-LM Studio roda modelos locais e expõe uma API compatível com OpenAI. Isso significa que você pode usar <code>langchain-openai</code> para conectar:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-bash"><span class="org-comment-delimiter"># </span><span class="org-comment">Instalar depend&#234;ncia
-</span>uv add langchain-openai
-</pre>
-</div>
-
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-keyword">from</span> langchain_openai <span class="org-keyword">import</span> ChatOpenAI
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Conectar ao LM Studio (roda em localhost:1234)
-</span><span class="org-variable-name">llm</span> <span class="org-operator">=</span> ChatOpenAI(
-    openai_api_base<span class="org-operator">=</span><span class="org-string">"http://127.0.0.1:1234/v1"</span>,
-    openai_api_key<span class="org-operator">=</span><span class="org-string">"not-needed"</span>,  <span class="org-comment-delimiter"># </span><span class="org-comment">LM Studio n&#227;o precisa de key
-</span>    model_name<span class="org-operator">=</span><span class="org-string">"nvidia/nemotron-3-nano-4b"</span>,
-)
-
-<span class="org-variable-name">resposta</span> <span class="org-operator">=</span> llm.invoke(<span class="org-string">"Qual &#233; a capital do Brasil?"</span>)
-<span class="org-builtin">print</span>(resposta.content)
-</pre>
-</div>
-
-<blockquote>
-<p>
-<b>Dica:</b> No LM Studio, vá em <b>Local Server</b> → <b>Start Server</b> antes de rodar o código. Escolha o modelo desejado na interface.
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-org0ca0ca1" class="outline-3">
-<h3 id="org0ca0ca1">Modelos recomendados para LM Studio**</h3>
-<div class="outline-text-3" id="text-org0ca0ca1">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">Modelo</th>
-<th scope="col" class="org-left">Tamanho</th>
-<th scope="col" class="org-left">Uso</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">Qwen2.5-7B-Instruct</td>
-<td class="org-left">7B</td>
-<td class="org-left">Chat geral</td>
-</tr>
-
-<tr>
-<td class="org-left">nvidia/nemotron-3-nano-4b</td>
-<td class="org-left">4B</td>
-<td class="org-left">Rápido, leve</td>
-</tr>
-
-<tr>
-<td class="org-left">llama-3.2-3b-instruct</td>
-<td class="org-left">3B</td>
-<td class="org-left">Mais leve ainda</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div id="outline-container-org12d10ef" class="outline-3">
-<h3 id="org12d10ef">Estrutura de projeto com uv**</h3>
-<div class="outline-text-3" id="text-org12d10ef">
-<p>
-Para projetos locais, use <code>uv</code> para gerenciar dependências:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-bash"><span class="org-comment-delimiter"># </span><span class="org-comment">Criar projeto
-</span>mkdir guilda &amp;&amp; <span class="org-builtin">cd</span> guilda
-uv init
-uv venv
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Ativar ambiente virtual
-</span>source .venv/bin/activate  <span class="org-comment-delimiter"># </span><span class="org-comment">Linux/Mac
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">ou: .venv\Scripts\activate  # Windows
-</span>
-<span class="org-comment-delimiter"># </span><span class="org-comment">Instalar depend&#234;ncias
-</span>uv pip install langchain-openai  <span class="org-comment-delimiter"># </span><span class="org-comment">Para LM Studio (OpenAI-compatible)
-</span>uv pip install langchain-ollama   <span class="org-comment-delimiter"># </span><span class="org-comment">Para Ollama
-</span>uv pip install langchain-community llama-cpp-python  <span class="org-comment-delimiter"># </span><span class="org-comment">Para llama.cpp</span>
-</pre>
-</div>
-
-<blockquote>
-<p>
-<b>Por que uv?</b> Mais rápido que pip, resolve dependências melhor, cria ambientes virtuais automaticamente.
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-org1e24fc4" class="outline-3">
-<h3 id="org1e24fc4">Comparação: Local vs Cloud**</h3>
-<div class="outline-text-3" id="text-org1e24fc4">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<tbody>
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">Aspecto</td>
-<td class="org-left">Local (LM Studio/Ollama)</td>
-<td class="org-left">Cloud (Gemini/HuggingFace)</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">----------<del>-------------------------</del>----------------------------</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">Custo</td>
-<td class="org-left">Grátis (precisa de GPU)</td>
-<td class="org-left">Grátis com limites</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">Privacidade</td>
-<td class="org-left">Total</td>
-<td class="org-left">Dados vão para o servidor</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
 <td class="org-left">Velocidade</td>
-<td class="org-left">Depende da GPU</td>
-<td class="org-left">Rápido (servidor deles)</td>
+<td class="org-left">~100+ tok/s</td>
+<td class="org-left">18-80 tok/s (depende do modelo)</td>
 </tr>
 
 <tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">Modelos</td>
-<td class="org-left">Você escolhe</td>
-<td class="org-left">Disponíveis no provedor</td>
+<td class="org-left">Custos</td>
+<td class="org-left">Grátis com limites</td>
+<td class="org-left">100% grátis</td>
 </tr>
 
 <tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">Offline</td>
-<td class="org-left">✅ Sim</td>
-<td class="org-left">❌ Não</td>
+<td class="org-left">Privacidade</td>
+<td class="org-left">Dados vão pro Google</td>
+<td class="org-left">Fica na máquina</td>
+</tr>
+
+<tr>
+<td class="org-left">Qualidade</td>
+<td class="org-left">Muito alta</td>
+<td class="org-left">Boa a alta</td>
+</tr>
+
+<tr>
+<td class="org-left">Internet</td>
+<td class="org-left">Necessária</td>
+<td class="org-left">Não (após setup)</td>
+</tr>
+
+<tr>
+<td class="org-left">API key</td>
+<td class="org-left">Sim</td>
+<td class="org-left">Não</td>
 </tr>
 </tbody>
 </table>
 
+<blockquote>
 <p>
-<b>Parâmetros de Geração</b>
+<b>Recomendação:</b> Use Gemini para desenvolvimento (rápido, sem setup) e Ollama para demonstrar privacidade e independência de cloud. O padrão HTTP é o mesmo nos dois.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-org319935f" class="outline-2">
+<h2 id="org319935f">Tratamento de Erros</h2>
+<div class="outline-text-2" id="text-org319935f">
+<p>
+Erros são iguais com qualquer API — o padrão é <code>try/except</code> com <code>requests</code>.
 </p>
 
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">import</span> requests
+
+<span class="org-keyword">def</span> <span class="org-function-name">chamar_api</span>(url, payload, timeout<span class="org-operator">=</span>30, tentativas<span class="org-operator">=</span>3):
+    <span class="org-doc">"""Faz request com retry autom&#225;tico."""</span>
+    <span class="org-keyword">for</span> tentativa <span class="org-keyword">in</span> <span class="org-builtin">range</span>(tentativas):
+        <span class="org-keyword">try</span>:
+            <span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(url, json<span class="org-operator">=</span>payload, timeout<span class="org-operator">=</span>timeout)
+            response.raise_for_status()  <span class="org-comment-delimiter"># </span><span class="org-comment">Levanta exce&#231;&#227;o para erros HTTP
+</span>            <span class="org-keyword">return</span> response.json()
+        <span class="org-keyword">except</span> requests.exceptions.<span class="org-type">ConnectionError</span>:
+            <span class="org-builtin">print</span>(f<span class="org-string">"&#9888;&#65039; Sem conex&#227;o. Tentativa </span>{tentativa <span class="org-operator">+</span> 1}<span class="org-string">/</span>{tentativas}<span class="org-string">..."</span>)
+            time.sleep(2)
+        <span class="org-keyword">except</span> requests.exceptions.Timeout:
+            <span class="org-builtin">print</span>(f<span class="org-string">"&#9888;&#65039; Timeout. Tentativa </span>{tentativa <span class="org-operator">+</span> 1}<span class="org-string">/</span>{tentativas}<span class="org-string">..."</span>)
+        <span class="org-keyword">except</span> requests.exceptions.HTTPError <span class="org-keyword">as</span> e:
+            <span class="org-keyword">if</span> e.response.status_code <span class="org-operator">==</span> 401:
+                <span class="org-keyword">raise</span> <span class="org-type">Exception</span>(<span class="org-string">"&#10060; API key inv&#225;lida"</span>)
+            <span class="org-keyword">elif</span> e.response.status_code <span class="org-operator">==</span> 429:
+                <span class="org-builtin">print</span>(f<span class="org-string">"&#9888;&#65039; Rate limit. Aguardando..."</span>)
+                time.sleep(5)
+            <span class="org-keyword">else</span>:
+                <span class="org-keyword">raise</span> <span class="org-type">Exception</span>(f<span class="org-string">"&#10060; Erro HTTP </span>{e.response.status_code}<span class="org-string">: </span>{e.response.text}<span class="org-string">"</span>)
+    <span class="org-keyword">raise</span> <span class="org-type">Exception</span>(<span class="org-string">"&#10060; N&#250;mero m&#225;ximo de tentativas excedido"</span>)
+</pre>
+</div>
+</div>
+<div id="outline-container-org93248ed" class="outline-3">
+<h3 id="org93248ed">Códigos de erro comuns</h3>
+<div class="outline-text-3" id="text-org93248ed">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Código</th>
+<th scope="col" class="org-left">Significado</th>
+<th scope="col" class="org-left">O que fazer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">401</td>
+<td class="org-left">Não autorizado</td>
+<td class="org-left">Verificar API key</td>
+</tr>
+
+<tr>
+<td class="org-right">429</td>
+<td class="org-left">Rate limit</td>
+<td class="org-left">Aguardar e tentar novamente</td>
+</tr>
+
+<tr>
+<td class="org-right">500</td>
+<td class="org-left">Erro do servidor</td>
+<td class="org-left">Tentar novamente mais tarde</td>
+</tr>
+
+<tr>
+<td class="org-right">503</td>
+<td class="org-left">Serviço indisponível</td>
+<td class="org-left">Servidor sobrecarregado</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="outline-container-org65eb45d" class="outline-2">
+<h2 id="org65eb45d">Parâmetros de Geração</h2>
+<div class="outline-text-2" id="text-org65eb45d">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -1295,390 +1305,186 @@ uv venv
 </table>
 </div>
 </div>
+<div id="outline-container-orgf95077f" class="outline-2">
+<h2 id="orgf95077f">Exercícios Práticos</h2>
+<div class="outline-text-2" id="text-orgf95077f">
 </div>
-<div id="outline-container-org371534f" class="outline-2">
-<h2 id="org371534f">Streaming de Respostas</h2>
-<div class="outline-text-2" id="text-org371534f">
-</div>
-<div id="outline-container-org942128b" class="outline-3">
-<h3 id="org942128b">Por que Streaming?</h3>
-<div class="outline-text-3" id="text-org942128b">
+<div id="outline-container-org738dfd7" class="outline-3">
+<h3 id="org738dfd7">Exercício 1: Duas APIs, um padrão</h3>
+<div class="outline-text-3" id="text-org738dfd7">
 <p>
-<b>Sem streaming:</b> Você espera a resposta completa antes de ver qualquer coisa.
-</p>
-<ul class="org-ul">
-<li>Bom para: processamento batch, respostas curtas</li>
-<li>Ruim para: respostas longas, experiência de usuário</li>
-</ul>
-
-<p>
-<b>Com streaming:</b> Você recebe pedaços da resposta conforme são gerados.
-</p>
-<ul class="org-ul">
-<li>Bom para: respostas longas, UX interativa</li>
-<li>Ruim para: quando precisa da resposta completa antes de processar</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-org0ce4f00" class="outline-3">
-<h3 id="org0ce4f00">Implementação com OpenAI</h3>
-<div class="outline-text-3" id="text-org0ce4f00">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Com streaming
-</span><span class="org-variable-name">stream</span> <span class="org-operator">=</span> client.chat.completions.create(
-    model<span class="org-operator">=</span><span class="org-string">"gpt-4o-mini"</span>,
-    messages<span class="org-operator">=</span>[{<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Conte uma hist&#243;ria longa"</span>}],
-    stream<span class="org-operator">=</span><span class="org-constant">True</span>  <span class="org-comment-delimiter"># </span><span class="org-comment">Ativa streaming
-</span>)
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Processa chunks conforme chegam
-</span><span class="org-keyword">for</span> chunk <span class="org-keyword">in</span> stream:
-    <span class="org-keyword">if</span> chunk.choices[0].delta.content <span class="org-keyword">is</span> <span class="org-keyword">not</span> <span class="org-constant">None</span>:
-        <span class="org-builtin">print</span>(chunk.choices[0].delta.content, end<span class="org-operator">=</span><span class="org-string">""</span>, flush<span class="org-operator">=</span><span class="org-constant">True</span>)
-</pre>
-</div>
-</div>
-</div>
-</div>
-<div id="outline-container-orgd268dcb" class="outline-2">
-<h2 id="orgd268dcb">APIs de LLM: Ollama (Local)</h2>
-<div class="outline-text-2" id="text-orgd268dcb">
-</div>
-<div id="outline-container-org359a1f1" class="outline-3">
-<h3 id="org359a1f1">O que é Ollama?</h3>
-<div class="outline-text-3" id="text-org359a1f1">
-<p>
-<b>Definição:</b> Ollama é uma ferramenta para rodar LLMs localmente, sem necessidade de API externa ou conexão com a internet.
+Crie uma função <code>perguntar()</code> que funciona com <b><b>qualquer API</b></b> — só mudando a URL:
 </p>
 
-<p>
-<b>Vantagens:</b>
-</p>
-<ul class="org-ul">
-<li>Gratuito (sem custos de API)</li>
-<li>Privacidade (dados não saem da sua máquina)</li>
-<li>Latência (sem latência de rede)</li>
-<li>Offline (funciona sem internet)</li>
-</ul>
-
-<p>
-<b>Desvantagens:</b>
-</p>
-<ul class="org-ul">
-<li>Requer hardware potente (GPU recomendada)</li>
-<li>Modelos menores que os da OpenAI</li>
-<li>Não tem conhecimento atualizado</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-orgf7068a9" class="outline-3">
-<h3 id="orgf7068a9">Instalação</h3>
-<div class="outline-text-3" id="text-orgf7068a9">
 <div class="org-src-container">
-<pre class="src src-bash"><span class="org-comment-delimiter"># </span><span class="org-comment">Linux/macOS
-</span>curl -fsSL https://ollama.com/install.sh | sh
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Baixar modelo
-</span>ollama pull llama3.2
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Rodar interativamente
-</span>ollama run llama3.2
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-org8db8263" class="outline-3">
-<h3 id="org8db8263">Usando via Python</h3>
-<div class="outline-text-3" id="text-org8db8263">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Instala&#231;&#227;o
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">pip install ollama
-</span>
-<span class="org-keyword">import</span> ollama
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Chamada simples
-</span><span class="org-variable-name">response</span> <span class="org-operator">=</span> ollama.chat(model<span class="org-operator">=</span><span class="org-string">'llama3.2'</span>, messages<span class="org-operator">=</span>[
-    {<span class="org-string">'role'</span>: <span class="org-string">'user'</span>, <span class="org-string">'content'</span>: <span class="org-string">'Por que o c&#233;u &#233; azul?'</span>}
-])
-
-<span class="org-builtin">print</span>(response[<span class="org-string">'message'</span>][<span class="org-string">'content'</span>])
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-org00a8b61" class="outline-3">
-<h3 id="org00a8b61">Modelos Disponíveis</h3>
-<div class="outline-text-3" id="text-org00a8b61">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">Modelo</th>
-<th scope="col" class="org-left">Tamanho</th>
-<th scope="col" class="org-left">Uso Recomendado</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">llama3.2</td>
-<td class="org-left">3B</td>
-<td class="org-left">Uso geral, rápido</td>
-</tr>
-
-<tr>
-<td class="org-left">llama3.2:1b</td>
-<td class="org-left">1B</td>
-<td class="org-left">Muito rápido, básico</td>
-</tr>
-
-<tr>
-<td class="org-left">mistral</td>
-<td class="org-left">7B</td>
-<td class="org-left">Bom equilíbrio</td>
-</tr>
-
-<tr>
-<td class="org-left">codellama</td>
-<td class="org-left">7B</td>
-<td class="org-left">Código</td>
-</tr>
-
-<tr>
-<td class="org-left">phi3</td>
-<td class="org-left">3.8B</td>
-<td class="org-left">Eficiente, pequeno</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="outline-container-orgb703b9c" class="outline-2">
-<h2 id="orgb703b9c">Tratamento de Erros</h2>
-<div class="outline-text-2" id="text-orgb703b9c">
-</div>
-<div id="outline-container-org5da5fdf" class="outline-3">
-<h3 id="org5da5fdf">Tipos de Erros</h3>
-<div class="outline-text-3" id="text-org5da5fdf">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-keyword">from</span> openai <span class="org-keyword">import</span> OpenAI, APIError, APIConnectionError, RateLimitError, AuthenticationError
-
-<span class="org-variable-name">client</span> <span class="org-operator">=</span> OpenAI()
-
-<span class="org-keyword">try</span>:
-    <span class="org-variable-name">response</span> <span class="org-operator">=</span> client.chat.completions.create(
-        model<span class="org-operator">=</span><span class="org-string">"gpt-4o-mini"</span>,
-        messages<span class="org-operator">=</span>[{<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Ol&#225;"</span>}]
-    )
-
-<span class="org-keyword">except</span> AuthenticationError:
-    <span class="org-builtin">print</span>(<span class="org-string">"Erro: API Key inv&#225;lida ou n&#227;o configurada"</span>)
-
-<span class="org-keyword">except</span> RateLimitError <span class="org-keyword">as</span> e:
-    <span class="org-builtin">print</span>(f<span class="org-string">"Erro: Limite de requisi&#231;&#245;es excedido. Aguarde </span>{e.retry_after}<span class="org-string"> segundos"</span>)
-
-<span class="org-keyword">except</span> APIConnectionError:
-    <span class="org-builtin">print</span>(<span class="org-string">"Erro: N&#227;o foi poss&#237;vel conectar ao servidor da OpenAI"</span>)
-
-<span class="org-keyword">except</span> APIError <span class="org-keyword">as</span> e:
-    <span class="org-builtin">print</span>(f<span class="org-string">"Erro da API: </span>{e.message}<span class="org-string">"</span>)
-    <span class="org-builtin">print</span>(f<span class="org-string">"Status code: </span>{e.status_code}<span class="org-string">"</span>)
-
-<span class="org-keyword">except</span> <span class="org-type">Exception</span> <span class="org-keyword">as</span> e:
-    <span class="org-builtin">print</span>(f<span class="org-string">"Erro inesperado: </span>{e}<span class="org-string">"</span>)
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-orge3e290b" class="outline-3">
-<h3 id="orge3e290b">Retry com Exponential Backoff</h3>
-<div class="outline-text-3" id="text-orge3e290b">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-keyword">import</span> time
-<span class="org-keyword">import</span> random
-<span class="org-keyword">from</span> openai <span class="org-keyword">import</span> RateLimitError, APIConnectionError
-
-<span class="org-keyword">def</span> <span class="org-function-name">completar_com_retry</span>(mensagens, max_tentativas<span class="org-operator">=</span>5, espera_inicial<span class="org-operator">=</span>1):
-    <span class="org-doc">"""
-    Faz chamada &#224; API com retry autom&#225;tico.
+<pre class="src src-python"><span class="org-keyword">def</span> <span class="org-function-name">perguntar</span>(mensagem, url, model, api_key<span class="org-operator">=</span><span class="org-constant">None</span>, system<span class="org-operator">=</span><span class="org-string">"Voc&#234; &#233; um assistente &#250;til."</span>):
+    <span class="org-doc">"""Faz uma pergunta a qualquer API de LLM usando requests.post().
 
     Args:
-        mensagens: Lista de mensagens
-        max_tentativas: N&#250;mero m&#225;ximo de tentativas
-        espera_inicial: Tempo inicial de espera (segundos)
-
-    Returns:
-        Resposta da API ou None se falhar
+        mensagem: pergunta do usu&#225;rio
+        url: URL da API (Gemini ou Ollama)
+        model: nome do modelo
+        api_key: API key (None para Ollama)
+        system: instru&#231;&#227;o de sistema
     """</span>
-    <span class="org-variable-name">cliente</span> <span class="org-operator">=</span> OpenAI()
-    <span class="org-variable-name">espera</span> <span class="org-operator">=</span> espera_inicial
-
-    <span class="org-keyword">for</span> tentativa <span class="org-keyword">in</span> <span class="org-builtin">range</span>(max_tentativas):
-        <span class="org-keyword">try</span>:
-            <span class="org-keyword">return</span> cliente.chat.completions.create(
-                model<span class="org-operator">=</span><span class="org-string">"gpt-4o-mini"</span>,
-                messages<span class="org-operator">=</span>mensagens
-            )
-
-        <span class="org-keyword">except</span> RateLimitError <span class="org-keyword">as</span> e:
-            <span class="org-keyword">if</span> tentativa <span class="org-operator">==</span> max_tentativas <span class="org-operator">-</span> 1:
-                <span class="org-keyword">raise</span>
-            <span class="org-builtin">print</span>(f<span class="org-string">"Rate limit. Tentativa </span>{tentativa <span class="org-operator">+</span> 1}<span class="org-string">. Esperando </span>{espera}<span class="org-string">s..."</span>)
-            time.sleep(espera)
-            <span class="org-variable-name">espera</span> <span class="org-operator">*=</span> 2  <span class="org-comment-delimiter"># </span><span class="org-comment">Exponential backoff
-</span>
-        <span class="org-keyword">except</span> APIConnectionError <span class="org-keyword">as</span> e:
-            <span class="org-keyword">if</span> tentativa <span class="org-operator">==</span> max_tentativas <span class="org-operator">-</span> 1:
-                <span class="org-keyword">raise</span>
-            <span class="org-builtin">print</span>(f<span class="org-string">"Erro de conex&#227;o. Tentativa </span>{tentativa <span class="org-operator">+</span> 1}<span class="org-string">"</span>)
-            time.sleep(espera)
-            <span class="org-variable-name">espera</span> <span class="org-operator">*=</span> 2
-
-    <span class="org-keyword">return</span> <span class="org-constant">None</span>
-</pre>
-</div>
-</div>
-</div>
-</div>
-<div id="outline-container-orgda92130" class="outline-2">
-<h2 id="orgda92130">Exercícios Práticos</h2>
-<div class="outline-text-2" id="text-orgda92130">
-</div>
-<div id="outline-container-orge11079c" class="outline-3">
-<h3 id="orge11079c">Exercício 1: Cliente Básico</h3>
-<div class="outline-text-3" id="text-orge11079c">
-<p>
-Crie uma função que faz uma pergunta para a API e retorna a resposta:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-keyword">def</span> <span class="org-function-name">perguntar</span>(pergunta: <span class="org-builtin">str</span>, sistema: <span class="org-builtin">str</span> <span class="org-operator">=</span> <span class="org-string">"Voc&#234; &#233; um assistente &#250;til."</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
-    <span class="org-doc">"""Faz uma pergunta &#224; API e retorna a resposta."""</span>
     <span class="org-comment-delimiter"># </span><span class="org-comment">Implemente aqui
 </span>    <span class="org-keyword">pass</span>
 </pre>
 </div>
 
-<div class="DETAILS" id="org70d93be">
+<div class="DETAILS" id="orga9f542b">
 <p>
 📝 Gabarito
 </p>
 
 <div class="org-src-container">
-<pre class="src src-python"><span class="org-keyword">from</span> openai <span class="org-keyword">import</span> OpenAI
+<pre class="src src-python"><span class="org-keyword">def</span> <span class="org-function-name">perguntar</span>(mensagem, url, model, api_key<span class="org-operator">=</span><span class="org-constant">None</span>, system<span class="org-operator">=</span><span class="org-string">"Voc&#234; &#233; um assistente &#250;til."</span>):
+    <span class="org-doc">"""Faz uma pergunta a qualquer API de LLM usando requests.post()."""</span>
+    <span class="org-variable-name">headers</span> <span class="org-operator">=</span> {<span class="org-string">"Content-Type"</span>: <span class="org-string">"application/json"</span>}
+    <span class="org-keyword">if</span> api_key:
+        <span class="org-variable-name">headers</span>[<span class="org-string">"Authorization"</span>] <span class="org-operator">=</span> f<span class="org-string">"Bearer </span>{api_key}<span class="org-string">"</span>
 
-<span class="org-variable-name">client</span> <span class="org-operator">=</span> OpenAI()
+    <span class="org-variable-name">payload</span> <span class="org-operator">=</span> {
+        <span class="org-string">"model"</span>: model,
+        <span class="org-string">"messages"</span>: [
+            {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: system},
+            {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: mensagem}
+        ],
+        <span class="org-string">"temperature"</span>: 0.7,
+        <span class="org-string">"keep_alive"</span>: <span class="org-operator">-</span>1  <span class="org-comment-delimiter"># </span><span class="org-comment">Ollama: manter modelo carregado
+</span>    }
 
-<span class="org-keyword">def</span> <span class="org-function-name">perguntar</span>(pergunta: <span class="org-builtin">str</span>, sistema: <span class="org-builtin">str</span> <span class="org-operator">=</span> <span class="org-string">"Voc&#234; &#233; um assistente &#250;til."</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
-    <span class="org-doc">"""Faz uma pergunta &#224; API e retorna a resposta."""</span>
-    <span class="org-variable-name">response</span> <span class="org-operator">=</span> client.chat.completions.create(
-        model<span class="org-operator">=</span><span class="org-string">"gpt-4o-mini"</span>,
-        messages<span class="org-operator">=</span>[
-            {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: sistema},
-            {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: pergunta}
-        ]
-    )
-    <span class="org-keyword">return</span> response.choices[0].message.content
+    <span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(url, json<span class="org-operator">=</span>payload, headers<span class="org-operator">=</span>headers, timeout<span class="org-operator">=</span>120)
+    response.raise_for_status()
+    <span class="org-variable-name">data</span> <span class="org-operator">=</span> response.json()
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Uso
-</span><span class="org-variable-name">resposta</span> <span class="org-operator">=</span> perguntar(<span class="org-string">"Qual a capital da Fran&#231;a?"</span>)
-<span class="org-builtin">print</span>(resposta)  <span class="org-comment-delimiter"># </span><span class="org-comment">"A capital da Fran&#231;a &#233; Paris."</span>
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Formato OpenAI/Ollama
+</span>    <span class="org-keyword">if</span> <span class="org-string">"choices"</span> <span class="org-keyword">in</span> data:
+        <span class="org-keyword">return</span> data[<span class="org-string">"choices"</span>][0][<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Formato Ollama nativo
+</span>    <span class="org-keyword">elif</span> <span class="org-string">"message"</span> <span class="org-keyword">in</span> data:
+        <span class="org-keyword">return</span> data[<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]
+    <span class="org-keyword">else</span>:
+        <span class="org-keyword">return</span> <span class="org-builtin">str</span>(data)
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Uso com Ollama (local)
+</span><span class="org-variable-name">resposta</span> <span class="org-operator">=</span> perguntar(
+    <span class="org-string">"Qual &#233; a capital de Minas Gerais?"</span>,
+    url<span class="org-operator">=</span><span class="org-string">"http://localhost:11434/v1/chat/completions"</span>,
+    model<span class="org-operator">=</span><span class="org-string">"gemma4:e2b"</span>
+)
+<span class="org-builtin">print</span>(f<span class="org-string">"Ollama: </span>{resposta}<span class="org-string">"</span>)
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Uso com Gemini (cloud) &#8212; via OpenAI-compatible endpoint
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">Nota: Gemini n&#227;o tem endpoint OpenAI-compatible direto,
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">mas o padr&#227;o &#233; o mesmo!</span>
 </pre>
 </div>
 
 </div>
 </div>
 </div>
-<div id="outline-container-orgf643425" class="outline-3">
-<h3 id="orgf643425">Exercício 2: Chat com Memória</h3>
-<div class="outline-text-3" id="text-orgf643425">
+<div id="outline-container-org6dd3cf8" class="outline-3">
+<h3 id="org6dd3cf8">Exercício 2: Chat com memória</h3>
+<div class="outline-text-3" id="text-org6dd3cf8">
 <p>
-Crie funções que mantêm o histórico de conversas usando um dicionário:
+Implemente um chat com histórico usando dicionários (sem classes!):
 </p>
 
 <div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Dicion&#225;rio para guardar o hist&#243;rico
-</span><span class="org-variable-name">historico</span> <span class="org-operator">=</span> {<span class="org-string">"mensagens"</span>: []}
+<pre class="src src-python"><span class="org-variable-name">historico</span> <span class="org-operator">=</span> {<span class="org-string">"mensagens"</span>: [{<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s."</span>}]}
 
-<span class="org-keyword">def</span> <span class="org-function-name">iniciar_chat</span>(sistema: <span class="org-builtin">str</span> <span class="org-operator">=</span> <span class="org-string">"Voc&#234; &#233; um assistente &#250;til."</span>):
-    <span class="org-doc">"""Inicia o chat com system prompt."""</span>
-    <span class="org-variable-name">historico</span>[<span class="org-string">"mensagens"</span>] <span class="org-operator">=</span> [{<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: sistema}]
-
-<span class="org-keyword">def</span> <span class="org-function-name">conversar</span>(mensagem: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
-    <span class="org-doc">"""Envia mensagem e retorna resposta."""</span>
+<span class="org-keyword">def</span> <span class="org-function-name">conversar</span>(mensagem):
+    <span class="org-doc">"""Adiciona mensagem ao hist&#243;rico, chama a API, retorna resposta."""</span>
     <span class="org-comment-delimiter"># </span><span class="org-comment">Implemente
 </span>    <span class="org-keyword">pass</span>
 
-<span class="org-keyword">def</span> <span class="org-function-name">limpar_historico</span>():
-    <span class="org-doc">"""Limpa o hist&#243;rico mantendo o system prompt."""</span>
+<span class="org-keyword">def</span> <span class="org-function-name">ver_historico</span>():
+    <span class="org-doc">"""Retorna hist&#243;rico sem o system prompt."""</span>
     <span class="org-comment-delimiter"># </span><span class="org-comment">Implemente
 </span>    <span class="org-keyword">pass</span>
-</pre>
-</div>
-
-<div class="DETAILS" id="org6ba0cbb">
-<p>
-📝 Gabarito
-</p>
-
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-keyword">from</span> openai <span class="org-keyword">import</span> OpenAI
-<span class="org-keyword">from</span> typing <span class="org-keyword">import</span> List, Dict
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Estado global do chat
-</span><span class="org-variable-name">_estado</span> <span class="org-operator">=</span> {<span class="org-string">"mensagens"</span>: [], <span class="org-string">"client"</span>: <span class="org-constant">None</span>}
-
-<span class="org-keyword">def</span> <span class="org-function-name">iniciar_chat</span>(sistema: <span class="org-builtin">str</span> <span class="org-operator">=</span> <span class="org-string">"Voc&#234; &#233; um assistente &#250;til."</span>):
-    <span class="org-doc">"""Inicia o chat com system prompt."""</span>
-    <span class="org-variable-name">_estado</span>[<span class="org-string">"client"</span>] <span class="org-operator">=</span> OpenAI()
-    <span class="org-variable-name">_estado</span>[<span class="org-string">"mensagens"</span>] <span class="org-operator">=</span> [{<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: sistema}]
-
-<span class="org-keyword">def</span> <span class="org-function-name">conversar</span>(mensagem: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
-    <span class="org-doc">"""Envia mensagem e retorna resposta mantendo hist&#243;rico."""</span>
-    <span class="org-comment-delimiter"># </span><span class="org-comment">Adiciona mensagem do usu&#225;rio
-</span>    _estado[<span class="org-string">"mensagens"</span>].append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: mensagem})
-
-    <span class="org-comment-delimiter"># </span><span class="org-comment">Chama a API
-</span>    <span class="org-variable-name">response</span> <span class="org-operator">=</span> _estado[<span class="org-string">"client"</span>].chat.completions.create(
-        model<span class="org-operator">=</span><span class="org-string">"gpt-4o-mini"</span>,
-        messages<span class="org-operator">=</span>_estado[<span class="org-string">"mensagens"</span>]
-    )
-
-    <span class="org-comment-delimiter"># </span><span class="org-comment">Extrai resposta
-</span>    <span class="org-variable-name">resposta</span> <span class="org-operator">=</span> response.choices[0].message.content
-
-    <span class="org-comment-delimiter"># </span><span class="org-comment">Adiciona ao hist&#243;rico
-</span>    _estado[<span class="org-string">"mensagens"</span>].append({<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: resposta})
-
-    <span class="org-keyword">return</span> resposta
 
 <span class="org-keyword">def</span> <span class="org-function-name">limpar_historico</span>():
     <span class="org-doc">"""Limpa hist&#243;rico mantendo system prompt."""</span>
-    <span class="org-variable-name">sistema</span> <span class="org-operator">=</span> _estado[<span class="org-string">"mensagens"</span>][0]
-    <span class="org-variable-name">_estado</span>[<span class="org-string">"mensagens"</span>] <span class="org-operator">=</span> [sistema]
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Implemente
+</span>    <span class="org-keyword">pass</span>
+</pre>
+</div>
 
-<span class="org-keyword">def</span> <span class="org-function-name">ver_historico</span>() <span class="org-operator">-&gt;</span> List[Dict[<span class="org-builtin">str</span>, <span class="org-builtin">str</span>]]:
+<div class="DETAILS" id="org10671a5">
+<p>
+📝 Gabarito
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-variable-name">historico</span> <span class="org-operator">=</span> {<span class="org-string">"mensagens"</span>: [{<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s."</span>}]}
+
+<span class="org-keyword">def</span> <span class="org-function-name">conversar</span>(mensagem):
+    <span class="org-doc">"""Adiciona mensagem ao hist&#243;rico, chama a API, retorna resposta."""</span>
+    historico[<span class="org-string">"mensagens"</span>].append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: mensagem})
+
+    <span class="org-variable-name">resultado</span> <span class="org-operator">=</span> chat(historico)
+    <span class="org-variable-name">resposta</span> <span class="org-operator">=</span> resultado[<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]
+
+    historico[<span class="org-string">"mensagens"</span>].append({<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: resposta})
+    <span class="org-keyword">return</span> resposta
+
+<span class="org-keyword">def</span> <span class="org-function-name">ver_historico</span>():
     <span class="org-doc">"""Retorna hist&#243;rico sem o system prompt."""</span>
-    <span class="org-keyword">return</span> _estado[<span class="org-string">"mensagens"</span>][1:]
+    <span class="org-keyword">return</span> historico[<span class="org-string">"mensagens"</span>][1:]
+
+<span class="org-keyword">def</span> <span class="org-function-name">limpar_historico</span>():
+    <span class="org-doc">"""Limpa hist&#243;rico mantendo system prompt."""</span>
+    <span class="org-variable-name">sistema</span> <span class="org-operator">=</span> historico[<span class="org-string">"mensagens"</span>][0]
+    <span class="org-variable-name">historico</span>[<span class="org-string">"mensagens"</span>] <span class="org-operator">=</span> [sistema]
 
 <span class="org-comment-delimiter"># </span><span class="org-comment">Uso
-</span>iniciar_chat(<span class="org-string">"Voc&#234; &#233; um tutor de Python."</span>)
-<span class="org-builtin">print</span>(conversar(<span class="org-string">"O que &#233; uma lista?"</span>))
-<span class="org-builtin">print</span>(conversar(<span class="org-string">"E como adiciono elementos?"</span>))  <span class="org-comment-delimiter"># </span><span class="org-comment">Lembra da conversa anterior
-</span><span class="org-builtin">print</span>(ver_historico())  <span class="org-comment-delimiter"># </span><span class="org-comment">Mostra o hist&#243;rico</span>
+</span><span class="org-builtin">print</span>(conversar(<span class="org-string">"Meu nome &#233; Lucas e eu ensino IA."</span>))
+<span class="org-builtin">print</span>(conversar(<span class="org-string">"Qual &#233; o meu nome?"</span>))  <span class="org-comment-delimiter"># </span><span class="org-comment">Deve lembrar!
+</span><span class="org-builtin">print</span>(ver_historico())
 </pre>
 </div>
 
 </div>
 </div>
+</div>
+<div id="outline-container-org4c21fc4" class="outline-3">
+<h3 id="org4c21fc4">Exercício 3: Trocar de provedor</h3>
+<div class="outline-text-3" id="text-org4c21fc4">
+<p>
+Modifique o Exercício 1 para aceitar tanto Ollama quanto Gemini. Dica: use um parâmetro <code>provedor</code> com valores <code>"ollama"</code> ou <code>"gemini"</code>.
+</p>
+</div>
+</div>
+<div id="outline-container-org5d6de3c" class="outline-3">
+<h3 id="org5d6de3c">Exercício 4: Tratamento de erros</h3>
+<div class="outline-text-3" id="text-org5d6de3c">
+<p>
+Adicione <code>try/except</code> ao Exercício 2 para tratar:
+</p>
+<ul class="org-ul">
+<li>API key inválida (401)</li>
+<li>Rate limit (429)</li>
+<li>Servidor offline (ConnectionError)</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org6d93d9e" class="outline-2">
+<h2 id="org6d93d9e">Para ir mais longe</h2>
+<div class="outline-text-2" id="text-org6d93d9e">
+<ul class="org-ul">
+<li><b><b>HuggingFace:</b></b> Gratuito com rate limit, vários modelos. Acesso: <a href="https://huggingface.co">https://huggingface.co</a></li>
+<li><b><b>OpenRouter:</b></b> Agregador de modelos, crédito inicial gratuito. Acesso: <a href="https://openrouter.ai">https://openrouter.ai</a></li>
+<li><b><b>OpenAI:</b></b> Pago, mas referência de mercado. Documentação: <a href="https://platform.openai.com/docs">https://platform.openai.com/docs</a></li>
+<li><b><b>LangChain:</b></b> Framework que abstrai diferenças entre provedores — veremos na Semana 06!</li>
+</ul>
+
+<blockquote>
+<p>
+<b>Dica:</b> Comece com Gemini (gratuito e sem setup) ou Ollama no Colab (gratuito e sem API key). Depois explore outros provedores na Semana 06 quando falarmos de LangChain.
+</p>
+</blockquote>
 </div>
 </div>
 </div>
