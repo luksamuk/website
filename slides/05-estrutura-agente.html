@@ -24,6 +24,7 @@
         document.getElementsByTagName( 'head' )[0].appendChild( link );
     }
 </script>
+<script src="./slide_fixes.js"></script>
 </head>
 <body>
 <div class="reveal">
@@ -31,177 +32,281 @@
 <section id="sec-title-slide" data-background="./slide_05.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Estrutura de um Agente</h2><br/><p style="font-size:0.85em;opacity:0.8;">Construindo o primeiro agente</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 </section>
 <section>
-<section id="slide-org2263531">
-<h2 id="org2263531">O que é um agente?</h2>
-<p class="fragment (appear)">
-Agente = LLM + estrutura para conversar
+<section id="slide-orgf71aed1">
+<h2 id="orgf71aed1">📰 Fofocas da Semana</h2>
+<ul style="font-size:0.55em;">
+<li><b>llama.app</b> (29/05) — site oficial do llama.cpp! [llama.app](<a href="https://llama.app">https://llama.app</a>)</li>
+<li><b>GPT-5.5 Instant update</b> (28/05) — respostas mais naturais e concisas, canvas removido (writing/code blocks no chat agora)</li>
+<li><b>Step 3.7 Flash</b> (29/05) — 198B MoE, ~11B ativos, multimodal, #1 ClawEval, Apache 2.0 ⬆️</li>
+<li><b>Claude Opus 4.8</b> (28/05) — 4× menos falhas de código, Effort Control, Dynamic Workflows, mesmo preço do 4.7</li>
+<li><b>LFM 2.5 8B-A1B</b> (28/05) — MoE 1.5B ativos de 8.3B, 131K ctx, raciocínio explícito, tool use, roda em smartphone</li>
+<li><b>Bonsai Image 4B</b> (26/05) — Imagem 1-bit e ternária! 0.93GB, roda em iPhone, Apache 2.0 ↑</li>
+<li><b>Qwen 3.7 Max</b> (20/05) — 1M tokens, Intelligence Index 56.6, reasoning mode, API-only (open weights em breve!)</li>
+<li><b>MiniCPM5-1B</b> (19/05) — 1B SOTA local, 131K ctx, raciocínio thinking, agentic tool use</li>
+
+</ul>
+</section>
+<section id="slide-org65b99a0">
+<h3 id="org65b99a0">🎨 Bonsai Image 4B — Imagem em 1-bit</h3>
+<blockquote style="font-size:0.45em;text-align:left;">
+<p>
+Primeiro modelo de imagem que roda em iPhone. Pesos binários (1-bit) e ternários (1.6-bit).
+Compressão de 8.3× — de 15.97GB pra 3.42GB. Qualidade ternária retém 95% do FLUX.2 Klein 4B.
+Apache 2.0, open weights.
+</p>
+</blockquote>
+</section>
+<section id="slide-orgc7c7ca1">
+<h3 id="orgc7c7ca1"></h3>
+<p style="font-size:0.4em;text-align:center;margin:2px 0;">Imagens geradas com Bonsai Image 4B ternário (0.93GB)!</p>
+
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px;">
+<img src="/pages/guilda-ia/img/s05-bonsai/01_agente_robo.png" style="width:100%;height:26vh;object-fit:contain;" />
+<img src="/pages/guilda-ia/img/s05-bonsai/02_conversa_memoria.png" style="width:100%;height:26vh;object-fit:contain;" />
+<img src="/pages/guilda-ia/img/s05-bonsai/05_guilda_logo.png" style="width:100%;height:26vh;object-fit:contain;" />
+<img src="/pages/guilda-ia/img/s05-bonsai/07_programadora.png" style="width:100%;height:26vh;object-fit:contain;" />
+<img src="/pages/guilda-ia/img/s05-bonsai/03_python_codigo.png" style="width:100%;height:26vh;object-fit:contain;" />
+<img src="/pages/guilda-ia/img/s05-bonsai/04_ciclo_react.png" style="width:100%;height:26vh;object-fit:contain;" />
+<img src="/pages/guilda-ia/img/s05-bonsai/06_agente_ferramentas.png" style="width:100%;height:26vh;object-fit:contain;" />
+<img src="/pages/guilda-ia/img/s05-bonsai/08_sala_aula.png" style="width:100%;height:26vh;object-fit:contain;" />
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orga7cf835">
+<h2 id="orga7cf835">O que é um agente?</h2>
+<p>
+Agente = LLM + <b>harness</b> (estrutura para conversar)
 </p>
 
-<p class="fragment (appear)">
+<p>
 O LLM puro só responde uma pergunta. Um agente:
 </p>
+
 <ul>
 <li>Lembra da conversa (memória)</li>
 <li>Tem personalidade (instruções)</li>
-<li>Pode usar ferramentas (extensões)</li>
+<li>Pode usar ferramentas (extensões — S06!)</li>
 
 </ul>
 </section>
 </section>
 <section>
-<section id="slide-org0b1a858">
-<h2 id="org0b1a858">Componentes do agente</h2>
-<div class="outline-text-2" id="text-org0b1a858">
-</div>
-</section>
-<section id="slide-org6b14218">
-<h3 id="org6b14218">1. Instruções (System)</h3>
-<p>
-Define quem o agente é.
-</p>
+<section id="slide-orgd66d0ea">
+<h2 id="orgd66d0ea">4 Componentes do Agente</h2>
+<ol>
+<li><b>System Prompt</b> — quem o agente é</li>
+<li><b>Memória (Histórico)</b> — o que já foi dito</li>
+<li><b>Input</b> — a pergunta atual</li>
+<li><b>Output</b> — a resposta do modelo</li>
 
-<div class="org-src-container">
-
-<pre   ><code class="python" >instrucoes = "Você é um assistente educado e objetivo."
-</code></pre>
-</div>
-</section>
-<section id="slide-org8ba4033">
-<h3 id="org8ba4033">2. Histórico (Memory)</h3>
-<p>
-Guarda a conversa.
-</p>
-
-<div class="org-src-container">
-
-<pre   ><code class="python" >historico = [
-    {"role": "usuário", "content": "Oi!"},
-    {"role": "assistente", "content": "Olá! Como posso ajudar?"}
-]
-</code></pre>
-</div>
-</section>
-<section id="slide-org48511ce">
-<h3 id="org48511ce">3. Mensagem (Input)</h3>
-<p>
-A pergunta atual.
-</p>
-</section>
-<section id="slide-org7db4b5d">
-<h3 id="org7db4b5d">4. Resposta (Output)</h3>
-<p>
-A resposta do modelo.
-</p>
+</ol>
 </section>
 </section>
 <section>
-<section id="slide-orge66116f">
-<h2 id="orge66116f">Estrutura com funções</h2>
+<section id="slide-org1d311f2">
+<h2 id="org1d311f2">Agente na Mão: Dicts e Funções</h2>
 <div class="org-src-container">
 
-<pre   ><code class="python" >def criar_agente(instrucoes):
+<pre   ><code class="python" >def criar_agente(instrucoes, max_historico=20):
     return {
         "instrucoes": instrucoes,
-        "historico": []
+        "historico": [],
+        "max_historico": max_historico
     }
+</code></pre>
+</div>
 
-def conversar(agente, mensagem):
-    # Monta prompt
-    # Chama LLM
-    # Salva no histórico (agente["historico"].append(...))
-    # Retorna resposta
+<div class="org-src-container">
+
+<pre   ><code class="python" >def conversar(agente, mensagem):
+    messages = [{"role": "system",
+                  "content": agente["instrucoes"]}]
+    for msg in agente["historico"][-agente["max_historico"]:]:
+        messages.append(msg)
+    messages.append({"role": "user",
+                     "content": mensagem})
+    # ... chama LLM, salva no histórico, retorna resposta
 </code></pre>
 </div>
 </section>
 </section>
 <section>
-<section id="slide-org5a6bb88">
-<h2 id="org5a6bb88">Por que estado separado?</h2>
-<p class="fragment (appear)">
+<section id="slide-org304ade0">
+<h2 id="org304ade0">Por que estado separado?</h2>
+<p>
 Estado em dicionário = mais simples para iniciantes.
 </p>
 
 <p>
 Funções puras são mais fáceis de testar e entender.
 </p>
-</section>
-<section id="slide-orge01071c">
-<h3 id="orge01071c">Com funções:</h3>
+
 <div class="org-src-container">
 
 <pre   ><code class="python" >agente = criar_agente("Você é educado.")
-conversar(agente, "Oi")       # histórico atualiza
-conversar(agente, "Lembra o que eu disse?")  # tem contexto
+conversar(agente, "Oi!")          # histórico atualiza
+conversar(agente, "Lembra de mim?")  # tem contexto
 </code></pre>
 </div>
 </section>
 </section>
 <section>
-<section id="slide-org83a0693">
-<h2 id="org83a0693">O problema do histórico infinito</h2>
-<p class="fragment (appear)">
+<section id="slide-org60663aa">
+<h2 id="org60663aa">O problema do histórico infinito</h2>
+<p>
 Se a conversa crescer demais, o prompt fica gigante.
 </p>
 
 <p>
-<b><b>Solução:</b></b> limitar histórico.
+<b>Solução:</b> limitar histórico.
 </p>
 
 <div class="org-src-container">
 
-<pre   ><code class="python" ># Pegar só as últimas 10 trocas
-for msg in agente["historico"][-10:]:
+<pre   ><code class="python" ># Pegar só as últimas N mensagens
+for msg in agente["historico"][-agente["max_historico"]:]:
     ...
 </code></pre>
 </div>
 </section>
-</section>
-<section>
-<section id="slide-orge87a1d5">
-<h2 id="orge87a1d5">Diagrama</h2>
-<div class="org-src-container">
-
-<pre   ><code class="text" >Usuário → Agente → LLM → Resposta
-           ↑                |
-           |                |
-           └──── Histórico ←┘
-</code></pre>
-</div>
-
-<ol>
-<li class="fragment appear">Usuário envia mensagem</li>
-<li class="fragment appear">Agente monta prompt com histórico</li>
-<li class="fragment appear">LLM processa</li>
-<li class="fragment appear">Resposta salva no histórico</li>
-<li class="fragment appear">Retorna ao usuário</li>
-
-</ol>
-</section>
-</section>
-<section>
-<section id="slide-org9f9f1e6">
-<h2 id="org9f9f1e6">Para lembrar</h2>
-<blockquote  class="fragment (appear)">
-<p>
-"Agente é LLM com memória e personalidade."
-</p>
-</blockquote>
-</section>
-</section>
-<section>
-<section id="slide-orgdea6c42">
-<h2 id="orgdea6c42">Próxima semana</h2>
-<ul>
-<li class="fragment appear">Vamos dar uma ferramenta para o agente</li>
-<li class="fragment appear">Calculadora</li>
-<li class="fragment appear">Tool calling básico</li>
+<section id="slide-orgf33ce37">
+<h3 id="orgf33ce37">E compactação?</h3>
+<ul style="font-size:0.55em;">
+<li>Truncar funciona, mas <b>joga fora informação</b></li>
+<li>Na prática: <b>compactação</b> — LLM resume o histórico antes de enviar</li>
+<li>Ajuda com <b>lost in the middle</b>: LLMs não recuperam bem info no meio do contexto (<a href="https://arxiv.org/abs/2307.03172">Liu et al., 2023</a>)</li>
+<li>Compactação precisa de ferramentas — fica pra outro dia</li>
 
 </ul>
 </section>
 </section>
 <section>
-<section id="slide-org6412224">
-<h2 id="org6412224">Perguntas?</h2>
+<section id="slide-org56a84b2">
+<h2 id="org56a84b2">ReAct: Pensar e Agir</h2>
+<p style="font-size:0.55em;">
+Agentes reais <b>pensam e agem</b> em ciclos (<a href="https://arxiv.org/abs/2210.03629" style="font-size:0.55em;">Yao et al., 2022</a>)
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="text" >Input → Thought → Action → Observation → Thought → Answer
+</code></pre>
+</div>
+
+<p style="font-size:0.55em;">
+Exemplo: "Quanto é 234 × 987 + 100?"
+</p>
+<ul>
+<li><b>Thought:</b> Preciso multiplicar</li>
+<li><b>Action:</b> calculadora[234 × 987]</li>
+<li><b>Observation:</b> 230958</li>
+<li><b>Thought:</b> Agora somo 100</li>
+<li><b>Answer:</b> 231058</li>
+
+</ul>
+
+<p style="font-size:0.55em;">
+Hoje: memória + instruções. Na S06: ferramentas!
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgd7e2921">
+<h2 id="orgd7e2921">Diagrama do Ciclo</h2>
+<div style="text-align:center;">
+<img src="/pages/guilda-ia/img/s05-ciclo-agente.png" style="max-width:70%;max-height:55vh;" />
+</div>
+
+<ol style="font-size:0.6em;">
+<li>Usuário envia mensagem</li>
+<li>Agente monta prompt com histórico</li>
+<li>LLM processa</li>
+<li>Resposta salva no histórico</li>
+<li>Retorna ao usuário</li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-org6b0d635">
+<h2 id="org6b0d635">De Requests para LangChain</h2>
+<p>
+Montar mensagens na mão funciona, mas é repetitivo.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" style="font-size:0.55em;">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Com <code>requests</code></th>
+<th scope="col" class="org-left">Com LangChain</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Montar dict manual</td>
+<td class="org-left"><code>ChatPromptTemplate</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Gerenciar histórico manual</td>
+<td class="org-left"><code>InMemoryChatMessageHistory</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Chamar API e parsear</td>
+<td class="org-left"><code>ChatOpenAI</code> (endpoint OpenAI-compatible)</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>[-N:]</code> manual</td>
+<td class="org-left">Configurável</td>
+</tr>
+</tbody>
+</table>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" >cadeia = prompt | llm  # pipe = encadeia
+resultado = cadeia.invoke({"pergunta": "Oi!"})
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org890f917">
+<h2 id="org890f917">Para lembrar</h2>
+<blockquote >
+<p>
+"Agente é LLM com memória e personalidade. ReAct completa o ciclo: pensar e agir."
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org9cec988" data-background="./slide_05.gif">
+<h2 id="org9cec988">🔴 Demo: Agente no Colab</h2>
+<ol style="font-size:0.55em;">
+<li>Abrir <code>luksamuk.codes/pages/guilda-ia</code> → Semana 05</li>
+<li>Clicar em "Colab" → fazer uma cópia no Drive</li>
+<li>Testar: criar agente, conversar, verificar memória</li>
+
+</ol>
+
+<blockquote >
+<ul>
+<li>Vamos dar uma <b>ferramenta</b> para o agente</li>
+<li>O ciclo ReAct se completa: <b>Thought → Action → Observation</b></li>
+
+</ul>
+</blockquote>
 </section>
 </section>
 </div>

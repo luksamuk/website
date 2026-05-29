@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Estrutura de Agente: Onde Tudo Começa</title>
 <meta name="author" content="Lucas S. Vieira" />
-<meta name="description" content="Semana 6 - Guilda de IA: Estrutura de um agente de IA
+<meta name="description" content="Semana 5 - Guilda de IA: Estrutura de um agente de IA
 Material didático do curso de IA Generativa da Guilda de IA" />
 <meta name="generator" content="Org Mode" />
 <style type="text/css">
@@ -215,14 +215,14 @@ gtag('config', 'G-22RF3F5XE0');
 <meta property="og:url" content="https://luksamuk.codes/pages/guilda-ia/05-estrutura-agente.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Estrutura de Agente: Onde Tudo Começa">
-<meta property="og:description" content="Semana 6 - Guilda de IA: Estrutura de um agente de IA
+<meta property="og:description" content="Semana 5 - Guilda de IA: Estrutura de um agente de IA
 Material didático do curso de IA Generativa da Guilda de IA">
 <meta property="og:image" content="https://luksamuk.codes/img/banner-full.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:domain" content="luksamuk.codes">
 <meta name="twitter:url" content="https://luksamuk.codes/pages/guilda-ia/05-estrutura-agente.html">
 <meta name="twitter:title" content="Estrutura de Agente: Onde Tudo Começa">
-<meta name="twitter:description" content="Semana 6 - Guilda de IA: Estrutura de um agente de IA
+<meta name="twitter:description" content="Semana 5 - Guilda de IA: Estrutura de um agente de IA
 Material didático do curso de IA Generativa da Guilda de IA">
 <meta name="twitter:image" content="https://luksamuk.codes/img/banner.png">
 </head>
@@ -231,477 +231,636 @@ Material didático do curso de IA Generativa da Guilda de IA">
 <div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">Estrutura de Agente: Onde Tudo Começa</h1>
 </div>
 <div id="content" class="content">
-<div id="outline-container-org2b409ec" class="outline-2">
-<h2 id="org2b409ec">O que é um agente?</h2>
-<div class="outline-text-2" id="text-org2b409ec">
+<div id="outline-container-orgb26583a" class="outline-2">
+<h2 id="orgb26583a">Continuação: De APIs para Agentes</h2>
+<div class="outline-text-2" id="text-orgb26583a">
 <p>
-Agente = LLM + estrutura para conversar.
+Nas semanas passadas, aprendemos Python básico (<a href="./03-python-minimo.html">Python Mínimo</a>) e como chamar APIs de LLM (<a href="./04-python-api.html">Python + API de LLM</a>). Vimos que um modelo de linguagem responde a uma pergunta — e nada mais.
 </p>
 
 <p>
-O LLM puro só responde uma pergunta. Um agente:
+Mas um <b>agente</b> é mais que isso. Um agente:
 </p>
+
 <ul class="org-ul">
-<li>Lembra da conversa (memória)</li>
-<li>Tem personalidade (instruções)</li>
-<li>Pode usar ferramentas (extensões)</li>
+<li><b>Lembra</b> da conversa (memória)</li>
+<li><b>Tem personalidade</b> (instruções de sistema)</li>
+<li><b>Pode usar ferramentas</b> (extensões — veremos na S06)</li>
 </ul>
-</div>
-</div>
-<div id="outline-container-org7bb10b5" class="outline-2">
-<h2 id="org7bb10b5">Arquitetura em Detalhe</h2>
-<div class="outline-text-2" id="text-org7bb10b5">
-</div>
-<div id="outline-container-orgfdb2e35" class="outline-3">
-<h3 id="orgfdb2e35">Visão Geral</h3>
-<div class="outline-text-3" id="text-orgfdb2e35">
+
 <p>
-Um agente de IA não é apenas um modelo de linguagem. É um <b>sistema</b> composto por múltiplos componentes trabalhando em conjunto:
-</p>
-
-
-<div id="org7a77d6a" class="figure">
-<p><img src="img/agente-componentes.svg" alt="agente-componentes.svg" class="org-svg" />
+Nesta aula, vamos construir um agente do zero: primeiro "na mão" com <code>requests</code>, depois com LangChain.
 </p>
 </div>
 </div>
+<div id="outline-container-org6871217" class="outline-2">
+<h2 id="org6871217">O que é um Agente?</h2>
+<div class="outline-text-2" id="text-org6871217">
+<blockquote>
+<p>
+Agente = LLM + <b>harness</b>. O LLM é o cérebro; o <i>harness</i> é a estrutura em volta que dá contexto e continuidade — memória, instruções, e (mais tarde) ferramentas.
+</p>
+</blockquote>
+
+<p>
+Um LLM puro responde uma pergunta e esquece. Um agente mantém um <i>histórico de conversa</i> e segue <i>instruções de sistema</i> que definem seu comportamento.
+</p>
+
+<p>
+O termo <i>harness</i> (armação, arreio) é usado na indústria pra descrever o código que envolve o LLM: system prompt, gerenciamento de memória, parsing de ferramentas, loop de execução. É o que transforma um modelo que só responde num sistema que <i>conversa e age</i>.
+</p>
 </div>
-<div id="outline-container-orgbfe5d06" class="outline-3">
-<h3 id="orgbfe5d06">Componentes Principais</h3>
-<div class="outline-text-3" id="text-orgbfe5d06">
+<div id="outline-container-org6d52562" class="outline-3">
+<h3 id="org6d52562">Componentes de um Agente</h3>
+<div class="outline-text-3" id="text-org6d52562">
 <ol class="org-ol">
-<li><b>LLM (Large Language Model):</b> O cérebro que processa e gera texto</li>
-<li><b>Memory:</b> Armazena o histórico de conversas</li>
-<li><b>Tools (Ferramentas):</b> Capacidades extras além do conhecimento do modelo</li>
-<li><b>System Prompt:</b> Define personalidade, comportamento e restrições</li>
+<li><b>System Prompt</b> — define quem o agente é, como age, suas regras</li>
+<li><b>Memória (Histórico)</b> — as mensagens trocadas até agora</li>
+<li><b>Input</b> — a pergunta atual do usuário</li>
+<li><b>Output</b> — a resposta do modelo</li>
 </ol>
-</div>
-</div>
-</div>
-<div id="outline-container-orgfea8cd8" class="outline-2">
-<h2 id="orgfea8cd8">Paradigmas de Arquitetura de Agentes</h2>
-<div class="outline-text-2" id="text-orgfea8cd8">
-</div>
-<div id="outline-container-org9c0e042" class="outline-3">
-<h3 id="org9c0e042">ReAct (Reasoning + Acting)</h3>
-<div class="outline-text-3" id="text-org9c0e042">
-<p>
-O paradigma <b>ReAct</b> foi introduzido no paper <b>\"ReAct: Synergistic Reasoning and Acting in Language Models\"</b> (Yao et al., 2022). A ideia central é intercalar <b>raciocínio</b> (reasoning) com <b>ações</b> (acting).
-</p>
 
 
-<div id="orga2513f3" class="figure">
-<p><img src="img/react-cycle.svg" alt="react-cycle.svg" class="org-svg" />
+<div id="org3c71291" class="figure">
+<p><img src="img/agente-componentes.svg" alt="Componentes de um agente" class="dark-diagram" />
 </p>
 </div>
+</div>
+</div>
+</div>
+<div id="outline-container-org73446df" class="outline-2">
+<h2 id="org73446df">Paradigma ReAct: Pensar e Agir</h2>
+<div class="outline-text-2" id="text-org73446df">
+<p>
+Até agora, nosso código faz uma pergunta e recebe uma resposta. Mas agentes reais <i>pensam e agem</i> em ciclos.
+</p>
 
 <p>
-<b>Exemplo de trace ReAct:</b>
+O paradigma <i>ReAct</i> (Reasoning + Acting), proposto por Yao et al. (2022), intercala <b>raciocínio</b> com <b>ação</b>:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-text">Question: Quanto &#233; 234 * 987 + 100?
+<pre class="src src-text">Input &#8594; Thought &#8594; Action &#8594; Observation &#8594; Thought &#8594; Answer
+</pre>
+</div>
+</div>
+<div id="outline-container-orgecde75e" class="outline-3">
+<h3 id="orgecde75e">Exemplo de trace ReAct:</h3>
+<div class="outline-text-3" id="text-orgecde75e">
+<div class="org-src-container">
+<pre class="src src-text">Pergunta: Quanto &#233; 234 &#215; 987 + 100?
 
-Thought 1: Preciso multiplicar 234 por 987 primeiro.
-Action 1: calculadora[234 * 987]
-Observation 1: 230958
+Thought: Preciso multiplicar 234 por 987 primeiro.
+Action: calculadora[234 * 987]
+Observation: 230958
 
-Thought 2: Agora preciso somar 100 ao resultado.
-Action 2: calculadora[230958 + 100]
-Observation 2: 231058
+Thought: Agora somo 100 ao resultado.
+Action: calculadora[230958 + 100]
+Observation: 231058
 
-Thought 3: Tenho a resposta final.
+Thought: Tenho a resposta final.
 Answer: O resultado &#233; 231058.
 </pre>
 </div>
 
 <p>
-<b>Vantagens do ReAct:</b>
+<b>Vantagens:</b>
 </p>
+
 <ul class="org-ul">
-<li>Interpretabilidade: vemos o raciocínio passo a passo</li>
-<li>Debug facilitado: conseguimos identificar onde o agente errou</li>
-<li>Comporabilidade: ações podem ser encadeadas</li>
+<li><b>Interpretabilidade:</b> vemos o raciocínio passo a passo</li>
+<li><b>Debug facilitado:</b> conseguimos identificar onde o agente errou</li>
+<li><b>Comporabilidade:</b> ações podem ser encadeadas</li>
 </ul>
 
+<blockquote>
 <p>
-<b>Referência:</b> Yao, S. et al. (2022). "ReAct: Synergistic Reasoning and Acting in Language Models". <a href="https://arxiv.org/abs/2210.03629">arXiv:2210.03629</a>
+Nesta aula, vamos implementar a <b>estrutura</b> do agente (memória + instruções). Na S06, vamos adicionar <b>ferramentas</b> — e então o ciclo ReAct vai ficar completo.
 </p>
+</blockquote>
 </div>
 </div>
-<div id="outline-container-orgbf67414" class="outline-3">
-<h3 id="orgbf67414">Plan-and-Solve</h3>
-<div class="outline-text-3" id="text-orgbf67414">
-<p>
-Uma extensão do ReAct é o paradigma <b>Plan-and-Solve</b>, onde o agente primeiro <b>planeja</b> todos os passos antes de executá-los.
-</p>
-
-<p>
-<b>Quando usar Plan-and-Solve:</b>
-</p>
+<div id="outline-container-orgeb604d4" class="outline-3">
+<h3 id="orgeb604d4">Para saber mais</h3>
+<div class="outline-text-3" id="text-orgeb604d4">
 <ul class="org-ul">
-<li>Tarefas complexas com múltiplos passos dependentes</li>
-<li>Quando a ordem de execução é crítica</li>
-<li>Problemas matemáticos ou de lógica estruturada</li>
+<li>Yao, S. et al. (2022). "ReAct: Synergizing Reasoning and Acting in Language Models". <a href="https://arxiv.org/abs/2210.03629">arXiv:2210.03629</a></li>
+<li>Liu, N.F. et al. (2023). "Lost in the Middle: How Language Models Use Long Contexts". <a href="https://arxiv.org/abs/2307.03172">arXiv:2307.03172</a></li>
+<li>Weng, L. (2023). "LLM Powered Autonomous Agents". <a href="https://lilianweng.github.io/posts/2023-06-23-agent/">lilianweng.github.io</a></li>
+<li>Wang et al. (2023). "Plan-and-Solve Prompting". <a href="https://arxiv.org/abs/2305.16969">arXiv:2305.16969</a></li>
 </ul>
-
+</div>
+</div>
+</div>
+<div id="outline-container-org7c60578" class="outline-2">
+<h2 id="org7c60578">Agente na Mão: Dicts e Funções</h2>
+<div class="outline-text-2" id="text-org7c60578">
 <p>
-<b>Referência:</b> Wang et al. (2023). "Plan-and-Solve Prompting: Improving Zero-Shot Chain-of-Thought Reasoning by Large Language Models". <a href="https://arxiv.org/abs/2305.16969">arXiv:2305.16969</a>
+Começamos com o que já sabemos: <code>requests.post()</code> para chamar o Ollama, e dicionários para guardar o estado.
 </p>
 </div>
-</div>
-</div>
-<div id="outline-container-org290e417" class="outline-2">
-<h2 id="org290e417">Referências Importantes</h2>
-<div class="outline-text-2" id="text-org290e417">
-</div>
-<div id="outline-container-org49610d6" class="outline-3">
-<h3 id="org49610d6">Paper Fundacional: ReAct</h3>
-<div class="outline-text-3" id="text-org49610d6">
-<p>
-<b>Título:</b> "ReAct: Synergistic Reasoning and Acting in Language Models"  
-<b>Autores:</b> Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan, Yuan Cao  
-<b>Ano:</b> 2022  
-<b>Link:</b> <a href="https://arxiv.org/abs/2210.03629">arXiv:2210.03629</a>
-</p>
-</div>
-</div>
-<div id="outline-container-org438b30a" class="outline-3">
-<h3 id="org438b30a">Paper: Toolformer</h3>
-<div class="outline-text-3" id="text-org438b30a">
-<p>
-<b>Título:</b> "Toolformer: Language Models Can Teach Themselves to Use Tools"  
-<b>Autores:</b> Timo Schick, Jane Dwivedi-Yu, Roberto Dessì, et al.  
-<b>Ano:</b> 2023  
-<b>Link:</b> <a href="https://arxiv.org/abs/2302.04761">arXiv:2302.04761</a>
-</p>
-</div>
-</div>
-<div id="outline-container-orgd0ded1b" class="outline-3">
-<h3 id="orgd0ded1b">Paper: Gorilla</h3>
-<div class="outline-text-3" id="text-orgd0ded1b">
-<p>
-<b>Título:</b> "Gorilla: Large Language Model Connected to Massive APIs"  
-<b>Autores:</b> Shishir Patil, Tianjun Zhang, Xin Wang, Joseph E. Gonzalez  
-<b>Ano:</b> 2023  
-<b>Link:</b> <a href="https://arxiv.org/abs/2305.15334">arXiv:2305.15334</a>
-</p>
-</div>
-</div>
-</div>
-<div id="outline-container-org53685c7" class="outline-2">
-<h2 id="org53685c7">Componentes do Agente (Detalhado)</h2>
-<div class="outline-text-2" id="text-org53685c7">
-</div>
-<div id="outline-container-orgf8252ea" class="outline-3">
-<h3 id="orgf8252ea">1. Instruções (System Prompt)</h3>
-<div class="outline-text-3" id="text-orgf8252ea">
-<p>
-Define quem o agente é, como age e suas restrições.
-</p>
-
+<div id="outline-container-org646f9a7" class="outline-3">
+<h3 id="org646f9a7">Criando o agente</h3>
+<div class="outline-text-3" id="text-org646f9a7">
 <div class="org-src-container">
-<pre class="src src-python"><span class="org-variable-name">instrucoes</span> <span class="org-operator">=</span> <span class="org-string">"""Voc&#234; &#233; um assistente educado e objetivo.
-
-REGRAS:
-- Responda de forma clara e concisa
-- Se n&#227;o souber algo, admita
-- Use ferramentas quando necess&#225;rio
-- NUNCA invente informa&#231;&#245;es
-
-FERRAMENTAS DISPON&#205;VEIS:
-- calculadora: para opera&#231;&#245;es matem&#225;ticas
-- wikipedia: para buscas de informa&#231;&#227;o
-- horario: para saber data/hora atual
-"""</span>
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-org02fe505" class="outline-3">
-<h3 id="org02fe505">2. Histórico (Memory)</h3>
-<div class="outline-text-3" id="text-org02fe505">
-<p>
-Guarda a conversa para manter contexto.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-variable-name">historico</span> <span class="org-operator">=</span> [
-    {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Oi!"</span>},
-    {<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Ol&#225;! Como posso ajudar?"</span>}
-]
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-org79de768" class="outline-3">
-<h3 id="org79de768">3. Mensagem (Input)</h3>
-<div class="outline-text-3" id="text-org79de768">
-<p>
-A pergunta atual do usuário.
-</p>
-</div>
-</div>
-<div id="outline-container-org98268a7" class="outline-3">
-<h3 id="org98268a7">4. Resposta (Output)</h3>
-<div class="outline-text-3" id="text-org98268a7">
-<p>
-A resposta do modelo.
-</p>
-</div>
-</div>
-</div>
-<div id="outline-container-org1d892cb" class="outline-2">
-<h2 id="org1d892cb">Implementação Real</h2>
-<div class="outline-text-2" id="text-org1d892cb">
-</div>
-<div id="outline-container-org69d2771" class="outline-3">
-<h3 id="org69d2771">Código Completo de um Agente Básico</h3>
-<div class="outline-text-3" id="text-org69d2771">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-doc">"""
-Implementa&#231;&#227;o completa de um agente com mem&#243;ria e tratamento de erros.
-Inclui:
-- Gerenciamento de hist&#243;rico
-- Truncamento de contexto
-- Retry com backoff
-- Logging estruturado
-"""</span>
-
-<span class="org-keyword">import</span> os
-<span class="org-keyword">import</span> json
-<span class="org-keyword">import</span> logging
-<span class="org-keyword">from</span> datetime <span class="org-keyword">import</span> datetime
-<span class="org-keyword">from</span> typing <span class="org-keyword">import</span> Optional, List, Dict, Any
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Configura&#231;&#227;o de logging
-</span>logging.basicConfig(
-    level<span class="org-operator">=</span>logging.INFO,
-    <span class="org-builtin">format</span><span class="org-operator">=</span><span class="org-string">'%(asctime)s - %(name)s - %(levelname)s - %(message)s'</span>
-)
-<span class="org-variable-name">logger</span> <span class="org-operator">=</span> logging.getLogger(<span class="org-builtin">__name__</span>)
-
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">============================================
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">AGENTE COM FUN&#199;&#213;ES E ESTADO
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">============================================
-</span>
-<span class="org-keyword">def</span> <span class="org-function-name">criar_agente</span>(
-    system_prompt: <span class="org-builtin">str</span> <span class="org-operator">=</span> <span class="org-string">"Voc&#234; &#233; um assistente &#250;til e educado."</span>,
-    max_historico: <span class="org-builtin">int</span> <span class="org-operator">=</span> 20
-) <span class="org-operator">-&gt;</span> Dict:
-    <span class="org-doc">"""
-    Cria um agente com mem&#243;ria de conversa.
-
-    Args:
-        system_prompt: Instru&#231;&#245;es iniciais do sistema
-        max_historico: N&#250;mero m&#225;ximo de mensagens no hist&#243;rico
-
-    Returns:
-        Dicion&#225;rio com o estado do agente
-    """</span>
-    <span class="org-keyword">if</span> <span class="org-keyword">not</span> system_prompt <span class="org-keyword">or</span> <span class="org-keyword">not</span> system_prompt.strip():
-        <span class="org-keyword">raise</span> <span class="org-type">ValueError</span>(<span class="org-string">"System prompt n&#227;o pode estar vazio"</span>)
-
-    <span class="org-variable-name">estado</span> <span class="org-operator">=</span> {
-        <span class="org-string">"system_prompt"</span>: system_prompt,
+<pre class="src src-python"><span class="org-keyword">def</span> <span class="org-function-name">criar_agente</span>(instrucoes, max_historico<span class="org-operator">=</span>20):
+    <span class="org-keyword">return</span> {
+        <span class="org-string">"instrucoes"</span>: instrucoes,
         <span class="org-string">"historico"</span>: [],
         <span class="org-string">"max_historico"</span>: max_historico
     }
+</pre>
+</div>
 
-    logger.info(f<span class="org-string">"Agente criado com max_historico=</span>{max_historico}<span class="org-string">"</span>)
-    <span class="org-keyword">return</span> estado
+<p>
+Um dicionário simples. Sem classes, sem objetos — só funções e dicts.
+</p>
+</div>
+</div>
+<div id="outline-container-org18def0e" class="outline-3">
+<h3 id="org18def0e">Conversando com o agente</h3>
+<div class="outline-text-3" id="text-org18def0e">
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">import</span> requests
 
+<span class="org-keyword">def</span> <span class="org-function-name">conversar</span>(agente, mensagem):
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Monta a lista de mensagens
+</span>    <span class="org-variable-name">messages</span> <span class="org-operator">=</span> [{<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: agente[<span class="org-string">"instrucoes"</span>]}]
 
-<span class="org-keyword">def</span> <span class="org-function-name">_truncar_historico</span>(estado: Dict) <span class="org-operator">-&gt;</span> List[Dict[<span class="org-builtin">str</span>, <span class="org-builtin">str</span>]]:
-    <span class="org-doc">"""
-    Trunca o hist&#243;rico se exceder o limite.
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Adiciona o hist&#243;rico
+</span>    <span class="org-keyword">for</span> msg <span class="org-keyword">in</span> agente[<span class="org-string">"historico"</span>]:
+        messages.append(msg)
 
-    Returns:
-        Lista de mensagens truncada
-    """</span>
-    <span class="org-keyword">if</span> <span class="org-builtin">len</span>(estado[<span class="org-string">"historico"</span>]) <span class="org-operator">&gt;</span> estado[<span class="org-string">"max_historico"</span>]:
-        <span class="org-variable-name">metade</span> <span class="org-operator">=</span> estado[<span class="org-string">"max_historico"</span>] <span class="org-operator">//</span> 2
-        <span class="org-variable-name">historico_truncado</span> <span class="org-operator">=</span> (
-            estado[<span class="org-string">"historico"</span>][:metade<span class="org-operator">//</span>2] <span class="org-operator">+</span> 
-            estado[<span class="org-string">"historico"</span>][<span class="org-operator">-</span>(metade<span class="org-operator">//</span>2):]
-        )
-        logger.warning(
-            f<span class="org-string">"Hist&#243;rico truncado: </span>{<span class="org-builtin">len</span>(estado['historico'])}<span class="org-string"> -&gt; </span>{<span class="org-builtin">len</span>(historico_truncado)}<span class="org-string">"</span>
-        )
-        <span class="org-keyword">return</span> historico_truncado
-    <span class="org-keyword">return</span> estado[<span class="org-string">"historico"</span>]
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Adiciona a mensagem atual
+</span>    messages.append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: mensagem})
 
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Chama o Ollama via endpoint OpenAI-compatible
+</span>    <span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(
+        <span class="org-string">"http://localhost:11434/v1/chat/completions"</span>,
+        json<span class="org-operator">=</span>{
+            <span class="org-string">"model"</span>: <span class="org-string">"gemma4:e2b"</span>,
+            <span class="org-string">"messages"</span>: messages,
+            <span class="org-string">"stream"</span>: <span class="org-constant">False</span>
+        }
+    )
 
-<span class="org-keyword">def</span> <span class="org-function-name">_montar_messages</span>(estado: Dict, mensagem: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> List[Dict[<span class="org-builtin">str</span>, <span class="org-builtin">str</span>]]:
-    <span class="org-doc">"""
-    Monta a lista de mensagens no formato esperado pelo modelo.
+    <span class="org-variable-name">resposta</span> <span class="org-operator">=</span> response.json()[<span class="org-string">"choices"</span>][0][<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]
 
-    Args:
-        estado: Estado do agente
-        mensagem: Mensagem atual do usu&#225;rio
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Salva no hist&#243;rico
+</span>    agente[<span class="org-string">"historico"</span>].append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: mensagem})
+    agente[<span class="org-string">"historico"</span>].append({<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: resposta})
 
-    Returns:
-        Lista completa de mensagens formatadas
-    """</span>
-    <span class="org-variable-name">messages</span> <span class="org-operator">=</span> [{<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: estado[<span class="org-string">"system_prompt"</span>]}]
+    <span class="org-keyword">return</span> resposta
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org17d6ba9" class="outline-3">
+<h3 id="org17d6ba9">Testando</h3>
+<div class="outline-text-3" id="text-org17d6ba9">
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-variable-name">agente</span> <span class="org-operator">=</span> criar_agente(<span class="org-string">"Voc&#234; &#233; um assistente amig&#225;vel que responde em portugu&#234;s."</span>)
 
-    <span class="org-keyword">for</span> msg <span class="org-keyword">in</span> _truncar_historico(estado):
+<span class="org-builtin">print</span>(conversar(agente, <span class="org-string">"Oi! Meu nome &#233; Ana."</span>))
+<span class="org-builtin">print</span>(conversar(agente, <span class="org-string">"Qual &#233; o meu nome?"</span>))  <span class="org-comment-delimiter"># </span><span class="org-comment">Lembra!</span>
+</pre>
+</div>
+
+<p>
+O agente lembra do nome porque guardamos o histórico.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org569deb7" class="outline-2">
+<h2 id="org569deb7">O Problema do Histórico Infinito</h2>
+<div class="outline-text-2" id="text-org569deb7">
+<p>
+Se a conversa crescer demais, o prompt fica gigante — e isso custa tokens e fica lento.
+</p>
+</div>
+<div id="outline-container-org5f8197e" class="outline-3">
+<h3 id="org5f8197e">Solução: limitar o histórico</h3>
+<div class="outline-text-3" id="text-org5f8197e">
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">def</span> <span class="org-function-name">conversar</span>(agente, mensagem):
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Monta a lista de mensagens
+</span>    <span class="org-variable-name">messages</span> <span class="org-operator">=</span> [{<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: agente[<span class="org-string">"instrucoes"</span>]}]
+
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Pega s&#243; as &#250;ltimas N mensagens do hist&#243;rico
+</span>    <span class="org-variable-name">limite</span> <span class="org-operator">=</span> agente[<span class="org-string">"max_historico"</span>]
+    <span class="org-variable-name">historico_cortado</span> <span class="org-operator">=</span> agente[<span class="org-string">"historico"</span>][<span class="org-operator">-</span>limite:]
+
+    <span class="org-keyword">for</span> msg <span class="org-keyword">in</span> historico_cortado:
         messages.append(msg)
 
     messages.append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: mensagem})
 
-    <span class="org-keyword">return</span> messages
-
-
-<span class="org-keyword">def</span> <span class="org-function-name">conversar</span>(estado: Dict, mensagem: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
-    <span class="org-doc">"""
-    Processa uma mensagem e retorna a resposta.
-
-    Args:
-        estado: Estado do agente
-        mensagem: Mensagem do usu&#225;rio
-
-    Returns:
-        Resposta do agente
-    """</span>
-    <span class="org-keyword">if</span> <span class="org-keyword">not</span> mensagem <span class="org-keyword">or</span> <span class="org-keyword">not</span> mensagem.strip():
-        <span class="org-keyword">raise</span> <span class="org-type">ValueError</span>(<span class="org-string">"Mensagem n&#227;o pode estar vazia"</span>)
-
-    logger.info(f<span class="org-string">"Processando mensagem: </span>{mensagem[:50]}<span class="org-string">..."</span>)
-
-    <span class="org-comment-delimiter"># </span><span class="org-comment">Monta mensagens
-</span>    <span class="org-variable-name">messages</span> <span class="org-operator">=</span> _montar_messages(estado, mensagem)
-
-    <span class="org-comment-delimiter"># </span><span class="org-comment">Salvar no hist&#243;rico
-</span>    estado[<span class="org-string">"historico"</span>].append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: mensagem})
-    estado[<span class="org-string">"historico"</span>].append({<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Resposta simulada"</span>})
-
-    <span class="org-keyword">return</span> <span class="org-string">"Resposta simulada"</span>
-
-
-<span class="org-keyword">def</span> <span class="org-function-name">limpar_historico</span>(estado: Dict) <span class="org-operator">-&gt;</span> <span class="org-constant">None</span>:
-    <span class="org-doc">"""Limpa todo o hist&#243;rico de conversa."""</span>
-    <span class="org-variable-name">estado</span>[<span class="org-string">"historico"</span>] <span class="org-operator">=</span> []
-    logger.info(<span class="org-string">"Hist&#243;rico limpo"</span>)
-
-
-<span class="org-keyword">def</span> <span class="org-function-name">exportar_historico</span>(estado: Dict) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
-    <span class="org-doc">"""
-    Exporta hist&#243;rico como JSON.
-
-    Returns:
-        String JSON com o hist&#243;rico
-    """</span>
-    <span class="org-keyword">return</span> json.dumps({
-        <span class="org-string">"system_prompt"</span>: estado[<span class="org-string">"system_prompt"</span>],
-        <span class="org-string">"historico"</span>: estado[<span class="org-string">"historico"</span>],
-        <span class="org-string">"timestamp"</span>: datetime.now().isoformat()
-    }, ensure_ascii<span class="org-operator">=</span><span class="org-constant">False</span>, indent<span class="org-operator">=</span>2)
-
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Exemplo de uso
-</span><span class="org-keyword">if</span> <span class="org-builtin">__name__</span> <span class="org-operator">==</span> <span class="org-string">"__main__"</span>:
-    <span class="org-variable-name">agente</span> <span class="org-operator">=</span> criar_agente(
-        system_prompt<span class="org-operator">=</span><span class="org-string">"Voc&#234; &#233; um assistente especializado em Python."</span>,
-        max_historico<span class="org-operator">=</span>10
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Chama o Ollama via endpoint OpenAI-compatible
+</span>    <span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(
+        <span class="org-string">"http://localhost:11434/v1/chat/completions"</span>,
+        json<span class="org-operator">=</span>{
+            <span class="org-string">"model"</span>: <span class="org-string">"gemma4:e2b"</span>,
+            <span class="org-string">"messages"</span>: messages,
+            <span class="org-string">"stream"</span>: <span class="org-constant">False</span>
+        }
     )
 
-    <span class="org-builtin">print</span>(conversar(agente, <span class="org-string">"Oi!"</span>))
-    <span class="org-builtin">print</span>(conversar(agente, <span class="org-string">"Qual sua fun&#231;&#227;o?"</span>))
+    <span class="org-variable-name">resposta</span> <span class="org-operator">=</span> response.json()[<span class="org-string">"choices"</span>][0][<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]
 
-    <span class="org-builtin">print</span>(<span class="org-string">"</span><span class="org-constant">\n</span><span class="org-string">Hist&#243;rico:"</span>)
-    <span class="org-builtin">print</span>(exportar_historico(agente))
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Salva no hist&#243;rico
+</span>    agente[<span class="org-string">"historico"</span>].append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: mensagem})
+    agente[<span class="org-string">"historico"</span>].append({<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: resposta})
+
+    <span class="org-keyword">return</span> resposta
 </pre>
 </div>
-</div>
-</div>
-</div>
-<div id="outline-container-org91ba202" class="outline-2">
-<h2 id="org91ba202">Pitfalls Comuns</h2>
-<div class="outline-text-2" id="text-org91ba202">
-</div>
-<div id="outline-container-org3974e2f" class="outline-3">
-<h3 id="org3974e2f">1. Histórico Infinito</h3>
-<div class="outline-text-3" id="text-org3974e2f">
+
 <p>
-<b>Problema:</b> Se a conversa crescer demais, o prompt fica gigante e custa caro.
+Agora garantimos que o prompt nunca ultrapassa <code>max_historico</code> mensagens do passado.
+</p>
+</div>
+</div>
+<div id="outline-container-org42ba9cb" class="outline-3">
+<h3 id="org42ba9cb">Mas e compactação?</h3>
+<div class="outline-text-3" id="text-org42ba9cb">
+<p>
+Truncar funciona, mas joga fora informação. Na prática, a solução mais robusta é <i>compactação</i> — pedir ao próprio LLM pra resumir o histórico antes de enviar. Isso também mitiga o problema <i>lost in the middle</i>: LLMs têm dificuldade em recuperar informação que está no meio de um contexto longo (<a href="https://arxiv.org/abs/2307.03172">Liu et al., 2023 — "Lost in the Middle: How Language Models Use Long Contexts"</a>).
 </p>
 
 <p>
-<b>Solução:</b> Limitar histórico e truncar inteligentemente.
+Compactação precisa de ferramentas (que ainda não cobrimos no curso). Por ora, truncar resolve o problema imediato.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc5f9ff9" class="outline-2">
+<h2 id="orgc5f9ff9">De Requests para LangChain</h2>
+<div class="outline-text-2" id="text-orgc5f9ff9">
+<p>
+Montar mensagens na mão funciona, mas é repetitivo. <b>LangChain</b> é uma biblioteca que abstrai esse trabalho:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">O que fazemos na mão</th>
+<th scope="col" class="org-left">O que LangChain faz</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Montar lista de <code>messages</code></td>
+<td class="org-left"><code>ChatPromptTemplate</code> organiza tudo</td>
+</tr>
+
+<tr>
+<td class="org-left">Adicionar histórico manualmente</td>
+<td class="org-left"><code>InMemoryChatMessageHistory</code> (tipado, mesma lógica)</td>
+</tr>
+
+<tr>
+<td class="org-left">Chamar API e parsear JSON</td>
+<td class="org-left"><code>ChatOpenAI</code> via endpoint OpenAI-compatible</td>
+</tr>
+
+<tr>
+<td class="org-left">Limitar histórico</td>
+<td class="org-left">Configurável em <code>max_historico</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>
+O padrão fundamental do LangChain moderno é o <b>pipe</b> (<code>|</code>):
 </p>
 
 <div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">ERRADO - hist&#243;rico cresce para sempre
-</span>historico.append(mensagem)  <span class="org-comment-delimiter"># </span><span class="org-comment">sem limite!
-</span>
-<span class="org-comment-delimiter"># </span><span class="org-comment">CERTO - limite definido
-</span><span class="org-keyword">if</span> <span class="org-builtin">len</span>(historico) <span class="org-operator">&gt;</span> MAX_HISTORICO:
-    <span class="org-variable-name">historico</span> <span class="org-operator">=</span> historico[<span class="org-operator">-</span>MAX_HISTORICO:]
+<pre class="src src-python"><span class="org-variable-name">cadeia</span> <span class="org-operator">=</span> prompt <span class="org-operator">|</span> llm
+<span class="org-variable-name">resultado</span> <span class="org-operator">=</span> cadeia.invoke({<span class="org-string">"pergunta"</span>: <span class="org-string">"..."</span>})
 </pre>
 </div>
-</div>
-</div>
-<div id="outline-container-org0340523" class="outline-3">
-<h3 id="org0340523">2. Memória Não Persistida</h3>
-<div class="outline-text-3" id="text-org0340523">
-<p>
-<b>Problema:</b> Histórico só existe em memória RAM. Se reiniciar, perde tudo.
-</p>
 
 <p>
-<b>Solução:</b> Salvar em banco de dados ou arquivo.
+Prompt entra, LLM sai. Simples assim.
 </p>
 </div>
-</div>
-</div>
-<div id="outline-container-orgc058025" class="outline-2">
-<h2 id="orgc058025">Exercícios Práticos</h2>
-<div class="outline-text-2" id="text-orgc058025">
-</div>
-<div id="outline-container-orgccdb41c" class="outline-3">
-<h3 id="orgccdb41c">Exercício 1: Agente com Personalidade</h3>
-<div class="outline-text-3" id="text-orgccdb41c">
+<div id="outline-container-org98942a6" class="outline-3">
+<h3 id="org98942a6">ChatOpenAI: endpoint OpenAI-compatible</h3>
+<div class="outline-text-3" id="text-org98942a6">
 <p>
-Crie um agente com uma personalidade específica (ex: professor de Python, assistente de receitas):
+O Ollama fornece um endpoint compatível com a API da OpenAI em <code>/v1/chat/completions</code>.
+Com <code>ChatOpenAI</code> do <code>langchain-openai</code>, a gente usa esse endpoint <b>direto</b> —
+mesmo modelo local, sem enviar nada pra nuvem.
 </p>
 
-<div class="DETAILS" id="org9108cc7">
+<blockquote>
 <p>
-📝 Exemplo de Solução
+<b>Por que <code>ChatOpenAI</code> e não <code>ChatOllama</code>?</b>
+O <code>ChatOllama</code> existe, mas o endpoint OpenAI-compatible é mais universal: funciona
+com Ollama, com qualquer servidor vLLM/TGI, e com APIs comerciais (Gemini,
+OpenAI). É o padrão da indústria — aprender assim te prepara pra trocar de
+provedor mudando uma linha.
 </p>
+</blockquote>
 
 <div class="org-src-container">
-<pre class="src src-python"><span class="org-keyword">from</span> google <span class="org-keyword">import</span> genai
+<pre class="src src-python"><span class="org-keyword">from</span> langchain_openai <span class="org-keyword">import</span> ChatOpenAI
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">Inicializar cliente
-</span><span class="org-variable-name">client</span> <span class="org-operator">=</span> genai.Client(api_key<span class="org-operator">=</span><span class="org-string">"sua-api-key"</span>)
-
-<span class="org-variable-name">agente_python</span> <span class="org-operator">=</span> AgenteBasico(
-    system_prompt<span class="org-operator">=</span><span class="org-string">"""Voc&#234; &#233; um professor de Python paciente e did&#225;tico.
-
-SOBRE VOC&#202;:
-- Ensina Python para iniciantes
-- Usa exemplos pr&#225;ticos
-- Explica conceitos complexos de forma simples
-- Nunca julga perguntas "burras"
-- Sempre oferece c&#243;digo execut&#225;vel
-
-SEU P&#218;BLICO:
-- Pessoas come&#231;ando a programar
-- Podem n&#227;o saber terminologia t&#233;cnica
-- Precisam de explica&#231;&#245;es passo a passo
-"""</span>,
-    max_historico<span class="org-operator">=</span>15,
-    client<span class="org-operator">=</span>client,
-    model<span class="org-operator">=</span><span class="org-string">"gemini-2.0-flash"</span>
+<span class="org-variable-name">llm</span> <span class="org-operator">=</span> ChatOpenAI(
+    model<span class="org-operator">=</span><span class="org-string">"gemma4:e2b"</span>,
+    base_url<span class="org-operator">=</span><span class="org-string">"http://localhost:11434/v1"</span>,
+    api_key<span class="org-operator">=</span><span class="org-string">"nao_precisa"</span>,  <span class="org-comment-delimiter"># </span><span class="org-comment">Ollama local n&#227;o usa chave
+</span>    temperature<span class="org-operator">=</span>0.7
 )
 </pre>
 </div>
 
+<p>
+Mesma infra do Ollama que já conhecemos — mas agora com interface do LangChain.
+</p>
 </div>
 </div>
+<div id="outline-container-org7249edf" class="outline-3">
+<h3 id="org7249edf">Chat com Memória</h3>
+<div class="outline-text-3" id="text-org7249edf">
+<p>
+O LLM não lembra de nada sozinho — cada chamada é independente. Para ter memória, guardamos o histórico de mensagens e enviamos junto a cada chamada.
+</p>
+
+<blockquote>
+<p>
+A LangChain oferecia <code>RunnableWithMessageHistory</code> (deprecated no v0.3). A abordagem recomendada agora? Gerenciar o histórico explicitamente — que é exatamente o que fizemos na seção "Agente na Mão", só que com objetos tipados do LangChain.
+</p>
+</blockquote>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> langchain_core.chat_history <span class="org-keyword">import</span> InMemoryChatMessageHistory
+<span class="org-keyword">from</span> langchain_core.messages <span class="org-keyword">import</span> HumanMessage, AIMessage
+<span class="org-keyword">from</span> langchain_core.prompts <span class="org-keyword">import</span> ChatPromptTemplate
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Sess&#227;o com hist&#243;rico (sem gerenciamento de sess&#245;es &#8212; uma vari&#225;vel simples)
+</span><span class="org-variable-name">session</span> <span class="org-operator">=</span> InMemoryChatMessageHistory()
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Prompt com placeholder para o hist&#243;rico
+</span><span class="org-variable-name">prompt_mem</span> <span class="org-operator">=</span> ChatPromptTemplate.from_messages([
+    (<span class="org-string">"system"</span>, <span class="org-string">"Voc&#234; &#233; um assistente amig&#225;vel que responde em portugu&#234;s."</span>),
+    (<span class="org-string">"placeholder"</span>, <span class="org-string">"{history}"</span>),
+    (<span class="org-string">"human"</span>, <span class="org-string">"{pergunta}"</span>)
+])
+
+<span class="org-variable-name">cadeia_mem</span> <span class="org-operator">=</span> prompt_mem <span class="org-operator">|</span> llm
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Primeira mensagem &#8212; hist&#243;rico vazio
+</span><span class="org-variable-name">r1</span> <span class="org-operator">=</span> cadeia_mem.invoke({
+    <span class="org-string">"pergunta"</span>: <span class="org-string">"Meu nome &#233; Ana e eu estudo engenharia."</span>,
+    <span class="org-string">"history"</span>: session.messages
+})
+<span class="org-builtin">print</span>(f<span class="org-string">"&#129302; </span>{r1.content}<span class="org-string">"</span>)
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Salva no hist&#243;rico
+</span>session.add_message(HumanMessage(content<span class="org-operator">=</span><span class="org-string">"Meu nome &#233; Ana e eu estudo engenharia."</span>))
+session.add_message(AIMessage(content<span class="org-operator">=</span>r1.content))
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Segunda mensagem &#8212; o modelo lembra do nome!
+</span><span class="org-variable-name">r2</span> <span class="org-operator">=</span> cadeia_mem.invoke({
+    <span class="org-string">"pergunta"</span>: <span class="org-string">"Qual &#233; o meu nome e o que eu estudo?"</span>,
+    <span class="org-string">"history"</span>: session.messages
+})
+<span class="org-builtin">print</span>(f<span class="org-string">"&#129302; </span>{r2.content}<span class="org-string">"</span>)
+
+session.add_message(HumanMessage(content<span class="org-operator">=</span><span class="org-string">"Qual &#233; o meu nome e o que eu estudo?"</span>))
+session.add_message(AIMessage(content<span class="org-operator">=</span>r2.content))
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Sess&#227;o zerada = sem mem&#243;ria
+</span><span class="org-variable-name">session_nova</span> <span class="org-operator">=</span> InMemoryChatMessageHistory()
+<span class="org-variable-name">r3</span> <span class="org-operator">=</span> cadeia_mem.invoke({
+    <span class="org-string">"pergunta"</span>: <span class="org-string">"Qual &#233; o meu nome?"</span>,
+    <span class="org-string">"history"</span>: session_nova.messages  <span class="org-comment-delimiter"># </span><span class="org-comment">hist&#243;rico vazio!
+</span>})
+<span class="org-builtin">print</span>(f<span class="org-string">"&#129302; </span>{r3.content}<span class="org-string">"</span>)
+<span class="org-builtin">print</span>(<span class="org-string">"&#128073; Na sess&#227;o nova o modelo n&#227;o sabe nosso nome!"</span>)
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org8ee9ff0" class="outline-2">
+<h2 id="org8ee9ff0">Comparação: Na Mão vs LangChain</h2>
+<div class="outline-text-2" id="text-org8ee9ff0">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Aspecto</th>
+<th scope="col" class="org-left">Com <code>requests</code></th>
+<th scope="col" class="org-left">Com LangChain</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Setup</td>
+<td class="org-left">15+ linhas</td>
+<td class="org-left">5 linhas</td>
+</tr>
+
+<tr>
+<td class="org-left">System prompt</td>
+<td class="org-left">Montar dict manual</td>
+<td class="org-left"><code>ChatPromptTemplate</code> organiza tudo</td>
+</tr>
+
+<tr>
+<td class="org-left">Memória</td>
+<td class="org-left">Gerenciar lista manual</td>
+<td class="org-left"><code>InMemoryChatMessageHistory</code> + <code>session.messages</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Trocar modelo</td>
+<td class="org-left">Mudar URL e payload</td>
+<td class="org-left">Trocar <code>base_url</code> / <code>model</code> em <code>ChatOpenAI</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Limitar histórico</td>
+<td class="org-left"><code>[-N:]</code> manual</td>
+<td class="org-left">Configurável</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>
+LangChain não é mágica — por baixo, ela faz o que fazemos na mão. Mas abstrair isso facilita, surtout quando adicionamos <b>ferramentas</b> (na S06).
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-orgcb9da32" class="outline-2">
+<h2 id="orgcb9da32">Diagrama do Ciclo</h2>
+<div class="outline-text-2" id="text-orgcb9da32">
+
+<div id="orgb37d86a" class="figure">
+<p><img src="img/s05-ciclo-agente.png" alt="Ciclo de um agente" class="dark-diagram" />
+</p>
+</div>
+
+<ol class="org-ol">
+<li>Usuário envia mensagem</li>
+<li>Agente monta prompt com histórico + instruções</li>
+<li>LLM processa</li>
+<li>Resposta salva no histórico</li>
+<li>Retorna ao usuário</li>
+<li>Na próxima rodada, o histórico cresce</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org122fedb" class="outline-2">
+<h2 id="org122fedb">Pitfalls Comuns</h2>
+<div class="outline-text-2" id="text-org122fedb">
+</div>
+<div id="outline-container-org7451b79" class="outline-3">
+<h3 id="org7451b79">1. Histórico que cresce para sempre</h3>
+<div class="outline-text-3" id="text-org7451b79">
+<p>
+Se não limitar, o prompt fica gigante e custa caro.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">ERRADO &#8212; hist&#243;rico cresce sem limite
+</span>historico.append(mensagem)
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">CERTO &#8212; limite definido
+</span><span class="org-keyword">if</span> <span class="org-builtin">len</span>(historico) <span class="org-operator">&gt;</span> MAX:
+    <span class="org-variable-name">historico</span> <span class="org-operator">=</span> historico[<span class="org-operator">-</span>MAX:]
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org3560f43" class="outline-3">
+<h3 id="org3560f43">2. Memória não persistida</h3>
+<div class="outline-text-3" id="text-org3560f43">
+<p>
+O histórico fica na memória RAM. Se reiniciar o programa, perde tudo. Solução futura: salvar em arquivo ou banco de dados.
+</p>
+</div>
+</div>
+<div id="outline-container-org3709b72" class="outline-3">
+<h3 id="org3709b72">3. System prompt vago</h3>
+<div class="outline-text-3" id="text-org3709b72">
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">ERRADO &#8212; vago demais
+</span><span class="org-variable-name">instrucoes</span> <span class="org-operator">=</span> <span class="org-string">"Responda perguntas."</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">MELHOR &#8212; espec&#237;fico
+</span><span class="org-variable-name">instrucoes</span> <span class="org-operator">=</span> <span class="org-string">"""Voc&#234; &#233; um tutor de Python para iniciantes.
+REGRAS:
+- Responda em portugu&#234;s
+- Use exemplos de c&#243;digo
+- Se n&#227;o souber, diga que n&#227;o sabe
+- Nunca invente informa&#231;&#245;es
+"""</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org5227ef5" class="outline-2">
+<h2 id="org5227ef5">Para Lembrar</h2>
+<div class="outline-text-2" id="text-org5227ef5">
+<blockquote>
+<p>
+"Agente = LLM com memória e personalidade. O ReAct completa o ciclo: pensar e agir."
+</p>
+</blockquote>
+
+<p>
+Na S06, vamos dar <b>ferramentas</b> para o agente — e o ciclo ReAct (input → thought → action → observation → answer) vai ganhar vida.
+</p>
+
+<hr />
+</div>
+</div>
+<div id="outline-container-org4dce4a8" class="outline-2">
+<h2 id="org4dce4a8">Exercícios</h2>
+<div class="outline-text-2" id="text-org4dce4a8">
+</div>
+<div id="outline-container-orgf2cc5e8" class="outline-3">
+<h3 id="orgf2cc5e8">Exercício 1: Agente com Personalidade</h3>
+<div class="outline-text-3" id="text-orgf2cc5e8">
+<p>
+Crie um agente com uma personalidade específica (professor de Python, assistente de receitas, guia de viagem):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-variable-name">agente</span> <span class="org-operator">=</span> criar_agente(<span class="org-string">"""Voc&#234; &#233; um professor de Python paciente e did&#225;tico.
+
+SOBRE VOC&#202;:
+- Ensina Python para iniciantes
+- Usa exemplos pr&#225;ticos
+- Explica conceitos de forma simples
+- Nunca julga perguntas "burras"
+
+SEU P&#218;BLICO:
+- Pessoas come&#231;ando a programar
+- Precisam de explica&#231;&#245;es passo a passo
+"""</span>)
+
+<span class="org-builtin">print</span>(conversar(agente, <span class="org-string">"O que &#233; uma vari&#225;vel?"</span>))
+<span class="org-builtin">print</span>(conversar(agente, <span class="org-string">"Como declaro uma lista?"</span>))
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orga3341dd" class="outline-3">
+<h3 id="orga3341dd">Exercício 2: Memória com Limite</h3>
+<div class="outline-text-3" id="text-orga3341dd">
+<p>
+Modifique <code>criar_agente</code> para aceitar um <code>max_historico</code> e teste o que acontece quando o histórico ultrapassa o limite. O agente "esquece" as mensagens mais antigas?
+</p>
+</div>
+</div>
+<div id="outline-container-orgf085068" class="outline-3">
+<h3 id="orgf085068">Exercício 3: Dois Agentes, Duas Personalidades</h3>
+<div class="outline-text-3" id="text-orgf085068">
+<p>
+Crie dois agentes com personalidades diferentes e compare as respostas:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-variable-name">agente_formal</span> <span class="org-operator">=</span> criar_agente(<span class="org-string">"Voc&#234; &#233; um assistente formal e objetivo."</span>)
+<span class="org-variable-name">agente_criativo</span> <span class="org-operator">=</span> criar_agente(<span class="org-string">"Voc&#234; &#233; um assistente criativo e divertido."</span>)
+
+<span class="org-variable-name">pergunta</span> <span class="org-operator">=</span> <span class="org-string">"Me conte uma piada sobre programa&#231;&#227;o."</span>
+
+<span class="org-builtin">print</span>(<span class="org-string">"FORMAL:"</span>, conversar(agente_formal, pergunta))
+<span class="org-builtin">print</span>(<span class="org-string">"CRIATIVO:"</span>, conversar(agente_criativo, pergunta))
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org87808ff" class="outline-2">
+<h2 id="org87808ff">Próxima Aula</h2>
+<div class="outline-text-2" id="text-org87808ff">
+<p>
+Semana 06: <b>Primeira Ferramenta</b> — vamos dar ao agente a capacidade de usar ferramentas externas (calculadora, busca, etc.). É aí que o ciclo ReAct se completa: <i>pensar, agir, observar, responder</i>.</p>
 </div>
 </div>
 </div>
