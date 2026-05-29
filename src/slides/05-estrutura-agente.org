@@ -7,118 +7,186 @@
 #+REVEAL_MARGIN: 0.1
 #+REVEAL_MIN_SCALE: 0.5
 #+REVEAL_MAX_SCALE: 2.0
+#+REVEAL_EXTRA_CSS:
+#+REVEAL_HEAD_PREAMBLE: <script src="./slide_fixes.js"></script>
 #+OPTIONS: toc:nil num:nil
 #+REVEAL_TITLE_SLIDE: <p style="font-size:0.7em;opacity:0.6;">%a</p><br/><h2>%t</h2><br/><p style="font-size:0.85em;opacity:0.8;">%s</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 #+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_05.gif
 
+* 📰 Fofocas da Semana
+
+#+ATTR_HTML: :style font-size:0.55em;
+- *GPT-5.5 Instant update* (28/05) — respostas mais naturais e concisas, canvas removido (writing/code blocks no chat agora)
+- *Step 3.7 Flash* (29/05) — 198B MoE, ~11B ativos, multimodal, #1 ClawEval, Apache 2.0 ⬆️
+- *Claude Opus 4.8* (28/05) — 4× menos falhas de código, Effort Control, Dynamic Workflows, mesmo preço do 4.7
+- *LFM 2.5 8B-A1B* (28/05) — MoE 1.5B ativos de 8.3B, 131K ctx, raciocínio explícito, tool use, roda em smartphone
+- *Bonsai Image 4B* (26/05) — Imagem 1-bit e ternária! 0.93GB, roda em iPhone, Apache 2.0 ↑
+- *Qwen 3.7 Max* (20/05) — 1M tokens, Intelligence Index 56.6, reasoning mode, API-only (open weights em breve!)
+- *MiniCPM5-1B* (19/05) — 1B SOTA local, 131K ctx, raciocínio thinking, agentic tool use
+
+** 🎨 Bonsai Image 4B — Imagem em 1-bit
+
+#+HTML: <blockquote style="font-size:0.45em;text-align:left;">
+Primeiro modelo de imagem que roda em iPhone. Pesos binários (1-bit) e ternários (1.6-bit).
+Compressão de 8.3× — de 15.97GB pra 3.42GB. Qualidade ternária retém 95% do FLUX.2 Klein 4B.
+Apache 2.0, open weights.
+#+HTML: </blockquote>
+
+** 
+
+#+HTML: <p style="font-size:0.4em;text-align:center;margin:2px 0;">Imagens geradas com Bonsai Image 4B ternário (0.93GB)!</p>
+
+#+HTML: <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px;">
+#+HTML: <img src="/pages/guilda-ia/img/s05-bonsai/01_agente_robo.png" style="width:100%;height:26vh;object-fit:contain;" />
+#+HTML: <img src="/pages/guilda-ia/img/s05-bonsai/02_conversa_memoria.png" style="width:100%;height:26vh;object-fit:contain;" />
+#+HTML: <img src="/pages/guilda-ia/img/s05-bonsai/05_guilda_logo.png" style="width:100%;height:26vh;object-fit:contain;" />
+#+HTML: <img src="/pages/guilda-ia/img/s05-bonsai/07_programadora.png" style="width:100%;height:26vh;object-fit:contain;" />
+#+HTML: <img src="/pages/guilda-ia/img/s05-bonsai/03_python_codigo.png" style="width:100%;height:26vh;object-fit:contain;" />
+#+HTML: <img src="/pages/guilda-ia/img/s05-bonsai/04_ciclo_react.png" style="width:100%;height:26vh;object-fit:contain;" />
+#+HTML: <img src="/pages/guilda-ia/img/s05-bonsai/06_agente_ferramentas.png" style="width:100%;height:26vh;object-fit:contain;" />
+#+HTML: <img src="/pages/guilda-ia/img/s05-bonsai/08_sala_aula.png" style="width:100%;height:26vh;object-fit:contain;" />
+#+HTML: </div>
+
 * O que é um agente?
 
-#+ATTR_REVEAL: :frag (appear)
-Agente = LLM + estrutura para conversar
+Agente = LLM + *harness* (estrutura para conversar)
 
-#+ATTR_REVEAL: :frag (appear)
 O LLM puro só responde uma pergunta. Um agente:
+
 - Lembra da conversa (memória)
 - Tem personalidade (instruções)
-- Pode usar ferramentas (extensões)
+- Pode usar ferramentas (extensões — S06!)
 
-* Componentes do agente
+* 4 Componentes do Agente
 
-** 1. Instruções (System)
-Define quem o agente é.
+1. *System Prompt* — quem o agente é
+2. *Memória (Histórico)* — o que já foi dito
+3. *Input* — a pergunta atual
+4. *Output* — a resposta do modelo
 
-#+BEGIN_SRC python
-instrucoes = "Você é um assistente educado e objetivo."
-#+END_SRC
-
-** 2. Histórico (Memory)
-Guarda a conversa.
+* Agente na Mão: Dicts e Funções
 
 #+BEGIN_SRC python
-historico = [
-    {"role": "usuário", "content": "Oi!"},
-    {"role": "assistente", "content": "Olá! Como posso ajudar?"}
-]
-#+END_SRC
-
-** 3. Mensagem (Input)
-A pergunta atual.
-
-** 4. Resposta (Output)
-A resposta do modelo.
-
-* Estrutura com funções
-
-#+BEGIN_SRC python
-def criar_agente(instrucoes):
+def criar_agente(instrucoes, max_historico=20):
     return {
         "instrucoes": instrucoes,
-        "historico": []
+        "historico": [],
+        "max_historico": max_historico
     }
+#+END_SRC
 
+#+BEGIN_SRC python
 def conversar(agente, mensagem):
-    # Monta prompt
-    # Chama LLM
-    # Salva no histórico (agente["historico"].append(...))
-    # Retorna resposta
+    messages = [{"role": "system",
+                  "content": agente["instrucoes"]}]
+    for msg in agente["historico"][-agente["max_historico"]:]:
+        messages.append(msg)
+    messages.append({"role": "user",
+                     "content": mensagem})
+    # ... chama LLM, salva no histórico, retorna resposta
 #+END_SRC
 
 * Por que estado separado?
 
-#+ATTR_REVEAL: :frag (appear)
 Estado em dicionário = mais simples para iniciantes.
 
 Funções puras são mais fáceis de testar e entender.
 
-** Com funções:
-
 #+BEGIN_SRC python
 agente = criar_agente("Você é educado.")
-conversar(agente, "Oi")       # histórico atualiza
-conversar(agente, "Lembra o que eu disse?")  # tem contexto
+conversar(agente, "Oi!")          # histórico atualiza
+conversar(agente, "Lembra de mim?")  # tem contexto
 #+END_SRC
 
 * O problema do histórico infinito
 
-#+ATTR_REVEAL: :frag (appear)
 Se a conversa crescer demais, o prompt fica gigante.
 
-**Solução:** limitar histórico.
+*Solução:* limitar histórico.
 
 #+BEGIN_SRC python
-# Pegar só as últimas 10 trocas
-for msg in agente["historico"][-10:]:
+# Pegar só as últimas N mensagens
+for msg in agente["historico"][-agente["max_historico"]:]:
     ...
 #+END_SRC
 
-* Diagrama
+** E compactação?
 
+#+ATTR_HTML: :style font-size:0.55em;
+- Truncar funciona, mas *joga fora informação*
+- Na prática: *compactação* — LLM resume o histórico antes de enviar
+- Ajuda com *lost in the middle*: LLMs não recuperam bem info no meio do contexto ([[https://arxiv.org/abs/2307.03172][Liu et al., 2023]])
+- Compactação precisa de ferramentas — fica pra outro dia
+
+* ReAct: Pensar e Agir
+
+#+ATTR_HTML: :style font-size:0.55em;
+Agentes reais *pensam e agem* em ciclos ([[https://arxiv.org/abs/2210.03629][Yao et al., 2022]])
+
+#+ATTR_HTML: :style font-size:0.55em;
 #+BEGIN_SRC text
-Usuário → Agente → LLM → Resposta
-           ↑                |
-           |                |
-           └──── Histórico ←┘
+Input → Thought → Action → Observation → Thought → Answer
 #+END_SRC
 
-#+ATTR_REVEAL: :frag (appear)
+#+ATTR_HTML: :style font-size:0.55em;
+Exemplo: "Quanto é 234 × 987 + 100?"
+- *Thought:* Preciso multiplicar
+- *Action:* calculadora[234 × 987]
+- *Observation:* 230958
+- *Thought:* Agora somo 100
+- *Answer:* 231058
+
+#+ATTR_HTML: :style font-size:0.55em;
+Hoje: memória + instruções. Na S06: ferramentas!
+
+* Diagrama do Ciclo
+
+#+HTML: <div style="text-align:center;">
+#+HTML: <img src="/pages/guilda-ia/img/s05-ciclo-agente.png" style="max-width:70%;max-height:55vh;" />
+#+HTML: </div>
+
+#+ATTR_HTML: :style font-size:0.6em;
 1. Usuário envia mensagem
 2. Agente monta prompt com histórico
 3. LLM processa
 4. Resposta salva no histórico
 5. Retorna ao usuário
 
+* De Requests para LangChain
+
+Montar mensagens na mão funciona, mas é repetitivo.
+
+#+ATTR_HTML: :style font-size:0.55em;
+| Com =requests= | Com LangChain |
+|-----------------+---------------|
+| Montar dict manual | =ChatPromptTemplate= |
+| Gerenciar histórico manual | =InMemoryChatMessageHistory= |
+| Chamar API e parsear | =ChatOpenAI= (endpoint OpenAI-compatible) |
+| =[-N:]= manual | Configurável |
+
+#+BEGIN_SRC python
+cadeia = prompt | llm  # pipe = encadeia
+resultado = cadeia.invoke({"pergunta": "Oi!"})
+#+END_SRC
+
 * Para lembrar
 
-#+ATTR_REVEAL: :frag (appear)
 #+begin_quote
-"Agente é LLM com memória e personalidade."
+"Agente é LLM com memória e personalidade. ReAct completa o ciclo: pensar e agir."
 #+end_quote
 
-* Próxima semana
+* 🔴 Demo: Agente no Colab
+:PROPERTIES:
+:REVEAL_BACKGROUND: ./slide_05.gif
+:END:
 
-#+ATTR_REVEAL: :frag (appear)
-- Vamos dar uma ferramenta para o agente
-- Calculadora
-- Tool calling básico
+#+ATTR_HTML: :style font-size:0.55em;
+1. Abrir =luksamuk.codes/pages/guilda-ia= → Semana 05
+2. Clicar em "Colab" → fazer uma cópia no Drive
+3. Testar: criar agente, conversar, verificar memória
 
-* Perguntas?
+#+ATTR_HTML: :style font-size:0.45em;
+#+begin_quote
+- Vamos dar uma *ferramenta* para o agente
+- O ciclo ReAct se completa: *Thought → Action → Observation*
+#+end_quote

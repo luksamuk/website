@@ -1,402 +1,412 @@
 #+TITLE: Estrutura de Agente: Onde Tudo Começa
-# Semana 6 - 15/05/2026
-#+DESCRIPTION: Semana 6 - Guilda de IA: Estrutura de um agente de IA
+# Semana 5 - 29/05/2026
+#+DESCRIPTION: Semana 5 - Guilda de IA: Estrutura de um agente de IA
 #+SETUPFILE: ./setupfile.org
 #+LANGUAGE: pt_BR
 #+STARTUP: inlineimages showall latexpreview
-#+DATE: 15/05/2026
+#+DATE: 29/05/2026
 
-* O que é um agente?
+* Continuação: De APIs para Agentes
 
-Agente = LLM + estrutura para conversar.
+Nas semanas passadas, aprendemos Python básico ([[./03-python-minimo.org][Python Mínimo]]) e como chamar APIs de LLM ([[./04-python-api.org][Python + API de LLM]]). Vimos que um modelo de linguagem responde a uma pergunta — e nada mais.
 
-O LLM puro só responde uma pergunta. Um agente:
-- Lembra da conversa (memória)
-- Tem personalidade (instruções)
-- Pode usar ferramentas (extensões)
+Mas um *agente* é mais que isso. Um agente:
 
-* Arquitetura em Detalhe
+- *Lembra* da conversa (memória)
+- *Tem personalidade* (instruções de sistema)
+- *Pode usar ferramentas* (extensões — veremos na S06)
 
-** Visão Geral
+Nesta aula, vamos construir um agente do zero: primeiro "na mão" com =requests=, depois com LangChain.
 
-Um agente de IA não é apenas um modelo de linguagem. É um *sistema* composto por múltiplos componentes trabalhando em conjunto:
+* O que é um Agente?
 
-#+BEGIN_SRC dot :file img/agente-componentes.svg :cache yes
-digraph Agente {
-    rankdir=TB;
-    node [shape=box, style="rounded,filled"];
-    
-    agente [label="AGENTE\nCOMPLETO", fillcolor="#e0e0ff", fontsize=14, style="filled,bold"];
-    
-    subgraph cluster_components {
-        label="Componentes";
-        style="rounded";
-        
-        llm [label="LLM\n(Cérebro)", fillcolor="#ffe0e0"];
-        memory [label="MEMORY\n(Histórico)", fillcolor="#e0ffe0"];
-        tools [label="TOOLS\n(Extensões)", fillcolor="#ffffe0"];
-        
-        system [label="System\nPrompt", fillcolor="#ffe0e0"];
-        mensagens [label="Mensagens\npassadas", fillcolor="#e0ffe0"];
-        extensoes [label="Calculadora\nWikipedia\nAPIs", fillcolor="#ffffe0"];
-    }
-    
-    agente -> {llm memory tools};
-    llm -> system [style=dashed];
-    memory -> mensagens [style=dashed];
-    tools -> extensoes [style=dashed];
-}
-#+END_SRC
+#+begin_quote
+Agente = LLM + *harness*. O LLM é o cérebro; o /harness/ é a estrutura em volta que dá contexto e continuidade — memória, instruções, e (mais tarde) ferramentas.
+#+end_quote
 
-** Componentes Principais
+Um LLM puro responde uma pergunta e esquece. Um agente mantém um /histórico de conversa/ e segue /instruções de sistema/ que definem seu comportamento.
 
-1. *LLM (Large Language Model):* O cérebro que processa e gera texto
-2. *Memory:* Armazena o histórico de conversas
-3. *Tools (Ferramentas):* Capacidades extras além do conhecimento do modelo
-4. *System Prompt:* Define personalidade, comportamento e restrições
+O termo /harness/ (armação, arreio) é usado na indústria pra descrever o código que envolve o LLM: system prompt, gerenciamento de memória, parsing de ferramentas, loop de execução. É o que transforma um modelo que só responde num sistema que /conversa e age/.
 
-* Paradigmas de Arquitetura de Agentes
+** Componentes de um Agente
 
-** ReAct (Reasoning + Acting)
+1. *System Prompt* — define quem o agente é, como age, suas regras
+2. *Memória (Histórico)* — as mensagens trocadas até agora
+3. *Input* — a pergunta atual do usuário
+4. *Output* — a resposta do modelo
 
-O paradigma *ReAct* foi introduzido no paper *\"ReAct: Synergistic Reasoning and Acting in Language Models\"* (Yao et al., 2022). A ideia central é intercalar *raciocínio* (reasoning) com *ações* (acting).
+#+ATTR_HTML: :alt Componentes de um agente :class dark-diagram
+[[file:img/agente-componentes.svg]]
 
-#+BEGIN_SRC dot :file img/react-cycle.svg :cache yes
-digraph ReAct {
-    rankdir=LR;
-    node [shape=box, style="rounded,filled", fillcolor="#f0f0ff"];
-    
-    input [label="INPUT", fillcolor="#e0e0e0"];
-    thought1 [label="THOUGHT\n\"Preciso calcular...\""];
-    action [label="ACTION\n calculadora[...]"];
-    obs [label="OBSERVATION\nResultado"];
-    thought2 [label="THOUGHT\n\"Agora posso...\""];
-    answer [label="ANSWER\nResposta Final", fillcolor="#e0ffe0"];
-    
-    input -> thought1;
-    thought1 -> action;
-    action -> obs;
-    obs -> thought2;
-    thought2 -> answer;
-}
-#+END_SRC
+* Paradigma ReAct: Pensar e Agir
 
-*Exemplo de trace ReAct:*
+Até agora, nosso código faz uma pergunta e recebe uma resposta. Mas agentes reais /pensam e agem/ em ciclos.
+
+O paradigma /ReAct/ (Reasoning + Acting), proposto por Yao et al. (2022), intercala *raciocínio* com *ação*:
 
 #+BEGIN_SRC text
-Question: Quanto é 234 * 987 + 100?
+Input → Thought → Action → Observation → Thought → Answer
+#+END_SRC
 
-Thought 1: Preciso multiplicar 234 por 987 primeiro.
-Action 1: calculadora[234 * 987]
-Observation 1: 230958
+** Exemplo de trace ReAct:
 
-Thought 2: Agora preciso somar 100 ao resultado.
-Action 2: calculadora[230958 + 100]
-Observation 2: 231058
+#+BEGIN_SRC text
+Pergunta: Quanto é 234 × 987 + 100?
 
-Thought 3: Tenho a resposta final.
+Thought: Preciso multiplicar 234 por 987 primeiro.
+Action: calculadora[234 * 987]
+Observation: 230958
+
+Thought: Agora somo 100 ao resultado.
+Action: calculadora[230958 + 100]
+Observation: 231058
+
+Thought: Tenho a resposta final.
 Answer: O resultado é 231058.
 #+END_SRC
 
-*Vantagens do ReAct:*
-- Interpretabilidade: vemos o raciocínio passo a passo
-- Debug facilitado: conseguimos identificar onde o agente errou
-- Comporabilidade: ações podem ser encadeadas
+*Vantagens:*
 
-*Referência:* Yao, S. et al. (2022). "ReAct: Synergistic Reasoning and Acting in Language Models". [[https://arxiv.org/abs/2210.03629][arXiv:2210.03629]]
+- *Interpretabilidade:* vemos o raciocínio passo a passo
+- *Debug facilitado:* conseguimos identificar onde o agente errou
+- *Comporabilidade:* ações podem ser encadeadas
 
-** Plan-and-Solve
+#+begin_quote
+Nesta aula, vamos implementar a *estrutura* do agente (memória + instruções). Na S06, vamos adicionar *ferramentas* — e então o ciclo ReAct vai ficar completo.
+#+end_quote
 
-Uma extensão do ReAct é o paradigma *Plan-and-Solve*, onde o agente primeiro *planeja* todos os passos antes de executá-los.
+** Para saber mais
 
-*Quando usar Plan-and-Solve:*
-- Tarefas complexas com múltiplos passos dependentes
-- Quando a ordem de execução é crítica
-- Problemas matemáticos ou de lógica estruturada
+- Yao, S. et al. (2022). "ReAct: Synergizing Reasoning and Acting in Language Models". [[https://arxiv.org/abs/2210.03629][arXiv:2210.03629]]
+- Liu, N.F. et al. (2023). "Lost in the Middle: How Language Models Use Long Contexts". [[https://arxiv.org/abs/2307.03172][arXiv:2307.03172]]
+- Weng, L. (2023). "LLM Powered Autonomous Agents". [[https://lilianweng.github.io/posts/2023-06-23-agent/][lilianweng.github.io]]
+- Wang et al. (2023). "Plan-and-Solve Prompting". [[https://arxiv.org/abs/2305.16969][arXiv:2305.16969]]
 
-*Referência:* Wang et al. (2023). "Plan-and-Solve Prompting: Improving Zero-Shot Chain-of-Thought Reasoning by Large Language Models". [[https://arxiv.org/abs/2305.16969][arXiv:2305.16969]]
+* Agente na Mão: Dicts e Funções
 
-* Referências Importantes
+Começamos com o que já sabemos: =requests.post()= para chamar o Ollama, e dicionários para guardar o estado.
 
-** Paper Fundacional: ReAct
-
-*Título:* "ReAct: Synergistic Reasoning and Acting in Language Models"  
-*Autores:* Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan, Yuan Cao  
-*Ano:* 2022  
-*Link:* [[https://arxiv.org/abs/2210.03629][arXiv:2210.03629]]
-
-** Paper: Toolformer
-
-*Título:* "Toolformer: Language Models Can Teach Themselves to Use Tools"  
-*Autores:* Timo Schick, Jane Dwivedi-Yu, Roberto Dessì, et al.  
-*Ano:* 2023  
-*Link:* [[https://arxiv.org/abs/2302.04761][arXiv:2302.04761]]
-
-** Paper: Gorilla
-
-*Título:* "Gorilla: Large Language Model Connected to Massive APIs"  
-*Autores:* Shishir Patil, Tianjun Zhang, Xin Wang, Joseph E. Gonzalez  
-*Ano:* 2023  
-*Link:* [[https://arxiv.org/abs/2305.15334][arXiv:2305.15334]]
-
-* Componentes do Agente (Detalhado)
-
-** 1. Instruções (System Prompt)
-
-Define quem o agente é, como age e suas restrições.
+** Criando o agente
 
 #+BEGIN_SRC python
-instrucoes = """Você é um assistente educado e objetivo.
-
-REGRAS:
-- Responda de forma clara e concisa
-- Se não souber algo, admita
-- Use ferramentas quando necessário
-- NUNCA invente informações
-
-FERRAMENTAS DISPONÍVEIS:
-- calculadora: para operações matemáticas
-- wikipedia: para buscas de informação
-- horario: para saber data/hora atual
-"""
-#+END_SRC
-
-** 2. Histórico (Memory)
-
-Guarda a conversa para manter contexto.
-
-#+BEGIN_SRC python
-historico = [
-    {"role": "user", "content": "Oi!"},
-    {"role": "assistant", "content": "Olá! Como posso ajudar?"}
-]
-#+END_SRC
-
-** 3. Mensagem (Input)
-
-A pergunta atual do usuário.
-
-** 4. Resposta (Output)
-
-A resposta do modelo.
-
-* Implementação Real
-
-** Código Completo de um Agente Básico
-
-#+BEGIN_SRC python
-"""
-Implementação completa de um agente com memória e tratamento de erros.
-Inclui:
-- Gerenciamento de histórico
-- Truncamento de contexto
-- Retry com backoff
-- Logging estruturado
-"""
-
-import os
-import json
-import logging
-from datetime import datetime
-from typing import Optional, List, Dict, Any
-
-# Configuração de logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
-
-
-# ============================================
-# AGENTE COM FUNÇÕES E ESTADO
-# ============================================
-
-def criar_agente(
-    system_prompt: str = "Você é um assistente útil e educado.",
-    max_historico: int = 20
-) -> Dict:
-    """
-    Cria um agente com memória de conversa.
-    
-    Args:
-        system_prompt: Instruções iniciais do sistema
-        max_historico: Número máximo de mensagens no histórico
-    
-    Returns:
-        Dicionário com o estado do agente
-    """
-    if not system_prompt or not system_prompt.strip():
-        raise ValueError("System prompt não pode estar vazio")
-    
-    estado = {
-        "system_prompt": system_prompt,
+def criar_agente(instrucoes, max_historico=20):
+    return {
+        "instrucoes": instrucoes,
         "historico": [],
         "max_historico": max_historico
     }
-    
-    logger.info(f"Agente criado com max_historico={max_historico}")
-    return estado
-
-
-def _truncar_historico(estado: Dict) -> List[Dict[str, str]]:
-    """
-    Trunca o histórico se exceder o limite.
-    
-    Returns:
-        Lista de mensagens truncada
-    """
-    if len(estado["historico"]) > estado["max_historico"]:
-        metade = estado["max_historico"] // 2
-        historico_truncado = (
-            estado["historico"][:metade//2] + 
-            estado["historico"][-(metade//2):]
-        )
-        logger.warning(
-            f"Histórico truncado: {len(estado['historico'])} -> {len(historico_truncado)}"
-        )
-        return historico_truncado
-    return estado["historico"]
-
-
-def _montar_messages(estado: Dict, mensagem: str) -> List[Dict[str, str]]:
-    """
-    Monta a lista de mensagens no formato esperado pelo modelo.
-    
-    Args:
-        estado: Estado do agente
-        mensagem: Mensagem atual do usuário
-    
-    Returns:
-        Lista completa de mensagens formatadas
-    """
-    messages = [{"role": "system", "content": estado["system_prompt"]}]
-    
-    for msg in _truncar_historico(estado):
-        messages.append(msg)
-    
-    messages.append({"role": "user", "content": mensagem})
-    
-    return messages
-
-
-def conversar(estado: Dict, mensagem: str) -> str:
-    """
-    Processa uma mensagem e retorna a resposta.
-    
-    Args:
-        estado: Estado do agente
-        mensagem: Mensagem do usuário
-    
-    Returns:
-        Resposta do agente
-    """
-    if not mensagem or not mensagem.strip():
-        raise ValueError("Mensagem não pode estar vazia")
-    
-    logger.info(f"Processando mensagem: {mensagem[:50]}...")
-    
-    # Monta mensagens
-    messages = _montar_messages(estado, mensagem)
-    
-    # Salvar no histórico
-    estado["historico"].append({"role": "user", "content": mensagem})
-    estado["historico"].append({"role": "assistant", "content": "Resposta simulada"})
-    
-    return "Resposta simulada"
-
-
-def limpar_historico(estado: Dict) -> None:
-    """Limpa todo o histórico de conversa."""
-    estado["historico"] = []
-    logger.info("Histórico limpo")
-
-
-def exportar_historico(estado: Dict) -> str:
-    """
-    Exporta histórico como JSON.
-    
-    Returns:
-        String JSON com o histórico
-    """
-    return json.dumps({
-        "system_prompt": estado["system_prompt"],
-        "historico": estado["historico"],
-        "timestamp": datetime.now().isoformat()
-    }, ensure_ascii=False, indent=2)
-
-
-# Exemplo de uso
-if __name__ == "__main__":
-    agente = criar_agente(
-        system_prompt="Você é um assistente especializado em Python.",
-        max_historico=10
-    )
-    
-    print(conversar(agente, "Oi!"))
-    print(conversar(agente, "Qual sua função?"))
-    
-    print("\nHistórico:")
-    print(exportar_historico(agente))
 #+END_SRC
+
+Um dicionário simples. Sem classes, sem objetos — só funções e dicts.
+
+** Conversando com o agente
+
+#+BEGIN_SRC python
+import requests
+
+def conversar(agente, mensagem):
+    # Monta a lista de mensagens
+    messages = [{"role": "system", "content": agente["instrucoes"]}]
+
+    # Adiciona o histórico
+    for msg in agente["historico"]:
+        messages.append(msg)
+
+    # Adiciona a mensagem atual
+    messages.append({"role": "user", "content": mensagem})
+
+    # Chama o Ollama via endpoint OpenAI-compatible
+    response = requests.post(
+        "http://localhost:11434/v1/chat/completions",
+        json={
+            "model": "gemma4:e2b",
+            "messages": messages,
+            "stream": False
+        }
+    )
+
+    resposta = response.json()["choices"][0]["message"]["content"]
+
+    # Salva no histórico
+    agente["historico"].append({"role": "user", "content": mensagem})
+    agente["historico"].append({"role": "assistant", "content": resposta})
+
+    return resposta
+#+END_SRC
+
+** Testando
+
+#+BEGIN_SRC python
+agente = criar_agente("Você é um assistente amigável que responde em português.")
+
+print(conversar(agente, "Oi! Meu nome é Ana."))
+print(conversar(agente, "Qual é o meu nome?"))  # Lembra!
+#+END_SRC
+
+O agente lembra do nome porque guardamos o histórico.
+
+* O Problema do Histórico Infinito
+
+Se a conversa crescer demais, o prompt fica gigante — e isso custa tokens e fica lento.
+
+** Solução: limitar o histórico
+
+#+BEGIN_SRC python
+def conversar(agente, mensagem):
+    # Monta a lista de mensagens
+    messages = [{"role": "system", "content": agente["instrucoes"]}]
+
+    # Pega só as últimas N mensagens do histórico
+    limite = agente["max_historico"]
+    historico_cortado = agente["historico"][-limite:]
+
+    for msg in historico_cortado:
+        messages.append(msg)
+
+    messages.append({"role": "user", "content": mensagem})
+
+    # Chama o Ollama via endpoint OpenAI-compatible
+    response = requests.post(
+        "http://localhost:11434/v1/chat/completions",
+        json={
+            "model": "gemma4:e2b",
+            "messages": messages,
+            "stream": False
+        }
+    )
+
+    resposta = response.json()["choices"][0]["message"]["content"]
+
+    # Salva no histórico
+    agente["historico"].append({"role": "user", "content": mensagem})
+    agente["historico"].append({"role": "assistant", "content": resposta})
+
+    return resposta
+#+END_SRC
+
+Agora garantimos que o prompt nunca ultrapassa =max_historico= mensagens do passado.
+
+** Mas e compactação?
+
+Truncar funciona, mas joga fora informação. Na prática, a solução mais robusta é /compactação/ — pedir ao próprio LLM pra resumir o histórico antes de enviar. Isso também mitiga o problema /lost in the middle/: LLMs têm dificuldade em recuperar informação que está no meio de um contexto longo ([[https://arxiv.org/abs/2307.03172][Liu et al., 2023 — "Lost in the Middle: How Language Models Use Long Contexts"]]).
+
+Compactação precisa de ferramentas (que ainda não cobrimos no curso). Por ora, truncar resolve o problema imediato.
+
+* De Requests para LangChain
+
+Montar mensagens na mão funciona, mas é repetitivo. *LangChain* é uma biblioteca que abstrai esse trabalho:
+
+| O que fazemos na mão | O que LangChain faz |
+|-----------------------+---------------------|
+| Montar lista de =messages= | =ChatPromptTemplate= organiza tudo |
+| Adicionar histórico manualmente | =InMemoryChatMessageHistory= (tipado, mesma lógica) |
+| Chamar API e parsear JSON | =ChatOpenAI= via endpoint OpenAI-compatible |
+| Limitar histórico | Configurável em =max_historico= |
+
+O padrão fundamental do LangChain moderno é o *pipe* (=|=):
+
+#+BEGIN_SRC python
+cadeia = prompt | llm
+resultado = cadeia.invoke({"pergunta": "..."})
+#+END_SRC
+
+Prompt entra, LLM sai. Simples assim.
+
+** ChatOpenAI: endpoint OpenAI-compatible
+
+O Ollama fornece um endpoint compatível com a API da OpenAI em =/v1/chat/completions=.
+Com =ChatOpenAI= do =langchain-openai=, a gente usa esse endpoint *direto* —
+mesmo modelo local, sem enviar nada pra nuvem.
+
+#+begin_quote
+*Por que =ChatOpenAI= e não =ChatOllama=?*
+O =ChatOllama= existe, mas o endpoint OpenAI-compatible é mais universal: funciona
+com Ollama, com qualquer servidor vLLM/TGI, e com APIs comerciais (Gemini,
+OpenAI). É o padrão da indústria — aprender assim te prepara pra trocar de
+provedor mudando uma linha.
+#+end_quote
+
+#+BEGIN_SRC python
+from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(
+    model="gemma4:e2b",
+    base_url="http://localhost:11434/v1",
+    api_key="nao_precisa",  # Ollama local não usa chave
+    temperature=0.7
+)
+#+END_SRC
+
+Mesma infra do Ollama que já conhecemos — mas agora com interface do LangChain.
+
+** Chat com Memória
+
+O LLM não lembra de nada sozinho — cada chamada é independente. Para ter memória, guardamos o histórico de mensagens e enviamos junto a cada chamada.
+
+#+begin_quote
+A LangChain oferecia =RunnableWithMessageHistory= (deprecated no v0.3). A abordagem recomendada agora? Gerenciar o histórico explicitamente — que é exatamente o que fizemos na seção "Agente na Mão", só que com objetos tipados do LangChain.
+#+end_quote
+
+#+BEGIN_SRC python
+from langchain_core.chat_history import InMemoryChatMessageHistory
+from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.prompts import ChatPromptTemplate
+
+# Sessão com histórico (sem gerenciamento de sessões — uma variável simples)
+session = InMemoryChatMessageHistory()
+
+# Prompt com placeholder para o histórico
+prompt_mem = ChatPromptTemplate.from_messages([
+    ("system", "Você é um assistente amigável que responde em português."),
+    ("placeholder", "{history}"),
+    ("human", "{pergunta}")
+])
+
+cadeia_mem = prompt_mem | llm
+
+# Primeira mensagem — histórico vazio
+r1 = cadeia_mem.invoke({
+    "pergunta": "Meu nome é Ana e eu estudo engenharia.",
+    "history": session.messages
+})
+print(f"🤖 {r1.content}")
+
+# Salva no histórico
+session.add_message(HumanMessage(content="Meu nome é Ana e eu estudo engenharia."))
+session.add_message(AIMessage(content=r1.content))
+
+# Segunda mensagem — o modelo lembra do nome!
+r2 = cadeia_mem.invoke({
+    "pergunta": "Qual é o meu nome e o que eu estudo?",
+    "history": session.messages
+})
+print(f"🤖 {r2.content}")
+
+session.add_message(HumanMessage(content="Qual é o meu nome e o que eu estudo?"))
+session.add_message(AIMessage(content=r2.content))
+
+# Sessão zerada = sem memória
+session_nova = InMemoryChatMessageHistory()
+r3 = cadeia_mem.invoke({
+    "pergunta": "Qual é o meu nome?",
+    "history": session_nova.messages  # histórico vazio!
+})
+print(f"🤖 {r3.content}")
+print("👉 Na sessão nova o modelo não sabe nosso nome!")
+#+END_SRC
+
+* Comparação: Na Mão vs LangChain
+
+| Aspecto | Com =requests= | Com LangChain |
+|---------+---------------+---------------|
+| Setup | 15+ linhas | 5 linhas |
+| System prompt | Montar dict manual | =ChatPromptTemplate= organiza tudo |
+| Memória | Gerenciar lista manual | =InMemoryChatMessageHistory= + =session.messages= |
+| Trocar modelo | Mudar URL e payload | Trocar =base_url= / =model= em =ChatOpenAI= |
+| Limitar histórico | =[-N:]= manual | Configurável |
+
+#+begin_quote
+LangChain não é mágica — por baixo, ela faz o que fazemos na mão. Mas abstrair isso facilita, surtout quando adicionamos *ferramentas* (na S06).
+#+end_quote
+
+* Diagrama do Ciclo
+
+#+ATTR_HTML: :alt Ciclo de um agente :class dark-diagram
+[[file:img/s05-ciclo-agente.png]]
+
+1. Usuário envia mensagem
+2. Agente monta prompt com histórico + instruções
+3. LLM processa
+4. Resposta salva no histórico
+5. Retorna ao usuário
+6. Na próxima rodada, o histórico cresce
 
 * Pitfalls Comuns
 
-** 1. Histórico Infinito
+** 1. Histórico que cresce para sempre
 
-*Problema:* Se a conversa crescer demais, o prompt fica gigante e custa caro.
-
-*Solução:* Limitar histórico e truncar inteligentemente.
+Se não limitar, o prompt fica gigante e custa caro.
 
 #+BEGIN_SRC python
-# ERRADO - histórico cresce para sempre
-historico.append(mensagem)  # sem limite!
+# ERRADO — histórico cresce sem limite
+historico.append(mensagem)
 
-# CERTO - limite definido
-if len(historico) > MAX_HISTORICO:
-    historico = historico[-MAX_HISTORICO:]
+# CERTO — limite definido
+if len(historico) > MAX:
+    historico = historico[-MAX:]
 #+END_SRC
 
-** 2. Memória Não Persistida
+** 2. Memória não persistida
 
-*Problema:* Histórico só existe em memória RAM. Se reiniciar, perde tudo.
+O histórico fica na memória RAM. Se reiniciar o programa, perde tudo. Solução futura: salvar em arquivo ou banco de dados.
 
-*Solução:* Salvar em banco de dados ou arquivo.
+** 3. System prompt vago
 
-* Exercícios Práticos
+#+BEGIN_SRC python
+# ERRADO — vago demais
+instrucoes = "Responda perguntas."
+
+# MELHOR — específico
+instrucoes = """Você é um tutor de Python para iniciantes.
+REGRAS:
+- Responda em português
+- Use exemplos de código
+- Se não souber, diga que não sabe
+- Nunca invente informações
+"""
+#+END_SRC
+
+* Para Lembrar
+
+#+begin_quote
+"Agente = LLM com memória e personalidade. O ReAct completa o ciclo: pensar e agir."
+#+end_quote
+
+Na S06, vamos dar *ferramentas* para o agente — e o ciclo ReAct (input → thought → action → observation → answer) vai ganhar vida.
+
+-----
+* Exercícios
 
 ** Exercício 1: Agente com Personalidade
 
-Crie um agente com uma personalidade específica (ex: professor de Python, assistente de receitas):
-
-#+BEGIN_DETAILS
-📝 Exemplo de Solução
+Crie um agente com uma personalidade específica (professor de Python, assistente de receitas, guia de viagem):
 
 #+BEGIN_SRC python
-from google import genai
-
-# Inicializar cliente
-client = genai.Client(api_key="sua-api-key")
-
-agente_python = AgenteBasico(
-    system_prompt="""Você é um professor de Python paciente e didático.
+agente = criar_agente("""Você é um professor de Python paciente e didático.
 
 SOBRE VOCÊ:
 - Ensina Python para iniciantes
 - Usa exemplos práticos
-- Explica conceitos complexos de forma simples
+- Explica conceitos de forma simples
 - Nunca julga perguntas "burras"
-- Sempre oferece código executável
 
 SEU PÚBLICO:
 - Pessoas começando a programar
-- Podem não saber terminologia técnica
 - Precisam de explicações passo a passo
-""",
-    max_historico=15,
-    client=client,
-    model="gemini-2.0-flash"
-)
+""")
+
+print(conversar(agente, "O que é uma variável?"))
+print(conversar(agente, "Como declaro uma lista?"))
 #+END_SRC
 
-#+END_DETAILS
+** Exercício 2: Memória com Limite
+
+Modifique =criar_agente= para aceitar um =max_historico= e teste o que acontece quando o histórico ultrapassa o limite. O agente "esquece" as mensagens mais antigas?
+
+** Exercício 3: Dois Agentes, Duas Personalidades
+
+Crie dois agentes com personalidades diferentes e compare as respostas:
+
+#+BEGIN_SRC python
+agente_formal = criar_agente("Você é um assistente formal e objetivo.")
+agente_criativo = criar_agente("Você é um assistente criativo e divertido.")
+
+pergunta = "Me conte uma piada sobre programação."
+
+print("FORMAL:", conversar(agente_formal, pergunta))
+print("CRIATIVO:", conversar(agente_criativo, pergunta))
+#+END_SRC
+
+* Próxima Aula
+
+Semana 06: *Primeira Ferramenta* — vamos dar ao agente a capacidade de usar ferramentas externas (calculadora, busca, etc.). É aí que o ciclo ReAct se completa: /pensar, agir, observar, responder/.

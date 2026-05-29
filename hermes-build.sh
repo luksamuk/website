@@ -49,10 +49,19 @@ docker run --rm \
     "$DOCKER_IMAGE" \
     sh ./ci-run.sh
 
-# Fix permissions
+# Fix permissions first (Docker creates files as root)
 find "$REPO_DIR/docs" -type d -exec chmod 755 {} \; 2>/dev/null || true
 find "$REPO_DIR/docs" -type f -exec chmod 644 {} \; 2>/dev/null || true
 find "$REPO_DIR/docs" -exec chown $(id -u):$(id -g) {} 2>/dev/null || true
+
+# Copy extra slide assets that org-reveal references but Docker doesn't copy
+# Files in docs/ are owned by root (Docker), so we need Docker to copy them
+for ext in js css; do
+    for f in src/slides/*."$ext"; do
+        [ -f "$f" ] && docker run --rm -v "$REPO_DIR:/root/app" "$DOCKER_IMAGE" \
+            cp "/root/app/$f" "/root/app/docs/slides/$(basename "$f")" 2>/dev/null || true
+    done
+done
 
 log_success "Build completo em docs/"
 log_info "Rode ./serve.sh para servir localmente"
