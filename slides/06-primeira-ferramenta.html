@@ -31,8 +31,8 @@
 <section id="sec-title-slide" data-background="./slide_06.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Primeira Ferramenta</h2><br/><p style="font-size:0.85em;opacity:0.8;">Dando poderes ao agente</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 </section>
 <section>
-<section id="slide-org05d30bc">
-<h2 id="org05d30bc">📰 Fofocas da Semana</h2>
+<section id="slide-orge44e5c4">
+<h2 id="orge44e5c4">📰 Fofocas da Semana</h2>
 <ul style="font-size:0.55em;">
 <li><b>Qwen3.7-Plus</b> (01/06) — multimodal (texto+visão), irmão do Max (text-only), 1M ctx, API-only preview
 <ul>
@@ -47,7 +47,7 @@
 </ul>
 
 </section>
-<section id="slide-org05d30bc-split">
+<section id="slide-orge44e5c4-split">
 
 <ul style="font-size:0.55em;">
 <li><b>OpenClaw</b> (02/06) — projeto open-source de agentes chega no Windows; integra com MXC (Microsoft Execution Containers), sandbox OS-level, fluxos multi-step com isolamento 🦞
@@ -56,7 +56,11 @@
 
 </ul></li>
 <li><b>Hermes Agent</b> (02/06) — suporte nativo Windows (sem WSL!): CLI, gateway, cron, browser, MCP tudo nativo; novo <b>Hermes Desktop App</b> (macOS + Windows) com instalador GUI 🖥️</li>
-<li><b>Gemma 4 12B</b> (03/06) — encoder-free unificado, 11.95B dense, texto+imagem+áudio nativo, Apache 2.0, GGUF disponível 🔓</li>
+<li><b>Gemma 4 12B</b> (03/06) — encoder-free unificado, 11.95B dense, texto+imagem+áudio nativo, Apache 2.0, GGUF disponível 🔓
+<ul>
+<li><b>Gemma 4 QAT</b> (05/06) — quantização-aware training oficial: Q4<sub>0</sub> QAT com menos perda que PTQ, formato mobile com 2-bit seletivo, E2B text-only &lt; 1 GB 🔓</li>
+
+</ul></li>
 <li><b>MAI-Thinking-1</b> — 35B MoE (~1T total), reasoning, 97% AIME 2025, 53% SWE-Bench Pro, 256K ctx, "not distilled"</li>
 <li><b>MAI-Code-1-Flash</b> — código, inferência eficiente, integrado ao GitHub Copilot</li>
 <li><b>MAI-Transcribe-1</b> / <b>MAI-Voice-1</b> / <b>MAI-Image-2</b> — STT, TTS, imagem (lançados em abril)
@@ -68,7 +72,7 @@
 </ul>
 
 </section>
-<section id="slide-org05d30bc-split">
+<section id="slide-orge44e5c4-split">
 
 <ul style="font-size:0.55em;">
 <li><b>NVIDIA Nemotron 3 Ultra</b> (04/06) — 550B Hybrid Mamba-2/Transformer/LatMoE (55B ativos), #1 US open-weights (IA Index 48, atrás de Kimi K2.6 a 54), 1M ctx, 300+ tok/s, pesos BF16+NVFP4 🔓
@@ -84,7 +88,7 @@
 </ul>
 
 </section>
-<section id="slide-org05d30bc-split">
+<section id="slide-orge44e5c4-split">
 
 <ul style="font-size:0.55em;">
 <li><b>Magenta RealTime 2</b> (04/06) — geração de música em tempo real, decoder-only LLM, 2 sizes (230M small / 2.4B base), controle por texto+áudio+MIDI, SpectroStream codec 48kHz stereo, Apache 2.0 código + CC-BY 4.0 pesos 🔓
@@ -99,8 +103,8 @@
 </section>
 </section>
 <section>
-<section id="slide-org050113c">
-<h2 id="org050113c">O problema do LLM puro</h2>
+<section id="slide-org3a8309a">
+<h2 id="org3a8309a">O problema do LLM puro</h2>
 <p>
 LLMs são modelos de linguagem. Eles <b>preveem</b> texto, não calculam.
 </p>
@@ -118,8 +122,8 @@ Pode acertar, pode errar.
 </section>
 </section>
 <section>
-<section id="slide-orgb351b2e">
-<h2 id="orgb351b2e">A solução: ferramentas</h2>
+<section id="slide-org7140b15">
+<h2 id="org7140b15">A solução: ferramentas</h2>
 <p>
 Ferramenta = função Python que o agente pode chamar.
 </p>
@@ -128,8 +132,8 @@ Ferramenta = função Python que o agente pode chamar.
 <a href="https://colab.research.google.com/github/luksamuk/guilda-ia/blob/main/notebooks/aula06_primeira_ferramenta_colab.ipynb">📓 Colab</a>
 </p>
 </section>
-<section id="slide-orgc7616e5">
-<h3 id="orgc7616e5">Como funciona:</h3>
+<section id="slide-org86870f7">
+<h3 id="org86870f7">Como funciona:</h3>
 <ol>
 <li>O LLM recebe a descrição das ferramentas disponíveis</li>
 <li>Analisa a pergunta</li>
@@ -142,8 +146,8 @@ Ferramenta = função Python que o agente pode chamar.
 </section>
 </section>
 <section>
-<section id="slide-org3ba012e">
-<h2 id="org3ba012e">Exemplo: calculadora</h2>
+<section id="slide-orgd344ef2">
+<h2 id="orgd344ef2">Exemplo: calculadora</h2>
 <div class="org-src-container">
 
 <pre   ><code class="python" >@tool
@@ -165,8 +169,8 @@ Parâmetros nomeados: seguro e simples. Sem <code>eval</code>, sem parsing.
 </section>
 </section>
 <section>
-<section id="slide-orgb046c07">
-<h2 id="orgb046c07">Exemplo: tamanho de palavra</h2>
+<section id="slide-org262b189">
+<h2 id="org262b189">Exemplo: tamanho de palavra</h2>
 <div class="org-src-container">
 
 <pre   ><code class="python" >@tool
@@ -181,8 +185,8 @@ def get_word_length(word: str) -&gt; int:
 </section>
 </section>
 <section>
-<section id="slide-orgb19901d">
-<h2 id="orgb19901d">O segredo: descrição clara</h2>
+<section id="slide-org0aa5866">
+<h2 id="org0aa5866">O segredo: descrição clara</h2>
 <p>
 O modelo decide baseado na descrição.
 </p>
@@ -201,7 +205,7 @@ O modelo decide baseado na descrição.
 </p>
 
 </section>
-<section id="slide-orgb19901d-split">
+<section id="slide-org0aa5866-split">
 <p>
 <b>Descrição boa:</b>
 </p>
@@ -217,8 +221,8 @@ O modelo decide baseado na descrição.
 </section>
 </section>
 <section>
-<section id="slide-org003acc6">
-<h2 id="org003acc6">@tool: Pydantic resolve o parsing</h2>
+<section id="slide-org0ae5d70">
+<h2 id="org0ae5d70">@tool: Pydantic resolve o parsing</h2>
 <ul>
 <li class="fragment appear"><code>@tool</code> gera o schema JSON automaticamente</li>
 <li class="fragment appear">Pydantic valida e converte os tipos</li>
@@ -228,7 +232,7 @@ O modelo decide baseado na descrição.
 </ul>
 
 </section>
-<section id="slide-org003acc6-split">
+<section id="slide-org0ae5d70-split">
 
 <p>
 Sem <code>@tool</code>:
@@ -251,8 +255,8 @@ Com <code>@tool</code>:
 </section>
 </section>
 <section>
-<section id="slide-orgf8c3245">
-<h2 id="orgf8c3245">O ciclo manual: <code>bind_tools</code></h2>
+<section id="slide-org8ce391b">
+<h2 id="org8ce391b">O ciclo manual: <code>bind_tools</code></h2>
 <ol style="font-size:0.6em;">
 <li><code>invoke</code> → LLM <b>decide</b> (retorna <code>tool_calls</code>, não executa)</li>
 <li>Você executa a ferramenta com os argumentos</li>
@@ -261,7 +265,7 @@ Com <code>@tool</code>:
 </ol>
 
 </section>
-<section id="slide-orgf8c3245-split">
+<section id="slide-org8ce391b-split">
 
 <p>
 Passo 1 — o LLM decide:
@@ -283,7 +287,7 @@ pprint(resposta.tool_calls)
 </p>
 
 </section>
-<section id="slide-orgf8c3245-split">
+<section id="slide-org8ce391b-split">
 
 <p>
 Passo 2 — você executa:
@@ -314,8 +318,8 @@ resposta_final = llm_com_ferramentas.invoke(mensagens)
 </section>
 </section>
 <section>
-<section id="slide-org570a815">
-<h2 id="org570a815">ReAct se completa</h2>
+<section id="slide-org7883b66">
+<h2 id="org7883b66">ReAct se completa</h2>
 <p>
 O ciclo manual <b>é</b> ReAct em ação:
 </p>
@@ -334,8 +338,8 @@ O ciclo manual <b>é</b> ReAct em ação:
 </section>
 </section>
 <section>
-<section id="slide-org409fd93">
-<h2 id="org409fd93">O ciclo automático: <code>create_agent</code></h2>
+<section id="slide-org225c0a4">
+<h2 id="org225c0a4">O ciclo automático: <code>create_agent</code></h2>
 <p>
 O ciclo manual é bom pra entender. Na prática:
 </p>
@@ -358,8 +362,8 @@ Uma linha. Decide, executa, responde — tudo automático.
 </section>
 </section>
 <section>
-<section id="slide-org1fe2cd9">
-<h2 id="org1fe2cd9">Um gostinho de async</h2>
+<section id="slide-org8b3404d">
+<h2 id="org8b3404d">Um gostinho de async</h2>
 <div class="org-src-container">
 
 <pre   ><code class="python" >import asyncio
@@ -382,8 +386,8 @@ Solução: <code>nest_asyncio.apply()</code> antes de rodar.
 </section>
 </section>
 <section>
-<section id="slide-org46bb63c" data-background="./slide_06.gif">
-<h2 id="org46bb63c">Para lembrar</h2>
+<section id="slide-org336d24e" data-background="./slide_06.gif">
+<h2 id="org336d24e">Para lembrar</h2>
 <blockquote >
 <p>
 "Ferramenta transforma conversa em ação."
