@@ -31,10 +31,78 @@
 <section id="sec-title-slide" data-background="./slide_06.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Primeira Ferramenta</h2><br/><p style="font-size:0.85em;opacity:0.8;">Dando poderes ao agente</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 </section>
 <section>
-<section id="slide-org24c4638">
-<h2 id="org24c4638">O problema do LLM puro</h2>
-<p class="fragment (appear)">
-LLMs são ruins em matemática.
+<section id="slide-org523950d">
+<h2 id="org523950d">📰 Fofocas da Semana</h2>
+<ul style="font-size:0.55em;">
+<li><b>Qwen3.7-Plus</b> (01/06) — multimodal (texto+visão), irmão do Max (text-only), 1M ctx, API-only preview
+<ul>
+<li>Max: reasoning puro, IA Index 56.6, #1 chinês</li>
+<li>Plus: enxerga imagens, screenshots, gráficos — Max não consegue</li>
+
+</ul></li>
+<li><b>Mellum2</b> (01/06) — JetBrains, 12B MoE (2.5B ativos, 64 experts/8 ativas), 131K ctx, Apache 2.0, foco em routing/RAG/sub-agentes 🔓</li>
+<li><b>NVIDIA RTX Spark</b> (01/06) — superchip consumer: Grace CPU 20-core + Blackwell GPU, 128GB unified, 1 PF FP4, outono 2026</li>
+<li><b>NVIDIA DGX Station</b> (01/06) — workstation enterprise: GB300 Blackwell Ultra, Grace 72-core, 748 GB, 20 PF FP4, ~US$97k, Q4 2026</li>
+
+</ul>
+
+</section>
+<section id="slide-org523950d-split">
+
+<ul style="font-size:0.55em;">
+<li><b>OpenClaw</b> (02/06) — projeto open-source de agentes chega no Windows; integra com MXC (Microsoft Execution Containers), sandbox OS-level, fluxos multi-step com isolamento 🦞
+<ul>
+<li><b>NVIDIA OpenShell</b> — runtime Apache 2.0 pra agentes autônomos, construído sobre MXC, inclui harnesses pra <b>Hermes Agent</b> 🛡️</li>
+
+</ul></li>
+<li><b>Hermes Agent</b> (02/06) — suporte nativo Windows (sem WSL!): CLI, gateway, cron, browser, MCP tudo nativo; novo <b>Hermes Desktop App</b> (macOS + Windows) com instalador GUI 🖥️</li>
+<li><b>Gemma 4 12B</b> (03/06) — encoder-free unificado, 11.95B dense, texto+imagem+áudio nativo, Apache 2.0, GGUF disponível 🔓</li>
+<li><b>MAI-Thinking-1</b> — 35B MoE (~1T total), reasoning, 97% AIME 2025, 53% SWE-Bench Pro, 256K ctx, "not distilled"</li>
+<li><b>MAI-Code-1-Flash</b> — código, inferência eficiente, integrado ao GitHub Copilot</li>
+<li><b>MAI-Transcribe-1</b> / <b>MAI-Voice-1</b> / <b>MAI-Image-2</b> — STT, TTS, imagem (lançados em abril)
+<ul>
+<li>API-only (Azure Foundry + GitHub Models + OpenRouter), sem open weights, preview privado</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-org523950d-split">
+
+<ul style="font-size:0.55em;">
+<li><b>NVIDIA Nemotron 3 Ultra</b> (04/06) — 550B Hybrid Mamba-2/Transformer/LatMoE (55B ativos), #1 US open-weights (IA Index 48, atrás de Kimi K2.6 a 54), 1M ctx, 300+ tok/s, pesos BF16+NVFP4 🔓
+<ul>
+<li>Anunciado 01/06 no Computex por Jensen, 5x mais rápido e 30% mais barato que concorrentes open frontier</li>
+<li>NVIDIA Open Model License (comercial OK, ≠ Apache 2.0)</li>
+<li>Datacenter only (mín. A100 cluster, ideal: GB300/Blackwell)</li>
+<li><b>Nemotron 3.5 ASR</b> (04/06) — 0.6B ASR multilingual, 40 idiomas (pt-BR pronto), streaming sub-100ms, OpenMDW-1.1 🔓</li>
+<li><b>Nemotron 3.5 Content Safety</b> (04/06) — 4B guardrail com reasoning, BYO policy, 22 categorias de harm, dual-mode (think/no-think), topic-following, NVIDIA Open Model License 🔓</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-org523950d-split">
+
+<ul style="font-size:0.55em;">
+<li><b>Magenta RealTime 2</b> (04/06) — geração de música em tempo real, decoder-only LLM, 2 sizes (230M small / 2.4B base), controle por texto+áudio+MIDI, SpectroStream codec 48kHz stereo, Apache 2.0 código + CC-BY 4.0 pesos 🔓
+<ul>
+<li>Streaming real-time exige Apple Silicon; GPU NVIDIA = offline only via JAX</li>
+<li>Modelo small (230M) roda em Air M1; base (2.4B) exige Pro Max</li>
+
+</ul></li>
+<li><b>LFM2.5-VL-Extract</b> (04/06) — Liquid AI, VLM de extração estruturada: passa imagem + lista de campos, retorna JSON (não texto livre). 450 M e 1.6B, open-weight, GGUF disponível 🔓 (Demo! ↗)</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orga468f68">
+<h2 id="orga468f68">O problema do LLM puro</h2>
+<p>
+LLMs são modelos de linguagem. Eles <b>preveem</b> texto, não calculam.
 </p>
 
 <div class="org-src-container">
@@ -50,43 +118,71 @@ Pode acertar, pode errar.
 </section>
 </section>
 <section>
-<section id="slide-org9bbf8d6">
-<h2 id="org9bbf8d6">A solução: ferramentas</h2>
-<p class="fragment (appear)">
+<section id="slide-org016dc99">
+<h2 id="org016dc99">A solução: ferramentas</h2>
+<p>
 Ferramenta = função Python que o agente pode chamar.
 </p>
+
+<p>
+<a href="https://colab.research.google.com/github/luksamuk/guilda-ia/blob/main/notebooks/aula06_primeira_ferramenta_colab.ipynb">📓 Colab</a>
+</p>
 </section>
-<section id="slide-orge3a13e7">
-<h3 id="orge3a13e7">Como funciona:</h3>
+<section id="slide-orgaee9641">
+<h3 id="orgaee9641">Como funciona:</h3>
 <ol>
-<li class="fragment appear">Modelo recebe descrição da ferramenta</li>
-<li class="fragment appear">Analisa a pergunta</li>
-<li class="fragment appear">Decide: preciso dessa ferramenta?</li>
-<li class="fragment appear">Se sim, gera chamada no formato correto</li>
-<li class="fragment appear">Python executa e devolve resultado</li>
-<li class="fragment appear">Modelo usa resultado na resposta</li>
+<li>O LLM recebe a descrição das ferramentas disponíveis</li>
+<li>Analisa a pergunta</li>
+<li>Decide: preciso dessa ferramenta?</li>
+<li>Gera os argumentos no formato correto</li>
+<li>Python executa e devolve resultado</li>
+<li>O LLM usa o resultado na resposta</li>
 
 </ol>
 </section>
 </section>
 <section>
-<section id="slide-org733e453">
-<h2 id="org733e453">Exemplo: calculadora</h2>
+<section id="slide-org70a1111">
+<h2 id="org70a1111">Exemplo: calculadora</h2>
 <div class="org-src-container">
 
-<pre   ><code class="python" >def calcular(expressao):
-    """Resolve expressão matemática."""
-    return str(eval(expressao))
+<pre   ><code class="python" >@tool
+def calculate(a: float, b: float, operation: str) -&gt; float:
+    """Performs a math operation between two numbers
+    and returns the exact result.
+    Use when you need to do calculations.
+    operation: 'add', 'subtract', 'multiply', 'divide'
+    """
+    ops = {'add': a+b, 'subtract': a-b,
+           'multiply': a*b, 'divide': a/b}
+    return ops[operation]
+</code></pre>
+</div>
 
-# Exemplo:
-calcular("234 * 987")  # "230958"
+<p>
+Parâmetros nomeados: seguro e simples. Sem <code>eval</code>, sem parsing.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org2ff7048">
+<h2 id="org2ff7048">Exemplo: tamanho de palavra</h2>
+<div class="org-src-container">
+
+<pre   ><code class="python" >@tool
+def get_word_length(word: str) -&gt; int:
+    """Returns the number of characters in a word.
+    Use when the user asks about the length
+    of a word or how many letters it has.
+    """
+    return len(word)
 </code></pre>
 </div>
 </section>
 </section>
 <section>
-<section id="slide-org65519b3">
-<h2 id="org65519b3">O segredo: descrição clara</h2>
+<section id="slide-org293c09e">
+<h2 id="org293c09e">O segredo: descrição clara</h2>
 <p>
 O modelo decide baseado na descrição.
 </p>
@@ -94,7 +190,7 @@ O modelo decide baseado na descrição.
 <p>
 <b>Descrição ruim:</b>
 </p>
-<blockquote  class="fragment (appear)">
+<blockquote >
 <p>
 "Calculadora."
 </p>
@@ -105,67 +201,194 @@ O modelo decide baseado na descrição.
 </p>
 
 </section>
-<section id="slide-org65519b3-split">
+<section id="slide-org293c09e-split">
 <p>
 <b>Descrição boa:</b>
 </p>
-<blockquote  class="fragment (appear)">
+<blockquote >
 <p>
-"Resolve expressões matemáticas. Use quando precisar
-fazer cálculos. Ex: '2 + 2', '10 * 5', '(5 + 3) / 2'."
+"Performs a math operation between two numbers and returns the exact result. Use when you need to do calculations."
 </p>
 </blockquote>
 
 <p>
-→ Modelo entende quando e como usar.
+→ Modelo entende quando E como usar.
 </p>
 </section>
 </section>
 <section>
-<section id="slide-orga35ffaf">
-<h2 id="orga35ffaf">O formato de chamada</h2>
-<p>
-O modelo precisa gerar algo que Python entenda.
-</p>
+<section id="slide-orgbd44d21">
+<h2 id="orgbd44d21">@tool: Pydantic resolve o parsing</h2>
+<ul>
+<li class="fragment appear"><code>@tool</code> gera o schema JSON automaticamente</li>
+<li class="fragment appear">Pydantic valida e converte os tipos</li>
+<li class="fragment appear"><code>"234" → 234.0</code> (conversão automática)</li>
+<li class="fragment appear"><code>ValidationError</code> se o LLM manda lixo</li>
 
+</ul>
+
+</section>
+<section id="slide-orgbd44d21-split">
+
+<p>
+Sem <code>@tool</code>:
+</p>
 <div class="org-src-container">
 
-<pre   ><code class="text" >USAR_FERRAMENTA: calculadora
-ARGUMENTO: 234 * 987
+<pre   ><code class="python" >a = float(args["a"])       # manual
+b = float(args["b"])       # manual
 </code></pre>
 </div>
 
 <p>
-Seu código:
+Com <code>@tool</code>:
 </p>
-<ol>
-<li>Detecta isso na resposta</li>
-<li>Executa a função</li>
-<li>Devolve o resultado para o modelo</li>
+<div class="org-src-container">
+
+<pre   ><code class="python" >resultado = calculate.invoke(args)  # Pydantic!
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orga389473">
+<h2 id="orga389473">O ciclo manual: <code>bind_tools</code></h2>
+<ol style="font-size:0.6em;">
+<li><code>invoke</code> → LLM <b>decide</b> (retorna <code>tool_calls</code>, não executa)</li>
+<li>Você executa a ferramenta com os argumentos</li>
+<li><code>invoke</code> de novo com <code>ToolMessage</code> → resposta final</li>
 
 </ol>
+
 </section>
-</section>
-<section>
-<section id="slide-org6b8d5e7">
-<h2 id="org6b8d5e7">Diagrama</h2>
+<section id="slide-orga389473-split">
+
+<p>
+Passo 1 — o LLM decide:
+</p>
 <div class="org-src-container">
 
-<pre   ><code class="text" >Usuário: "Quanto é 234 × 987?"
-    ↓
-Agente: "Preciso da calculadora"
-    ↓
-Ferramenta: calcular("234 * 987") = 230958
-    ↓
-Agente: "230.958"
+<pre   ><code class="python" >resposta = llm_com_ferramentas.invoke(
+    "Quanto é 234 vezes 987?")
+pprint(resposta.tool_calls)
+# [{'name': 'calculate',
+#   'args': {'a': 234, 'b': 987,
+#            'operation': 'multiply'},
+#   'id': 'call_abc123'}]
+</code></pre>
+</div>
+
+<p>
+<code>resposta.content</code> é <b>string vazia</b> — o LLM não executou!
+</p>
+
+</section>
+<section id="slide-orga389473-split">
+
+<p>
+Passo 2 — você executa:
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="python" >tc = resposta.tool_calls[0]
+resultado = calculate.invoke(tc['args'])
+print(resultado)  # 230958.0
+</code></pre>
+</div>
+
+<p>
+Passo 3 — resultado volta pro LLM:
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="python" >mensagens = [
+    HumanMessage(content="Quanto é 234 vezes 987?"),
+    resposta,  # AIMessage com tool_call
+    ToolMessage(content=str(resultado),
+                tool_call_id=tc['id']),
+]
+resposta_final = llm_com_ferramentas.invoke(mensagens)
+# "O resultado é 230.958."
 </code></pre>
 </div>
 </section>
 </section>
 <section>
-<section id="slide-orgda5c441">
-<h2 id="orgda5c441">Para lembrar</h2>
-<blockquote  class="fragment (appear)">
+<section id="slide-org582338d">
+<h2 id="org582338d">ReAct se completa</h2>
+<p>
+O ciclo manual <b>é</b> ReAct em ação:
+</p>
+
+<ul style="font-size:0.7em;">
+<li><b>Thought</b> → LLM raciocina ("preciso calcular")</li>
+<li><b>Action</b> → LLM chama ferramenta (<code>tool_calls</code>)</li>
+<li><b>Observation</b> → você executa e devolve o resultado</li>
+<li><b>Answer</b> → LLM formula a resposta final</li>
+
+</ul>
+
+<p>
+(<a href="https://arxiv.org/abs/2210.03629">Yao et al., 2022</a>)
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgcc700bc">
+<h2 id="orgcc700bc">O ciclo automático: <code>create_agent</code></h2>
+<p>
+O ciclo manual é bom pra entender. Na prática:
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" >from langchain.agents import create_agent
+
+agente = create_agent(llm, [calculate, get_word_length])
+
+resultado = agente.invoke(
+    {"messages": "Quanto é 234 vezes 987?"})
+print(resultado["messages"][-1].content)
+</code></pre>
+</div>
+
+<p>
+Uma linha. Decide, executa, responde — tudo automático.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org8ca5d4b">
+<h2 id="org8ca5d4b">Um gostinho de async</h2>
+<div class="org-src-container">
+
+<pre   ><code class="python" >import asyncio
+
+async def conversar():
+    future = agente.ainvoke(
+        {"messages": "Quanto é 234 vezes 987?"})
+    print("Processando...")  # roda imediatamente
+    resultado = await future  # agora espera
+    print(resultado["messages"][-1].content)
+
+asyncio.run(conversar())
+</code></pre>
+</div>
+
+<p>
+⚠️ Em notebooks Jupyter/Colab, <code>asyncio.run()</code> falha.
+Solução: <code>nest_asyncio.apply()</code> antes de rodar.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org722ddf5">
+<h2 id="org722ddf5">Para lembrar</h2>
+<p>
+:REVEAL<sub>BACKGROUND</sub>: ./slide<sub>06.gif</sub>
+</p>
+
+<blockquote >
 <p>
 "Ferramenta transforma conversa em ação."
 </p>
@@ -175,22 +398,12 @@ Agente: "230.958"
 LLM puro: só fala
 Agente com ferramenta: fala E faz
 </p>
-</section>
-</section>
-<section>
-<section id="slide-org90cd7bb">
-<h2 id="org90cd7bb">Próxima semana</h2>
+
 <ul>
-<li class="fragment appear">Múltiplas ferramentas</li>
-<li class="fragment appear">Como o modelo escolhe qual usar</li>
-<li class="fragment appear">Descrições mais específicas</li>
+<li class="fragment appear">Manual (<code>bind_tools</code>): entender o que acontece</li>
+<li class="fragment appear">Automático (<code>create_agent</code>): produzir</li>
 
 </ul>
-</section>
-</section>
-<section>
-<section id="slide-org3b05a8e">
-<h2 id="org3b05a8e">Perguntas?</h2>
 </section>
 </section>
 </div>
