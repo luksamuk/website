@@ -1,10 +1,10 @@
 #+TITLE: Primeira Ferramenta: O Agente Faz Algo
-# Semana 7 - 22/05/2026
-#+DESCRIPTION: Semana 7 - Guilda de IA: Criando a primeira ferramenta para o agente
+# Semana 6 - 05/06/2026
+#+DESCRIPTION: Semana 6 - Guilda de IA: Criando a primeira ferramenta para o agente
 #+SETUPFILE: ./setupfile.org
 #+LANGUAGE: pt_BR
 #+STARTUP: inlineimages showall latexpreview
-#+DATE: 22/05/2026
+#+DATE: 05/06/2026
 
 * O problema do LLM puro
 
@@ -14,32 +14,8 @@ Pergunta: "Quanto é 234 × 987?"
 
 O modelo não calcula. Ele prevê a resposta baseado em padrões do treinamento. Pode acertar (se viu esse cálculo antes), mas geralmente erra em números grandes.
 
-#+BEGIN_SRC dot :file img/problema-llm.svg :cache yes
-digraph ProblemaLLM {
-    rankdir=TB;
-    node [shape=box, style="rounded,filled"];
-    
-    label [label="O PROBLEMA DO LLM PURO", fillcolor="#e0e0ff", fontsize=14, style="filled,bold"];
-    
-    input [label="Input:\n\"Quanto é 234 × 987?\"", fillcolor="#e0e0e0"];
-    
-    subgraph cluster_llm {
-        label="";
-        style="rounded";
-        fillcolor="#fafafa";
-        llm_box [label="LLM (GPT-4)\nPrevisão de\ntexto", fillcolor="#f0f0ff"];
-    }
-    
-    output [label="Output:\n~230000\n(APROXIMADO!)", fillcolor="#ffe0e0"];
-    resultado [label="Resultado real: 230958\nErro: 958 (~0.4%)", fillcolor="#e0ffe0"];
-    
-    input -> llm_box [style=invis];
-    llm_box -> output;
-    output -> resultado [style=dashed];
-    
-    {rank=same; input; label;}
-}
-#+END_SRC
+#+ATTR_HTML: :alt O problema do LLM puro :style width: 100%; max-width: 400px;
+[[file:img/problema-llm-v2.svg]]
 
 * A solução: ferramentas (Tools)
 
@@ -47,61 +23,15 @@ Ferramenta = função Python que o agente pode chamar.
 
 ** Como funciona o ciclo:
 
-#+BEGIN_SRC dot :file img/ciclo-ferramenta.svg :cache yes
-digraph CicloFerramenta {
-    rankdir=TB;
-    node [shape=box, style="rounded,filled"];
-    
-    label [label="CICLO DE USO DE FERRAMENTA", fillcolor="#e0e0ff", fontsize=14, style="filled,bold"];
-    
-    subgraph {
-        step1 [label="1. DESCRIÇÃO\n\nFerramentas disponíveis:\n\"Tenho calculadora,\nwikipedia, ...\"", fillcolor="#e0e0e0"];
-        step2 [label="2. ANÁLISE\n\nLLM Raciocina:\n\"O usuário quer\ncalcular...\"", fillcolor="#f0f0ff"];
-        step3 [label="3. DECISÃO\nPLANO DE AÇÃO:\n\"Usar calculadora\ncom '234*987'\"", fillcolor="#f0f0ff"];
-        step4 [label="4. EXECUÇÃO\nPython executa:\nResultado: 230958", fillcolor="#f0f0ff"];
-        step5 [label="5. RESPOSTA\nLLM Formula:\n\"234 × 987 = 230958\"", fillcolor="#e0ffe0"];
-    }
-    
-    step1 -> step2;
-    step2 -> step3;
-    step3 -> step4;
-    step4 -> step5;
-}
-#+END_SRC
+#+ATTR_HTML: :alt Ciclo de uso de ferramenta :style width: 100%; max-width: 550px;
+[[file:img/ciclo-ferramenta-v2.svg]]
 
 * Arquitetura de Ferramentas
 
 ** Diagrama de Componentes
 
-#+BEGIN_SRC dot :file img/agente-ferramentas.svg :cache yes
-digraph AgenteFerramentas {
-    rankdir=TB;
-    node [shape=box, style="rounded,filled"];
-    
-    usuario [label="USUÁRIO", fillcolor="#e0e0e0"];
-    
-    subgraph cluster_agente {
-        label="AGENTE";
-        style="rounded";
-        fillcolor="#fafafa";
-        
-        llm [label="LLM (Cérebro)\n- Analisa input\n- Decide usar ferramenta\n- Gera formato de chamada", fillcolor="#f0f0ff"];
-        
-        tool_registry [label="TOOL REGISTRY\n(Cadastro)\n{\n  \"calculadora\": <func>,\n  \"wikipedia\": <func>,\n  \"horario\": <func>\n}", fillcolor="#ffffe0"];
-    }
-    
-    tool_executor [label="TOOL EXECUTOR\n- Valida argumentos\n- Executa função\n- Captura erros\n- Retorna resultado", fillcolor="#f0f0ff"];
-    
-    calculadora [label="CALCULADORA\neval(expr)", fillcolor="#ffffe0"];
-    wikipedia [label="WIKIPEDIA\nAPI GET", fillcolor="#ffffe0"];
-    horario [label="HORÁRIO\ndatetime", fillcolor="#ffffe0"];
-    
-    usuario -> llm;
-    llm -> tool_registry [style=dashed];
-    tool_registry -> tool_executor;
-    tool_executor -> {calculadora, wikipedia, horario};
-}
-#+END_SRC
+#+ATTR_HTML: :alt Arquitetura de ferramentas :style width: 100%; max-width: 400px;
+[[file:img/agente-ferramentas-v2.svg]]
 
 * Referências Importantes
 
@@ -125,8 +55,8 @@ O modelo decide baseado na descrição.
 ** Descrição RUIM:
 
 #+BEGIN_SRC text
-Nome: calculadora
-Descrição: Calculadora.
+Nome: calculate
+Descrição: Calculator.
 #+END_SRC
 
 → Modelo não sabe QUANDO usar.
@@ -134,478 +64,558 @@ Descrição: Calculadora.
 ** Descrição BOA:
 
 #+BEGIN_SRC text
-Nome: calculadora
-Descrição: Resolve expressões matemáticas e retorna o resultado exato.
-            Use quando precisar fazer cálculos numéricos.
-            Entrada: string com expressão matemática (ex: "2 + 2", "10 * 5", "(5 + 3) / 2")
-            Saída: string com o resultado numérico
+Nome: calculate
+Descrição: Performs a mathematical operation between two numbers and returns the exact result.
+           Use when you need to perform numeric calculations.
+           Parameters:
+             - a: first number (float)
+             - b: second number (float)
+             - operation: one of 'add', 'subtract', 'multiply', 'divide'
+           Output: float with the result
 #+END_SRC
 
 → Modelo entende quando E como usar.
 
-* Implementação Real
+* Implementação: Calculadora Estruturada
 
-** Código: Calculadora Segura
+Em vez de aceitar uma expressão string e tentar fazer parse (inseguro com eval, complexo com AST), usamos *parâmetros nomeados*. O LLM escolhe a operação por nome — sem risco de injeção de código.
+
+** Código: Funções de Ferramenta
 
 #+BEGIN_SRC python
 """
-Implementação segura de uma calculadora para agentes.
-Usa AST parsing para evitar injeção de código.
+Ferramentas para o agente: calculadora e horário.
+Parâmetros nomeados = seguro e simples.
 """
 
-import re
-import ast
-import operator
-from typing import Union
-
-
-OPERADORES_PERMITIDOS = {
-    ast.Add: operator.add,
-    ast.Sub: operator.sub,
-    ast.Mult: operator.mul,
-    ast.Div: operator.truediv,
-    ast.FloorDiv: operator.floordiv,
-    ast.Mod: operator.mod,
-    ast.Pow: operator.pow,
-    ast.USub: operator.neg,
-    ast.UAdd: operator.pos,
-}
-
-
-def calculadora_segura(expressao: str) -> Union[int, float, str]:
+def calculate(a, b, operation):
     """
-    Avalia uma expressão matemática de forma segura.
+    Performs a mathematical operation between two numbers.
     
     Args:
-        expressao: String com a expressão matemática (ex: "2 + 2", "10 * 5")
-        
+        a: First number
+        b: Second number
+        operation: One of 'add', 'subtract', 'multiply', 'divide'
+    
     Returns:
-        Resultado da expressão como número ou mensagem de erro
-        
-    Exemplos:
-        >>> calculadora_segura("2 + 2")
-        4
-        >>> calculadora_segura("10 * 5")
-        50
-        >>> calculadora_segura("(5 + 3) / 2")
-        4.0
+        Result of the operation (float)
+    
+    Examples:
+        >>> calculate(234, 987, 'multiply')
+        230958.0
+        >>> calculate(10, 3, 'divide')
+        3.3333333333333335
     """
-    # Validação de entrada
-    if not expressao or not isinstance(expressao, str):
-        return "Erro: expressão não pode estar vazia"
+    if operation == 'add':
+        return a + b
+    elif operation == 'subtract':
+        return a - b
+    elif operation == 'multiply':
+        return a * b
+    elif operation == 'divide':
+        if b == 0:
+            return "Erro: divisão por zero"
+        return a / b
+    else:
+        return f"Erro: operação '{operation}' não suportada"
+
+
+def get_time():
+    """
+    Returns the current date and time.
+    Takes no arguments — this is a query tool.
     
-    expressao = expressao.strip()
+    Returns:
+        String with current date/time (dd/mm/yyyy HH:MM:SS)
     
-    # Verificar caracteres válidos
-    if not re.match(r'^[\d\s\+\-\*\/\%\(\)\.\^]+$', expressao):
-        return f"Erro: caracteres inválidos em '{expressao}'"
-    
-    try:
-        node = ast.parse(expressao, mode='eval')
-        
-        def avaliar(node):
-            """Avalia recursivamente a AST de forma segura."""
-            if isinstance(node, ast.Num):
-                return node.n
-            elif isinstance(node, ast.Constant):
-                if isinstance(node.value, (int, float)):
-                    return node.value
-                raise ValueError(f"Tipo não suportado: {type(node.value)}")
-            elif isinstance(node, ast.BinOp):
-                left = avaliar(node.left)
-                right = avaliar(node.right)
-                op_type = type(node.op)
-                if op_type in OPERADORES_PERMITIDOS:
-                    return OPERADORES_PERMITIDOS[op_type](left, right)
-                raise ValueError(f"Operador não permitido: {op_type.__name__}")
-            elif isinstance(node, ast.UnaryOp):
-                operand = avaliar(node.operand)
-                op_type = type(node.op)
-                if op_type in OPERADORES_PERMITIDOS:
-                    return OPERADORES_PERMITIDOS[op_type](operand)
-                raise ValueError(f"Operador unário não permitido: {op_type.__name__}")
-            else:
-                raise ValueError(f"Nó não suportado: {type(node).__name__}")
-        
-        resultado = avaliar(node.body)
-        
-        # Formatar resultado
-        if isinstance(resultado, float):
-            if resultado == int(resultado):
-                return int(resultado)
-            return round(resultado, 10)
-        
-        return resultado
-        
-    except SyntaxError:
-        return f"Erro: expressão inválida '{expressao}'"
-    except ZeroDivisionError:
-        return "Erro: divisão por zero"
-    except Exception as e:
-        return f"Erro: {str(e)}"
+    Examples:
+        >>> get_time()
+        "05/06/2026 19:30:00"
+    """
+    from datetime import datetime
+    return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
 
 # Testes
 if __name__ == "__main__":
-    testes = [
-        ("2 + 2", 4),
-        ("10 * 5", 50),
-        ("(5 + 3) / 2", 4.0),
-        ("2 ** 10", 1024),
-        ("100 / 0", "Erro"),
-    ]
-    
-    for expr, esperado in testes:
-        resultado = calculadora_segura(expr)
-        print(f"{expr} = {resultado}")
+    print(calculate(234, 987, 'multiply'))  # 230958.0
+    print(calculate(10, 5, 'add'))               # 15
+    print(calculate(10, 0, 'divide'))            # Erro: divisão por zero
+    print(calculate(100, 7, 'divide'))           # 14.285714285714286
+    print(get_time())                        # data/hora atual
 #+END_SRC
 
-* Exercícios Práticos
+** Por que parâmetros nomeados são melhores?
 
-** Exercício 1: Ferramenta de Horário
+- *eval("expressão")* :: Executa código arbitrário. Chamada como =calculate("2**100")= pode executar qualquer coisa.
+- *AST parse* :: Complexo e quebra fácil. Chamada como =calculate("(5+3)/2")= requer um parser inteiro.
+- *Parâmetros nomeados* :: Seguro e previsível. Chamada como =calculate(5, 3, 'divide')= não tem superfície de ataque.
 
-Implemente uma ferramenta que retorna a data e hora atual formatadas.
+Com parâmetros nomeados:
+- O LLM passa valores explícitos (a, b, operation)
+- Não há parsing de expressão — a lógica é direta
+- A operação é uma string fixa, não código Python
+
+* O decorator @tool do LangChain
+
+O LangChain oferece o decorator =@tool= que transforma uma função Python em ferramenta automaticamente. O segredo: **Pydantic faz o parsing e validação** — sem necessidade de código manual.
+
+** Como funciona
+
+1. Você escreve a função normalmente com type hints e docstring
+2. O =@tool= extrai o schema automaticamente (parâmetros, tipos, descrições)
+3. Quando o LLM chama a ferramenta, Pydantic valida e converte os argumentos
+
+#+BEGIN_SRC python
+from langchain_core.tools import tool
+
+@tool
+def calculate(a: float, b: float, operation: str) -> float:
+    """Performs a mathematical operation between two numbers.
+    Use when you need to perform numeric calculations.
+    
+    Args:
+        a: First number
+        b: Second number
+        operation: One of 'add', 'subtract', 'multiply', 'divide'
+    """
+    if operation == 'add':
+        return a + b
+    elif operation == 'subtract':
+        return a - b
+    elif operation == 'multiply':
+        return a * b
+    elif operation == 'divide':
+        if b == 0:
+            return "Erro: divisão por zero"
+        return a / b
+    else:
+        return f"Erro: operação '{operation}' não suportada"
+
+
+@tool
+def get_time() -> str:
+    """Returns the current date and time.
+    Use when the user asks about the current date, time, or 'what time is it'.
+    """
+    from datetime import datetime
+    return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+
+@tool
+def get_word_length(word: str) -> int:
+    """Returns the number of characters in a word.
+    Use when the user asks about the length of a word or how many letters it has.
+    """
+    return len(word)
+#+END_SRC
+
+** O que o @tool faz por você
+
+Não precisa de:
+- Parsing manual de JSON
+- Conversão manual de tipos (string → float)
+- Validação manual de argumentos
+- Construção manual do schema JSON para o LLM
+
+#+BEGIN_SRC python
+# ❌ SEM @tool — parsing manual
+tool_call = llm_response.tool_calls[0]
+args = tool_call["args"]
+a = float(args["a"])          # manual!
+b = float(args["b"])          # manual!
+operation = args["operation"]  # manual!
+resultado = calculate(a, b, operation)
+
+# ✅ COM @tool — Pydantic faz tudo
+tool_call = llm_response.tool_calls[0]
+resultado = calculate.invoke(tool_call["args"])
+# Pydantic converte string "234" → float 234.0 automaticamente
+#+END_SRC
+
+** Conversão automática de tipos
+
+Pydantic converte tipos automaticamente. Se o LLM envia =a="234"= (string), vira =a=234.0= (float):
+
+#+BEGIN_SRC python
+# O LLM pode enviar: {"a": "234", "b": "987", "operation": "multiply"}
+# Pydantic converte automaticamente:
+#   "234" → 234.0
+#   "987" → 987.0
+resultado = calculate.invoke({"a": "234", "b": "987", "operation": "multiply"})
+# → 230958.0  ✓
+
+# Se o LLM manda algo inválido:
+# {"a": "abc", "b": 10, "operation": "add"}
+# → ValidationError com contexto claro:
+#   "Input should be a valid number, unable to parse string as a number"
+#+END_SRC
+
+** Schema JSON gerado automaticamente
+
+O decorator extrai do docstring e type hints:
+
+#+BEGIN_SRC python
+# Ver o schema gerado
+print(calculate.args_schema.schema())
+
+# Resultado:
+# {
+#   "title": "calculate",
+#   "description": "Performs a mathematical operation between two numbers...",
+#   "type": "object",
+#   "properties": {
+#     "a": {"title": "A", "type": "number"},
+#     "b": {"title": "B", "type": "number"},
+#     "operation": {
+#       "title": "Operation",
+#       "description": "One of 'add', 'subtract', 'multiply', 'divide'",
+#       "type": "string"
+#     }
+#   },
+#   "required": ["a", "b", "operation"]
+# }
+#+END_SRC
+
+Obs.: para a ferramenta =get_time=, o schema é minimal — =properties= vazio e =required= vazio, pois não há argumentos.
+
+* Conectando ao LLM: Ollama + gemma4:e2b
+
+O setup completo do Ollama no Colab está no *notebook da Semana 4* — incluindo instalação e =ollama pull=. Aqui focamos em como conectar as ferramentas ao LLM.
+
+** Conexão via ChatOpenAI
+
+O modelo =gemma4:e2b= expõe endpoint OpenAI-compatible (=/v1/chat/completions=), então usamos =ChatOpenAI= do =langchain-openai=:
+
+#+BEGIN_SRC python
+from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(
+    model="gemma4:e2b",
+    base_url="http://localhost:11434/v1",
+    api_key="ollama",  # Ollama não precisa de key real
+    temperature=0,
+)
+#+END_SRC
+
+* O ciclo manual: bind_tools
+
+A forma mais básica de usar ferramentas no LangChain é com =bind_tools=. O LLM *decide* qual ferramenta chamar, mas **não executa** — isso fica por sua conta.
+
+#+BEGIN_SRC python
+from pprint import pprint
+from langchain_openai import ChatOpenAI
+from langchain_core.tools import tool
+
+@tool
+def calculate(a: float, b: float, operation: str) -> float:
+    """Performs a mathematical operation between two numbers.
+    Use when you need to perform numeric calculations.
+    
+    Args:
+        a: First number
+        b: Second number
+        operation: One of 'add', 'subtract', 'multiply', 'divide'
+    """
+    if operation == 'add': return a + b
+    elif operation == 'subtract': return a - b
+    elif operation == 'multiply': return a * b
+    elif operation == 'divide':
+        if b == 0: return "Erro: divisão por zero"
+        return a / b
+    else: return f"Erro: operação '{operation}' não suportada"
+
+@tool
+def get_time() -> str:
+    """Returns the current date and time.
+    Use when the user asks about the current date, time, or 'what time is it'.
+    """
+    from datetime import datetime
+    return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+@tool
+def get_word_length(word: str) -> int:
+    """Returns the number of characters in a word.
+    Use when the user asks about the length of a word or how many letters it has.
+    """
+    return len(word)
+
+llm = ChatOpenAI(
+    model="gemma4:e2b",
+    base_url="http://localhost:11434/v1",
+    api_key="ollama",
+    temperature=0,
+)
+
+# Bind: registra as ferramentas no LLM
+llm_com_ferramentas = llm.bind_tools([calculate, get_time, get_word_length])
+#+END_SRC
+
+** Passo 1: O LLM decide, mas não executa
+
+#+BEGIN_SRC python
+resposta = llm_com_ferramentas.invoke("Quanto é 234 vezes 987?")
+pprint(resposta.tool_calls)
+# [{'args': {'a': 234, 'b': 987, 'operation': 'multiply'},
+#   'id': 'call_abc123',
+#   'name': 'calculate',
+#   'type': 'tool_call'}]
+#+END_SRC
+
+Repare: =resposta.content= é *string vazia*. O LLM não calculou — só disse "use =calculate= com estes argumentos". A execução é tua.
+
+** Passo 2: Você executa a ferramenta
+
+#+BEGIN_SRC python
+# Extrair a primeira tool_call
+tc = resposta.tool_calls[0]
+
+# Executar a ferramenta
+if tc['name'] == 'calculate':
+    resultado = calculate.invoke(tc['args'])
+elif tc['name'] == 'get_time':
+    resultado = get_time.invoke(tc['args'])
+elif tc['name'] == 'get_word_length':
+    resultado = get_word_length.invoke(tc['args'])
+
+print(resultado)  # 230958.0
+#+END_SRC
+
+** Passo 3: Resultado volta pro LLM
+
+Agora você manda o resultado de volta pro LLM com =ToolMessage=, e ele formula a resposta final:
+
+#+BEGIN_SRC python
+from langchain_core.messages import HumanMessage, ToolMessage
+
+mensagens = [
+    HumanMessage(content="Quanto é 234 vezes 987?"),
+    resposta,  # AIMessage com tool_call
+    ToolMessage(content=str(resultado), tool_call_id=tc['id']),
+]
+
+resposta_final = llm_com_ferramentas.invoke(mensagens)
+print(resposta_final.content)
+# "O resultado de 234 vezes 987 é 230.958."
+#+END_SRC
+
+** Resumo do ciclo manual
+
+1. /invoke/ → LLM decide (retorna =tool_calls=, não executa)
+2. /você executa/ a ferramenta com os argumentos
+3. /invoke de novo/ com =ToolMessage= → LLM formula a resposta final
+
+É ReAct em ação: *Thought* (LLM raciocina) → *Action* (chama ferramenta) → *Observation* (vê o resultado) → *Answer* (responde) ([[https://arxiv.org/abs/2210.03629][Yao et al., 2022]]).
+
+* O ciclo automático: create_agent
+
+O ciclo manual é importante pra entender o que acontece por baixo. Mas na prática, você não quer gerenciar =ToolMessage= e múltiplas chamadas na mão. O LangChain resolve isso com =create_agent=:
+
+#+BEGIN_SRC python
+from langchain.agents import create_agent
+
+ferramentas = [calculate, get_time, get_word_length]
+agente = create_agent(llm, ferramentas)
+
+# Uma linha — o agente faz o ciclo inteiro
+resultado = agente.invoke({"messages": "Quanto é 234 vezes 987?"})
+print(resultado["messages"][-1].content)
+# "O resultado de 234 vezes 987 é 230.958."
+#+END_SRC
+
+O =create_agent= faz automaticamente:
+- Decide se precisa de ferramenta
+- Executa a ferramenta
+- Manda o resultado de volta pro LLM
+- Repete se necessário (várias ferramentas em sequência)
+- Retorna a resposta final
+
+** Manual vs Automático
+
+- *Manual* (=bind_tools=) :: Você controla cada passo. Bom pra aprender e debugar.
+- *Automático* (=create_agent=) :: Uma linha. Bom pra produzir.
+
+* Um gostinho de async
+
+Todas as chamadas que fizemos usam =invoke()= — síncrono, o código espera a resposta. Mas em Python existe outro jeito:
+
+#+BEGIN_SRC python
+import asyncio
+
+async def conversar():
+    future = agente.ainvoke({"messages": "Quanto é 234 vezes 987?"})
+    print("Processando...")  # roda imediatamente
+    resultado = await future  # agora espera
+    print(resultado["messages"][-1].content)
+
+asyncio.run(conversar())
+#+END_SRC
+
+Em notebooks Jupyter/Google Colab, o loop de eventos já está rodando, então =asyncio.run()= falha. Use =nest_asyncio= como workaround:
+
+#+BEGIN_SRC python
+import nest_asyncio
+nest_asyncio.apply()
+
+# Agora asyncio.run() funciona no Jupyter/Colab
+#+END_SRC
+
+A diferença: =ainvoke= (com *a* de /async/) deixa o programa fazer outras coisas enquanto espera o LLM responder. Não parece muito com um agente só — mas quando você tem /vários/ agentes ou /várias/ ferramentas rodando ao mesmo tempo, faz toda a diferença.
+
+Vamos usar isso na próxima aula.
+
+-----
+
+** Exercício 1: Ferramenta de Contagem de Palavras
+
+Implemente uma ferramenta que conta palavras, caracteres e frases de um texto usando o decorator =@tool=.
 
 #+BEGIN_DETAILS
 📝 Gabarito
 
 #+BEGIN_SRC python
-from datetime import datetime
+from langchain_core.tools import tool
 
-def obter_horario(formato: str = "%d/%m/%Y %H:%M:%S") -> str:
-    """
-    Retorna a data e hora atual formatada.
+@tool
+def count_text(text: str) -> dict:
+    """Analyzes a text and returns statistics.
+    Use when the user wants to know the size of a text.
     
     Args:
-        formato: String de formato (default: dd/mm/yyyy HH:MM:SS)
-        
-    Returns:
-        String com data/hora formatada
-        
-    Exemplos:
-        >>> obter_horario()
-        "26/03/2025 14:30:00"
-        >>> obter_horario("%Y-%m-%d")
-        "2025-03-26"
+        text: Text to be analyzed
     """
-    return datetime.now().strftime(formato)
-
-# Descrição para o agente
-DESCRICAO_HORARIO = """
-Nome: obter_horario
-Descrição: Retorna a data e hora atual.
-           Use quando o usuário perguntar sobre data, hora, ou necessidade de saber "agora".
-           Parâmetros:
-             - formato (opcional): formato da saída (default: dd/mm/yyyy HH:MM:SS)
-           Saída: string com data/hora formatada
-"""
-#+END_SRC
-
-#+END_DETAILS
-
-** Exercício 2: Ferramenta de Contagem de Palavras
-
-Implemente uma ferramenta que conta palavras, caracteres e frases de um texto.
-
-#+BEGIN_DETAILS
-📝 Gabarito
-
-#+BEGIN_SRC python
-import re
-
-def contar_texto(texto: str) -> dict:
-    """
-    Conta palavras, caracteres e frases de um texto.
+    if not text:
+        return {"words": 0, "characters": 0, "sentences": 0}
     
-    Args:
-        texto: Texto a ser analisado
-        
-    Returns:
-        Dicionário com contagens
-        
-    Exemplos:
-        >>> contar_texto("Olá mundo. Como vai?")
-        {"palavras": 4, "caracteres": 18, "frases": 2}
-    """
-    if not texto:
-        return {"palavras": 0, "caracteres": 0, "frases": 0}
-    
-    palavras = len(texto.split())
-    caracteres = len(texto)
-    frases = len(re.split(r'[.!?]+', texto))
-    if texto.strip()[-1] not in '.!?':
-        frases -= 1
-    frases = max(0, frases)
+    words = len(text.split())
+    characters = len(text)
+    sentences = len([s for s in text.split('.') if s.strip()])
     
     return {
-        "palavras": palavras,
-        "caracteres": caracteres,
-        "frases": frases
+        "words": words,
+        "characters": characters,
+        "sentences": sentences
     }
 
-# Descrição para o agente
-DESCRICAO_CONTADOR = """
-Nome: contar_texto
-Descrição: Analisa um texto e retorna estatísticas sobre ele.
-           Use quando o usuário quiser saber o tamanho de um texto.
-           Parâmetros:
-             - texto: texto a ser analisado (obrigatório)
-           Saída: JSON com palavras, caracteres e frases
-"""
+# Teste
+print(count_text.invoke({"text": "Olá mundo. Como vai?"}))
+# {"words": 4, "characters": 18, "sentences": 2}
 #+END_SRC
 
 #+END_DETAILS
 
-* Provedores Gratuitos para Google Colab
+** Exercício 2: Testar Conversão Automática
 
-Para testar agentes de IA no Google Colab sem gastar dinheiro, você tem várias opções gratuitas.
+Crie um agente com =calculate= e =get_word_length=. Envie mensagens que testem:
+1. Cálculo simples: "Quanto é 100 + 200?"
+2. Divisão: "Divida 1000 por 7"
+3. Comprimento de palavra: "Quantas letras tem a palavra 'Python'?"
+4. Erro: "Calcule 5 dividido por 0"
 
-**Comparação rápida:**
-
-| Provedor | Custo | Limites | Modelos |
-|----------|-------|---------|---------|
-| Google Gemini | Gratuito | 15 RPM, 1M tokens/dia | Gemini Flash, Gemini Pro |
-| Hugging Face | Gratuito | Rate limit variável | Modelos open-source |
-| Ollama + Colab | Gratuito | GPU do Colab | Qwen, Llama, etc. |
-| LM Studio | Gratuito | GPU local | Qual modelo baixar |
-
-**Importante:** Sempre use =getpass= para API keys no Colab!
+#+BEGIN_DETAILS
+📝 Gabarito
 
 #+BEGIN_SRC python
-import getpass
-import os
+from langchain_openai import ChatOpenAI
+from langchain_core.tools import tool
 
-# NUNCA coloque a key direto no código!
-os.environ["MINHA_API_KEY"] = getpass.getpass("Digite sua API key: ")
-#+END_SRC
-
-** Google Gemini API
-
-O Gemini é gratuito com limite generoso. Perfeito para começar.
-
-#+BEGIN_SRC python
-# Instalação no Colab
-# !pip install google-genai
-
-from google import genai
-from google.genai import types
-import getpass
-import os
-
-# Configurar API key (novo SDK: usar Client)
-api_key = getpass.getpass("Digite sua Google API key: ")
-client = genai.Client(api_key=api_key)
-
-# Chat com memória (novo SDK)
-chat = client.chats.create(model="gemini-2.0-flash")
-
-response = chat.send_message("Olá! Qual é a capital do Brasil?")
-print(response.text)
-
-# Continuar conversa
-response = chat.send_message("E quantos habitantes ela tem?")
-print(response.text)
-#+END_SRC
-
-**Vantagens do Gemini:**
-- 1 milhão de tokens/dia gratuito
-- API estável e bem documentada
-- Funciona bem no Colab
-- flash é rápido e barato
-
-**Desvantagens:**
-- Rate limiting (15 requests/minuto)
-- Precisa de conta Google
-
-** Hugging Face Inference API
-
-#+BEGIN_SRC python
-# Instalação no Colab
-# !pip install huggingface-hub
-
-from huggingface_hub import InferenceClient
-import getpass
-import os
-
-# Token gratuito em: https://huggingface.co/settings/tokens
-hf_token = getpass.getpass("Digite seu Hugging Face token: ")
-
-client = InferenceClient(token=hf_token)
-
-# Usar modelo gratuito
-response = client.chat.completions.create(
-    model="Qwen/Qwen2.5-72B-Instruct",
-    messages=[
-        {"role": "system", "content": "Você é um assistente útil."},
-        {"role": "user", "content": "Qual é a capital da França?"}
-    ]
-)
-
-print(response.choices[0].message.content)
-#+END_SRC
-
-**Modelos gratuitos populares no HF:**
-- =Qwen/Qwen2.5-72B-Instruct= - Rápido e capaz
-- =meta-llama/Llama-3.2-3B-Instruct= - Compacto
-- =microsoft/Phi-3-mini-4k-instruct= - Muito pequeno
-
-** Ollama no Google Colab
-
-Roda modelos localmente usando GPU do Colab (gratuito).
-
-#+BEGIN_SRC python
-# Instalar Ollama no Colab
-# !curl -fsSL https://ollama.com/install.sh | sh
-# !ollama serve &
-
-# Baixar modelo
-# !ollama pull qwen3.5:4b
-
-# Usar via API
-import requests
-import json
-
-def ollama_chat(mensagem: str, modelo: str = "qwen3.5:4b") -> str:
-    """Envia mensagem para Ollama local."""
-    response = requests.post(
-        "http://localhost:11434/api/chat",
-        json={
-            "model": modelo,
-            "messages": [{"role": "user", "content": mensagem}],
-            "stream": False
-        }
-    )
-    return response.json()["message"]["content"]
-
-# Uso
-resposta = ollama_chat("Olá! Qual é a capital do Brasil?")
-print(resposta)
-#+END_SRC
-
-**Modelos recomendados para Ollama:**
-- =qwen3.5:4b= - Rápido, bom para testes
-- =qwen3.5:9b= - Mais capaz, ainda rápido
-- =llama3.2:3b= - Alternativa compacta
-
-**Lista completa:** =ollama list= no terminal
-
-#+BEGIN_SRC python
-# Ollama com histórico de conversa
-def ollama_chat_com_memoria(
-    mensagens: list,
-    nova_mensagem: str,
-    modelo: str = "qwen3.5:4b"
-) -> tuple[str, list]:
-    """
-    Chat com memória no Ollama.
-    
-    Returns:
-        Tupla (resposta, histórico_atualizado)
-    """
-    # Adiciona nova mensagem ao histórico
-    mensagens.append({"role": "user", "content": nova_mensagem})
-    
-    response = requests.post(
-        "http://localhost:11434/api/chat",
-        json={
-            "model": modelo,
-            "messages": mensagens,
-            "stream": False
-        }
-    )
-    
-    resposta = response.json()["message"]["content"]
-    
-    # Adiciona resposta ao histórico
-    mensagens.append({"role": "assistant", "content": resposta})
-    
-    return resposta, mensagens
-
-# Uso com histórico
-historico = [{"role": "system", "content": "Você é um assistente útil."}]
-r1, historico = ollama_chat_com_memoria(historico, "Oi!")
-r2, historico = ollama_chat_com_memoria(historico, "Qual meu nome se eu disse antes?")
-print(r2)  # Vai lembrar que você disse "Oi!"
-#+END_SRC
-
-** LM Studio
-
-LM Studio é uma interface gráfica para rodar modelos locais. Não roda direto no Colab, mas é ótimo para desenvolvimento local.
-
-#+BEGIN_SRC python
-# LM Studio serve uma API compatível com OpenAI
-# em localhost:1234
-
-from openai import OpenAI
-
-# Conectar ao LM Studio local
-client = OpenAI(
-    base_url="http://localhost:1234/v1",
-    api_key="not-needed"  # LM Studio não precisa de key
-)
-
-response = client.chat.completions.create(
-    model="local-model",  # LM Studio escolhe o modelo carregado
-    messages=[
-        {"role": "user", "content": "Olá!"}
-    ]
-)
-
-print(response.choices[0].message.content)
-#+END_SRC
-
-**Interface Genérica para Todos os Provedores**
-
-#+BEGIN_SRC python
-"""Interface unificada para múltiplos provedores LLM."""
-
-from typing import List, Dict
-from abc import ABC, abstractmethod
-import getpass
-import os
-
-
-def criar_cliente(provedor: str = "gemini") -> object:
-    """
-    Cria um cliente para o provedor especificado.
-    
+@tool
+def calculate(a: float, b: float, operation: str) -> float:
+    """Performs a mathematical operation between two numbers.
+    Use when you need to perform numeric calculations.
     Args:
-        provedor: "gemini", "huggingface", "ollama", ou "lmstudio"
-    
-    Returns:
-        Objeto cliente configurado
+        a: First number
+        b: Second number
+        operation: One of 'add', 'subtract', 'multiply', 'divide'
     """
-    if provedor == "gemini":
-        from google import genai
-        api_key = getpass.getpass("Google API key: ")
-        return genai.Client(api_key=api_key)
-    
-    elif provedor == "huggingface":
-        from huggingface_hub import InferenceClient
-        token = getpass.getpass("HF Token: ")
-        return InferenceClient(token=token)
-    
-    elif provedor == "ollama":
-        import requests
-        return "ollama"  # Ollama não precisa de cliente
-    
-    elif provedor == "lmstudio":
-        from openai import OpenAI
-        return OpenAI(base_url="http://localhost:1234/v1", api_key="not-needed")
-    
+    if operation == 'add': return a + b
+    elif operation == 'subtract': return a - b
+    elif operation == 'multiply': return a * b
+    elif operation == 'divide':
+        if b == 0: return "Erro: divisão por zero"
+        return a / b
+    else: return f"Erro: operação '{operation}' não suportada"
+
+@tool
+def get_word_length(word: str) -> int:
+    """Returns the number of characters in a word.
+    Use when the user asks about the length of a word or how many letters it has.
+    """
+    return len(word)
+
+llm = ChatOpenAI(
+    model="gemma4:e2b",
+    base_url="http://localhost:11434/v1",
+    api_key="ollama",
+    temperature=0,
+)
+
+llm_com_ferramentas = llm.bind_tools([calculate, get_word_length])
+
+perguntas = [
+    "Quanto é 100 + 200?",
+    "Divida 1000 por 7",
+    "Quantas letras tem a palavra 'Python'?",
+    "Calcule 5 dividido por 0",
+]
+
+for pergunta in perguntas:
+    print(f"\n--- {pergunta} ---")
+    resposta = llm_com_ferramentas.invoke(pergunta)
+    if resposta.tool_calls:
+        for tc in resposta.tool_calls:
+            if tc['name'] == 'calculate':
+                resultado = calculate.invoke(tc['args'])
+            elif tc['name'] == 'get_word_length':
+                resultado = get_word_length.invoke(tc['args'])
+            print(f"  {tc['name']}({tc['args']}) -> {resultado}")
     else:
-        raise ValueError(f"Provedor desconhecido: {provedor}")
-
-
-# Uso
-# cliente = criar_cliente("gemini")
-# cliente = criar_cliente("ollama")
-# cliente = criar_cliente("lmstudio")
+        print(f"  {resposta.content}")
 #+END_SRC
 
-**Qual escolher?**
+#+END_DETAILS
 
-- *Começando:* Use Gemini no Colab - mais fácil e estável
-- *Sem internet:* Use Ollama com modelos baixados
-- *Desenvolvimento local:* Use LM Studio com interface gráfica
-- *Modelos específicos:* Use Hugging Face API
+** Exercício 3: Nova Ferramenta
+
+Crie uma ferramenta =convert_temperature(value: float, from_unit: str, to_unit: str)= com =@tool=, onde =from_unit= e =to_unit= são 'celsius', 'fahrenheit', 'kelvin'. Adicione ao agente e teste.
+
+#+BEGIN_DETAILS
+📝 Gabarito
+
+#+BEGIN_SRC python
+from langchain_core.tools import tool
+
+@tool
+def convert_temperature(value: float, from_unit: str, to_unit: str) -> float:
+    """Converts temperature between Celsius, Fahrenheit and Kelvin.
+    Args:
+        value: Temperature to convert
+        from_unit: Source scale ('celsius', 'fahrenheit', 'kelvin')
+        to_unit: Target scale ('celsius', 'fahrenheit', 'kelvin')
+    """
+    # Converter para Celsius primeiro
+    if from_unit == 'celsius':
+        c = value
+    elif from_unit == 'fahrenheit':
+        c = (value - 32) * 5 / 9
+    elif from_unit == 'kelvin':
+        c = value - 273.15
+    else:
+        return f"Erro: escala '{from_unit}' não suportada"
+    
+    # Converter de Celsius para destino
+    if to_unit == 'celsius':
+        return c
+    elif to_unit == 'fahrenheit':
+        return c * 9 / 5 + 32
+    elif to_unit == 'kelvin':
+        return c + 273.15
+    else:
+        return f"Erro: escala '{to_unit}' não suportada"
+
+# Teste
+print(convert_temperature.invoke({"value": 100, "from_unit": "celsius", "to_unit": "fahrenheit"}))
+# 212.0
+#+END_SRC
+
+#+END_DETAILS
