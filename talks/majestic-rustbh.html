@@ -35,11 +35,11 @@
 <h2>&Iacute;ndice</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#/slide-org8efe635">Introdução</a></li>
-<li><a href="#/slide-org9f7946c">Características e Implementação</a></li>
-<li><a href="#/slide-org7bd08fe">Comparando Majestic e outros Lisps</a></li>
-<li><a href="#/slide-org8ecdf1c">Interpretador metacircular</a></li>
-<li><a href="#/slide-org8ab1263">Referências</a></li>
+<li><a href="#/slide-orgedfeda9">Introdução</a></li>
+<li><a href="#/slide-org7e5d5b8">Características e Implementação</a></li>
+<li><a href="#/slide-org4a86631">Comparando Majestic e outros Lisps</a></li>
+<li><a href="#/slide-org8e40d1a">Interpretador metacircular</a></li>
+<li><a href="#/slide-org02cf0cc">Referências</a></li>
 </ul>
 </div>
 </div>
@@ -53,13 +53,13 @@ flex: 1;
 }
 </style>
 <section>
-<section id="slide-org8efe635">
-<h2 id="org8efe635">Introdução</h2>
-<div class="outline-text-2" id="text-org8efe635">
+<section id="slide-orgedfeda9">
+<h2 id="orgedfeda9">Introdução</h2>
+<div class="outline-text-2" id="text-orgedfeda9">
 </div>
 </section>
-<section id="slide-org3b0612e">
-<h3 id="org3b0612e">Quem sou eu?</h3>
+<section id="slide-orgf25bdc0">
+<h3 id="orgf25bdc0">Quem sou eu?</h3>
 <div class="container">
 
 <div class="col">
@@ -84,7 +84,7 @@ programação, desenvolvimento de jogos, programação bare-metal
 <div class="col">
 
 
-<div id="orgb8ab615" class="figure">
+<div id="orgbc72e8b" class="figure">
 <p><img src="img/eu.jpg" alt="eu.jpg" width="200" />
 </p>
 </div>
@@ -99,8 +99,8 @@ programação, desenvolvimento de jogos, programação bare-metal
 
 </div>
 </section>
-<section id="slide-org88c48a5">
-<h3 id="org88c48a5">O que é Majestic Lisp?</h3>
+<section id="slide-orgacc3028">
+<h3 id="orgacc3028">O que é Majestic Lisp?</h3>
 <p>
 Dialeto da família das linguagens Lisp.
 </p>
@@ -112,8 +112,8 @@ Dialeto da família das linguagens Lisp.
 
 </ul>
 </section>
-<section id="slide-org0c8ed65">
-<h3 id="org0c8ed65">Um segundo. O que é Bel?</h3>
+<section id="slide-orga19e9e8">
+<h3 id="orga19e9e8">Um segundo. O que é Bel?</h3>
 <p>
 Dialeto de Lisp criado por Paul Graham em 2019.
 </p>
@@ -127,8 +127,8 @@ de LISP 1.5.</li>
 
 </ul>
 </section>
-<section id="slide-orgfee33c7">
-<h3 id="orgfee33c7">Objetivos de Majestic Lisp</h3>
+<section id="slide-org92309e7">
+<h3 id="org92309e7">Objetivos de Majestic Lisp</h3>
 <p>
 Escrito como <i>literate  program</i> na forma de livro, guia  o leitor sobre
 como construir um interpretador de Majestic passo-a-passo em Rust.
@@ -145,16 +145,16 @@ como construir um interpretador de Majestic passo-a-passo em Rust.
 </section>
 </section>
 <section>
-<section id="slide-org9f7946c">
-<h2 id="org9f7946c">Características e Implementação</h2>
-<div class="outline-text-2" id="text-org9f7946c">
+<section id="slide-org7e5d5b8">
+<h2 id="org7e5d5b8">Características e Implementação</h2>
+<div class="outline-text-2" id="text-org7e5d5b8">
 </div>
 </section>
-<section id="slide-orgf902a6c">
-<h3 id="orgf902a6c">Live Demo</h3>
+<section id="slide-org83c8271">
+<h3 id="org83c8271">Live Demo</h3>
 </section>
-<section id="slide-org346dba0">
-<h3 id="org346dba0">Por que Rust?</h3>
+<section id="slide-orge76f9ac">
+<h3 id="orge76f9ac">Por que Rust?</h3>
 <p>
 A  escolha não  foi motivada  por performance,  corretude ou  <i>safety</i> /
 <i>security</i>.
@@ -167,8 +167,8 @@ A  escolha não  foi motivada  por performance,  corretude ou  <i>safety</i> /
 
 </ul>
 </section>
-<section id="slide-org9b73112">
-<h4 id="org9b73112">Exemplo: Objeto básico de Bel (C11)</h4>
+<section id="slide-org5a04e88">
+<h4 id="org5a04e88">Exemplo: Objeto básico de Bel (C11)</h4>
 <div class="org-src-container">
 
 <pre  class="src src-C"   ><code trim><span class="org-keyword">typedef</span> <span class="org-keyword">struct</span> <span class="org-type">BEL</span> <span class="org-type">Bel</span>;
@@ -192,8 +192,8 @@ A  escolha não  foi motivada  por performance,  corretude ou  <i>safety</i> /
 </code></pre>
 </div>
 </section>
-<section id="slide-org7b5090f">
-<h4 id="org7b5090f">Exemplo: Objeto básico de Majestic (Rust 2018)</h4>
+<section id="slide-orga655d3f">
+<h4 id="orga655d3f">Exemplo: Objeto básico de Majestic (Rust 2018)</h4>
 <div class="org-src-container">
 
 <pre  class="src src-rust"   ><code trim>#[derive(Debug, Trace, Finalize, Clone)]
@@ -212,13 +212,13 @@ pub enum Maj {
 </section>
 </section>
 <section>
-<section id="slide-org7bd08fe">
-<h2 id="org7bd08fe">Comparando Majestic e outros Lisps</h2>
-<div class="outline-text-2" id="text-org7bd08fe">
+<section id="slide-org4a86631">
+<h2 id="org4a86631">Comparando Majestic e outros Lisps</h2>
+<div class="outline-text-2" id="text-org4a86631">
 </div>
 </section>
-<section id="slide-orga32b851">
-<h3 id="orga32b851">Exemplo</h3>
+<section id="slide-org6686a56">
+<h3 id="org6686a56">Exemplo</h3>
 <div class="org-src-container">
 
 <pre  class="src src-majestic"   ><code trim>(<span class="org-keyword">def</span> *my-list* '(a b c d))
@@ -226,7 +226,7 @@ pub enum Maj {
 </code></pre>
 </div>
 
-<pre class="example" id="org7cc88b7">
+<pre class="example" id="orgff2e75a">
 ((z . a) (z . b) (z . c) (z . d))
 </pre>
 
@@ -234,8 +234,8 @@ pub enum Maj {
 Faremos comparações com Scheme, Common Lisp, Clojure e Shen.
 </p>
 </section>
-<section id="slide-orgba70289">
-<h3 id="orgba70289">Scheme</h3>
+<section id="slide-org67c3a26">
+<h3 id="org67c3a26">Scheme</h3>
 <div class="org-src-container">
 
 <pre  class="src src-scheme"   ><code trim>(<span class="org-keyword">define</span> <span class="org-function-name">*my-list*</span> '(a b c d))
@@ -251,8 +251,8 @@ Sem muitas diferenças, exceto na aplicação parcial.
 Scheme tem desgosto por mutabilidade.
 </p>
 </section>
-<section id="slide-org1a93672">
-<h3 id="org1a93672">Common Lisp</h3>
+<section id="slide-org70b8219">
+<h3 id="org70b8219">Common Lisp</h3>
 <div class="org-src-container">
 
 <pre  class="src src-lisp"   ><code trim>(<span class="org-keyword">defparameter</span> <span class="org-variable-name">*my-list*</span> '(a b c d))
@@ -267,7 +267,7 @@ Algumas considerações&#x2026;
 </p>
 
 </section>
-<section id="slide-org1a93672-split">
+<section id="slide-org70b8219-split">
 
 <ul>
 <li class="fragment appear">CL  é um  Lisp-2. Funções  e variáveis  podem ter  o mesmo  nome sem
@@ -278,8 +278,8 @@ invocação em runtime).</li>
 
 </ul>
 </section>
-<section id="slide-orgad9f50c">
-<h3 id="orgad9f50c">Clojure</h3>
+<section id="slide-orgb6cfea0">
+<h3 id="orgb6cfea0">Clojure</h3>
 <div class="org-src-container">
 
 <pre  class="src src-clojure"   ><code trim>(def *my-list* '(a b c d))
@@ -292,7 +292,7 @@ invocação em runtime).</li>
 </p>
 
 </section>
-<section id="slide-orgad9f50c-split">
+<section id="slide-orgb6cfea0-split">
 
 <p>
 Vamos tentar de novo.
@@ -305,7 +305,7 @@ Vamos tentar de novo.
 </code></pre>
 </div>
 
-<pre class="example" id="orgc9480dd">
+<pre class="example" id="org9a20cc5">
 ((z a) (z b) (z c) (z d))
 </pre>
 
@@ -314,7 +314,7 @@ Algumas considerações&#x2026;
 </p>
 
 </section>
-<section id="slide-orgad9f50c-split">
+<section id="slide-orgb6cfea0-split">
 
 <ul>
 <li class="fragment appear">Clojure tem desgosto por mutabilidade.</li>
@@ -323,8 +323,8 @@ Algumas considerações&#x2026;
 
 </ul>
 </section>
-<section id="slide-org98eadf1">
-<h3 id="org98eadf1">Shen</h3>
+<section id="slide-org09a1257">
+<h3 id="org09a1257">Shen</h3>
 <div class="org-src-container">
 
 <pre  class="src src-shen"   ><code trim>(set *my-list* [a b c d])
@@ -339,10 +339,10 @@ trabalha com um sistema de tipos estático e opcional.
 </section>
 </section>
 <section>
-<section id="slide-org8ecdf1c">
-<h2 id="org8ecdf1c">Interpretador metacircular</h2>
+<section id="slide-org8e40d1a">
+<h2 id="org8e40d1a">Interpretador metacircular</h2>
 
-<div id="org14d6b1e" class="figure">
+<div id="orgb7b054a" class="figure">
 <p><img src="img/metacircular.svg" alt="metacircular.svg" class="org-svg" width="500" />
 </p>
 </div>
@@ -353,8 +353,8 @@ trabalha com um sistema de tipos estático e opcional.
 
 </ul>
 </section>
-<section id="slide-org3b5fd74">
-<h3 id="org3b5fd74"><code>eval</code></h3>
+<section id="slide-org66d0ad5">
+<h3 id="org66d0ad5"><code>eval</code></h3>
 <div class="org-src-container">
 
 <pre  class="src src-majestic"   ><code trim>(<span class="org-keyword">defn</span> eval. (exp env)
@@ -375,8 +375,8 @@ trabalha com um sistema de tipos estático e opcional.
 </code></pre>
 </div>
 </section>
-<section id="slide-org65db985">
-<h3 id="org65db985"><code>apply</code></h3>
+<section id="slide-org2274e0a">
+<h3 id="org2274e0a"><code>apply</code></h3>
 <div class="org-src-container">
 
 <pre  class="src src-majestic"   ><code trim>(<span class="org-keyword">defn</span> apply. (proc args)
@@ -391,8 +391,8 @@ trabalha com um sistema de tipos estático e opcional.
 </code></pre>
 </div>
 </section>
-<section id="slide-org42b4edd">
-<h3 id="org42b4edd">Exemplos</h3>
+<section id="slide-orgd9a2e36">
+<h3 id="orgd9a2e36">Exemplos</h3>
 <div class="container">
 <div class="col">
 
@@ -444,7 +444,7 @@ okay
 </div>
 
 </section>
-<section id="slide-org42b4edd-split">
+<section id="slide-orgd9a2e36-split">
 
 <p>
 Perguntas?
@@ -452,8 +452,8 @@ Perguntas?
 </section>
 </section>
 <section>
-<section id="slide-org8ab1263">
-<h2 id="org8ab1263">Referências</h2>
+<section id="slide-org02cf0cc">
+<h2 id="org02cf0cc">Referências</h2>
 <p style="font-size:0.7em;text-align:left;">
 ABELSON, H.; SUSSMAN,  G. J. <b>Structure and  Interpretation of Computer
 Programs</b>. MIT Press: Cambridge, 1996. ISBN: 978-0-262-51087-5.
