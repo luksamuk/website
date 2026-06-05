@@ -231,9 +231,9 @@ Material didático do curso de IA Generativa da Guilda de IA">
 <div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">Estrutura de Agente: Onde Tudo Começa</h1>
 </div>
 <div id="content" class="content">
-<div id="outline-container-org64757d2" class="outline-2">
-<h2 id="org64757d2">Continuação: De APIs para Agentes</h2>
-<div class="outline-text-2" id="text-org64757d2">
+<div id="outline-container-orgc530dcb" class="outline-2">
+<h2 id="orgc530dcb">Continuação: De APIs para Agentes</h2>
+<div class="outline-text-2" id="text-orgc530dcb">
 <p>
 Nas semanas passadas, aprendemos Python básico (<a href="./03-python-minimo.html">Python Mínimo</a>) e como chamar APIs de LLM (<a href="./04-python-api.html">Python + API de LLM</a>). Vimos que um modelo de linguagem responde a uma pergunta — e nada mais.
 </p>
@@ -253,9 +253,9 @@ Nesta aula, vamos construir um agente do zero: primeiro "na mão" com <code>requ
 </p>
 </div>
 </div>
-<div id="outline-container-org0fcd8bb" class="outline-2">
-<h2 id="org0fcd8bb">O que é um Agente?</h2>
-<div class="outline-text-2" id="text-org0fcd8bb">
+<div id="outline-container-org44690b9" class="outline-2">
+<h2 id="org44690b9">O que é um Agente?</h2>
+<div class="outline-text-2" id="text-org44690b9">
 <blockquote>
 <p>
 Agente = LLM + <b>harness</b>. O LLM é o cérebro; o <i>harness</i> é a estrutura em volta que dá contexto e continuidade — memória, instruções, e (mais tarde) ferramentas.
@@ -270,9 +270,9 @@ Um LLM puro responde uma pergunta e esquece. Um agente mantém um <i>histórico 
 O termo <i>harness</i> (armação, arreio) é usado na indústria pra descrever o código que envolve o LLM: system prompt, gerenciamento de memória, parsing de ferramentas, loop de execução. É o que transforma um modelo que só responde num sistema que <i>conversa e age</i>.
 </p>
 </div>
-<div id="outline-container-org237de29" class="outline-3">
-<h3 id="org237de29">Componentes de um Agente</h3>
-<div class="outline-text-3" id="text-org237de29">
+<div id="outline-container-org9b69d34" class="outline-3">
+<h3 id="org9b69d34">Componentes de um Agente</h3>
+<div class="outline-text-3" id="text-org9b69d34">
 <ol class="org-ol">
 <li><b>System Prompt</b> — define quem o agente é, como age, suas regras</li>
 <li><b>Memória (Histórico)</b> — as mensagens trocadas até agora</li>
@@ -281,16 +281,16 @@ O termo <i>harness</i> (armação, arreio) é usado na indústria pra descrever 
 </ol>
 
 
-<div id="orgf1ebdaf" class="figure">
+<div id="orgae91b73" class="figure">
 <p><img src="img/agente-componentes.svg" alt="Componentes de um agente" class="dark-diagram" />
 </p>
 </div>
 </div>
 </div>
 </div>
-<div id="outline-container-org498401a" class="outline-2">
-<h2 id="org498401a">Paradigma ReAct: Pensar e Agir</h2>
-<div class="outline-text-2" id="text-org498401a">
+<div id="outline-container-orgbbd3169" class="outline-2">
+<h2 id="orgbbd3169">Paradigma ReAct: Pensar e Agir</h2>
+<div class="outline-text-2" id="text-orgbbd3169">
 <p>
 Até agora, nosso código faz uma pergunta e recebe uma resposta. Mas agentes reais <i>pensam e agem</i> em ciclos.
 </p>
@@ -304,9 +304,9 @@ O paradigma <i>ReAct</i> (Reasoning + Acting), proposto por Yao et al. (2022), i
 </pre>
 </div>
 </div>
-<div id="outline-container-org9b5643f" class="outline-3">
-<h3 id="org9b5643f">Exemplo de trace ReAct:</h3>
-<div class="outline-text-3" id="text-org9b5643f">
+<div id="outline-container-org44a6b56" class="outline-3">
+<h3 id="org44a6b56">Exemplo de trace ReAct:</h3>
+<div class="outline-text-3" id="text-org44a6b56">
 <div class="org-src-container">
 <pre class="src src-text">Pergunta: Quanto &#233; 234 &#215; 987 + 100?
 
@@ -340,9 +340,9 @@ Nesta aula, vamos implementar a <b>estrutura</b> do agente (memória + instruç�
 </blockquote>
 </div>
 </div>
-<div id="outline-container-org3dc3400" class="outline-3">
-<h3 id="org3dc3400">Para saber mais</h3>
-<div class="outline-text-3" id="text-org3dc3400">
+<div id="outline-container-orga989acc" class="outline-3">
+<h3 id="orga989acc">Para saber mais</h3>
+<div class="outline-text-3" id="text-orga989acc">
 <ul class="org-ul">
 <li>Yao, S. et al. (2022). "ReAct: Synergizing Reasoning and Acting in Language Models". <a href="https://arxiv.org/abs/2210.03629">arXiv:2210.03629</a></li>
 <li>Liu, N.F. et al. (2023). "Lost in the Middle: How Language Models Use Long Contexts". <a href="https://arxiv.org/abs/2307.03172">arXiv:2307.03172</a></li>
@@ -352,16 +352,16 @@ Nesta aula, vamos implementar a <b>estrutura</b> do agente (memória + instruç�
 </div>
 </div>
 </div>
-<div id="outline-container-org13db818" class="outline-2">
-<h2 id="org13db818">Agente na Mão: Dicts e Funções</h2>
-<div class="outline-text-2" id="text-org13db818">
+<div id="outline-container-org85ad34f" class="outline-2">
+<h2 id="org85ad34f">Agente na Mão: Dicts e Funções</h2>
+<div class="outline-text-2" id="text-org85ad34f">
 <p>
 Começamos com o que já sabemos: <code>requests.post()</code> para chamar o Ollama, e dicionários para guardar o estado.
 </p>
 </div>
-<div id="outline-container-org686621a" class="outline-3">
-<h3 id="org686621a">Criando o agente</h3>
-<div class="outline-text-3" id="text-org686621a">
+<div id="outline-container-org533b66c" class="outline-3">
+<h3 id="org533b66c">Criando o agente</h3>
+<div class="outline-text-3" id="text-org533b66c">
 <div class="org-src-container">
 <pre class="src src-python"><span class="org-keyword">def</span> <span class="org-function-name">criar_agente</span>(instrucoes, max_historico<span class="org-operator">=</span>20):
     <span class="org-keyword">return</span> {
@@ -377,9 +377,9 @@ Um dicionário simples. Sem classes, sem objetos — só funções e dicts.
 </p>
 </div>
 </div>
-<div id="outline-container-org111c348" class="outline-3">
-<h3 id="org111c348">Conversando com o agente</h3>
-<div class="outline-text-3" id="text-org111c348">
+<div id="outline-container-org72b3476" class="outline-3">
+<h3 id="org72b3476">Conversando com o agente</h3>
+<div class="outline-text-3" id="text-org72b3476">
 <div class="org-src-container">
 <pre class="src src-python"><span class="org-keyword">import</span> requests
 
@@ -415,9 +415,9 @@ Um dicionário simples. Sem classes, sem objetos — só funções e dicts.
 </div>
 </div>
 </div>
-<div id="outline-container-orgbaa4fa0" class="outline-3">
-<h3 id="orgbaa4fa0">Testando</h3>
-<div class="outline-text-3" id="text-orgbaa4fa0">
+<div id="outline-container-org61e6c0c" class="outline-3">
+<h3 id="org61e6c0c">Testando</h3>
+<div class="outline-text-3" id="text-org61e6c0c">
 <div class="org-src-container">
 <pre class="src src-python"><span class="org-variable-name">agente</span> <span class="org-operator">=</span> criar_agente(<span class="org-string">"Voc&#234; &#233; um assistente amig&#225;vel que responde em portugu&#234;s."</span>)
 
@@ -432,16 +432,16 @@ O agente lembra do nome porque guardamos o histórico.
 </div>
 </div>
 </div>
-<div id="outline-container-org9cad825" class="outline-2">
-<h2 id="org9cad825">O Problema do Histórico Infinito</h2>
-<div class="outline-text-2" id="text-org9cad825">
+<div id="outline-container-orgf6c11b7" class="outline-2">
+<h2 id="orgf6c11b7">O Problema do Histórico Infinito</h2>
+<div class="outline-text-2" id="text-orgf6c11b7">
 <p>
 Se a conversa crescer demais, o prompt fica gigante — e isso custa tokens e fica lento.
 </p>
 </div>
-<div id="outline-container-orgf8ab980" class="outline-3">
-<h3 id="orgf8ab980">Solução: limitar o histórico</h3>
-<div class="outline-text-3" id="text-orgf8ab980">
+<div id="outline-container-org0f636d0" class="outline-3">
+<h3 id="org0f636d0">Solução: limitar o histórico</h3>
+<div class="outline-text-3" id="text-org0f636d0">
 <div class="org-src-container">
 <pre class="src src-python"><span class="org-keyword">def</span> <span class="org-function-name">conversar</span>(agente, mensagem):
     <span class="org-comment-delimiter"># </span><span class="org-comment">Monta a lista de mensagens
@@ -481,9 +481,9 @@ Agora garantimos que o prompt nunca ultrapassa <code>max_historico</code> mensag
 </p>
 </div>
 </div>
-<div id="outline-container-orgd280945" class="outline-3">
-<h3 id="orgd280945">Mas e compactação?</h3>
-<div class="outline-text-3" id="text-orgd280945">
+<div id="outline-container-org25ec35f" class="outline-3">
+<h3 id="org25ec35f">Mas e compactação?</h3>
+<div class="outline-text-3" id="text-org25ec35f">
 <p>
 Truncar funciona, mas joga fora informação. Na prática, a solução mais robusta é <i>compactação</i> — pedir ao próprio LLM pra resumir o histórico antes de enviar. Isso também mitiga o problema <i>lost in the middle</i>: LLMs têm dificuldade em recuperar informação que está no meio de um contexto longo (<a href="https://arxiv.org/abs/2307.03172">Liu et al., 2023 — "Lost in the Middle: How Language Models Use Long Contexts"</a>).
 </p>
@@ -494,9 +494,9 @@ Compactação precisa de ferramentas (que ainda não cobrimos no curso). Por ora
 </div>
 </div>
 </div>
-<div id="outline-container-org1c9a40e" class="outline-2">
-<h2 id="org1c9a40e">De Requests para LangChain</h2>
-<div class="outline-text-2" id="text-org1c9a40e">
+<div id="outline-container-org66a105d" class="outline-2">
+<h2 id="org66a105d">De Requests para LangChain</h2>
+<div class="outline-text-2" id="text-org66a105d">
 <p>
 Montar mensagens na mão funciona, mas é repetitivo. <b>LangChain</b> é uma biblioteca que abstrai esse trabalho:
 </p>
@@ -552,9 +552,9 @@ O padrão fundamental do LangChain moderno é o <b>pipe</b> (<code>|</code>):
 Prompt entra, LLM sai. Simples assim.
 </p>
 </div>
-<div id="outline-container-org6dcafa4" class="outline-3">
-<h3 id="org6dcafa4">ChatOpenAI: endpoint OpenAI-compatible</h3>
-<div class="outline-text-3" id="text-org6dcafa4">
+<div id="outline-container-org53bff8a" class="outline-3">
+<h3 id="org53bff8a">ChatOpenAI: endpoint OpenAI-compatible</h3>
+<div class="outline-text-3" id="text-org53bff8a">
 <p>
 O Ollama fornece um endpoint compatível com a API da OpenAI em <code>/v1/chat/completions</code>.
 Com <code>ChatOpenAI</code> do <code>langchain-openai</code>, a gente usa esse endpoint <b>direto</b> —
@@ -588,9 +588,9 @@ Mesma infra do Ollama que já conhecemos — mas agora com interface do LangChai
 </p>
 </div>
 </div>
-<div id="outline-container-orgd424283" class="outline-3">
-<h3 id="orgd424283">Chat com Memória</h3>
-<div class="outline-text-3" id="text-orgd424283">
+<div id="outline-container-org9fd8c47" class="outline-3">
+<h3 id="org9fd8c47">Chat com Memória</h3>
+<div class="outline-text-3" id="text-org9fd8c47">
 <p>
 O LLM não lembra de nada sozinho — cada chamada é independente. Para ter memória, guardamos o histórico de mensagens e enviamos junto a cada chamada.
 </p>
@@ -652,9 +652,9 @@ session.add_message(AIMessage(content<span class="org-operator">=</span>r2.conte
 </div>
 </div>
 </div>
-<div id="outline-container-org9d4cb5b" class="outline-2">
-<h2 id="org9d4cb5b">Comparação: Na Mão vs LangChain</h2>
-<div class="outline-text-2" id="text-org9d4cb5b">
+<div id="outline-container-org35e3e41" class="outline-2">
+<h2 id="org35e3e41">Comparação: Na Mão vs LangChain</h2>
+<div class="outline-text-2" id="text-org35e3e41">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -712,11 +712,11 @@ LangChain não é mágica — por baixo, ela faz o que fazemos na mão. Mas abst
 </blockquote>
 </div>
 </div>
-<div id="outline-container-org7c00388" class="outline-2">
-<h2 id="org7c00388">Diagrama do Ciclo</h2>
-<div class="outline-text-2" id="text-org7c00388">
+<div id="outline-container-org52e26a2" class="outline-2">
+<h2 id="org52e26a2">Diagrama do Ciclo</h2>
+<div class="outline-text-2" id="text-org52e26a2">
 
-<div id="orgd12b407" class="figure">
+<div id="orgd8e5e46" class="figure">
 <p><img src="img/s05-ciclo-agente.png" alt="Ciclo de um agente" class="dark-diagram" />
 </p>
 </div>
@@ -731,13 +731,13 @@ LangChain não é mágica — por baixo, ela faz o que fazemos na mão. Mas abst
 </ol>
 </div>
 </div>
-<div id="outline-container-org0c36f16" class="outline-2">
-<h2 id="org0c36f16">Pitfalls Comuns</h2>
-<div class="outline-text-2" id="text-org0c36f16">
+<div id="outline-container-orgdef0c75" class="outline-2">
+<h2 id="orgdef0c75">Pitfalls Comuns</h2>
+<div class="outline-text-2" id="text-orgdef0c75">
 </div>
-<div id="outline-container-org10d8ac6" class="outline-3">
-<h3 id="org10d8ac6">1. Histórico que cresce para sempre</h3>
-<div class="outline-text-3" id="text-org10d8ac6">
+<div id="outline-container-org635e287" class="outline-3">
+<h3 id="org635e287">1. Histórico que cresce para sempre</h3>
+<div class="outline-text-3" id="text-org635e287">
 <p>
 Se não limitar, o prompt fica gigante e custa caro.
 </p>
@@ -753,17 +753,17 @@ Se não limitar, o prompt fica gigante e custa caro.
 </div>
 </div>
 </div>
-<div id="outline-container-org1a8321e" class="outline-3">
-<h3 id="org1a8321e">2. Memória não persistida</h3>
-<div class="outline-text-3" id="text-org1a8321e">
+<div id="outline-container-org2a6a4fb" class="outline-3">
+<h3 id="org2a6a4fb">2. Memória não persistida</h3>
+<div class="outline-text-3" id="text-org2a6a4fb">
 <p>
 O histórico fica na memória RAM. Se reiniciar o programa, perde tudo. Solução futura: salvar em arquivo ou banco de dados.
 </p>
 </div>
 </div>
-<div id="outline-container-orgf5c87e7" class="outline-3">
-<h3 id="orgf5c87e7">3. System prompt vago</h3>
-<div class="outline-text-3" id="text-orgf5c87e7">
+<div id="outline-container-org536eeda" class="outline-3">
+<h3 id="org536eeda">3. System prompt vago</h3>
+<div class="outline-text-3" id="text-org536eeda">
 <div class="org-src-container">
 <pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">ERRADO &#8212; vago demais
 </span><span class="org-variable-name">instrucoes</span> <span class="org-operator">=</span> <span class="org-string">"Responda perguntas."</span>
@@ -781,9 +781,9 @@ REGRAS:
 </div>
 </div>
 </div>
-<div id="outline-container-org6e81f2c" class="outline-2">
-<h2 id="org6e81f2c">Para Lembrar</h2>
-<div class="outline-text-2" id="text-org6e81f2c">
+<div id="outline-container-org8e3194c" class="outline-2">
+<h2 id="org8e3194c">Para Lembrar</h2>
+<div class="outline-text-2" id="text-org8e3194c">
 <blockquote>
 <p>
 "Agente = LLM com memória e personalidade. O ReAct completa o ciclo: pensar e agir."
@@ -797,13 +797,13 @@ Na S06, vamos dar <b>ferramentas</b> para o agente — e o ciclo ReAct (input �
 <hr />
 </div>
 </div>
-<div id="outline-container-orgb01be63" class="outline-2">
-<h2 id="orgb01be63">Exercícios</h2>
-<div class="outline-text-2" id="text-orgb01be63">
+<div id="outline-container-org716e240" class="outline-2">
+<h2 id="org716e240">Exercícios</h2>
+<div class="outline-text-2" id="text-org716e240">
 </div>
-<div id="outline-container-orgebe4b2b" class="outline-3">
-<h3 id="orgebe4b2b">Exercício 1: Agente com Personalidade</h3>
-<div class="outline-text-3" id="text-orgebe4b2b">
+<div id="outline-container-orgb5a8b05" class="outline-3">
+<h3 id="orgb5a8b05">Exercício 1: Agente com Personalidade</h3>
+<div class="outline-text-3" id="text-orgb5a8b05">
 <p>
 Crie um agente com uma personalidade específica (professor de Python, assistente de receitas, guia de viagem):
 </p>
@@ -828,17 +828,17 @@ SEU P&#218;BLICO:
 </div>
 </div>
 </div>
-<div id="outline-container-org144ee8b" class="outline-3">
-<h3 id="org144ee8b">Exercício 2: Memória com Limite</h3>
-<div class="outline-text-3" id="text-org144ee8b">
+<div id="outline-container-org0c4abd1" class="outline-3">
+<h3 id="org0c4abd1">Exercício 2: Memória com Limite</h3>
+<div class="outline-text-3" id="text-org0c4abd1">
 <p>
 Modifique <code>criar_agente</code> para aceitar um <code>max_historico</code> e teste o que acontece quando o histórico ultrapassa o limite. O agente "esquece" as mensagens mais antigas?
 </p>
 </div>
 </div>
-<div id="outline-container-orge4e1a7c" class="outline-3">
-<h3 id="orge4e1a7c">Exercício 3: Dois Agentes, Duas Personalidades</h3>
-<div class="outline-text-3" id="text-orge4e1a7c">
+<div id="outline-container-org2f24f21" class="outline-3">
+<h3 id="org2f24f21">Exercício 3: Dois Agentes, Duas Personalidades</h3>
+<div class="outline-text-3" id="text-org2f24f21">
 <p>
 Crie dois agentes com personalidades diferentes e compare as respostas:
 </p>
@@ -856,9 +856,9 @@ Crie dois agentes com personalidades diferentes e compare as respostas:
 </div>
 </div>
 </div>
-<div id="outline-container-orgcd81810" class="outline-2">
-<h2 id="orgcd81810">Próxima Aula</h2>
-<div class="outline-text-2" id="text-orgcd81810">
+<div id="outline-container-orgd5e7dd0" class="outline-2">
+<h2 id="orgd5e7dd0">Próxima Aula</h2>
+<div class="outline-text-2" id="text-orgd5e7dd0">
 <p>
 Semana 06: <b>Primeira Ferramenta</b> — vamos dar ao agente a capacidade de usar ferramentas externas (calculadora, busca, etc.). É aí que o ciclo ReAct se completa: <i>pensar, agir, observar, responder</i>.</p>
 </div>
