@@ -11,10 +11,49 @@
 #+REVEAL_TITLE_SLIDE: <p style="font-size:0.7em;opacity:0.6;">%a</p><br/><h2>%t</h2><br/><p style="font-size:0.85em;opacity:0.8;">%s</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 #+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_06.gif
 
+* 📰 Fofocas da Semana
+
+#+ATTR_HTML: :style font-size:0.55em;
+- *Qwen3.7-Plus* (01/06) — multimodal (texto+visão), irmão do Max (text-only), 1M ctx, API-only preview
+  - Max: reasoning puro, IA Index 56.6, #1 chinês
+  - Plus: enxerga imagens, screenshots, gráficos — Max não consegue
+- *Mellum2* (01/06) — JetBrains, 12B MoE (2.5B ativos, 64 experts/8 ativas), 131K ctx, Apache 2.0, foco em routing/RAG/sub-agentes 🔓
+- *NVIDIA RTX Spark* (01/06) — superchip consumer: Grace CPU 20-core + Blackwell GPU, 128GB unified, 1 PF FP4, outono 2026
+- *NVIDIA DGX Station* (01/06) — workstation enterprise: GB300 Blackwell Ultra, Grace 72-core, 748 GB, 20 PF FP4, ~US$97k, Q4 2026
+
+#+REVEAL: split
+
+#+ATTR_HTML: :style font-size:0.55em;
+- *OpenClaw* (02/06) — projeto open-source de agentes chega no Windows; integra com MXC (Microsoft Execution Containers), sandbox OS-level, fluxos multi-step com isolamento 🦞
+  - *NVIDIA OpenShell* — runtime Apache 2.0 pra agentes autônomos, construído sobre MXC, inclui harnesses pra *Hermes Agent* 🛡️
+- *Hermes Agent* (02/06) — suporte nativo Windows (sem WSL!): CLI, gateway, cron, browser, MCP tudo nativo; novo *Hermes Desktop App* (macOS + Windows) com instalador GUI 🖥️
+- *Gemma 4 12B* (03/06) — encoder-free unificado, 11.95B dense, texto+imagem+áudio nativo, Apache 2.0, GGUF disponível 🔓
+- *MAI-Thinking-1* — 35B MoE (~1T total), reasoning, 97% AIME 2025, 53% SWE-Bench Pro, 256K ctx, "not distilled"
+- *MAI-Code-1-Flash* — código, inferência eficiente, integrado ao GitHub Copilot
+- *MAI-Transcribe-1* / *MAI-Voice-1* / *MAI-Image-2* — STT, TTS, imagem (lançados em abril)
+  - API-only (Azure Foundry + GitHub Models + OpenRouter), sem open weights, preview privado
+
+#+REVEAL: split
+
+#+ATTR_HTML: :style font-size:0.55em;
+- *NVIDIA Nemotron 3 Ultra* (04/06) — 550B Hybrid Mamba-2/Transformer/LatMoE (55B ativos), #1 US open-weights (IA Index 48, atrás de Kimi K2.6 a 54), 1M ctx, 300+ tok/s, pesos BF16+NVFP4 🔓
+  - Anunciado 01/06 no Computex por Jensen, 5x mais rápido e 30% mais barato que concorrentes open frontier
+  - NVIDIA Open Model License (comercial OK, ≠ Apache 2.0)
+  - Datacenter only (mín. A100 cluster, ideal: GB300/Blackwell)
+  - *Nemotron 3.5 ASR* (04/06) — 0.6B ASR multilingual, 40 idiomas (pt-BR pronto), streaming sub-100ms, OpenMDW-1.1 🔓
+  - *Nemotron 3.5 Content Safety* (04/06) — 4B guardrail com reasoning, BYO policy, 22 categorias de harm, dual-mode (think/no-think), topic-following, NVIDIA Open Model License 🔓
+
+#+REVEAL: split
+
+#+ATTR_HTML: :style font-size:0.55em;
+- *Magenta RealTime 2* (04/06) — geração de música em tempo real, decoder-only LLM, 2 sizes (230M small / 2.4B base), controle por texto+áudio+MIDI, SpectroStream codec 48kHz stereo, Apache 2.0 código + CC-BY 4.0 pesos 🔓
+  - Streaming real-time exige Apple Silicon; GPU NVIDIA = offline only via JAX
+  - Modelo small (230M) roda em Air M1; base (2.4B) exige Pro Max
+- *LFM2.5-VL-Extract* (04/06) — Liquid AI, VLM de extração estruturada: passa imagem + lista de campos, retorna JSON (não texto livre). 450 M e 1.6B, open-weight, GGUF disponível 🔓 (Demo! ↗)
+
 * O problema do LLM puro
 
-#+ATTR_REVEAL: :frag (appear)
-LLMs são ruins em matemática.
+LLMs são modelos de linguagem. Eles *preveem* texto, não calculam.
 
 #+BEGIN_SRC text
 Pergunta: "Quanto é 234 × 987?"
@@ -25,27 +64,45 @@ Pode acertar, pode errar.
 
 * A solução: ferramentas
 
-#+ATTR_REVEAL: :frag (appear)
 Ferramenta = função Python que o agente pode chamar.
 
+[[https://colab.research.google.com/github/luksamuk/guilda-ia/blob/main/notebooks/aula06_primeira_ferramenta_colab.ipynb][📓 Colab]]
+
 ** Como funciona:
-#+ATTR_REVEAL: :frag (appear)
-1. Modelo recebe descrição da ferramenta
+1. O LLM recebe a descrição das ferramentas disponíveis
 2. Analisa a pergunta
 3. Decide: preciso dessa ferramenta?
-4. Se sim, gera chamada no formato correto
+4. Gera os argumentos no formato correto
 5. Python executa e devolve resultado
-6. Modelo usa resultado na resposta
+6. O LLM usa o resultado na resposta
 
 * Exemplo: calculadora
 
 #+BEGIN_SRC python
-def calcular(expressao):
-    """Resolve expressão matemática."""
-    return str(eval(expressao))
+@tool
+def calculate(a: float, b: float, operation: str) -> float:
+    """Performs a math operation between two numbers
+    and returns the exact result.
+    Use when you need to do calculations.
+    operation: 'add', 'subtract', 'multiply', 'divide'
+    """
+    ops = {'add': a+b, 'subtract': a-b,
+           'multiply': a*b, 'divide': a/b}
+    return ops[operation]
+#+END_SRC
 
-# Exemplo:
-calcular("234 * 987")  # "230958"
+Parâmetros nomeados: seguro e simples. Sem =eval=, sem parsing.
+
+* Exemplo: tamanho de palavra
+
+#+BEGIN_SRC python
+@tool
+def get_word_length(word: str) -> int:
+    """Returns the number of characters in a word.
+    Use when the user asks about the length
+    of a word or how many letters it has.
+    """
+    return len(word)
 #+END_SRC
 
 * O segredo: descrição clara
@@ -53,7 +110,6 @@ calcular("234 * 987")  # "230958"
 O modelo decide baseado na descrição.
 
 *Descrição ruim:*
-#+ATTR_REVEAL: :frag (appear)
 #+begin_quote
 "Calculadora."
 #+end_quote
@@ -62,43 +118,128 @@ O modelo decide baseado na descrição.
 
 #+REVEAL: split
 *Descrição boa:*
-#+ATTR_REVEAL: :frag (appear)
 #+begin_quote
-"Resolve expressões matemáticas. Use quando precisar
-fazer cálculos. Ex: '2 + 2', '10 * 5', '(5 + 3) / 2'."
+"Performs a math operation between two numbers and returns the exact result. Use when you need to do calculations."
 #+end_quote
 
-→ Modelo entende quando e como usar.
+→ Modelo entende quando E como usar.
 
-* O formato de chamada
+* @tool: Pydantic resolve o parsing
 
-O modelo precisa gerar algo que Python entenda.
+#+ATTR_REVEAL: :frag (appear)
+- =@tool= gera o schema JSON automaticamente
+- Pydantic valida e converte os tipos
+- ="234" → 234.0= (conversão automática)
+- =ValidationError= se o LLM manda lixo
 
-#+BEGIN_SRC text
-USAR_FERRAMENTA: calculadora
-ARGUMENTO: 234 * 987
+#+REVEAL: split
+
+Sem =@tool=:
+#+BEGIN_SRC python
+a = float(args["a"])       # manual
+b = float(args["b"])       # manual
 #+END_SRC
 
-Seu código:
-1. Detecta isso na resposta
-2. Executa a função
-3. Devolve o resultado para o modelo
-
-* Diagrama
-
-#+BEGIN_SRC text
-Usuário: "Quanto é 234 × 987?"
-    ↓
-Agente: "Preciso da calculadora"
-    ↓
-Ferramenta: calcular("234 * 987") = 230958
-    ↓
-Agente: "230.958"
+Com =@tool=:
+#+BEGIN_SRC python
+resultado = calculate.invoke(args)  # Pydantic!
 #+END_SRC
+
+* O ciclo manual: =bind_tools=
+
+#+ATTR_HTML: :style font-size:0.6em;
+1. =invoke= → LLM *decide* (retorna =tool_calls=, não executa)
+2. Você executa a ferramenta com os argumentos
+3. =invoke= de novo com =ToolMessage= → resposta final
+
+#+REVEAL: split
+
+Passo 1 — o LLM decide:
+#+BEGIN_SRC python
+resposta = llm_com_ferramentas.invoke(
+    "Quanto é 234 vezes 987?")
+pprint(resposta.tool_calls)
+# [{'name': 'calculate',
+#   'args': {'a': 234, 'b': 987,
+#            'operation': 'multiply'},
+#   'id': 'call_abc123'}]
+#+END_SRC
+
+=resposta.content= é *string vazia* — o LLM não executou!
+
+#+REVEAL: split
+
+Passo 2 — você executa:
+#+BEGIN_SRC python
+tc = resposta.tool_calls[0]
+resultado = calculate.invoke(tc['args'])
+print(resultado)  # 230958.0
+#+END_SRC
+
+Passo 3 — resultado volta pro LLM:
+#+BEGIN_SRC python
+mensagens = [
+    HumanMessage(content="Quanto é 234 vezes 987?"),
+    resposta,  # AIMessage com tool_call
+    ToolMessage(content=str(resultado),
+                tool_call_id=tc['id']),
+]
+resposta_final = llm_com_ferramentas.invoke(mensagens)
+# "O resultado é 230.958."
+#+END_SRC
+
+* ReAct se completa
+
+O ciclo manual *é* ReAct em ação:
+
+#+ATTR_HTML: :style font-size:0.7em;
+- *Thought* → LLM raciocina ("preciso calcular")
+- *Action* → LLM chama ferramenta (=tool_calls=)
+- *Observation* → você executa e devolve o resultado
+- *Answer* → LLM formula a resposta final
+
+([[https://arxiv.org/abs/2210.03629][Yao et al., 2022]])
+
+* O ciclo automático: =create_agent=
+
+O ciclo manual é bom pra entender. Na prática:
+
+#+BEGIN_SRC python
+from langchain.agents import create_agent
+
+agente = create_agent(llm, [calculate, get_word_length])
+
+resultado = agente.invoke(
+    {"messages": "Quanto é 234 vezes 987?"})
+print(resultado["messages"][-1].content)
+#+END_SRC
+
+Uma linha. Decide, executa, responde — tudo automático.
+
+* Um gostinho de async
+
+#+BEGIN_SRC python
+import asyncio
+
+async def conversar():
+    future = agente.ainvoke(
+        {"messages": "Quanto é 234 vezes 987?"})
+    print("Processando...")  # roda imediatamente
+    resultado = await future  # agora espera
+    print(resultado["messages"][-1].content)
+
+asyncio.run(conversar())
+#+END_SRC
+
+⚠️ Em notebooks Jupyter/Colab, =asyncio.run()= falha.
+Solução: =nest_asyncio.apply()= antes de rodar.
 
 * Para lembrar
 
-#+ATTR_REVEAL: :frag (appear)
+:PROPERTIES:
+:REVEAL_BACKGROUND: ./slide_06.gif
+:END:
+
 #+begin_quote
 "Ferramenta transforma conversa em ação."
 #+end_quote
@@ -107,11 +248,6 @@ Agente: "230.958"
 LLM puro: só fala
 Agente com ferramenta: fala E faz
 
-* Próxima semana
-
 #+ATTR_REVEAL: :frag (appear)
-- Múltiplas ferramentas
-- Como o modelo escolhe qual usar
-- Descrições mais específicas
-
-* Perguntas?
+- Manual (=bind_tools=): entender o que acontece
+- Automático (=create_agent=): produzir
