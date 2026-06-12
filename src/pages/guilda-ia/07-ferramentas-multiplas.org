@@ -1,403 +1,526 @@
-#+TITLE: Múltiplas Ferramentas: O Agente Escolhe
-# Semana 8 - 29/05/2026
-#+DESCRIPTION: Semana 8 - Guilda de IA: Agentes com múltiplas ferramentas
+#+TITLE: Múltiplas Ferramentas e MCP: O Agente Se Expande
+# Semana 7 - 12/06/2026
+#+DESCRIPTION: Semana 7 - Guilda de IA: Múltiplas ferramentas, debug, descrições, MCP e async
 #+SETUPFILE: ./setupfile.org
 #+LANGUAGE: pt_BR
 #+STARTUP: inlineimages showall latexpreview
-#+DATE: 29/05/2026
+#+DATE: 12/06/2026
 
-* O desafio
+* Chamadas encadeadas
 
-Um agente com uma ferramenta já é útil. Mas e com várias?
+Na semana passada, o agente usava uma ferramenta por vez. Mas e quando a pergunta precisa de *duas ou mais*?
 
-O modelo precisa *escolher* qual usar, e às vezes *combinar* resultados de múltiplas ferramentas.
-
-#+BEGIN_SRC dot :file img/agente-multi-ferramentas.svg :cache yes
-digraph AgenteMultiFerramentas {
-    rankdir=TB;
-    node [shape=box, style="rounded,filled"];
-    
-    label [label="AGENTE COM MÚLTIPLAS FERRAMENTAS", fillcolor="#e0e0ff", fontsize=14, style="filled,bold"];
-    
-    usuario [label="USUÁRIO", fillcolor="#e0e0e0"];
-    
-    subgraph cluster_llm {
-        label="LLM";
-        style="rounded";
-        fillcolor="#fafafa";
-        
-        input [label="Input: \"Quem nasceu primeiro:\nEinstein ou Newton,\ne qual a diferença de\nidade em dias?\"", fillcolor="#f0f0ff"];
-        thought [label="Thought: Preciso de:\n1. Data nasc. Einstein\n2. Data nasc. Newton\n3. Calcular diferença", fillcolor="#f0f0ff"];
-        decision [label="Decision: usar\nWIKIPEDIA (2x)\n+ CALCULADORA", fillcolor="#f0f0ff"];
-    }
-    
-    wikipedia1 [label="WIKIPEDIA\nEinstein: 1879\nNewton: 1643", fillcolor="#ffffe0"];
-    calculadora [label="CALCULADORA\nDiferença\nde datas", fillcolor="#ffffe0"];
-    horario [label="HORÁRIO\nData/atual", fillcolor="#ffffe0"];
-    
-    resposta [label="RESPOSTA FINAL", fillcolor="#e0ffe0"];
-    
-    usuario -> input;
-    input -> thought;
-    thought -> decision;
-    decision -> {wikipedia1, calculadora, horario};
-    {wikipedia1, calculadora, horario} -> resposta;
-}
-#+END_SRC
-
-* Paradigmas de Orquestração
-
-** 1. Orquestração Sequencial
-
-Executar ferramentas uma após outra, usando o resultado da anterior para a próxima.
+Exemplo: "Quanto é 234 × 987 + 100?"
 
 #+BEGIN_SRC text
-Pergunta: "Qual a idade de Einstein hoje?"
-
-Sequência:
-  1. WIKIPEDIA("Albert Einstein birth date") → 1879
-  2. HORARIO("current year") → 2025
-  3. CALCULADORA("2025 - 1879") → 146 anos (se estivesse vivo)
-  4. Resposta: "Einstein nasceu em 1879, teria 146 anos hoje."
+Thought: Preciso multiplicar 234 × 987, depois somar 100
+Action: calculate(234, 987, "multiply") → 230958
+Action: calculate(230958, 100, "add") → 231058
+Answer: "O resultado é 231.058."
 #+END_SRC
 
-** 2. Orquestração Paralela
+O =create_agent= faz isso *automaticamente*. Ele repete o ciclo Thought→Action→Observation até ter a resposta final.
 
-Executar ferramentas independentes simultaneamente.
+#+BEGIN_SRC python
+from langchain.agents import create_agent
 
-#+BEGIN_SRC dot :file img/orquestracao-paralela.svg :cache yes
-digraph OrquestracaoParalela {
-    rankdir=TB;
-    node [shape=box, style="rounded,filled"];
-    
-    label [label="Paralelo:", fillcolor="#e0e0e0", fontsize=12];
-    
-    wiki1 [label="WIKIPEDIA\n\"Brazil GDP\"", fillcolor="#f0f0ff"];
-    wiki2 [label="WIKIPEDIA\n\"Argentina GDP\"", fillcolor="#f0f0ff"];
-    
-    resA [label="Resultado A", fillcolor="#ffffe0"];
-    resB [label="Resultado B", fillcolor="#ffffe0"];
-    
-    calc [label="CALCULADORA\n(A - B)", fillcolor="#f0f0ff"];
-    resposta [label="Resposta\nfinal", fillcolor="#e0ffe0"];
-    
-    wiki1 -> resA;
-    wiki2 -> resB;
-    resA -> calc;
-    resB -> calc;
-    calc -> resposta;
-}
+agente = create_agent(llm, [calculate, get_time, get_word_length])
+
+resultado = agente.invoke({"messages": "Quanto é 234 vezes 987 mais 100?"})
+print(resultado["messages"][-1].content)
+# "O resultado de 234 × 987 + 100 é 231.058."
 #+END_SRC
 
-** 3. Orquestração Condicional
-
-Usar resultado de uma ferramenta para decidir qual usar depois.
-
-#+BEGIN_SRC text
-Pergunta: "Qual é o dobro da população da capital da França?"
-
-Fluxo:
-  1. WIKIPEDIA("capital of France") → "Paris"
-  2. WIKIPEDIA("Paris population") → 2161000
-  3. CALCULADORA("2161000 * 2") → 4322000
-  4. Resposta: "O dobro da população de Paris é 4.322.000."
-#+END_SRC
-
-* Referências Importantes
-
-** Paper: Gorilla
-
-*Título:* "Gorilla: Large Language Model Connected to Massive APIs"  
-*Autores:* Shishir Patil, Tianjun Zhang, Xin Wang, Joseph E. Gonzalez  
-*Ano:* 2023  
-*Link:* [[https://arxiv.org/abs/2305.15334][arXiv:2305.15334]]
-
-** Paper: ReAct
-
-*Título:* "ReAct: Synergistic Reasoning and Acting in Language Models"  
-*Autores:* Shunyu Yao, et al.  
-*Ano:* 2022  
-
-* Como o modelo decide
-
-O modelo lê todas as descrições e compara com a pergunta.
-
-#+BEGIN_SRC dot :file img/decisao-modelo.svg :cache yes
-digraph DecisaoModelo {
-    rankdir=TB;
-    node [shape=box, style="rounded,filled"];
-    
-    label [label="DECISÃO DO MODELO (Inside LLM)", fillcolor="#e0e0ff", fontsize=14, style="filled,bold"];
-    
-    input [label="INPUT:\n\"Quem foi Ada Lovelace\nquando ela nasceu?\"", fillcolor="#e0e0e0"];
-    
-    subgraph cluster_step1 {
-        label="Step 1: Parsing da pergunta";
-        style="rounded";
-        fillcolor="#fafafa";
-        parse1 [label="- \"Quem foi Ada Lovelace\" →\n  informação biográfica", fillcolor="#f0f0ff"];
-        parse2 [label="- \"quando ela nasceu\" →\n  data", fillcolor="#f0f0ff"];
-    }
-    
-    subgraph cluster_step2 {
-        label="Step 2: Análise das ferramentas";
-        style="rounded";
-        fillcolor="#fafafa";
-        
-        calc [label="calculadora\nResolve matemática", fillcolor="#ffe0e0"];
-        calc_status [label="❌ Não relevante", fillcolor="#ffe0e0"];
-        
-        hora [label="horario\nData/hora atual", fillcolor="#ffe0e0"];
-        hora_status [label="❌ Não relevante", fillcolor="#ffe0e0"];
-        
-        wiki [label="wikipedia\nBusca informações", fillcolor="#e0ffe0"];
-        wiki_status [label="✅ RELEVANTE", fillcolor="#e0ffe0"];
-    }
-    
-    subgraph cluster_step3 {
-        label="Step 3: Geração do plano";
-        style="rounded";
-        fillcolor="#fafafa";
-        thought [label="Thought: Ada Lovelace é uma\npessoa histórica. Preciso\nbuscar informações sobre ela\nna Wikipedia.", fillcolor="#f0f0ff"];
-        action [label="Action: wikipedia\nArguments: {\"termo\": \"Ada Lovelace\"}", fillcolor="#e0ffe0"];
-    }
-    
-    input -> parse1;
-    input -> parse2;
-    parse1 -> calc;
-    parse1 -> hora;
-    parse1 -> wiki;
-    calc -> calc_status;
-    hora -> hora_status;
-    wiki -> wiki_status;
-    {calc_status, hora_status, wiki_status} -> thought;
-    thought -> action;
-}
-#+END_SRC
+O agente decide sozinho: preciso de duas chamadas a =calculate=? Então faço duas.
 
 * O problema das descrições vagas
 
 Se duas ferramentas parecem fazer a mesma coisa, o modelo confunde.
 
-** Exemplo de Conflito
-
-#+BEGIN_SRC dot :file img/ferramentas-conflitantes.svg :cache yes
-digraph FerramentasConflitantes {
-    rankdir=LR;
-    node [shape=box, style="rounded,filled"];
-    
-    pergunta [label="Pergunta:\n\"Quem foi Einstein?\"", fillcolor="#e0e0e0"];
-    
-    ferramentas [label="Ferramentas conflitantes:", fillcolor="#e0e0e0"];
-    
-    wiki [label="buscar_wikipedia\n\"Busca informações\nna Wikipedia\"", fillcolor="#f0f0ff"];
-    google [label="buscar_google\n\"Pesquisa informações\nno Google\"", fillcolor="#f0f0ff"];
-    
-    confusao [label="Problema:\nModelo não sabe\nqual usar!", shape="diamond", fillcolor="#ffe0e0"];
-    
-    pergunta -> confusao;
-    confusao -> wiki [style=dashed];
-    confusao -> google [style=dashed];
-    wiki -> ferramentas [style=invis];
-}
-#+END_SRC
-
-** Solução: Descrições Específicas
-
-#+BEGIN_SRC dot :file img/ferramentas-especificas.svg :cache yes
-digraph FerramentasEspecificas {
-    rankdir=TB;
-    node [shape=box, style="rounded,filled"];
-    
-    pergunta [label="Pergunta:\n\"Quem foi Einstein?\"", fillcolor="#e0e0e0"];
-    
-    wiki [label="buscar_wikipedia\n\n\"Busca artigos enciclopédicos\nsobre pessoas, lugares e conceitos.\nUse para informações factuais\ne históricas bem estabelecidas.\"", fillcolor="#e0ffe0"];
-    
-    google [label="buscar_google\n\n\"Pesquisa resultados da web\nem tempo real. Use para\nnotícias atuais, preços,\neventos recentes.\"", fillcolor="#e0ffe0"];
-    
-    resposta [label="Agora o modelo\nsabe distinguir!", fillcolor="#e0ffe0"];
-    
-    pergunta -> wiki [label="factual"];
-    pergunta -> google [label="tempo real"];
-    {wiki, google} -> resposta;
-}
-#+END_SRC
-
-Agora o modelo sabe distinguir!
-
-* Implementação
-
-** Registro de Ferramentas
+** Exemplo de conflito:
 
 #+BEGIN_SRC python
-from typing import Callable, Dict, List, Any
+@tool
+def search_wiki(query: str) -> str:
+    """Search for information."""
+    ...
 
-# ============================================
-# FERRAMENTAS COM DICIONÁRIOS E FUNÇÕES
-# ============================================
-
-def criar_ferramenta(
-    nome: str,
-    descricao: str,
-    funcao: Callable,
-    parametros: Dict[str, Dict[str, Any]] = None
-) -> Dict:
-    """
-    Cria uma ferramenta como dicionário.
-    
-    Args:
-        nome: Nome único da ferramenta
-        descricao: O que a ferramenta faz (para o LLM entender)
-        funcao: Função Python que será executada
-        parametros: Dict com descrição dos parâmetros
-    
-    Returns:
-        Dicionário representando a ferramenta
-    """
-    return {
-        "nome": nome,
-        "descricao": descricao,
-        "funcao": funcao,
-        "parametros": parametros or {}
-    }
-
-
-def gerar_descricao_ferramenta(ferramenta: Dict) -> str:
-    """Gera descrição para o prompt do modelo."""
-    params_desc = "\n".join(
-        f"    - {name}: {info.get('description', '')} "
-        f"({'obrigatório' if info.get('required') else 'opcional'})"
-        for name, info in ferramenta["parametros"].items()
-    )
-    return f"""### {ferramenta["nome"]}
-{ferramenta["descricao"]}
-
-Parâmetros:
-{params_desc}
-"""
-
-
-# ============================================
-# REGISTRO DE FERRAMENTAS
-# ============================================
-
-def criar_registro() -> Dict:
-    """Cria um registro vazio de ferramentas."""
-    return {"ferramentas": {}}
-
-
-def registrar_ferramenta(registro: Dict, ferramenta: Dict) -> None:
-    """Registra uma ferramenta no registro."""
-    nome = ferramenta["nome"]
-    if nome in registro["ferramentas"]:
-        raise ValueError(f"Ferramenta '{nome}' já está registrada")
-    registro["ferramentas"][nome] = ferramenta
-
-
-def obter_ferramenta(registro: Dict, nome: str) -> Dict:
-    """Retorna ferramenta pelo nome."""
-    return registro["ferramentas"].get(nome)
-
-
-def listar_ferramentas(registro: Dict) -> List[str]:
-    """Retorna lista de nomes de ferramentas."""
-    return list(registro["ferramentas"].keys())
-
-
-def gerar_prompt_ferramentas(registro: Dict) -> str:
-    """Gera string com todas as descrições para o prompt."""
-    prompt = "# FERRAMENTAS DISPONÍVEIS\n\n"
-    prompt += "Você tem acesso às seguintes ferramentas.\n\n"
-    
-    for ferramenta in registro["ferramentas"].values():
-        prompt += gerar_descricao_ferramenta(ferramenta)
-    
-    return prompt
-
-
-# Exemplo de uso
-registro = criar_registro()
-
-registrar_ferramenta(registro, criar_ferramenta(
-    nome="calculadora",
-    descricao="Resolve expressões matemáticas. Use para cálculos numéricos.",
-    funcao=calculadora_segura,  # Função definida no módulo anterior
-    parametros={
-        "expressao": {
-            "type": "string",
-            "description": "Expressão matemática (ex: '2 + 2', '10 * 5')",
-            "required": True
-        }
-    }
-))
-
-registrar_ferramenta(registro, criar_ferramenta(
-    nome="horario",
-    descricao="Retorna data e hora atual. Use quando precisar saber 'agora'.",
-    funcao=obter_horario,  # Função definida no módulo anterior
-    parametros={
-        "formato": {
-            "type": "string",
-            "description": "Formato da saída (opcional)",
-            "required": False
-        }
-    }
-))
-
-print(gerar_prompt_ferramentas(registro))
+@tool
+def search_web(query: str) -> str:
+    """Search for information."""
+    ...
 #+END_SRC
+
+Duas ferramentas com a mesma descrição genérica. O LLM não sabe qual usar.
+
+** Solução: descrições específicas
+
+#+BEGIN_SRC python
+@tool
+def search_wiki(query: str) -> str:
+    """Search Wikipedia for factual, historical, and encyclopedic information.
+    Use for established facts about people, places, events, and concepts.
+    """
+    ...
+
+@tool
+def search_web(query: str) -> str:
+    """Search the web for current information like news, prices, and recent events.
+    Use for real-time data that changes frequently.
+    """
+    ...
+#+END_SRC
+
+Agora o modelo distingue: fato histórico → =search_wiki=, notícia atual → =search_web=.
+
+** Regra prática: cada ferramenta precisa de uma descrição exclusiva que explique *quando* usar.
+
+* Debug de ferramentas
+
+O LLM nem sempre acerta. Eis os problemas mais comuns e como resolver.
+
+** Problema 1: LLM chama a ferramenta errada
+
+Pergunta: "Que horas são?"
+LLM chama: =calculate= em vez de =get_time=
+
+*Causa:* descrição de =calculate= muito vaga ("Faz cálculos") ou descrição de =get_time= não menciona "que horas são".
+
+*Solução:* melhorar a descrição da ferramenta correta.
+
+#+BEGIN_SRC python
+# ❌ Vaga
+@tool
+def get_time() -> str:
+    """Returns current date and time."""
+
+# ✅ Específica
+@tool
+def get_time() -> str:
+    """Returns the current date and time.
+    Use when the user asks 'what time is it', 'what date is today',
+    or any question about the current moment.
+    """
+#+END_SRC
+
+** Problema 2: argumentos errados
+
+LLM manda: =calculate(a=234, b=987, operation="234 vezes 987")=
+Esperado: =operation= deve ser ="multiply"=, não ="234 vezes 987"=
+
+*Causa:* descrição do parâmetro =operation= não lista os valores possíveis claramente.
+
+*Solução:* documentar valores permitidos no docstring.
+
+#+BEGIN_SRC python
+@tool
+def calculate(a: float, b: float, operation: str) -> float:
+    """Performs a mathematical operation between two numbers.
+    Use when you need to perform numeric calculations.
+
+    Args:
+        a: First number
+        b: Second number
+        operation: One of 'add', 'subtract', 'multiply', 'divide'
+    """
+#+END_SRC
+
+** Problema 3: ValidationError
+
+Se o LLM manda um argumento com tipo errado (ex: passar texto onde espera número), Pydantic gera um *ValidationError* com contexto claro.
+
+#+BEGIN_SRC python
+# ValidationError: Input should be a valid number,
+# unable to parse string as a number (field: a)
+#+END_SRC
+
+Isso é *bom* — o agente recebe o erro e pode corrigir. Mas se acontece muito, a descrição do parâmetro pode estar confusa.
+
+* Ferramentas externas via MCP
+
+Até agora, você escreveu as ferramentas. Mas e se *outra pessoa* escreveu a ferramenta e você só quer usar?
+
+O **MCP** (Model Context Protocol) é um protocolo padrão para ferramentas. Pense nele como o HTTP das ferramentas de IA — assim como HTTP padronizou a web, MCP padroniza como ferramentas se conectam a agentes.
+
+** Conceito
+
+[[https://modelcontextprotocol.io/][Model Context Protocol]] (criado pela Anthropic, open-source):
+- Um *servidor MCP* expõe ferramentas
+- Um *cliente MCP* consome essas ferramentas
+- Protocolo padrão — qualquer LLM pode se conectar a qualquer servidor MCP
+
+Na S06, você escreveu as ferramentas com =@tool=. Na S07, você *consome* ferramentas que alguém escreveu, via MCP.
+
+** Servidor MCP com FastMCP
+
+Vamos criar um servidor MCP simples — depois vamos consumi-lo como cliente.
+
+#+BEGIN_SRC python
+# math_server.py — Servidor MCP com duas ferramentas
+from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("Math")
+
+@mcp.tool()
+def add(a: int, b: int) -> int:
+    """Add two numbers together."""
+    return a + b
+
+@mcp.tool()
+def multiply(a: int, b: int) -> int:
+    """Multiply two numbers together."""
+    return a * b
+
+if __name__ == "__main__":
+    mcp.run(transport="stdio")
+#+END_SRC
+
+Repare: é quase idêntico ao =@tool= do LangChain, mas com =@mcp.tool()= e =FastMCP= em vez de =langchain_core.tools=.
+
+O servidor usa ~transport="stdio"~ — roda no mesmo processo, sem servidor externo.
+
+** Cliente: consumindo MCP no LangChain
+
+Instale: =pip install langchain-mcp-adapters=
+
+#+BEGIN_SRC python
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+from langchain_mcp_adapters.tools import load_mcp_tools
+from langchain.agents import create_agent
+
+server_params = StdioServerParameters(
+    command="python",
+    args=["math_server.py"],
+)
+
+async with stdio_client(server_params) as (read, write):
+    async with ClientSession(read, write) as session:
+        await session.initialize()
+        tools = await load_mcp_tools(session)
+        # tools agora são @tool do LangChain — usa igual!
+        agente = create_agent(llm, tools)
+        resultado = await agente.ainvoke(
+            {"messages": "Quanto é 3 + 5 multiplicado por 2?"}
+        )
+        print(resultado["messages"][-1].content)
+#+END_SRC
+
+O que aconteceu:
+1. =stdio_client= iniciou o servidor =math_server.py= em background
+2. =ClientSession= fez o handshake MCP
+3. =load_mcp_tools= converteu as ferramentas MCP em =@tool= do LangChain
+4. =create_agent= usou as ferramentas normalmente — igual à S06
+
+** Servidor MCP remoto (HTTP)
+
+O exemplo acima usa ~transport="stdio"~ — o cliente spawn o servidor localmente. Mas o MCP também suporta transporte HTTP, permitindo conectar a servidores remotos.
+
+Para rodar o mesmo servidor como HTTP:
+
+#+BEGIN_SRC python
+# math_server_http.py — Mesmo servidor, mas acessível via HTTP
+from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("Math")
+
+@mcp.tool()
+def add(a: int, b: int) -> int:
+    """Add two numbers together."""
+    return a + b
+
+@mcp.tool()
+def multiply(a: int, b: int) -> int:
+    """Multiply two numbers together."""
+    return a * b
+
+# Roda em http://localhost:8000 (ou qualquer host remoto)
+mcp.run(transport="streamable-http")
+#+END_SRC
+
+O código do servidor é idêntico — só muda a última linha. O servidor fica disponível em =http://localhost:8000/mcp= e pode ser acessado de qualquer máquina com conectividade.
+
+** Cliente remoto (HTTP)
+
+No cliente, em vez de =stdio_client=, usamos =streamablehttp_client= com uma URL:
+
+#+BEGIN_SRC python
+from mcp import ClientSession
+from mcp.client.streamable_http import streamablehttp_client
+from langchain_mcp_adapters.tools import load_mcp_tools
+from langchain.agents import create_agent
+
+# Aponta pra URL — pode ser localhost ou um servidor remoto
+async with streamablehttp_client(
+    "http://localhost:8000/mcp"
+) as (read, write):
+    async with ClientSession(read, write) as session:
+        await session.initialize()
+        tools = await load_mcp_tools(session)
+        agente = create_agent(llm, tools)
+        # API idêntica — só muda como conecta
+#+END_SRC
+
+A API do agente é idêntica. A única diferença é *como* o cliente se conecta ao servidor: =stdio= spawn um processo local, =streamable-http= conecta a uma URL. Servidores MCP públicos (Slack, GitHub, Notion) funcionam assim — rodam remotamente e você só precisa da URL.
+
+** S06 vs S07 — resumo
+
+| Semana | Ferramentas | Origem | Código |
+|--------|-------------|--------|--------|
+| S06 | =@tool= — você escreve | Seu código Python =@tool= + =bind_tools= + =create_agent= |
+| S07 | MCP — alguém escreveu | Servidor externo =load_mcp_tools= + =create_agent= |
+
+O agente não sabe a diferença. Pra ele, ferramenta é ferramenta.
+
+* Múltiplos servidores MCP
+
+Você pode conectar vários servidores MCP ao mesmo agente:
+
+#+BEGIN_SRC python
+from langchain_mcp_adapters.client import MultiServerMCPClient
+
+client = MultiServerMCPClient({
+    "math": {
+        "command": "python",
+        "args": ["math_server.py"],
+        "transport": "stdio",
+    },
+    "weather": {
+        "url": "http://localhost:8000/mcp",
+        "transport": "http",
+    }
+})
+
+tools = await client.get_tools()
+agente = create_agent(llm, tools)
+# Agora o agente tem ferramentas de math E weather
+#+END_SRC
+
+Isso é poderoso: você monta um agente combinando ferramentas de *fontes diferentes* sem escrever código de integração.
+
+* Referências Importantes
+
+** Paper: Gorilla
+
+*Título:* "Gorilla: Large Language Model Connected to Massive APIs"
+*Autores:* Shishir Patil, Tianjun Zhang, Xin Wang, Joseph E. Gonzalez
+*Ano:* 2023
+*Link:* [[https://arxiv.org/abs/2305.15334][arXiv:2305.15334]]
+
+** Paper: ReAct
+
+*Título:* "ReAct: Synergistic Reasoning and Acting in Language Models"
+*Autores:* Shunyu Yao, et al.
+*Ano:* 2022
+*Link:* [[https://arxiv.org/abs/2210.03629][arXiv:2210.03629]]
+
+** MCP — Model Context Protocol
+
+*Site:* [[https://modelcontextprotocol.io/][modelcontextprotocol.io]]
+*Biblioteca:* =langchain-mcp-adapters= v0.2.2 (MIT, Mar 2026)
+*GitHub:* [[https://github.com/langchain-ai/langchain-mcp-adapters][langchain-ai/langchain-mcp-adapters]]
 
 * Exercícios Práticos
 
-** Exercício 1: Agente com Múltiplas Ferramentas
+** Exercício 1: Descrições em Conflito
 
-Crie um agente que tenha calculadora, horário e uma ferramenta de contagem de palavras.
+Crie duas ferramentas com descrições parecidas e teste o que acontece. Depois, corrija as descrições e veja a diferença.
 
 #+BEGIN_DETAILS
-📝 Estrutura sugerida
+📝 Gabarito
 
 #+BEGIN_SRC python
-def criar_agente_com_ferramentas(ferramentas: list) -> dict:
-    """
-    Cria um agente com registro de ferramentas.
-    
-    Args:
-        ferramentas: Lista de dicionários de ferramentas
-    
-    Returns:
-        Dicionário com estado do agente
-    """
-    registro = criar_registro()
-    for f in ferramentas:
-        registrar_ferramenta(registro, f)
-    
-    return {
-        "registro": registro,
-        "historico": []
-    }
+from langchain_core.tools import tool
 
+# ❌ Descrições vagas — LLM confunde
+@tool
+def find_word_meaning(word: str) -> str:
+    """Search for information about a word."""
+    # (implementação simplificada)
+    return f"Definition of {word}: ..."
 
-def processar_mensagem(agente: dict, mensagem: str) -> str:
+@tool
+def find_word_rhymes(word: str) -> str:
+    """Search for information about a word."""
+    # (implementação simplificada)
+    return f"Rhymes of {word}: ..."
+
+# Teste: "What does 'serendipity' mean?"
+# Possível erro: LLM escolhe find_word_rhymes em vez de find_word_meaning
+
+# ✅ Descrições específicas
+@tool
+def find_word_meaning(word: str) -> str:
+    """Look up the definition and meaning of a word in a dictionary.
+    Use when the user asks 'what does X mean' or 'definition of X'.
     """
-    Processa mensagem usando ferramentas se necessário.
-    
+    return f"Definition of {word}: ..."
+
+@tool
+def find_word_rhymes(word: str) -> str:
+    """Find words that rhyme with a given word.
+    Use when the user asks for rhymes, similar-sounding words, or poetry help.
+    """
+    return f"Rhymes of {word}: ..."
+#+END_SRC
+
+#+END_DETAILS
+
+** Exercício 2: Debug de Descrição
+
+O agente abaixo chama a ferramenta errada. Corrija a descrição.
+
+#+BEGIN_SRC python
+@tool
+def calculate(a: float, b: float, operation: str) -> float:
+    """Do math."""
+    ops = {'add': a+b, 'subtract': a-b,
+           'multiply': a*b, 'divide': a/b}
+    return ops[operation]
+
+@tool
+def get_time() -> str:
+    """Gives info."""
+    from datetime import datetime
+    return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+# Teste: "Que horas são?"
+# Resultado: LLM chama calculate em vez de get_time
+# Por quê? "Gives info" e "Do math" são vagas demais
+#+END_SRC
+
+#+BEGIN_DETAILS
+📝 Gabarito
+
+#+BEGIN_SRC python
+@tool
+def calculate(a: float, b: float, operation: str) -> float:
+    """Performs a mathematical operation between two numbers.
+    Use when you need to perform numeric calculations like addition,
+    subtraction, multiplication, or division.
     Args:
-        agente: Estado do agente
-        mensagem: Mensagem do usuário
-    
-    Returns:
-        Resposta do agente
+        a: First number
+        b: Second number
+        operation: One of 'add', 'subtract', 'multiply', 'divide'
     """
-    # 1. Montar prompt com ferramentas
-    prompt_ferramentas = gerar_prompt_ferramentas(agente["registro"])
-    
-    # 2. Chamar LLM com histórico
-    # ... (implementação depende do provedor)
-    
-    # 3. Parsear resposta para detectar tool calls
-    # 4. Executar ferramenta se necessário
-    # 5. Retornar resultado
-    pass
+    ops = {'add': a+b, 'subtract': a-b,
+           'multiply': a*b, 'divide': a/b}
+    return ops[operation]
+
+@tool
+def get_time() -> str:
+    """Returns the current date and time.
+    Use when the user asks about the current time, today's date,
+    or 'what time is it'.
+    """
+    from datetime import datetime
+    return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+#+END_SRC
+
+#+END_DETAILS
+
+** Exercício 3: Servidor MCP
+
+Crie um servidor MCP com uma ferramenta =reverse_string= que inverte uma string, depois escreva um cliente que a consome.
+
+#+BEGIN_DETAILS
+📝 Gabarito
+
+Servidor (=reverse_server.py=):
+
+#+BEGIN_SRC python
+from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("Reverse")
+
+@mcp.tool()
+def reverse_string(text: str) -> str:
+    """Reverses a string. Use when the user wants to flip or reverse text."""
+    return text[::-1]
+
+if __name__ == "__main__":
+    mcp.run(transport="stdio")
+#+END_SRC
+
+Cliente (Colab):
+
+#+BEGIN_SRC python
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+from langchain_mcp_adapters.tools import load_mcp_tools
+from langchain.agents import create_agent
+from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(
+    model="lfm2.5:8b",
+    base_url="http://localhost:11434/v1",
+    api_key="nao_precisa",
+    temperature=0,
+)
+
+server_params = StdioServerParameters(
+    command="python",
+    args=["reverse_server.py"],
+)
+
+async with stdio_client(server_params) as (read, write):
+    async with ClientSession(read, write) as session:
+        await session.initialize()
+        tools = await load_mcp_tools(session)
+        agente = create_agent(llm, tools)
+        resultado = await agente.ainvoke(
+            {"messages": "Reverse the word 'Guilda'"}
+        )
+        print(resultado["messages"][-1].content)
+        # "The reverse of 'Guilda' is 'adliuG'."
+#+END_SRC
+
+#+END_DETAILS
+
+** Exercício 4: Agente com Ferramentas Mistas
+
+Combine duas ferramentas =@tool= (que você escreveu) com ferramentas MCP de um servidor externo em um único agente.
+
+#+BEGIN_DETAILS
+📝 Gabarito
+
+#+BEGIN_SRC python
+from langchain_core.tools import tool
+from langchain.agents import create_agent
+from langchain_mcp_adapters.client import MultiServerMCPClient
+
+# Suas ferramentas @tool
+@tool
+def calculate(a: float, b: float, operation: str) -> float:
+    """Performs a mathematical operation between two numbers.
+    Args:
+        a: First number
+        b: Second number
+        operation: One of 'add', 'subtract', 'multiply', 'divide'
+    """
+    ops = {'add': a+b, 'subtract': a-b,
+           'multiply': a*b, 'divide': a/b}
+    return ops[operation]
+
+# Ferramentas MCP
+client = MultiServerMCPClient({
+    "math": {
+        "command": "python",
+        "args": ["math_server.py"],
+        "transport": "stdio",
+    },
+})
+
+mcp_tools = await client.get_tools()
+
+# Combina tudo
+all_tools = [calculate] + mcp_tools
+agente = create_agent(llm, all_tools)
+
+resultado = await agente.ainvoke(
+    {"messages": "Quanto é 10 + 5 multiplicado por 3?"}
+)
+print(resultado["messages"][-1].content)
 #+END_SRC
 
 #+END_DETAILS

@@ -4,7 +4,7 @@ Mini Aula 03: Python Mínimo — O essencial para começar com IA
 VERSÃO 3: JetBrains Mono, pronúncias só no TTS, código com indentação visual
 
 Renderizar:
-    source ~/manim-venv/bin/activate
+    source ~/manim-env/bin/activate
     for s in Python_Scene1_Hook Python_Scene2_Variaveis Python_Scene3_ListasDicts Python_Scene4_Funcoes Python_Scene5_CondLoops Python_Scene6_Ponte Python_Scene7_CTA; do
         manim -qh python_minimo.py $s
     done
