@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<title>Ferramentas Múltiplas</title>
+<title>Múltiplas Ferramentas e MCP</title>
 <meta name="author" content="Lucas S. Vieira"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -28,119 +28,355 @@
 <body>
 <div class="reveal">
 <div class="slides">
-<section id="sec-title-slide" data-background="./slide_07.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Ferramentas Múltiplas</h2><br/><p style="font-size:0.85em;opacity:0.8;">Agentes com várias capacidades</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+<section id="sec-title-slide" data-background="./slide_07.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Múltiplas Ferramentas e MCP</h2><br/><p style="font-size:0.85em;opacity:0.8;">O agente se expande</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 </section>
 <section>
-<section id="slide-orgc53d8c3">
-<h2 id="orgc53d8c3">O desafio</h2>
-<p class="fragment (appear)">
-Um agente com uma ferramenta já é útil.
-Mas e com várias?
+<section id="slide-org5c985c9">
+<h2 id="org5c985c9">📰 Fofocas da Semana</h2>
+<ul style="font-size:0.55em;">
+<li><b>Claude Fable 5 / Mythos 5</b> (09/06) — Anthropic lança primeiro Mythos-class público. Fable 5 = Mythos 5 com guardrails → fallback Opus 4.8. Preço: 2x Opus ($10/$50 por M). <b>Backlash violento:</b> silenciosamente degradava respostas de pesquisadores de IA (distillation) sem avisar. Anthropic recuou (11/06): "We made the wrong tradeoff", agora fallback é visível. Mas visível = mais falsos positivos. Comunidade de ciberseg critica. Retenção de 30 dias obrigatória 🔒⚠️</li>
+<li><b>Gemma 4 12B</b> (03/06) — Primeiro modelo encoder-free que processa texto, imagem, áudio e vídeo num único backbone, roda em 16GB de RAM, Apache 2.0 🔓</li>
+<li><b>GPT-4.5 sunset</b> (06/06) — OpenAI anunciou aposentadoria do GPT-4.5 do ChatGPT em 27/06</li>
+
+</ul>
+
+</section>
+<section id="slide-org5c985c9-split">
+
+<ul style="font-size:0.55em;">
+<li><b>Nex-N2-mini</b> (07/06) — Post-train do Qwen3.5-35B-A3B (MoE 256e/8a, 3B ativos) pela Nex-AGI, foco agentic coding/tool calling. Benches questionáveis (Apex 9.4 = chute aleatório), GGUFs ainda inexistentes, arquitetura <code>qwen35moe</code> já suportada no ik-llama 🔓⚠️</li>
+<li><b>Quasar-Preview</b> (07/06) — SILX AI lança 18B MoE (2B ativos) com arquitetura frankenstein: Quasar+Raven+GLA+Engram+Loop Transformer. Promessa de 5M ctx (treinado com &lt;1B tokens nisso). GPQA 25.6% = chute. MIT, mas roda só em PyTorch F32, zero suporte GGUF/llama.cpp. Feito pra Bittensor SN24 🔓🔬</li>
+<li><b>llama.cpp multimodal total</b> (08/06) — Mergeou suporte a vídeo nativo via ffmpeg + mtmd, TTS integrado com WavTokenizer, 6 preprocessadores de áudio (Whisper, Conformer, Granite Speech, Gemma4 Audio/Unified, Qwen3-ASR), e pipeline de speech-to-speech direto no <code>llama-server</code> 🔓</li>
+<li><b>Xiaomi MiMo V2.5 Pro UltraSpeed</b> (08/06) — 1T MoE com DFlash (block-masked speculative decoding), 1000+ tok/s em nó padrão de 8 GPUs. FP4 seletivo nos Experts, FP8 no resto. Parceria com TileRT (runtime otimizado). Pesos FP4-DFlash abertos no HuggingFace (MIT) 🔓
+<ul>
+<li>Não usa hardware dedicado (Cerebras/Groq) — roda em GPUs comerciais. Mas: API em teste limitado até 23/06, 3x o preço da versão padrão. Relevância local: modelos 1T fora do alcance de GPUs consumer</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-org5c985c9-split">
+
+<ul style="font-size:0.55em;">
+<li><b>Apple AFM 3</b> (08/06, WWDC) — Terceira geração de foundation models da Apple: AFM 3 Core (3B dense, on-device), AFM 3 Core Advanced (20B com Instruction-Following Pruning, 1-4B ativos por request, pesos em flash/NAND com swap pra DRAM), AFM 3 Cloud (server), ADM 3 Cloud (imagem), AFM 3 Cloud Pro (agentes, NVIDIA+Google Cloud). Arquitetura IFP carrega experts sob demanda do flash, não DRAM inteira 🔒</li>
+<li><b>North Mini Code</b> (09/06) — Cohere lança MoE 30B (3B ativos) focado em agentic coding, Apache 2.0, 256K contexto. Suporte <code>cohere2_moe</code> mergeado no ik<sub>llama.cpp</sub> (PR #1945, 10/06) 🔓</li>
+<li><b>Gemini 3.5 Live Translate</b> (09/06) — Modelo de áudio dedicado a tradução simultânea speech-to-speech em 70+ idiomas, preserva entonação e prosódia. Disponível via Gemini Live API (public preview) e Google Translate (Android/iOS). Parceiros como Grab e CJ ENM já integram. Áudio watermarkado com SynthID 🛡️</li>
+<li><b>DiffusionGemma</b> (10/06) — Google lança modelo de difusão textual: MoE 26B (3.8B ativos), gera 256 tokens em paralelo ao invés de sequencial. Até 700 tok/s na RTX 5090, 1000+ tok/s na H100. Bidirectional attention permite autocorreção. 18GB VRAM com quantização 🔓🔬
+<ul>
+<li>Shiftou o bottleneck: de memória → compute. Offload pra CPU/RAM = perde o ganho (10-40x mais lento que AR). Futuro: modelos densos menores seriam mais viáveis pra GPUs fracas</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-org5c985c9-split">
+
+<ul style="font-size:0.55em;">
+<li><b>PP-OCRv6</b> (11/06) — Baidu/PaddlePaddle lança OCR dedicado em 3 tiers: tiny 1.5M, small 7.7M, medium 34.5M. 48+ idiomas num modelo único (chinês, japonês, latim). Suporta manuscrito, impresso, industrial, tela e cartão. Medium (34.5M) supera Qwen3-VL-235B e GPT-5.5 em precisão de OCR. Edge-friendly, Apache 2.0, pip install paddleocr 🔓🔬</li>
+<li><b>Kimi K2.7 Code</b> (12/06) — Moonshot AI lança modelo agentic de código open-weight: MoE 1T (32B ativos, 384 experts/8 por token), 256K contexto, MoonViT 400M (imagem+vídeo). +21.8% no Kimi Code Bench v2, +31.5% no MLS Bench Lite vs K2.6. 30% menos thinking tokens. Empatou com GPT-5.5 no MLS Bench Lite (35.1 vs 35.5). Modified MIT, deploy em vLLM/SGLang/KTransformers 🔓
+<ul>
+<li>Arquitetura = K2.6 (MLA+MoE). Preserve thinking obrigatório — acumula raciocínio entre turns, bom pra agentes de código</li>
+
+</ul></li>
+<li><b>MiniMax M3 open-weight</b> (12/06) — Pesos liberados no HuggingFace! MoE ~428B (23B ativos), contexto 1M via MSA (MiniMax Sparse Attention), multimodal nativo (texto+imagem+vídeo). 59.0% SWE-bench Pro (bate GPT-5.5 58.6%). MSA = 15.6× mais rápido no decode e 9.7× no prefill vs M2 em 1M contexto, sem compressão de KV. Suporte: vLLM, SGLang, Ollama, KTransformers 🔓
+<ul>
+<li>Licença <code>minimax-community</code>. 1T params MoE = fora do alcance de GPUs consumer, mas 23B ativos e MSA são relevantes pra arquitetura</li>
+
+</ul></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orge752284">
+<h2 id="orge752284">Chamadas encadeadas</h2>
+<p>
+Na S06, o agente usou <b>uma</b> ferramenta por vez.
 </p>
 
 <p>
-O modelo precisa <b>escolher</b> qual usar.
+Mas e quando precisa de <b>duas ou mais</b>?
 </p>
+
 </section>
-</section>
-<section>
-<section id="slide-orgb566cd0">
-<h2 id="orgb566cd0">Como o modelo decide</h2>
-<p class="fragment (appear)">
-O modelo lê todas as descrições e compara com a pergunta.
-</p>
-</section>
-<section id="slide-org7998b54">
-<h3 id="org7998b54">Exemplo:</h3>
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<section id="slide-orge752284-split">
 
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">Ferramenta</th>
-<th scope="col" class="org-left">Descrição</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">calculadora</td>
-<td class="org-left">Resolve matemática</td>
-</tr>
-
-<tr>
-<td class="org-left">horário</td>
-<td class="org-left">Retorna data e hora atual</td>
-</tr>
-
-<tr>
-<td class="org-left">wikipedia</td>
-<td class="org-left">Busca informações</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="slide-org03719ca">
-<h3 id="org03719ca">Perguntas:</h3>
 <div class="org-src-container">
 
-<pre   ><code class="text" >"Quanto é 10 + 5?"
-→ Modelo vê "matemática" → usa calculadora
+<pre   ><code class="text" >"Quanto é 234 × 987 + 100?"
 
-"Que horas são?"
-→ Modelo vê "data e hora" → usa horário
-
-"Quem foi Ada Lovelace?"
-→ Modelo vê "informações" → usa wikipedia
+Thought: Preciso multiplicar, depois somar
+Action: calculate(234, 987, "multiply") → 230958
+Action: calculate(230958, 100, "add") → 231058
+Answer: "O resultado é 231.058."
 </code></pre>
 </div>
+
+<p>
+O <code>create_agent</code> repete Thought→Action→Observation <b>automaticamente</b>.
+</p>
+
+</section>
+<section id="slide-orge752284-split">
+
+<div class="org-src-container">
+
+<pre   ><code class="python" >from langchain.agents import create_agent
+
+agente = create_agent(llm, [calculate, get_time, get_word_length])
+
+resultado = agente.invoke({"messages": "Quanto é 234 vezes 987 mais 100?"})
+print(resultado["messages"][-1].content)
+# "O resultado de 234 × 987 + 100 é 231.058."
+</code></pre>
+</div>
+
+<p>
+Uma chamada. Múltiplas ferramentas encadeadas. Automático.
+</p>
 </section>
 </section>
 <section>
-<section id="slide-org864b0b0">
-<h2 id="org864b0b0">O problema das descrições vagas</h2>
+<section id="slide-org00a5f95">
+<h2 id="org00a5f95">O problema das descrições vagas</h2>
 <p>
 Se duas ferramentas parecem fazer a mesma coisa:
 </p>
 
 <div class="org-src-container">
 
-<pre   ><code class="text" >ferramenta1: "Busca informações"
-ferramenta2: "Pesquisa dados"
+<pre   ><code class="python" ># ❌ Vagas — LLM confunde
+@tool
+def search_wiki(query: str) -&gt; str:
+    """Search for information."""
+
+@tool
+def search_web(query: str) -&gt; str:
+    """Search for information."""
 </code></pre>
 </div>
 
 <p>
-O modelo confunde.
+<code>Search for information</code> × 2 → modelo não sabe qual usar.
 </p>
+
 </section>
-<section id="slide-orgc24a2de">
-<h3 id="orgc24a2de">Solução:</h3>
+<section id="slide-org00a5f95-split">
+
 <div class="org-src-container">
 
-<pre   ><code class="text" >ferramenta1: "Busca informações na Wikipedia
-              sobre pessoas e lugares"
-ferramenta2: "Pesquisa preços de produtos
-              em APIs de e-commerce"
+<pre   ><code class="python" ># ✅ Específicas — LLM distingue
+@tool
+def search_wiki(query: str) -&gt; str:
+    """Search Wikipedia for factual and historical information.
+    Use for established facts about people, places, events."""
+
+@tool
+def search_web(query: str) -&gt; str:
+    """Search the web for current information.
+    Use for news, prices, and real-time data."""
 </code></pre>
 </div>
 
 <p>
-Seja específico.
+<b>Regra:</b> cada descrição explica <b>quando</b> usar aquela ferramenta.
 </p>
 </section>
 </section>
 <section>
-<section id="slide-org561289e">
-<h2 id="org561289e">Ferramentas com argumentos</h2>
+<section id="slide-org5b1be5a">
+<h2 id="org5b1be5a">Debug de ferramentas</h2>
 <p class="fragment (appear)">
-Algumas ferramentas precisam de argumentos.
+O LLM nem sempre acerta. Problemas comuns:
 </p>
 
+<ol>
+<li class="fragment appear"><b>Ferramenta errada</b> — descrição vaga</li>
+<li class="fragment appear"><b>Argumentos errados</b> — valores possíveis não documentados</li>
+<li class="fragment appear"><b>ValidationError</b> — tipo errado no argumento</li>
+
+</ol>
+</section>
+<section id="slide-org686730b">
+<h3 id="org686730b">Problema: LLM chama ferramenta errada</h3>
+<p>
+Pergunta: "Que horas são?"
+LLM chama: <code>calculate</code> em vez de <code>get_time</code>
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" ># ❌ Vaga
+@tool
+def get_time() -&gt; str:
+    """Returns current date and time."""
+
+# ✅ Específica
+@tool
+def get_time() -&gt; str:
+    """Returns the current date and time.
+    Use when the user asks 'what time is it',
+    'what date is today', or about the current moment."""
+</code></pre>
+</div>
+</section>
+<section id="slide-org155587f">
+<h3 id="org155587f">Problema: argumentos errados</h3>
+<p>
+LLM manda <code>operation</code>"234 vezes 987"= em vez de <code>"multiply"</code>
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" ># ✅ Solução: documentar valores no docstring
+@tool
+def calculate(a: float, b: float, operation: str) -&gt; float:
+    """Performs a mathematical operation between two numbers.
+    Use when you need to perform numeric calculations.
+    Args:
+        a: First number
+        b: Second number
+        operation: One of 'add', 'subtract', 'multiply', 'divide'
+    """
+</code></pre>
+</div>
+</section>
+<section id="slide-org6131322">
+<h3 id="org6131322">Problema: ValidationError</h3>
+<p>
+Pydantic rejeita argumentos com tipo errado (ex.: passar texto onde espera número). O agente recebe o erro e pode <b>corrigir automaticamente</b>. Mas se acontece com frequência, a descrição da ferramenta precisa melhorar.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org262626b">
+<h2 id="org262626b">Ferramentas externas via MCP</h2>
+<p>
+Até agora, você <b>escreveu</b> as ferramentas com <code>@tool</code>.
+</p>
+
+<p>
+E se <b>outra pessoa</b> escreveu?
+</p>
+
+</section>
+<section id="slide-org262626b-split">
+
+<p>
+<b><b>MCP</b></b> — Model Context Protocol
+</p>
+<ul style="font-size:0.8em;">
+<li>Protocolo padrão para ferramentas de IA (como HTTP para a web)</li>
+<li>Um <b>servidor MCP</b> expõe ferramentas</li>
+<li>Um <b>cliente MCP</b> consome essas ferramentas</li>
+<li>Qualquer LLM se conecta a qualquer servidor MCP</li>
+
+</ul>
+
+<p>
+<a href="https://modelcontextprotocol.io/">modelcontextprotocol.io</a>
+</p>
+</section>
+<section id="slide-org6cc69f5">
+<h3 id="org6cc69f5">Servidor MCP (<code>math_server.py</code>)</h3>
+<div class="org-src-container">
+
+<pre   ><code class="python" >from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("Math")
+
+@mcp.tool()
+def add(a: int, b: int) -&gt; int:
+    """Add two numbers together."""
+    return a + b
+
+@mcp.tool()
+def multiply(a: int, b: int) -&gt; int:
+    """Multiply two numbers together."""
+    return a * b
+
+if __name__ == "__main__":
+    mcp.run(transport="stdio")
+</code></pre>
+</div>
+
+<p>
+Quase idêntico ao <code>@tool</code>, mas <code>@mcp.tool()</code> e <code>FastMCP</code>.
+</p>
+</section>
+<section id="slide-orgbcf3241">
+<h3 id="orgbcf3241">Cliente: consumindo MCP no LangChain</h3>
+<div class="org-src-container">
+
+<pre   ><code class="python" >from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+from langchain_mcp_adapters.tools import load_mcp_tools
+from langchain.agents import create_agent
+
+server_params = StdioServerParameters(
+    command="python", args=["math_server.py"])
+
+async with stdio_client(server_params) as (read, write):
+    async with ClientSession(read, write) as session:
+        await session.initialize()
+        tools = await load_mcp_tools(session)
+        agente = create_agent(llm, tools)
+        resultado = await agente.ainvoke(
+            {"messages": "Quanto é 3 + 5 multiplicado por 2?"})
+</code></pre>
+</div>
+
+<p>
+Ferramentas MCP viram <code>@tool</code> do LangChain — o agente não sabe a diferença.
+</p>
+</section>
+<section id="slide-org35d88e9">
+<h3 id="org35d88e9">Servidor MCP remoto (HTTP)</h3>
+<div class="org-src-container">
+
+<pre   ><code class="python" ># Mesmo math_server.py, mas rodando como servidor HTTP
+mcp = FastMCP("Math")
+
+@mcp.tool()
+def add(a: int, b: int) -&gt; int:
+    """Add two numbers together."""
+    return a + b
+
+@mcp.tool()
+def multiply(a: int, b: int) -&gt; int:
+    """Multiply two numbers together."""
+    return a * b
+
+# Roda em http://localhost:8000 (ou qualquer host remoto)
+mcp.run(transport="streamable-http")
+</code></pre>
+</div>
+</section>
+<section id="slide-org0487f6b">
+<h3 id="org0487f6b">Cliente remoto (HTTP)</h3>
+<div class="org-src-container">
+
+<pre   ><code class="python" >from mcp import ClientSession
+from mcp.client.streamable_http import streamablehttp_client
+from langchain_mcp_adapters.tools import load_mcp_tools
+from langchain.agents import create_agent
+
+# Aponta pra URL — pode ser localhost ou um servidor remoto
+async with streamablehttp_client(
+    "http://localhost:8000/mcp"
+) as (read, write):
+    async with ClientSession(read, write) as session:
+        await session.initialize()
+        tools = await load_mcp_tools(session)
+        agente = create_agent(llm, tools)
+        # API idêntica — só muda como conecta
+</code></pre>
+</div>
+</section>
+<section id="slide-org67b6bdb">
+<h3 id="org67b6bdb">S06 vs S07</h3>
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -148,92 +384,91 @@ Algumas ferramentas precisam de argumentos.
 <col  class="org-left" />
 
 <col  class="org-left" />
+
+<col  class="org-left" />
 </colgroup>
 <thead>
 <tr>
-<th scope="col" class="org-left">Ferramenta</th>
-<th scope="col" class="org-left">Argumento</th>
+<th scope="col" class="org-left">&#xa0;</th>
+<th scope="col" class="org-left">S06</th>
+<th scope="col" class="org-left">S07</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="org-left">Calculadora</td>
-<td class="org-left">expressão matemática</td>
+<td class="org-left"><b>Ferramentas</b></td>
+<td class="org-left"><code>@tool</code> — você escreve</td>
+<td class="org-left">MCP — alguém escreveu</td>
 </tr>
 
 <tr>
-<td class="org-left">Wikipedia</td>
-<td class="org-left">termo de busca</td>
+<td class="org-left"><b>Código</b></td>
+<td class="org-left"><code>bind_tools</code> + <code>create_agent</code></td>
+<td class="org-left"><code>load_mcp_tools</code> + <code>create_agent</code></td>
 </tr>
 
 <tr>
-<td class="org-left">Horário</td>
-<td class="org-left">nenhum argumento</td>
+<td class="org-left"><b>Origem</b></td>
+<td class="org-left">Seu Python</td>
+<td class="org-left">Servidor externo</td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="slide-orgd0d5b71">
-<h3 id="orgd0d5b71">Exemplo Wikipedia:</h3>
-<div class="org-src-container">
 
-<pre   ><code class="python" >def ferramenta_wikipedia(termo):
-    """Busca resumo na Wikipedia."""
-    url = f"https://pt.wikipedia.org/api/rest_v1/page/summary/{termo}"
-    ...
-</code></pre>
-</div>
-</section>
-</section>
-<section>
-<section id="slide-orgbb75807">
-<h2 id="orgbb75807">Diagrama de decisão</h2>
-<div class="org-src-container">
-
-<pre   ><code class="text" >Usuário: "Quanto é 10 + 5 e quem foi Ada Lovelace?"
-    ↓
-Agente: "Preciso de duas ferramentas..."
-    ↓
-Ferramentas: calculadora("10 + 5") = 15
-              wikipedia("Ada Lovelace") = resumo
-    ↓
-Agente: "10 + 5 = 15. Ada Lovelace foi..."
-</code></pre>
-</div>
-</section>
-</section>
-<section>
-<section id="slide-org946a68d">
-<h2 id="org946a68d">Para lembrar</h2>
-<blockquote  class="fragment (appear)">
 <p>
-"Cada ferramenta precisa de uma descrição
-que o modelo entenda."
+Pra o agente, ferramenta é ferramenta. Não importa de onde veio.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org99ac8b0">
+<h2 id="org99ac8b0">Múltiplos servidores MCP</h2>
+<div class="org-src-container">
+
+<pre   ><code class="python" >from langchain_mcp_adapters.client import MultiServerMCPClient
+
+client = MultiServerMCPClient({
+    "math": {
+        "command": "python",
+        "args": ["math_server.py"],
+        "transport": "stdio",
+    },
+    "weather": {
+        "url": "http://localhost:8000/mcp",
+        "transport": "http",
+    }
+})
+
+tools = await client.get_tools()
+agente = create_agent(llm, tools)
+# Agente tem ferramentas de math E weather
+</code></pre>
+</div>
+
+<p>
+Monte um agente combinando ferramentas de <b>fontes diferentes</b> — sem código de integração.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orga725e22" data-background="./slide_07.gif">
+<h2 id="orga725e22">Para lembrar</h2>
+<blockquote >
+<p>
+"Ferramentas transformam conversa em ação.
+MCP transforma integração em padrão."
 </p>
 </blockquote>
 
-<ul>
-<li class="fragment appear">Descrições vagas = confusão</li>
-<li class="fragment appear">Descrições específicas = clareza</li>
-<li class="fragment appear">Exemplos na descrição ajudam</li>
+<ul style="font-size:0.55em;">
+<li>Descrições vagas = confusão</li>
+<li>Descrições específicas = clareza</li>
+<li><code>create_agent</code> encadeia ferramentas automaticamente</li>
+<li>MCP = HTTP das ferramentas de IA</li>
+<li>MCP suporta stdio (local) e HTTP (remoto)</li>
+<li>Na S08: RAG — buscar informações relevantes em documentos</li>
 
 </ul>
-</section>
-</section>
-<section>
-<section id="slide-org725f5cb">
-<h2 id="org725f5cb">Próxima semana</h2>
-<ul>
-<li class="fragment appear">Consolidar tudo em projeto</li>
-<li class="fragment appear">Demo completa de agente</li>
-<li class="fragment appear">Mentoria e ajustes</li>
-
-</ul>
-</section>
-</section>
-<section>
-<section id="slide-org0cb8cae">
-<h2 id="org0cb8cae">Perguntas?</h2>
 </section>
 </section>
 </div>

@@ -5,9 +5,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Múltiplas Ferramentas: O Agente Escolhe</title>
+<title>Múltiplas Ferramentas e MCP: O Agente Se Expande</title>
 <meta name="author" content="Lucas S. Vieira" />
-<meta name="description" content="Semana 8 - Guilda de IA: Agentes com múltiplas ferramentas
+<meta name="description" content="Semana 7 - Guilda de IA: Múltiplas ferramentas, debug, descrições, MCP e async
 Material didático do curso de IA Generativa da Guilda de IA" />
 <meta name="generator" content="Org Mode" />
 <style type="text/css">
@@ -214,356 +214,732 @@ gtag('config', 'G-22RF3F5XE0');
 <script src="/js/nav-scroll.js"></script>
 <meta property="og:url" content="https://luksamuk.codes/pages/guilda-ia/07-ferramentas-multiplas.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Múltiplas Ferramentas: O Agente Escolhe">
-<meta property="og:description" content="Semana 8 - Guilda de IA: Agentes com múltiplas ferramentas
+<meta property="og:title" content="Múltiplas Ferramentas e MCP: O Agente Se Expande">
+<meta property="og:description" content="Semana 7 - Guilda de IA: Múltiplas ferramentas, debug, descrições, MCP e async
 Material didático do curso de IA Generativa da Guilda de IA">
 <meta property="og:image" content="https://luksamuk.codes/img/banner-full.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:domain" content="luksamuk.codes">
 <meta name="twitter:url" content="https://luksamuk.codes/pages/guilda-ia/07-ferramentas-multiplas.html">
-<meta name="twitter:title" content="Múltiplas Ferramentas: O Agente Escolhe">
-<meta name="twitter:description" content="Semana 8 - Guilda de IA: Agentes com múltiplas ferramentas
+<meta name="twitter:title" content="Múltiplas Ferramentas e MCP: O Agente Se Expande">
+<meta name="twitter:description" content="Semana 7 - Guilda de IA: Múltiplas ferramentas, debug, descrições, MCP e async
 Material didático do curso de IA Generativa da Guilda de IA">
 <meta name="twitter:image" content="https://luksamuk.codes/img/banner.png">
 </head>
 <body>
 <div id="preamble" class="status">
-<div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">Múltiplas Ferramentas: O Agente Escolhe</h1>
+<div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">Múltiplas Ferramentas e MCP: O Agente Se Expande</h1>
 </div>
 <div id="content" class="content">
-<div id="outline-container-orga71273b" class="outline-2">
-<h2 id="orga71273b">O desafio</h2>
-<div class="outline-text-2" id="text-orga71273b">
+<div id="outline-container-orgfe23791" class="outline-2">
+<h2 id="orgfe23791">Chamadas encadeadas</h2>
+<div class="outline-text-2" id="text-orgfe23791">
 <p>
-Um agente com uma ferramenta já é útil. Mas e com várias?
+Na semana passada, o agente usava uma ferramenta por vez. Mas e quando a pergunta precisa de <b>duas ou mais</b>?
 </p>
 
 <p>
-O modelo precisa <b>escolher</b> qual usar, e às vezes <b>combinar</b> resultados de múltiplas ferramentas.
-</p>
-
-
-<div id="org7c8c272" class="figure">
-<p><img src="img/agente-multi-ferramentas.svg" alt="agente-multi-ferramentas.svg" class="org-svg" />
-</p>
-</div>
-</div>
-</div>
-<div id="outline-container-orgc0da7c7" class="outline-2">
-<h2 id="orgc0da7c7">Paradigmas de Orquestração</h2>
-<div class="outline-text-2" id="text-orgc0da7c7">
-</div>
-<div id="outline-container-orgda7152c" class="outline-3">
-<h3 id="orgda7152c">1. Orquestração Sequencial</h3>
-<div class="outline-text-3" id="text-orgda7152c">
-<p>
-Executar ferramentas uma após outra, usando o resultado da anterior para a próxima.
+Exemplo: "Quanto é 234 × 987 + 100?"
 </p>
 
 <div class="org-src-container">
-<pre class="src src-text">Pergunta: "Qual a idade de Einstein hoje?"
-
-Sequ&#234;ncia:
-  1. WIKIPEDIA("Albert Einstein birth date") &#8594; 1879
-  2. HORARIO("current year") &#8594; 2025
-  3. CALCULADORA("2025 - 1879") &#8594; 146 anos (se estivesse vivo)
-  4. Resposta: "Einstein nasceu em 1879, teria 146 anos hoje."
+<pre class="src src-text">Thought: Preciso multiplicar 234 &#215; 987, depois somar 100
+Action: calculate(234, 987, "multiply") &#8594; 230958
+Action: calculate(230958, 100, "add") &#8594; 231058
+Answer: "O resultado &#233; 231.058."
 </pre>
 </div>
-</div>
-</div>
-<div id="outline-container-org02039a5" class="outline-3">
-<h3 id="org02039a5">2. Orquestração Paralela</h3>
-<div class="outline-text-3" id="text-org02039a5">
-<p>
-Executar ferramentas independentes simultaneamente.
-</p>
 
-
-<div id="org02e8782" class="figure">
-<p><img src="img/orquestracao-paralela.svg" alt="orquestracao-paralela.svg" class="org-svg" />
-</p>
-</div>
-</div>
-</div>
-<div id="outline-container-org797f029" class="outline-3">
-<h3 id="org797f029">3. Orquestração Condicional</h3>
-<div class="outline-text-3" id="text-org797f029">
 <p>
-Usar resultado de uma ferramenta para decidir qual usar depois.
+O <code>create_agent</code> faz isso <b>automaticamente</b>. Ele repete o ciclo Thought→Action→Observation até ter a resposta final.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-text">Pergunta: "Qual &#233; o dobro da popula&#231;&#227;o da capital da Fran&#231;a?"
+<pre class="src src-python"><span class="org-keyword">from</span> langchain.agents <span class="org-keyword">import</span> create_agent
 
-Fluxo:
-  1. WIKIPEDIA("capital of France") &#8594; "Paris"
-  2. WIKIPEDIA("Paris population") &#8594; 2161000
-  3. CALCULADORA("2161000 * 2") &#8594; 4322000
-  4. Resposta: "O dobro da popula&#231;&#227;o de Paris &#233; 4.322.000."
+<span class="org-variable-name">agente</span> <span class="org-operator">=</span> create_agent(llm, [calculate, get_time, get_word_length])
+
+<span class="org-variable-name">resultado</span> <span class="org-operator">=</span> agente.invoke({<span class="org-string">"messages"</span>: <span class="org-string">"Quanto &#233; 234 vezes 987 mais 100?"</span>})
+<span class="org-builtin">print</span>(resultado[<span class="org-string">"messages"</span>][<span class="org-operator">-</span>1].content)
+<span class="org-comment-delimiter"># </span><span class="org-comment">"O resultado de 234 &#215; 987 + 100 &#233; 231.058."</span>
 </pre>
 </div>
-</div>
-</div>
-</div>
-<div id="outline-container-org7e77fea" class="outline-2">
-<h2 id="org7e77fea">Referências Importantes</h2>
-<div class="outline-text-2" id="text-org7e77fea">
-</div>
-<div id="outline-container-orgb80cdc1" class="outline-3">
-<h3 id="orgb80cdc1">Paper: Gorilla</h3>
-<div class="outline-text-3" id="text-orgb80cdc1">
-<p>
-<b>Título:</b> "Gorilla: Large Language Model Connected to Massive APIs"  
-<b>Autores:</b> Shishir Patil, Tianjun Zhang, Xin Wang, Joseph E. Gonzalez  
-<b>Ano:</b> 2023  
-<b>Link:</b> <a href="https://arxiv.org/abs/2305.15334">arXiv:2305.15334</a>
-</p>
-</div>
-</div>
-<div id="outline-container-orge0901a4" class="outline-3">
-<h3 id="orge0901a4">Paper: ReAct</h3>
-<div class="outline-text-3" id="text-orge0901a4">
-<p>
-<b>Título:</b> "ReAct: Synergistic Reasoning and Acting in Language Models"  
-<b>Autores:</b> Shunyu Yao, et al.  
-<b>Ano:</b> 2022  
-</p>
-</div>
-</div>
-</div>
-<div id="outline-container-org97c7dca" class="outline-2">
-<h2 id="org97c7dca">Como o modelo decide</h2>
-<div class="outline-text-2" id="text-org97c7dca">
-<p>
-O modelo lê todas as descrições e compara com a pergunta.
-</p>
 
-
-<div id="org8e06c0b" class="figure">
-<p><img src="img/decisao-modelo.svg" alt="decisao-modelo.svg" class="org-svg" />
+<p>
+O agente decide sozinho: preciso de duas chamadas a <code>calculate</code>? Então faço duas.
 </p>
 </div>
 </div>
-</div>
-<div id="outline-container-org423e23f" class="outline-2">
-<h2 id="org423e23f">O problema das descrições vagas</h2>
-<div class="outline-text-2" id="text-org423e23f">
+<div id="outline-container-orgee8574a" class="outline-2">
+<h2 id="orgee8574a">O problema das descrições vagas</h2>
+<div class="outline-text-2" id="text-orgee8574a">
 <p>
 Se duas ferramentas parecem fazer a mesma coisa, o modelo confunde.
 </p>
 </div>
-<div id="outline-container-org96e9a05" class="outline-3">
-<h3 id="org96e9a05">Exemplo de Conflito</h3>
-<div class="outline-text-3" id="text-org96e9a05">
+<div id="outline-container-orga51af97" class="outline-3">
+<h3 id="orga51af97">Exemplo de conflito:</h3>
+<div class="outline-text-3" id="text-orga51af97">
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-type">@tool</span>
+<span class="org-keyword">def</span> <span class="org-function-name">search_wiki</span>(query: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""Search for information."""</span>
+    ...
 
-<div id="org376f1b5" class="figure">
-<p><img src="img/ferramentas-conflitantes.svg" alt="ferramentas-conflitantes.svg" class="org-svg" />
-</p>
-</div>
-</div>
-</div>
-<div id="outline-container-org9f99f78" class="outline-3">
-<h3 id="org9f99f78">Solução: Descrições Específicas</h3>
-<div class="outline-text-3" id="text-org9f99f78">
-
-<div id="org5e4e648" class="figure">
-<p><img src="img/ferramentas-especificas.svg" alt="ferramentas-especificas.svg" class="org-svg" />
-</p>
+<span class="org-type">@tool</span>
+<span class="org-keyword">def</span> <span class="org-function-name">search_web</span>(query: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""Search for information."""</span>
+    ...
+</pre>
 </div>
 
 <p>
-Agora o modelo sabe distinguir!
+Duas ferramentas com a mesma descrição genérica. O LLM não sabe qual usar.
 </p>
 </div>
 </div>
-</div>
-<div id="outline-container-org33285b7" class="outline-2">
-<h2 id="org33285b7">Implementação</h2>
-<div class="outline-text-2" id="text-org33285b7">
-</div>
-<div id="outline-container-org39af236" class="outline-3">
-<h3 id="org39af236">Registro de Ferramentas</h3>
-<div class="outline-text-3" id="text-org39af236">
+<div id="outline-container-orgfd508c7" class="outline-3">
+<h3 id="orgfd508c7">Solução: descrições específicas</h3>
+<div class="outline-text-3" id="text-orgfd508c7">
 <div class="org-src-container">
-<pre class="src src-python"><span class="org-keyword">from</span> typing <span class="org-keyword">import</span> Callable, Dict, List, Any
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">============================================
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">FERRAMENTAS COM DICION&#193;RIOS E FUN&#199;&#213;ES
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">============================================
-</span>
-<span class="org-keyword">def</span> <span class="org-function-name">criar_ferramenta</span>(
-    nome: <span class="org-builtin">str</span>,
-    descricao: <span class="org-builtin">str</span>,
-    funcao: Callable,
-    parametros: Dict[<span class="org-builtin">str</span>, Dict[<span class="org-builtin">str</span>, Any]] <span class="org-operator">=</span> <span class="org-constant">None</span>
-) <span class="org-operator">-&gt;</span> Dict:
-    <span class="org-doc">"""
-    Cria uma ferramenta como dicion&#225;rio.
-
-    Args:
-        nome: Nome &#250;nico da ferramenta
-        descricao: O que a ferramenta faz (para o LLM entender)
-        funcao: Fun&#231;&#227;o Python que ser&#225; executada
-        parametros: Dict com descri&#231;&#227;o dos par&#226;metros
-
-    Returns:
-        Dicion&#225;rio representando a ferramenta
+<pre class="src src-python"><span class="org-type">@tool</span>
+<span class="org-keyword">def</span> <span class="org-function-name">search_wiki</span>(query: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""Search Wikipedia for factual, historical, and encyclopedic information.
+    Use for established facts about people, places, events, and concepts.
     """</span>
-    <span class="org-keyword">return</span> {
-        <span class="org-string">"nome"</span>: nome,
-        <span class="org-string">"descricao"</span>: descricao,
-        <span class="org-string">"funcao"</span>: funcao,
-        <span class="org-string">"parametros"</span>: parametros <span class="org-keyword">or</span> {}
-    }
+    ...
 
+<span class="org-type">@tool</span>
+<span class="org-keyword">def</span> <span class="org-function-name">search_web</span>(query: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""Search the web for current information like news, prices, and recent events.
+    Use for real-time data that changes frequently.
+    """</span>
+    ...
+</pre>
+</div>
 
-<span class="org-keyword">def</span> <span class="org-function-name">gerar_descricao_ferramenta</span>(ferramenta: Dict) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
-    <span class="org-doc">"""Gera descri&#231;&#227;o para o prompt do modelo."""</span>
-    <span class="org-variable-name">params_desc</span> <span class="org-operator">=</span> <span class="org-string">"</span><span class="org-constant">\n</span><span class="org-string">"</span>.join(
-        f<span class="org-string">"    - </span>{name}<span class="org-string">: </span>{info.get('description', '')}<span class="org-string"> "</span>
-        f<span class="org-string">"(</span>{'obrigat&#243;rio' <span class="org-keyword">if</span> info.get('required') <span class="org-keyword">else</span> 'opcional'}<span class="org-string">)"</span>
-        <span class="org-keyword">for</span> name, info <span class="org-keyword">in</span> ferramenta[<span class="org-string">"parametros"</span>].items()
-    )
-    <span class="org-keyword">return</span> f<span class="org-string">"""### </span>{ferramenta["nome"]}<span class="org-string">
-</span>{ferramenta["descricao"]}<span class="org-string">
+<p>
+Agora o modelo distingue: fato histórico → <code>search_wiki</code>, notícia atual → <code>search_web</code>.
+</p>
+</div>
+</div>
+<div id="outline-container-org4637ceb" class="outline-3">
+<h3 id="org4637ceb">Regra prática: cada ferramenta precisa de uma descrição exclusiva que explique <b>quando</b> usar.</h3>
+</div>
+</div>
+<div id="outline-container-orge79a42a" class="outline-2">
+<h2 id="orge79a42a">Debug de ferramentas</h2>
+<div class="outline-text-2" id="text-orge79a42a">
+<p>
+O LLM nem sempre acerta. Eis os problemas mais comuns e como resolver.
+</p>
+</div>
+<div id="outline-container-org6f02128" class="outline-3">
+<h3 id="org6f02128">Problema 1: LLM chama a ferramenta errada</h3>
+<div class="outline-text-3" id="text-org6f02128">
+<p>
+Pergunta: "Que horas são?"
+LLM chama: <code>calculate</code> em vez de <code>get_time</code>
+</p>
 
-Par&#226;metros:
-</span>{params_desc}<span class="org-string">
-"""</span>
+<p>
+<b>Causa:</b> descrição de <code>calculate</code> muito vaga ("Faz cálculos") ou descrição de <code>get_time</code> não menciona "que horas são".
+</p>
 
+<p>
+<b>Solução:</b> melhorar a descrição da ferramenta correta.
+</p>
 
-<span class="org-comment-delimiter"># </span><span class="org-comment">============================================
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">REGISTRO DE FERRAMENTAS
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">============================================
-</span>
-<span class="org-keyword">def</span> <span class="org-function-name">criar_registro</span>() <span class="org-operator">-&gt;</span> Dict:
-    <span class="org-doc">"""Cria um registro vazio de ferramentas."""</span>
-    <span class="org-keyword">return</span> {<span class="org-string">"ferramentas"</span>: {}}
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">&#10060; Vaga
+</span><span class="org-type">@tool</span>
+<span class="org-keyword">def</span> <span class="org-function-name">get_time</span>() <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""Returns current date and time."""</span>
 
-
-<span class="org-keyword">def</span> <span class="org-function-name">registrar_ferramenta</span>(registro: Dict, ferramenta: Dict) <span class="org-operator">-&gt;</span> <span class="org-constant">None</span>:
-    <span class="org-doc">"""Registra uma ferramenta no registro."""</span>
-    <span class="org-variable-name">nome</span> <span class="org-operator">=</span> ferramenta[<span class="org-string">"nome"</span>]
-    <span class="org-keyword">if</span> nome <span class="org-keyword">in</span> registro[<span class="org-string">"ferramentas"</span>]:
-        <span class="org-keyword">raise</span> <span class="org-type">ValueError</span>(f<span class="org-string">"Ferramenta '</span>{nome}<span class="org-string">' j&#225; est&#225; registrada"</span>)
-    registro[<span class="org-string">"ferramentas"</span>][nome] <span class="org-operator">=</span> ferramenta
-
-
-<span class="org-keyword">def</span> <span class="org-function-name">obter_ferramenta</span>(registro: Dict, nome: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> Dict:
-    <span class="org-doc">"""Retorna ferramenta pelo nome."""</span>
-    <span class="org-keyword">return</span> registro[<span class="org-string">"ferramentas"</span>].get(nome)
-
-
-<span class="org-keyword">def</span> <span class="org-function-name">listar_ferramentas</span>(registro: Dict) <span class="org-operator">-&gt;</span> List[<span class="org-builtin">str</span>]:
-    <span class="org-doc">"""Retorna lista de nomes de ferramentas."""</span>
-    <span class="org-keyword">return</span> <span class="org-builtin">list</span>(registro[<span class="org-string">"ferramentas"</span>].keys())
-
-
-<span class="org-keyword">def</span> <span class="org-function-name">gerar_prompt_ferramentas</span>(registro: Dict) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
-    <span class="org-doc">"""Gera string com todas as descri&#231;&#245;es para o prompt."""</span>
-    <span class="org-variable-name">prompt</span> <span class="org-operator">=</span> <span class="org-string">"# FERRAMENTAS DISPON&#205;VEIS</span><span class="org-constant">\n\n</span><span class="org-string">"</span>
-    <span class="org-variable-name">prompt</span> <span class="org-operator">+=</span> <span class="org-string">"Voc&#234; tem acesso &#224;s seguintes ferramentas.</span><span class="org-constant">\n\n</span><span class="org-string">"</span>
-
-    <span class="org-keyword">for</span> ferramenta <span class="org-keyword">in</span> registro[<span class="org-string">"ferramentas"</span>].values():
-        <span class="org-variable-name">prompt</span> <span class="org-operator">+=</span> gerar_descricao_ferramenta(ferramenta)
-
-    <span class="org-keyword">return</span> prompt
-
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Exemplo de uso
-</span><span class="org-variable-name">registro</span> <span class="org-operator">=</span> criar_registro()
-
-registrar_ferramenta(registro, criar_ferramenta(
-    nome<span class="org-operator">=</span><span class="org-string">"calculadora"</span>,
-    descricao<span class="org-operator">=</span><span class="org-string">"Resolve express&#245;es matem&#225;ticas. Use para c&#225;lculos num&#233;ricos."</span>,
-    funcao<span class="org-operator">=</span>calculadora_segura,  <span class="org-comment-delimiter"># </span><span class="org-comment">Fun&#231;&#227;o definida no m&#243;dulo anterior
-</span>    parametros<span class="org-operator">=</span>{
-        <span class="org-string">"expressao"</span>: {
-            <span class="org-string">"type"</span>: <span class="org-string">"string"</span>,
-            <span class="org-string">"description"</span>: <span class="org-string">"Express&#227;o matem&#225;tica (ex: '2 + 2', '10 * 5')"</span>,
-            <span class="org-string">"required"</span>: <span class="org-constant">True</span>
-        }
-    }
-))
-
-registrar_ferramenta(registro, criar_ferramenta(
-    nome<span class="org-operator">=</span><span class="org-string">"horario"</span>,
-    descricao<span class="org-operator">=</span><span class="org-string">"Retorna data e hora atual. Use quando precisar saber 'agora'."</span>,
-    funcao<span class="org-operator">=</span>obter_horario,  <span class="org-comment-delimiter"># </span><span class="org-comment">Fun&#231;&#227;o definida no m&#243;dulo anterior
-</span>    parametros<span class="org-operator">=</span>{
-        <span class="org-string">"formato"</span>: {
-            <span class="org-string">"type"</span>: <span class="org-string">"string"</span>,
-            <span class="org-string">"description"</span>: <span class="org-string">"Formato da sa&#237;da (opcional)"</span>,
-            <span class="org-string">"required"</span>: <span class="org-constant">False</span>
-        }
-    }
-))
-
-<span class="org-builtin">print</span>(gerar_prompt_ferramentas(registro))
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#9989; Espec&#237;fica
+</span><span class="org-type">@tool</span>
+<span class="org-keyword">def</span> <span class="org-function-name">get_time</span>() <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""Returns the current date and time.
+    Use when the user asks 'what time is it', 'what date is today',
+    or any question about the current moment.
+    """</span>
 </pre>
 </div>
 </div>
 </div>
-</div>
-<div id="outline-container-org207979f" class="outline-2">
-<h2 id="org207979f">Exercícios Práticos</h2>
-<div class="outline-text-2" id="text-org207979f">
-</div>
-<div id="outline-container-orgda444b0" class="outline-3">
-<h3 id="orgda444b0">Exercício 1: Agente com Múltiplas Ferramentas</h3>
-<div class="outline-text-3" id="text-orgda444b0">
+<div id="outline-container-orga906c1a" class="outline-3">
+<h3 id="orga906c1a">Problema 2: argumentos errados</h3>
+<div class="outline-text-3" id="text-orga906c1a">
 <p>
-Crie um agente que tenha calculadora, horário e uma ferramenta de contagem de palavras.
+LLM manda: <code>calculate(a=234, b=987, operation</code>"234 vezes 987")=
+Esperado: <code>operation</code> deve ser <code>"multiply"</code>, não <code>"234 vezes 987"</code>
 </p>
 
-<div class="DETAILS" id="org1e6232e">
 <p>
-📝 Estrutura sugerida
+<b>Causa:</b> descrição do parâmetro <code>operation</code> não lista os valores possíveis claramente.
+</p>
+
+<p>
+<b>Solução:</b> documentar valores permitidos no docstring.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-python"><span class="org-keyword">def</span> <span class="org-function-name">criar_agente_com_ferramentas</span>(ferramentas: <span class="org-builtin">list</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">dict</span>:
-    <span class="org-doc">"""
-    Cria um agente com registro de ferramentas.
+<pre class="src src-python"><span class="org-type">@tool</span>
+<span class="org-keyword">def</span> <span class="org-function-name">calculate</span>(a: <span class="org-builtin">float</span>, b: <span class="org-builtin">float</span>, operation: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">float</span>:
+    <span class="org-doc">"""Performs a mathematical operation between two numbers.
+    Use when you need to perform numeric calculations.
 
     Args:
-        ferramentas: Lista de dicion&#225;rios de ferramentas
-
-    Returns:
-        Dicion&#225;rio com estado do agente
+        a: First number
+        b: Second number
+        operation: One of 'add', 'subtract', 'multiply', 'divide'
     """</span>
-    <span class="org-variable-name">registro</span> <span class="org-operator">=</span> criar_registro()
-    <span class="org-keyword">for</span> f <span class="org-keyword">in</span> ferramentas:
-        registrar_ferramenta(registro, f)
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org644337e" class="outline-3">
+<h3 id="org644337e">Problema 3: ValidationError</h3>
+<div class="outline-text-3" id="text-org644337e">
+<p>
+Se o LLM manda um argumento com tipo errado (ex: passar texto onde espera número), Pydantic gera um <b>ValidationError</b> com contexto claro.
+</p>
 
-    <span class="org-keyword">return</span> {
-        <span class="org-string">"registro"</span>: registro,
-        <span class="org-string">"historico"</span>: []
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">ValidationError: Input should be a valid number,
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">unable to parse string as a number (field: a)</span>
+</pre>
+</div>
+
+<p>
+Isso é <b>bom</b> — o agente recebe o erro e pode corrigir. Mas se acontece muito, a descrição do parâmetro pode estar confusa.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org0555456" class="outline-2">
+<h2 id="org0555456">Ferramentas externas via MCP</h2>
+<div class="outline-text-2" id="text-org0555456">
+<p>
+Até agora, você escreveu as ferramentas. Mas e se <b>outra pessoa</b> escreveu a ferramenta e você só quer usar?
+</p>
+
+<p>
+O <b><b>MCP</b></b> (Model Context Protocol) é um protocolo padrão para ferramentas. Pense nele como o HTTP das ferramentas de IA — assim como HTTP padronizou a web, MCP padroniza como ferramentas se conectam a agentes.
+</p>
+</div>
+<div id="outline-container-org69172ec" class="outline-3">
+<h3 id="org69172ec">Conceito</h3>
+<div class="outline-text-3" id="text-org69172ec">
+<p>
+<a href="https://modelcontextprotocol.io/">Model Context Protocol</a> (criado pela Anthropic, open-source):
+</p>
+<ul class="org-ul">
+<li>Um <b>servidor MCP</b> expõe ferramentas</li>
+<li>Um <b>cliente MCP</b> consome essas ferramentas</li>
+<li>Protocolo padrão — qualquer LLM pode se conectar a qualquer servidor MCP</li>
+</ul>
+
+<p>
+Na S06, você escreveu as ferramentas com <code>@tool</code>. Na S07, você <b>consome</b> ferramentas que alguém escreveu, via MCP.
+</p>
+</div>
+</div>
+<div id="outline-container-org5ddebb4" class="outline-3">
+<h3 id="org5ddebb4">Servidor MCP com FastMCP</h3>
+<div class="outline-text-3" id="text-org5ddebb4">
+<p>
+Vamos criar um servidor MCP simples — depois vamos consumi-lo como cliente.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">math_server.py &#8212; Servidor MCP com duas ferramentas
+</span><span class="org-keyword">from</span> mcp.server.fastmcp <span class="org-keyword">import</span> FastMCP
+
+<span class="org-variable-name">mcp</span> <span class="org-operator">=</span> FastMCP(<span class="org-string">"Math"</span>)
+
+<span class="org-type">@mcp.tool</span>()
+<span class="org-keyword">def</span> <span class="org-function-name">add</span>(a: <span class="org-builtin">int</span>, b: <span class="org-builtin">int</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">int</span>:
+    <span class="org-doc">"""Add two numbers together."""</span>
+    <span class="org-keyword">return</span> a <span class="org-operator">+</span> b
+
+<span class="org-type">@mcp.tool</span>()
+<span class="org-keyword">def</span> <span class="org-function-name">multiply</span>(a: <span class="org-builtin">int</span>, b: <span class="org-builtin">int</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">int</span>:
+    <span class="org-doc">"""Multiply two numbers together."""</span>
+    <span class="org-keyword">return</span> a <span class="org-operator">*</span> b
+
+<span class="org-keyword">if</span> <span class="org-builtin">__name__</span> <span class="org-operator">==</span> <span class="org-string">"__main__"</span>:
+    mcp.run(transport<span class="org-operator">=</span><span class="org-string">"stdio"</span>)
+</pre>
+</div>
+
+<p>
+Repare: é quase idêntico ao <code>@tool</code> do LangChain, mas com <code>@mcp.tool()</code> e <code>FastMCP</code> em vez de <code>langchain_core.tools</code>.
+</p>
+
+<p>
+O servidor usa <code>transport="stdio"</code> — roda no mesmo processo, sem servidor externo.
+</p>
+</div>
+</div>
+<div id="outline-container-orgf58c725" class="outline-3">
+<h3 id="orgf58c725">Cliente: consumindo MCP no LangChain</h3>
+<div class="outline-text-3" id="text-orgf58c725">
+<p>
+Instale: <code>pip install langchain-mcp-adapters</code>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> mcp <span class="org-keyword">import</span> ClientSession, StdioServerParameters
+<span class="org-keyword">from</span> mcp.client.stdio <span class="org-keyword">import</span> stdio_client
+<span class="org-keyword">from</span> langchain_mcp_adapters.tools <span class="org-keyword">import</span> load_mcp_tools
+<span class="org-keyword">from</span> langchain.agents <span class="org-keyword">import</span> create_agent
+
+<span class="org-variable-name">server_params</span> <span class="org-operator">=</span> StdioServerParameters(
+    command<span class="org-operator">=</span><span class="org-string">"python"</span>,
+    args<span class="org-operator">=</span>[<span class="org-string">"math_server.py"</span>],
+)
+
+<span class="org-keyword">async with</span> stdio_client(server_params) <span class="org-keyword">as</span> (read, write):
+    <span class="org-keyword">async with</span> ClientSession(read, write) <span class="org-keyword">as</span> session:
+        <span class="org-keyword">await</span> session.initialize()
+        <span class="org-variable-name">tools</span> <span class="org-operator">=</span> <span class="org-keyword">await</span> load_mcp_tools(session)
+        <span class="org-comment-delimiter"># </span><span class="org-comment">tools agora s&#227;o @tool do LangChain &#8212; usa igual!
+</span>        <span class="org-variable-name">agente</span> <span class="org-operator">=</span> create_agent(llm, tools)
+        <span class="org-variable-name">resultado</span> <span class="org-operator">=</span> <span class="org-keyword">await</span> agente.ainvoke(
+            {<span class="org-string">"messages"</span>: <span class="org-string">"Quanto &#233; 3 + 5 multiplicado por 2?"</span>}
+        )
+        <span class="org-builtin">print</span>(resultado[<span class="org-string">"messages"</span>][<span class="org-operator">-</span>1].content)
+</pre>
+</div>
+
+<p>
+O que aconteceu:
+</p>
+<ol class="org-ol">
+<li><code>stdio_client</code> iniciou o servidor <code>math_server.py</code> em background</li>
+<li><code>ClientSession</code> fez o handshake MCP</li>
+<li><code>load_mcp_tools</code> converteu as ferramentas MCP em <code>@tool</code> do LangChain</li>
+<li><code>create_agent</code> usou as ferramentas normalmente — igual à S06</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org3a20016" class="outline-3">
+<h3 id="org3a20016">Servidor MCP remoto (HTTP)</h3>
+<div class="outline-text-3" id="text-org3a20016">
+<p>
+O exemplo acima usa <code>transport="stdio"</code> — o cliente spawn o servidor localmente. Mas o MCP também suporta transporte HTTP, permitindo conectar a servidores remotos.
+</p>
+
+<p>
+Para rodar o mesmo servidor como HTTP:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">math_server_http.py &#8212; Mesmo servidor, mas acess&#237;vel via HTTP
+</span><span class="org-keyword">from</span> mcp.server.fastmcp <span class="org-keyword">import</span> FastMCP
+
+<span class="org-variable-name">mcp</span> <span class="org-operator">=</span> FastMCP(<span class="org-string">"Math"</span>)
+
+<span class="org-type">@mcp.tool</span>()
+<span class="org-keyword">def</span> <span class="org-function-name">add</span>(a: <span class="org-builtin">int</span>, b: <span class="org-builtin">int</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">int</span>:
+    <span class="org-doc">"""Add two numbers together."""</span>
+    <span class="org-keyword">return</span> a <span class="org-operator">+</span> b
+
+<span class="org-type">@mcp.tool</span>()
+<span class="org-keyword">def</span> <span class="org-function-name">multiply</span>(a: <span class="org-builtin">int</span>, b: <span class="org-builtin">int</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">int</span>:
+    <span class="org-doc">"""Multiply two numbers together."""</span>
+    <span class="org-keyword">return</span> a <span class="org-operator">*</span> b
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Roda em http://localhost:8000 (ou qualquer host remoto)
+</span>mcp.run(transport<span class="org-operator">=</span><span class="org-string">"streamable-http"</span>)
+</pre>
+</div>
+
+<p>
+O código do servidor é idêntico — só muda a última linha. O servidor fica disponível em <code>http://localhost:8000/mcp</code> e pode ser acessado de qualquer máquina com conectividade.
+</p>
+</div>
+</div>
+<div id="outline-container-org86a8998" class="outline-3">
+<h3 id="org86a8998">Cliente remoto (HTTP)</h3>
+<div class="outline-text-3" id="text-org86a8998">
+<p>
+No cliente, em vez de <code>stdio_client</code>, usamos <code>streamablehttp_client</code> com uma URL:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> mcp <span class="org-keyword">import</span> ClientSession
+<span class="org-keyword">from</span> mcp.client.streamable_http <span class="org-keyword">import</span> streamablehttp_client
+<span class="org-keyword">from</span> langchain_mcp_adapters.tools <span class="org-keyword">import</span> load_mcp_tools
+<span class="org-keyword">from</span> langchain.agents <span class="org-keyword">import</span> create_agent
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Aponta pra URL &#8212; pode ser localhost ou um servidor remoto
+</span><span class="org-keyword">async with</span> streamablehttp_client(
+    <span class="org-string">"http://localhost:8000/mcp"</span>
+) <span class="org-keyword">as</span> (read, write):
+    <span class="org-keyword">async with</span> ClientSession(read, write) <span class="org-keyword">as</span> session:
+        <span class="org-keyword">await</span> session.initialize()
+        <span class="org-variable-name">tools</span> <span class="org-operator">=</span> <span class="org-keyword">await</span> load_mcp_tools(session)
+        <span class="org-variable-name">agente</span> <span class="org-operator">=</span> create_agent(llm, tools)
+        <span class="org-comment-delimiter"># </span><span class="org-comment">API id&#234;ntica &#8212; s&#243; muda como conecta</span>
+</pre>
+</div>
+
+<p>
+A API do agente é idêntica. A única diferença é <b>como</b> o cliente se conecta ao servidor: <code>stdio</code> spawn um processo local, <code>streamable-http</code> conecta a uma URL. Servidores MCP públicos (Slack, GitHub, Notion) funcionam assim — rodam remotamente e você só precisa da URL.
+</p>
+</div>
+</div>
+<div id="outline-container-org471684e" class="outline-3">
+<h3 id="org471684e">S06 vs S07 — resumo</h3>
+<div class="outline-text-3" id="text-org471684e">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Semana</th>
+<th scope="col" class="org-left">Ferramentas</th>
+<th scope="col" class="org-left">Origem</th>
+<th scope="col" class="org-left">Código</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">S06</td>
+<td class="org-left"><code>@tool</code> — você escreve</td>
+<td class="org-left">Seu código Python <code>@tool</code> + <code>bind_tools</code> + <code>create_agent</code></td>
+</tr>
+
+<tr>
+<td class="org-left">S07</td>
+<td class="org-left">MCP — alguém escreveu</td>
+<td class="org-left">Servidor externo <code>load_mcp_tools</code> + <code>create_agent</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>
+O agente não sabe a diferença. Pra ele, ferramenta é ferramenta.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org1f329ef" class="outline-2">
+<h2 id="org1f329ef">Múltiplos servidores MCP</h2>
+<div class="outline-text-2" id="text-org1f329ef">
+<p>
+Você pode conectar vários servidores MCP ao mesmo agente:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> langchain_mcp_adapters.client <span class="org-keyword">import</span> MultiServerMCPClient
+
+<span class="org-variable-name">client</span> <span class="org-operator">=</span> MultiServerMCPClient({
+    <span class="org-string">"math"</span>: {
+        <span class="org-string">"command"</span>: <span class="org-string">"python"</span>,
+        <span class="org-string">"args"</span>: [<span class="org-string">"math_server.py"</span>],
+        <span class="org-string">"transport"</span>: <span class="org-string">"stdio"</span>,
+    },
+    <span class="org-string">"weather"</span>: {
+        <span class="org-string">"url"</span>: <span class="org-string">"http://localhost:8000/mcp"</span>,
+        <span class="org-string">"transport"</span>: <span class="org-string">"http"</span>,
     }
+})
 
+<span class="org-variable-name">tools</span> <span class="org-operator">=</span> <span class="org-keyword">await</span> client.get_tools()
+<span class="org-variable-name">agente</span> <span class="org-operator">=</span> create_agent(llm, tools)
+<span class="org-comment-delimiter"># </span><span class="org-comment">Agora o agente tem ferramentas de math E weather</span>
+</pre>
+</div>
 
-<span class="org-keyword">def</span> <span class="org-function-name">processar_mensagem</span>(agente: <span class="org-builtin">dict</span>, mensagem: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
-    <span class="org-doc">"""
-    Processa mensagem usando ferramentas se necess&#225;rio.
+<p>
+Isso é poderoso: você monta um agente combinando ferramentas de <b>fontes diferentes</b> sem escrever código de integração.
+</p>
+</div>
+</div>
+<div id="outline-container-org69d81e5" class="outline-2">
+<h2 id="org69d81e5">Referências Importantes</h2>
+<div class="outline-text-2" id="text-org69d81e5">
+</div>
+<div id="outline-container-orga5bbe37" class="outline-3">
+<h3 id="orga5bbe37">Paper: Gorilla</h3>
+<div class="outline-text-3" id="text-orga5bbe37">
+<p>
+<b>Título:</b> "Gorilla: Large Language Model Connected to Massive APIs"
+<b>Autores:</b> Shishir Patil, Tianjun Zhang, Xin Wang, Joseph E. Gonzalez
+<b>Ano:</b> 2023
+<b>Link:</b> <a href="https://arxiv.org/abs/2305.15334">arXiv:2305.15334</a>
+</p>
+</div>
+</div>
+<div id="outline-container-orge93c059" class="outline-3">
+<h3 id="orge93c059">Paper: ReAct</h3>
+<div class="outline-text-3" id="text-orge93c059">
+<p>
+<b>Título:</b> "ReAct: Synergistic Reasoning and Acting in Language Models"
+<b>Autores:</b> Shunyu Yao, et al.
+<b>Ano:</b> 2022
+<b>Link:</b> <a href="https://arxiv.org/abs/2210.03629">arXiv:2210.03629</a>
+</p>
+</div>
+</div>
+<div id="outline-container-orgbab8bf4" class="outline-3">
+<h3 id="orgbab8bf4">MCP — Model Context Protocol</h3>
+<div class="outline-text-3" id="text-orgbab8bf4">
+<p>
+<b>Site:</b> <a href="https://modelcontextprotocol.io/">modelcontextprotocol.io</a>
+<b>Biblioteca:</b> <code>langchain-mcp-adapters</code> v0.2.2 (MIT, Mar 2026)
+<b>GitHub:</b> <a href="https://github.com/langchain-ai/langchain-mcp-adapters">langchain-ai/langchain-mcp-adapters</a>
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc0349e4" class="outline-2">
+<h2 id="orgc0349e4">Exercícios Práticos</h2>
+<div class="outline-text-2" id="text-orgc0349e4">
+</div>
+<div id="outline-container-orge437c86" class="outline-3">
+<h3 id="orge437c86">Exercício 1: Descrições em Conflito</h3>
+<div class="outline-text-3" id="text-orge437c86">
+<p>
+Crie duas ferramentas com descrições parecidas e teste o que acontece. Depois, corrija as descrições e veja a diferença.
+</p>
 
-    Args:
-        agente: Estado do agente
-        mensagem: Mensagem do usu&#225;rio
+<div class="DETAILS" id="org97f7885">
+<p>
+📝 Gabarito
+</p>
 
-    Returns:
-        Resposta do agente
-    """</span>
-    <span class="org-comment-delimiter"># </span><span class="org-comment">1. Montar prompt com ferramentas
-</span>    <span class="org-variable-name">prompt_ferramentas</span> <span class="org-operator">=</span> gerar_prompt_ferramentas(agente[<span class="org-string">"registro"</span>])
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> langchain_core.tools <span class="org-keyword">import</span> tool
 
-    <span class="org-comment-delimiter"># </span><span class="org-comment">2. Chamar LLM com hist&#243;rico
-</span>    <span class="org-comment-delimiter"># </span><span class="org-comment">... (implementa&#231;&#227;o depende do provedor)
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#10060; Descri&#231;&#245;es vagas &#8212; LLM confunde
+</span><span class="org-type">@tool</span>
+<span class="org-keyword">def</span> <span class="org-function-name">find_word_meaning</span>(word: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""Search for information about a word."""</span>
+    <span class="org-comment-delimiter"># </span><span class="org-comment">(implementa&#231;&#227;o simplificada)
+</span>    <span class="org-keyword">return</span> f<span class="org-string">"Definition of </span>{word}<span class="org-string">: ..."</span>
+
+<span class="org-type">@tool</span>
+<span class="org-keyword">def</span> <span class="org-function-name">find_word_rhymes</span>(word: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""Search for information about a word."""</span>
+    <span class="org-comment-delimiter"># </span><span class="org-comment">(implementa&#231;&#227;o simplificada)
+</span>    <span class="org-keyword">return</span> f<span class="org-string">"Rhymes of </span>{word}<span class="org-string">: ..."</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Teste: "What does 'serendipity' mean?"
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">Poss&#237;vel erro: LLM escolhe find_word_rhymes em vez de find_word_meaning
 </span>
-    <span class="org-comment-delimiter"># </span><span class="org-comment">3. Parsear resposta para detectar tool calls
-</span>    <span class="org-comment-delimiter"># </span><span class="org-comment">4. Executar ferramenta se necess&#225;rio
-</span>    <span class="org-comment-delimiter"># </span><span class="org-comment">5. Retornar resultado
-</span>    <span class="org-keyword">pass</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#9989; Descri&#231;&#245;es espec&#237;ficas
+</span><span class="org-type">@tool</span>
+<span class="org-keyword">def</span> <span class="org-function-name">find_word_meaning</span>(word: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""Look up the definition and meaning of a word in a dictionary.
+    Use when the user asks 'what does X mean' or 'definition of X'.
+    """</span>
+    <span class="org-keyword">return</span> f<span class="org-string">"Definition of </span>{word}<span class="org-string">: ..."</span>
+
+<span class="org-type">@tool</span>
+<span class="org-keyword">def</span> <span class="org-function-name">find_word_rhymes</span>(word: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""Find words that rhyme with a given word.
+    Use when the user asks for rhymes, similar-sounding words, or poetry help.
+    """</span>
+    <span class="org-keyword">return</span> f<span class="org-string">"Rhymes of </span>{word}<span class="org-string">: ..."</span>
+</pre>
+</div>
+
+</div>
+</div>
+</div>
+<div id="outline-container-orgdfb5ed0" class="outline-3">
+<h3 id="orgdfb5ed0">Exercício 2: Debug de Descrição</h3>
+<div class="outline-text-3" id="text-orgdfb5ed0">
+<p>
+O agente abaixo chama a ferramenta errada. Corrija a descrição.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-type">@tool</span>
+<span class="org-keyword">def</span> <span class="org-function-name">calculate</span>(a: <span class="org-builtin">float</span>, b: <span class="org-builtin">float</span>, operation: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">float</span>:
+    <span class="org-doc">"""Do math."""</span>
+    <span class="org-variable-name">ops</span> <span class="org-operator">=</span> {<span class="org-string">'add'</span>: a<span class="org-operator">+</span>b, <span class="org-string">'subtract'</span>: a<span class="org-operator">-</span>b,
+           <span class="org-string">'multiply'</span>: a<span class="org-operator">*</span>b, <span class="org-string">'divide'</span>: a<span class="org-operator">/</span>b}
+    <span class="org-keyword">return</span> ops[operation]
+
+<span class="org-type">@tool</span>
+<span class="org-keyword">def</span> <span class="org-function-name">get_time</span>() <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""Gives info."""</span>
+    <span class="org-keyword">from</span> datetime <span class="org-keyword">import</span> datetime
+    <span class="org-keyword">return</span> datetime.now().strftime(<span class="org-string">"%d/%m/%Y %H:%M:%S"</span>)
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Teste: "Que horas s&#227;o?"
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">Resultado: LLM chama calculate em vez de get_time
+</span><span class="org-comment-delimiter"># </span><span class="org-comment">Por qu&#234;? "Gives info" e "Do math" s&#227;o vagas demais</span>
+</pre>
+</div>
+
+<div class="DETAILS" id="orge78f543">
+<p>
+📝 Gabarito
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-type">@tool</span>
+<span class="org-keyword">def</span> <span class="org-function-name">calculate</span>(a: <span class="org-builtin">float</span>, b: <span class="org-builtin">float</span>, operation: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">float</span>:
+    <span class="org-doc">"""Performs a mathematical operation between two numbers.
+    Use when you need to perform numeric calculations like addition,
+    subtraction, multiplication, or division.
+    Args:
+        a: First number
+        b: Second number
+        operation: One of 'add', 'subtract', 'multiply', 'divide'
+    """</span>
+    <span class="org-variable-name">ops</span> <span class="org-operator">=</span> {<span class="org-string">'add'</span>: a<span class="org-operator">+</span>b, <span class="org-string">'subtract'</span>: a<span class="org-operator">-</span>b,
+           <span class="org-string">'multiply'</span>: a<span class="org-operator">*</span>b, <span class="org-string">'divide'</span>: a<span class="org-operator">/</span>b}
+    <span class="org-keyword">return</span> ops[operation]
+
+<span class="org-type">@tool</span>
+<span class="org-keyword">def</span> <span class="org-function-name">get_time</span>() <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""Returns the current date and time.
+    Use when the user asks about the current time, today's date,
+    or 'what time is it'.
+    """</span>
+    <span class="org-keyword">from</span> datetime <span class="org-keyword">import</span> datetime
+    <span class="org-keyword">return</span> datetime.now().strftime(<span class="org-string">"%d/%m/%Y %H:%M:%S"</span>)
+</pre>
+</div>
+
+</div>
+</div>
+</div>
+<div id="outline-container-orgfa00313" class="outline-3">
+<h3 id="orgfa00313">Exercício 3: Servidor MCP</h3>
+<div class="outline-text-3" id="text-orgfa00313">
+<p>
+Crie um servidor MCP com uma ferramenta <code>reverse_string</code> que inverte uma string, depois escreva um cliente que a consome.
+</p>
+
+<div class="DETAILS" id="org4c3728c">
+<p>
+📝 Gabarito
+</p>
+
+<p>
+Servidor (<code>reverse_server.py</code>):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> mcp.server.fastmcp <span class="org-keyword">import</span> FastMCP
+
+<span class="org-variable-name">mcp</span> <span class="org-operator">=</span> FastMCP(<span class="org-string">"Reverse"</span>)
+
+<span class="org-type">@mcp.tool</span>()
+<span class="org-keyword">def</span> <span class="org-function-name">reverse_string</span>(text: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
+    <span class="org-doc">"""Reverses a string. Use when the user wants to flip or reverse text."""</span>
+    <span class="org-keyword">return</span> text[::<span class="org-operator">-</span>1]
+
+<span class="org-keyword">if</span> <span class="org-builtin">__name__</span> <span class="org-operator">==</span> <span class="org-string">"__main__"</span>:
+    mcp.run(transport<span class="org-operator">=</span><span class="org-string">"stdio"</span>)
+</pre>
+</div>
+
+<p>
+Cliente (Colab):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> mcp <span class="org-keyword">import</span> ClientSession, StdioServerParameters
+<span class="org-keyword">from</span> mcp.client.stdio <span class="org-keyword">import</span> stdio_client
+<span class="org-keyword">from</span> langchain_mcp_adapters.tools <span class="org-keyword">import</span> load_mcp_tools
+<span class="org-keyword">from</span> langchain.agents <span class="org-keyword">import</span> create_agent
+<span class="org-keyword">from</span> langchain_openai <span class="org-keyword">import</span> ChatOpenAI
+
+<span class="org-variable-name">llm</span> <span class="org-operator">=</span> ChatOpenAI(
+    model<span class="org-operator">=</span><span class="org-string">"lfm2.5:8b"</span>,
+    base_url<span class="org-operator">=</span><span class="org-string">"http://localhost:11434/v1"</span>,
+    api_key<span class="org-operator">=</span><span class="org-string">"nao_precisa"</span>,
+    temperature<span class="org-operator">=</span>0,
+)
+
+<span class="org-variable-name">server_params</span> <span class="org-operator">=</span> StdioServerParameters(
+    command<span class="org-operator">=</span><span class="org-string">"python"</span>,
+    args<span class="org-operator">=</span>[<span class="org-string">"reverse_server.py"</span>],
+)
+
+<span class="org-keyword">async with</span> stdio_client(server_params) <span class="org-keyword">as</span> (read, write):
+    <span class="org-keyword">async with</span> ClientSession(read, write) <span class="org-keyword">as</span> session:
+        <span class="org-keyword">await</span> session.initialize()
+        <span class="org-variable-name">tools</span> <span class="org-operator">=</span> <span class="org-keyword">await</span> load_mcp_tools(session)
+        <span class="org-variable-name">agente</span> <span class="org-operator">=</span> create_agent(llm, tools)
+        <span class="org-variable-name">resultado</span> <span class="org-operator">=</span> <span class="org-keyword">await</span> agente.ainvoke(
+            {<span class="org-string">"messages"</span>: <span class="org-string">"Reverse the word 'Guilda'"</span>}
+        )
+        <span class="org-builtin">print</span>(resultado[<span class="org-string">"messages"</span>][<span class="org-operator">-</span>1].content)
+        <span class="org-comment-delimiter"># </span><span class="org-comment">"The reverse of 'Guilda' is 'adliuG'."</span>
+</pre>
+</div>
+
+</div>
+</div>
+</div>
+<div id="outline-container-org2d8060f" class="outline-3">
+<h3 id="org2d8060f">Exercício 4: Agente com Ferramentas Mistas</h3>
+<div class="outline-text-3" id="text-org2d8060f">
+<p>
+Combine duas ferramentas <code>@tool</code> (que você escreveu) com ferramentas MCP de um servidor externo em um único agente.
+</p>
+
+<div class="DETAILS" id="orgec75d7f">
+<p>
+📝 Gabarito
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">from</span> langchain_core.tools <span class="org-keyword">import</span> tool
+<span class="org-keyword">from</span> langchain.agents <span class="org-keyword">import</span> create_agent
+<span class="org-keyword">from</span> langchain_mcp_adapters.client <span class="org-keyword">import</span> MultiServerMCPClient
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Suas ferramentas @tool
+</span><span class="org-type">@tool</span>
+<span class="org-keyword">def</span> <span class="org-function-name">calculate</span>(a: <span class="org-builtin">float</span>, b: <span class="org-builtin">float</span>, operation: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">float</span>:
+    <span class="org-doc">"""Performs a mathematical operation between two numbers.
+    Args:
+        a: First number
+        b: Second number
+        operation: One of 'add', 'subtract', 'multiply', 'divide'
+    """</span>
+    <span class="org-variable-name">ops</span> <span class="org-operator">=</span> {<span class="org-string">'add'</span>: a<span class="org-operator">+</span>b, <span class="org-string">'subtract'</span>: a<span class="org-operator">-</span>b,
+           <span class="org-string">'multiply'</span>: a<span class="org-operator">*</span>b, <span class="org-string">'divide'</span>: a<span class="org-operator">/</span>b}
+    <span class="org-keyword">return</span> ops[operation]
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Ferramentas MCP
+</span><span class="org-variable-name">client</span> <span class="org-operator">=</span> MultiServerMCPClient({
+    <span class="org-string">"math"</span>: {
+        <span class="org-string">"command"</span>: <span class="org-string">"python"</span>,
+        <span class="org-string">"args"</span>: [<span class="org-string">"math_server.py"</span>],
+        <span class="org-string">"transport"</span>: <span class="org-string">"stdio"</span>,
+    },
+})
+
+<span class="org-variable-name">mcp_tools</span> <span class="org-operator">=</span> <span class="org-keyword">await</span> client.get_tools()
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Combina tudo
+</span><span class="org-variable-name">all_tools</span> <span class="org-operator">=</span> [calculate] <span class="org-operator">+</span> mcp_tools
+<span class="org-variable-name">agente</span> <span class="org-operator">=</span> create_agent(llm, all_tools)
+
+<span class="org-variable-name">resultado</span> <span class="org-operator">=</span> <span class="org-keyword">await</span> agente.ainvoke(
+    {<span class="org-string">"messages"</span>: <span class="org-string">"Quanto &#233; 10 + 5 multiplicado por 3?"</span>}
+)
+<span class="org-builtin">print</span>(resultado[<span class="org-string">"messages"</span>][<span class="org-operator">-</span>1].content)
 </pre>
 </div>
 
