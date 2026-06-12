@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Múltiplas Ferramentas e MCP</title>
+<meta name="author" content="Lucas S. Vieira"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/theme/night.css" id="theme"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/npm/reveal.js@4/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide" data-background="./slide_07.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Múltiplas Ferramentas e MCP</h2><br/><p style="font-size:0.85em;opacity:0.8;">O agente se expande</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+</section>
+<section>
+<section id="slide-orge8def66">
+<h2 id="orge8def66">📰 Fofocas da Semana</h2>
+<ul style="font-size:0.55em;">
+<li><b>Claude Fable 5 / Mythos 5</b> (09/06) — Anthropic lança primeiro Mythos-class público. Fable 5 = Mythos 5 com guardrails → fallback Opus 4.8. Preço: 2x Opus ($10/$50 por M). <b>Backlash violento:</b> silenciosamente degradava respostas de pesquisadores de IA (distillation) sem avisar. Anthropic recuou (11/06): "We made the wrong tradeoff", agora fallback é visível. Mas visível = mais falsos positivos. Comunidade de ciberseg critica. Retenção de 30 dias obrigatória 🔒⚠️</li>
+<li><b>Gemma 4 12B</b> (03/06) — Primeiro modelo encoder-free que processa texto, imagem, áudio e vídeo num único backbone, roda em 16GB de RAM, Apache 2.0 🔓</li>
+<li><b>GPT-4.5 sunset</b> (06/06) — OpenAI anunciou aposentadoria do GPT-4.5 do ChatGPT em 27/06</li>
+
+</ul>
+
+</section>
+<section id="slide-orge8def66-split">
+
+<ul style="font-size:0.55em;">
+<li><b>Nex-N2-mini</b> (07/06) — Post-train do Qwen3.5-35B-A3B (MoE 256e/8a, 3B ativos) pela Nex-AGI, foco agentic coding/tool calling. Benches questionáveis (Apex 9.4 = chute aleatório), GGUFs ainda inexistentes, arquitetura <code>qwen35moe</code> já suportada no ik-llama 🔓⚠️</li>
+<li><b>Quasar-Preview</b> (07/06) — SILX AI lança 18B MoE (2B ativos) com arquitetura frankenstein: Quasar+Raven+GLA+Engram+Loop Transformer. Promessa de 5M ctx (treinado com &lt;1B tokens nisso). GPQA 25.6% = chute. MIT, mas roda só em PyTorch F32, zero suporte GGUF/llama.cpp. Feito pra Bittensor SN24 🔓🔬</li>
+<li><b>llama.cpp multimodal total</b> (08/06) — Mergeou suporte a vídeo nativo via ffmpeg + mtmd, TTS integrado com WavTokenizer, 6 preprocessadores de áudio (Whisper, Conformer, Granite Speech, Gemma4 Audio/Unified, Qwen3-ASR), e pipeline de speech-to-speech direto no <code>llama-server</code> 🔓</li>
+<li><b>Xiaomi MiMo V2.5 Pro UltraSpeed</b> (08/06) — 1T MoE com DFlash (block-masked speculative decoding), 1000+ tok/s em nó padrão de 8 GPUs. FP4 seletivo nos Experts, FP8 no resto. Parceria com TileRT (runtime otimizado). Pesos FP4-DFlash abertos no HuggingFace (MIT) 🔓
+<ul>
+<li>Não usa hardware dedicado (Cerebras/Groq) — roda em GPUs comerciais. Mas: API em teste limitado até 23/06, 3x o preço da versão padrão. Relevância local: modelos 1T fora do alcance de GPUs consumer</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-orge8def66-split">
+
+<ul style="font-size:0.55em;">
+<li><b>Apple AFM 3</b> (08/06, WWDC) — Terceira geração de foundation models da Apple: AFM 3 Core (3B dense, on-device), AFM 3 Core Advanced (20B com Instruction-Following Pruning, 1-4B ativos por request, pesos em flash/NAND com swap pra DRAM), AFM 3 Cloud (server), ADM 3 Cloud (imagem), AFM 3 Cloud Pro (agentes, NVIDIA+Google Cloud). Arquitetura IFP carrega experts sob demanda do flash, não DRAM inteira 🔒</li>
+<li><b>North Mini Code</b> (09/06) — Cohere lança MoE 30B (3B ativos) focado em agentic coding, Apache 2.0, 256K contexto. Suporte <code>cohere2_moe</code> mergeado no ik<sub>llama.cpp</sub> (PR #1945, 10/06) 🔓</li>
+<li><b>Gemini 3.5 Live Translate</b> (09/06) — Modelo de áudio dedicado a tradução simultânea speech-to-speech em 70+ idiomas, preserva entonação e prosódia. Disponível via Gemini Live API (public preview) e Google Translate (Android/iOS). Parceiros como Grab e CJ ENM já integram. Áudio watermarkado com SynthID 🛡️</li>
+<li><b>DiffusionGemma</b> (10/06) — Google lança modelo de difusão textual: MoE 26B (3.8B ativos), gera 256 tokens em paralelo ao invés de sequencial. Até 700 tok/s na RTX 5090, 1000+ tok/s na H100. Bidirectional attention permite autocorreção. 18GB VRAM com quantização 🔓🔬
+<ul>
+<li>Shiftou o bottleneck: de memória → compute. Offload pra CPU/RAM = perde o ganho (10-40x mais lento que AR). Futuro: modelos densos menores seriam mais viáveis pra GPUs fracas</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-orge8def66-split">
+
+<ul style="font-size:0.55em;">
+<li><b>PP-OCRv6</b> (11/06) — Baidu/PaddlePaddle lança OCR dedicado em 3 tiers: tiny 1.5M, small 7.7M, medium 34.5M. 48+ idiomas num modelo único (chinês, japonês, latim). Suporta manuscrito, impresso, industrial, tela e cartão. Medium (34.5M) supera Qwen3-VL-235B e GPT-5.5 em precisão de OCR. Edge-friendly, Apache 2.0, pip install paddleocr 🔓🔬</li>
+<li><b>Kimi K2.7 Code</b> (12/06) — Moonshot AI lança modelo agentic de código open-weight: MoE 1T (32B ativos, 384 experts/8 por token), 256K contexto, MoonViT 400M (imagem+vídeo). +21.8% no Kimi Code Bench v2, +31.5% no MLS Bench Lite vs K2.6. 30% menos thinking tokens. Empatou com GPT-5.5 no MLS Bench Lite (35.1 vs 35.5). Modified MIT, deploy em vLLM/SGLang/KTransformers 🔓
+<ul>
+<li>Arquitetura = K2.6 (MLA+MoE). Preserve thinking obrigatório — acumula raciocínio entre turns, bom pra agentes de código</li>
+
+</ul></li>
+<li><b>MiniMax M3 open-weight</b> (12/06) — Pesos liberados no HuggingFace! MoE ~428B (23B ativos), contexto 1M via MSA (MiniMax Sparse Attention), multimodal nativo (texto+imagem+vídeo). 59.0% SWE-bench Pro (bate GPT-5.5 58.6%). MSA = 15.6× mais rápido no decode e 9.7× no prefill vs M2 em 1M contexto, sem compressão de KV. Suporte: vLLM, SGLang, Ollama, KTransformers 🔓
+<ul>
+<li>Licença <code>minimax-community</code>. 1T params MoE = fora do alcance de GPUs consumer, mas 23B ativos e MSA são relevantes pra arquitetura</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section id="slide-orga3b6c8f">
+<h3 id="orga3b6c8f">Experimentos com modelos de difusão local</h3>
+<ul style="font-size:0.55em;">
+<li>Rodando modelos de geração de imagem <b>localmente</b> na RTX 3050 6GB via <a href="https://github.com/luksamuk/diffuse">diffuse</a></li>
+<li>Text-to-image e image editing — sem API, sem nuvem</li>
+
+</ul>
+
+</section>
+<section id="slide-orga3b6c8f-split">
+</section>
+<section id="slide-org166caaa">
+<h3 id="org166caaa">Ideogram 4 (Q4<sub>0</sub>) — Text-to-Image</h3>
+
+<div id="org8192bc8" class="figure">
+<p><img src="./07-ideogram4.jpg" alt="07-ideogram4.jpg" />
+</p>
+</div>
+
+</section>
+<section id="slide-org166caaa-split">
+</section>
+<section id="slide-orgecd785a">
+<h3 id="orgecd785a">HiDream-O1 SDNQ — Text-to-Image</h3>
+
+<div id="orge92e062" class="figure">
+<p><img src="./07-hidream-t2i.jpg" alt="07-hidream-t2i.jpg" />
+</p>
+</div>
+
+</section>
+<section id="slide-orgecd785a-split">
+</section>
+<section id="slide-org95a4d82">
+<h3 id="org95a4d82">HiDream-O1 SDNQ — Image Editing</h3>
+
+<div id="org3e16657" class="figure">
+<p><img src="./07-hidream-edit.jpg" alt="07-hidream-edit.jpg" />
+</p>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org2fa0a96">
+<h2 id="org2fa0a96">Chamadas encadeadas</h2>
+<p>
+Na S06, o agente usou <b>uma</b> ferramenta por vez.
+</p>
+
+<p>
+Mas e quando precisa de <b>duas ou mais</b>?
+</p>
+
+</section>
+<section id="slide-org2fa0a96-split">
+
+<div class="org-src-container">
+
+<pre   ><code class="text" >"Quanto é 234 × 987 + 100?"
+
+Thought: Preciso multiplicar, depois somar
+Action: calculate(234, 987, "multiply") → 230958
+Action: calculate(230958, 100, "add") → 231058
+Answer: "O resultado é 231.058."
+</code></pre>
+</div>
+
+<p>
+O <code>create_agent</code> repete Thought→Action→Observation <b>automaticamente</b>.
+</p>
+
+</section>
+<section id="slide-org2fa0a96-split">
+
+<div class="org-src-container">
+
+<pre   ><code class="python" >from langchain.agents import create_agent
+
+agente = create_agent(llm, [calculate, get_time, get_word_length])
+
+resultado = agente.invoke({"messages": "Quanto é 234 vezes 987 mais 100?"})
+print(resultado["messages"][-1].content)
+# "O resultado de 234 × 987 + 100 é 231.058."
+</code></pre>
+</div>
+
+<p>
+Uma chamada. Múltiplas ferramentas encadeadas. Automático.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org044e735">
+<h2 id="org044e735">O problema das descrições vagas</h2>
+<p>
+Se duas ferramentas parecem fazer a mesma coisa:
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" ># ❌ Vagas — LLM confunde
+@tool
+def search_wiki(query: str) -&gt; str:
+    """Search for information."""
+
+@tool
+def search_web(query: str) -&gt; str:
+    """Search for information."""
+</code></pre>
+</div>
+
+<p>
+<code>Search for information</code> × 2 → modelo não sabe qual usar.
+</p>
+
+</section>
+<section id="slide-org044e735-split">
+
+<div class="org-src-container">
+
+<pre   ><code class="python" ># ✅ Específicas — LLM distingue
+@tool
+def search_wiki(query: str) -&gt; str:
+    """Search Wikipedia for factual and historical information.
+    Use for established facts about people, places, events."""
+
+@tool
+def search_web(query: str) -&gt; str:
+    """Search the web for current information.
+    Use for news, prices, and real-time data."""
+</code></pre>
+</div>
+
+<p>
+<b>Regra:</b> cada descrição explica <b>quando</b> usar aquela ferramenta.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org53efece">
+<h2 id="org53efece">Debug de ferramentas</h2>
+<p class="fragment (appear)">
+O LLM nem sempre acerta. Problemas comuns:
+</p>
+
+<ol>
+<li class="fragment appear"><b>Ferramenta errada</b> — descrição vaga</li>
+<li class="fragment appear"><b>Argumentos errados</b> — valores possíveis não documentados</li>
+<li class="fragment appear"><b>ValidationError</b> — tipo errado no argumento</li>
+
+</ol>
+</section>
+<section id="slide-orgf6dce44">
+<h3 id="orgf6dce44">Problema: LLM chama ferramenta errada</h3>
+<p>
+Pergunta: "Que horas são?"
+LLM chama: <code>calculate</code> em vez de <code>get_time</code>
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" ># ❌ Vaga
+@tool
+def get_time() -&gt; str:
+    """Returns current date and time."""
+
+# ✅ Específica
+@tool
+def get_time() -&gt; str:
+    """Returns the current date and time.
+    Use when the user asks 'what time is it',
+    'what date is today', or about the current moment."""
+</code></pre>
+</div>
+</section>
+<section id="slide-org8b159f3">
+<h3 id="org8b159f3">Problema: argumentos errados</h3>
+<p>
+LLM manda <code>operation</code>"234 vezes 987"= em vez de <code>"multiply"</code>
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" ># ✅ Solução: documentar valores no docstring
+@tool
+def calculate(a: float, b: float, operation: str) -&gt; float:
+    """Performs a mathematical operation between two numbers.
+    Use when you need to perform numeric calculations.
+    Args:
+        a: First number
+        b: Second number
+        operation: One of 'add', 'subtract', 'multiply', 'divide'
+    """
+</code></pre>
+</div>
+</section>
+<section id="slide-orgab9f484">
+<h3 id="orgab9f484">Problema: ValidationError</h3>
+<p>
+Pydantic rejeita argumentos com tipo errado (ex.: passar texto onde espera número). O agente recebe o erro e pode <b>corrigir automaticamente</b>. Mas se acontece com frequência, a descrição da ferramenta precisa melhorar.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org7945e05">
+<h2 id="org7945e05">Ferramentas externas via MCP</h2>
+<p>
+Até agora, você <b>escreveu</b> as ferramentas com <code>@tool</code>.
+</p>
+
+<p>
+E se <b>outra pessoa</b> escreveu?
+</p>
+
+</section>
+<section id="slide-org7945e05-split">
+
+<p>
+<b><b>MCP</b></b> — Model Context Protocol
+</p>
+<ul style="font-size:0.8em;">
+<li>Protocolo padrão para ferramentas de IA (como HTTP para a web)</li>
+<li>Um <b>servidor MCP</b> expõe ferramentas</li>
+<li>Um <b>cliente MCP</b> consome essas ferramentas</li>
+<li>Qualquer LLM se conecta a qualquer servidor MCP</li>
+
+</ul>
+
+<p>
+<a href="https://modelcontextprotocol.io/">modelcontextprotocol.io</a>
+</p>
+</section>
+<section id="slide-org76e5afb">
+<h3 id="org76e5afb">Servidor MCP (<code>math_server.py</code>)</h3>
+<div class="org-src-container">
+
+<pre   ><code class="python" >from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("Math")
+
+@mcp.tool()
+def add(a: int, b: int) -&gt; int:
+    """Add two numbers together."""
+    return a + b
+
+@mcp.tool()
+def multiply(a: int, b: int) -&gt; int:
+    """Multiply two numbers together."""
+    return a * b
+
+if __name__ == "__main__":
+    mcp.run(transport="stdio")
+</code></pre>
+</div>
+
+<p>
+Quase idêntico ao <code>@tool</code>, mas <code>@mcp.tool()</code> e <code>FastMCP</code>.
+</p>
+</section>
+<section id="slide-orgab48708">
+<h3 id="orgab48708">Cliente: consumindo MCP no LangChain</h3>
+<div class="org-src-container">
+
+<pre   ><code class="python" >from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+from langchain_mcp_adapters.tools import load_mcp_tools
+from langchain.agents import create_agent
+
+server_params = StdioServerParameters(
+    command="python", args=["math_server.py"])
+
+async with stdio_client(server_params) as (read, write):
+    async with ClientSession(read, write) as session:
+        await session.initialize()
+        tools = await load_mcp_tools(session)
+        agente = create_agent(llm, tools)
+        resultado = await agente.ainvoke(
+            {"messages": "Quanto é 3 + 5 multiplicado por 2?"})
+</code></pre>
+</div>
+
+<p>
+Ferramentas MCP viram <code>@tool</code> do LangChain — o agente não sabe a diferença.
+</p>
+</section>
+<section id="slide-org8c5f060">
+<h3 id="org8c5f060">Servidor MCP remoto (HTTP)</h3>
+<div class="org-src-container">
+
+<pre   ><code class="python" ># Mesmo math_server.py, mas rodando como servidor HTTP
+mcp = FastMCP("Math")
+
+@mcp.tool()
+def add(a: int, b: int) -&gt; int:
+    """Add two numbers together."""
+    return a + b
+
+@mcp.tool()
+def multiply(a: int, b: int) -&gt; int:
+    """Multiply two numbers together."""
+    return a * b
+
+# Roda em http://localhost:8000 (ou qualquer host remoto)
+mcp.run(transport="streamable-http")
+</code></pre>
+</div>
+</section>
+<section id="slide-org9327f96">
+<h3 id="org9327f96">Cliente remoto (HTTP)</h3>
+<div class="org-src-container">
+
+<pre   ><code class="python" >from mcp import ClientSession
+from mcp.client.streamable_http import streamablehttp_client
+from langchain_mcp_adapters.tools import load_mcp_tools
+from langchain.agents import create_agent
+
+# Aponta pra URL — pode ser localhost ou um servidor remoto
+async with streamablehttp_client(
+    "http://localhost:8000/mcp"
+) as (read, write):
+    async with ClientSession(read, write) as session:
+        await session.initialize()
+        tools = await load_mcp_tools(session)
+        agente = create_agent(llm, tools)
+        # API idêntica — só muda como conecta
+</code></pre>
+</div>
+</section>
+<section id="slide-orge8111ea">
+<h3 id="orge8111ea">S06 vs S07</h3>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">&#xa0;</th>
+<th scope="col" class="org-left">S06</th>
+<th scope="col" class="org-left">S07</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><b>Ferramentas</b></td>
+<td class="org-left"><code>@tool</code> — você escreve</td>
+<td class="org-left">MCP — alguém escreveu</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>Código</b></td>
+<td class="org-left"><code>bind_tools</code> + <code>create_agent</code></td>
+<td class="org-left"><code>load_mcp_tools</code> + <code>create_agent</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><b>Origem</b></td>
+<td class="org-left">Seu Python</td>
+<td class="org-left">Servidor externo</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Pra o agente, ferramenta é ferramenta. Não importa de onde veio.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org6f21e18">
+<h2 id="org6f21e18">Múltiplos servidores MCP</h2>
+<div class="org-src-container">
+
+<pre   ><code class="python" >from langchain_mcp_adapters.client import MultiServerMCPClient
+
+client = MultiServerMCPClient({
+    "math": {
+        "command": "python",
+        "args": ["math_server.py"],
+        "transport": "stdio",
+    },
+    "weather": {
+        "url": "http://localhost:8000/mcp",
+        "transport": "http",
+    }
+})
+
+tools = await client.get_tools()
+agente = create_agent(llm, tools)
+# Agente tem ferramentas de math E weather
+</code></pre>
+</div>
+
+<p>
+Monte um agente combinando ferramentas de <b>fontes diferentes</b> — sem código de integração.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org2244310" data-background="./slide_07.gif">
+<h2 id="org2244310">Para lembrar</h2>
+<blockquote >
+<p>
+"Ferramentas transformam conversa em ação.
+MCP transforma integração em padrão."
+</p>
+</blockquote>
+
+<ul style="font-size:0.55em;">
+<li>Descrições vagas = confusão</li>
+<li>Descrições específicas = clareza</li>
+<li><code>create_agent</code> encadeia ferramentas automaticamente</li>
+<li>MCP = HTTP das ferramentas de IA</li>
+<li>MCP suporta stdio (local) e HTTP (remoto)</li>
+<li>Na S08: RAG — buscar informações relevantes em documentos</li>
+
+</ul>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
+
+});
+
+</script>
+</body>
+</html>
