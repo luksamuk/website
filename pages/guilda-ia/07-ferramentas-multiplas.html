@@ -231,9 +231,9 @@ Material didático do curso de IA Generativa da Guilda de IA">
 <div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">Múltiplas Ferramentas e MCP: O Agente Se Expande</h1>
 </div>
 <div id="content" class="content">
-<div id="outline-container-org10cb7c9" class="outline-2">
-<h2 id="org10cb7c9">Chamadas encadeadas</h2>
-<div class="outline-text-2" id="text-org10cb7c9">
+<div id="outline-container-org97803a8" class="outline-2">
+<h2 id="org97803a8">Chamadas encadeadas</h2>
+<div class="outline-text-2" id="text-org97803a8">
 <p>
 Na semana passada, o agente usava uma ferramenta por vez. Mas e quando a pergunta precisa de <b>duas ou mais</b>?
 </p>
@@ -270,16 +270,16 @@ O agente decide sozinho: preciso de duas chamadas a <code>calculate</code>? Ent�
 </p>
 </div>
 </div>
-<div id="outline-container-org95f112a" class="outline-2">
-<h2 id="org95f112a">O problema das descrições vagas</h2>
-<div class="outline-text-2" id="text-org95f112a">
+<div id="outline-container-org34c30ca" class="outline-2">
+<h2 id="org34c30ca">O problema das descrições vagas</h2>
+<div class="outline-text-2" id="text-org34c30ca">
 <p>
 Se duas ferramentas parecem fazer a mesma coisa, o modelo confunde.
 </p>
 </div>
-<div id="outline-container-org3e2e2e9" class="outline-3">
-<h3 id="org3e2e2e9">Exemplo de conflito:</h3>
-<div class="outline-text-3" id="text-org3e2e2e9">
+<div id="outline-container-org5e488df" class="outline-3">
+<h3 id="org5e488df">Exemplo de conflito:</h3>
+<div class="outline-text-3" id="text-org5e488df">
 <div class="org-src-container">
 <pre class="src src-python"><span class="org-type">@tool</span>
 <span class="org-keyword">def</span> <span class="org-function-name">search_wiki</span>(query: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
@@ -298,9 +298,9 @@ Duas ferramentas com a mesma descrição genérica. O LLM não sabe qual usar.
 </p>
 </div>
 </div>
-<div id="outline-container-org5d6de2c" class="outline-3">
-<h3 id="org5d6de2c">Solução: descrições específicas</h3>
-<div class="outline-text-3" id="text-org5d6de2c">
+<div id="outline-container-org2c2e903" class="outline-3">
+<h3 id="org2c2e903">Solução: descrições específicas</h3>
+<div class="outline-text-3" id="text-org2c2e903">
 <div class="org-src-container">
 <pre class="src src-python"><span class="org-type">@tool</span>
 <span class="org-keyword">def</span> <span class="org-function-name">search_wiki</span>(query: <span class="org-builtin">str</span>) <span class="org-operator">-&gt;</span> <span class="org-builtin">str</span>:
@@ -323,20 +323,20 @@ Agora o modelo distingue: fato histórico → <code>search_wiki</code>, notícia
 </p>
 </div>
 </div>
-<div id="outline-container-org6ad627f" class="outline-3">
-<h3 id="org6ad627f">Regra prática: cada ferramenta precisa de uma descrição exclusiva que explique <b>quando</b> usar.</h3>
+<div id="outline-container-org3899abd" class="outline-3">
+<h3 id="org3899abd">Regra prática: cada ferramenta precisa de uma descrição exclusiva que explique <b>quando</b> usar.</h3>
 </div>
 </div>
-<div id="outline-container-org477fbb2" class="outline-2">
-<h2 id="org477fbb2">Debug de ferramentas</h2>
-<div class="outline-text-2" id="text-org477fbb2">
+<div id="outline-container-org23d6ced" class="outline-2">
+<h2 id="org23d6ced">Debug de ferramentas</h2>
+<div class="outline-text-2" id="text-org23d6ced">
 <p>
 O LLM nem sempre acerta. Eis os problemas mais comuns e como resolver.
 </p>
 </div>
-<div id="outline-container-org72a0428" class="outline-3">
-<h3 id="org72a0428">Problema 1: LLM chama a ferramenta errada</h3>
-<div class="outline-text-3" id="text-org72a0428">
+<div id="outline-container-orgfb5f611" class="outline-3">
+<h3 id="orgfb5f611">Problema 1: LLM chama a ferramenta errada</h3>
+<div class="outline-text-3" id="text-orgfb5f611">
 <p>
 Pergunta: "Que horas são?"
 LLM chama: <code>calculate</code> em vez de <code>get_time</code>
@@ -367,9 +367,9 @@ LLM chama: <code>calculate</code> em vez de <code>get_time</code>
 </div>
 </div>
 </div>
-<div id="outline-container-org19826a2" class="outline-3">
-<h3 id="org19826a2">Problema 2: argumentos errados</h3>
-<div class="outline-text-3" id="text-org19826a2">
+<div id="outline-container-org7874730" class="outline-3">
+<h3 id="org7874730">Problema 2: argumentos errados</h3>
+<div class="outline-text-3" id="text-org7874730">
 <p>
 LLM manda: <code>calculate(a=234, b=987, operation</code>"234 vezes 987")=
 Esperado: <code>operation</code> deve ser <code>"multiply"</code>, não <code>"234 vezes 987"</code>
@@ -398,9 +398,9 @@ Esperado: <code>operation</code> deve ser <code>"multiply"</code>, não <code>"2
 </div>
 </div>
 </div>
-<div id="outline-container-org1a1e7cb" class="outline-3">
-<h3 id="org1a1e7cb">Problema 3: ValidationError</h3>
-<div class="outline-text-3" id="text-org1a1e7cb">
+<div id="outline-container-orgc26aa58" class="outline-3">
+<h3 id="orgc26aa58">Problema 3: ValidationError</h3>
+<div class="outline-text-3" id="text-orgc26aa58">
 <p>
 Se o LLM manda um argumento com tipo errado (ex: passar texto onde espera número), Pydantic gera um <b>ValidationError</b> com contexto claro.
 </p>
@@ -417,9 +417,9 @@ Isso é <b>bom</b> — o agente recebe o erro e pode corrigir. Mas se acontece m
 </div>
 </div>
 </div>
-<div id="outline-container-orgec63035" class="outline-2">
-<h2 id="orgec63035">Ferramentas externas via MCP</h2>
-<div class="outline-text-2" id="text-orgec63035">
+<div id="outline-container-org4550107" class="outline-2">
+<h2 id="org4550107">Ferramentas externas via MCP</h2>
+<div class="outline-text-2" id="text-org4550107">
 <p>
 Até agora, você escreveu as ferramentas. Mas e se <b>outra pessoa</b> escreveu a ferramenta e você só quer usar?
 </p>
@@ -428,9 +428,9 @@ Até agora, você escreveu as ferramentas. Mas e se <b>outra pessoa</b> escreveu
 O <b><b>MCP</b></b> (Model Context Protocol) é um protocolo padrão para ferramentas. Pense nele como o HTTP das ferramentas de IA — assim como HTTP padronizou a web, MCP padroniza como ferramentas se conectam a agentes.
 </p>
 </div>
-<div id="outline-container-orgd490f1f" class="outline-3">
-<h3 id="orgd490f1f">Conceito</h3>
-<div class="outline-text-3" id="text-orgd490f1f">
+<div id="outline-container-org9afb35a" class="outline-3">
+<h3 id="org9afb35a">Conceito</h3>
+<div class="outline-text-3" id="text-org9afb35a">
 <p>
 <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> (criado pela Anthropic, open-source):
 </p>
@@ -445,9 +445,9 @@ Na S06, você escreveu as ferramentas com <code>@tool</code>. Na S07, você <b>c
 </p>
 </div>
 </div>
-<div id="outline-container-org38e1fbb" class="outline-3">
-<h3 id="org38e1fbb">Servidor MCP com FastMCP</h3>
-<div class="outline-text-3" id="text-org38e1fbb">
+<div id="outline-container-org6335f0c" class="outline-3">
+<h3 id="org6335f0c">Servidor MCP com FastMCP</h3>
+<div class="outline-text-3" id="text-org6335f0c">
 <p>
 Vamos criar um servidor MCP simples — depois vamos consumi-lo como cliente.
 </p>
@@ -482,9 +482,9 @@ O servidor usa <code>transport="stdio"</code> — roda no mesmo processo, sem se
 </p>
 </div>
 </div>
-<div id="outline-container-org66f9de7" class="outline-3">
-<h3 id="org66f9de7">Cliente: consumindo MCP no LangChain</h3>
-<div class="outline-text-3" id="text-org66f9de7">
+<div id="outline-container-org6ab1a6a" class="outline-3">
+<h3 id="org6ab1a6a">Cliente: consumindo MCP no LangChain</h3>
+<div class="outline-text-3" id="text-org6ab1a6a">
 <p>
 Instale: <code>pip install langchain-mcp-adapters</code>
 </p>
@@ -524,9 +524,9 @@ O que aconteceu:
 </ol>
 </div>
 </div>
-<div id="outline-container-org05c392d" class="outline-3">
-<h3 id="org05c392d">Servidor MCP remoto (HTTP)</h3>
-<div class="outline-text-3" id="text-org05c392d">
+<div id="outline-container-org1fd2003" class="outline-3">
+<h3 id="org1fd2003">Servidor MCP remoto (HTTP)</h3>
+<div class="outline-text-3" id="text-org1fd2003">
 <p>
 O exemplo acima usa <code>transport="stdio"</code> — o cliente spawn o servidor localmente. Mas o MCP também suporta transporte HTTP, permitindo conectar a servidores remotos.
 </p>
@@ -561,9 +561,9 @@ O código do servidor é idêntico — só muda a última linha. O servidor fica
 </p>
 </div>
 </div>
-<div id="outline-container-org86701c2" class="outline-3">
-<h3 id="org86701c2">Cliente remoto (HTTP)</h3>
-<div class="outline-text-3" id="text-org86701c2">
+<div id="outline-container-orgdbc86fe" class="outline-3">
+<h3 id="orgdbc86fe">Cliente remoto (HTTP)</h3>
+<div class="outline-text-3" id="text-orgdbc86fe">
 <p>
 No cliente, em vez de <code>stdio_client</code>, usamos <code>streamablehttp_client</code> com uma URL:
 </p>
@@ -591,9 +591,9 @@ A API do agente é idêntica. A única diferença é <b>como</b> o cliente se co
 </p>
 </div>
 </div>
-<div id="outline-container-org36ff570" class="outline-3">
-<h3 id="org36ff570">S06 vs S07 — resumo</h3>
-<div class="outline-text-3" id="text-org36ff570">
+<div id="outline-container-org829199d" class="outline-3">
+<h3 id="org829199d">S06 vs S07 — resumo</h3>
+<div class="outline-text-3" id="text-org829199d">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -635,9 +635,9 @@ O agente não sabe a diferença. Pra ele, ferramenta é ferramenta.
 </div>
 </div>
 </div>
-<div id="outline-container-org55d1260" class="outline-2">
-<h2 id="org55d1260">Múltiplos servidores MCP</h2>
-<div class="outline-text-2" id="text-org55d1260">
+<div id="outline-container-org066d941" class="outline-2">
+<h2 id="org066d941">Múltiplos servidores MCP</h2>
+<div class="outline-text-2" id="text-org066d941">
 <p>
 Você pode conectar vários servidores MCP ao mesmo agente:
 </p>
@@ -668,13 +668,13 @@ Isso é poderoso: você monta um agente combinando ferramentas de <b>fontes dife
 </p>
 </div>
 </div>
-<div id="outline-container-orgcd18fcd" class="outline-2">
-<h2 id="orgcd18fcd">Referências Importantes</h2>
-<div class="outline-text-2" id="text-orgcd18fcd">
+<div id="outline-container-orgb64456f" class="outline-2">
+<h2 id="orgb64456f">Referências Importantes</h2>
+<div class="outline-text-2" id="text-orgb64456f">
 </div>
-<div id="outline-container-orgab06cab" class="outline-3">
-<h3 id="orgab06cab">Paper: Gorilla</h3>
-<div class="outline-text-3" id="text-orgab06cab">
+<div id="outline-container-org5249501" class="outline-3">
+<h3 id="org5249501">Paper: Gorilla</h3>
+<div class="outline-text-3" id="text-org5249501">
 <p>
 <b>Título:</b> "Gorilla: Large Language Model Connected to Massive APIs"
 <b>Autores:</b> Shishir Patil, Tianjun Zhang, Xin Wang, Joseph E. Gonzalez
@@ -683,9 +683,9 @@ Isso é poderoso: você monta um agente combinando ferramentas de <b>fontes dife
 </p>
 </div>
 </div>
-<div id="outline-container-orgb87b81e" class="outline-3">
-<h3 id="orgb87b81e">Paper: ReAct</h3>
-<div class="outline-text-3" id="text-orgb87b81e">
+<div id="outline-container-org51aa00c" class="outline-3">
+<h3 id="org51aa00c">Paper: ReAct</h3>
+<div class="outline-text-3" id="text-org51aa00c">
 <p>
 <b>Título:</b> "ReAct: Synergistic Reasoning and Acting in Language Models"
 <b>Autores:</b> Shunyu Yao, et al.
@@ -694,9 +694,9 @@ Isso é poderoso: você monta um agente combinando ferramentas de <b>fontes dife
 </p>
 </div>
 </div>
-<div id="outline-container-org23ddbd0" class="outline-3">
-<h3 id="org23ddbd0">MCP — Model Context Protocol</h3>
-<div class="outline-text-3" id="text-org23ddbd0">
+<div id="outline-container-orgc011fdd" class="outline-3">
+<h3 id="orgc011fdd">MCP — Model Context Protocol</h3>
+<div class="outline-text-3" id="text-orgc011fdd">
 <p>
 <b>Site:</b> <a href="https://modelcontextprotocol.io/">modelcontextprotocol.io</a>
 <b>Biblioteca:</b> <code>langchain-mcp-adapters</code> v0.2.2 (MIT, Mar 2026)
@@ -705,18 +705,18 @@ Isso é poderoso: você monta um agente combinando ferramentas de <b>fontes dife
 </div>
 </div>
 </div>
-<div id="outline-container-orgbfa983a" class="outline-2">
-<h2 id="orgbfa983a">Exercícios Práticos</h2>
-<div class="outline-text-2" id="text-orgbfa983a">
+<div id="outline-container-org4317f10" class="outline-2">
+<h2 id="org4317f10">Exercícios Práticos</h2>
+<div class="outline-text-2" id="text-org4317f10">
 </div>
-<div id="outline-container-org266b229" class="outline-3">
-<h3 id="org266b229">Exercício 1: Descrições em Conflito</h3>
-<div class="outline-text-3" id="text-org266b229">
+<div id="outline-container-orge9077ed" class="outline-3">
+<h3 id="orge9077ed">Exercício 1: Descrições em Conflito</h3>
+<div class="outline-text-3" id="text-orge9077ed">
 <p>
 Crie duas ferramentas com descrições parecidas e teste o que acontece. Depois, corrija as descrições e veja a diferença.
 </p>
 
-<div class="DETAILS" id="org72ff2af">
+<div class="DETAILS" id="orgd999ca2">
 <p>
 📝 Gabarito
 </p>
@@ -760,9 +760,9 @@ Crie duas ferramentas com descrições parecidas e teste o que acontece. Depois,
 </div>
 </div>
 </div>
-<div id="outline-container-orga15de20" class="outline-3">
-<h3 id="orga15de20">Exercício 2: Debug de Descrição</h3>
-<div class="outline-text-3" id="text-orga15de20">
+<div id="outline-container-org0e2616a" class="outline-3">
+<h3 id="org0e2616a">Exercício 2: Debug de Descrição</h3>
+<div class="outline-text-3" id="text-org0e2616a">
 <p>
 O agente abaixo chama a ferramenta errada. Corrija a descrição.
 </p>
@@ -787,7 +787,7 @@ O agente abaixo chama a ferramenta errada. Corrija a descrição.
 </pre>
 </div>
 
-<div class="DETAILS" id="org7898032">
+<div class="DETAILS" id="org78b01d6">
 <p>
 📝 Gabarito
 </p>
@@ -821,14 +821,14 @@ O agente abaixo chama a ferramenta errada. Corrija a descrição.
 </div>
 </div>
 </div>
-<div id="outline-container-org6df9eec" class="outline-3">
-<h3 id="org6df9eec">Exercício 3: Servidor MCP</h3>
-<div class="outline-text-3" id="text-org6df9eec">
+<div id="outline-container-orgd44e19a" class="outline-3">
+<h3 id="orgd44e19a">Exercício 3: Servidor MCP</h3>
+<div class="outline-text-3" id="text-orgd44e19a">
 <p>
 Crie um servidor MCP com uma ferramenta <code>reverse_string</code> que inverte uma string, depois escreva um cliente que a consome.
 </p>
 
-<div class="DETAILS" id="orgf479745">
+<div class="DETAILS" id="org728bc04">
 <p>
 📝 Gabarito
 </p>
@@ -891,14 +891,14 @@ Cliente (Colab):
 </div>
 </div>
 </div>
-<div id="outline-container-org66ee103" class="outline-3">
-<h3 id="org66ee103">Exercício 4: Agente com Ferramentas Mistas</h3>
-<div class="outline-text-3" id="text-org66ee103">
+<div id="outline-container-org3e93e49" class="outline-3">
+<h3 id="org3e93e49">Exercício 4: Agente com Ferramentas Mistas</h3>
+<div class="outline-text-3" id="text-org3e93e49">
 <p>
 Combine duas ferramentas <code>@tool</code> (que você escreveu) com ferramentas MCP de um servidor externo em um único agente.
 </p>
 
-<div class="DETAILS" id="orge03f370">
+<div class="DETAILS" id="org268ff57">
 <p>
 📝 Gabarito
 </p>
