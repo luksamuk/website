@@ -1,114 +1,286 @@
-#+TITLE: Embeddings e Similaridade
+#+TITLE: Embeddings, Similaridade e RAG
 #+AUTHOR: Lucas S. Vieira
-#+SUBTITLE: Texto como números
+#+SUBTITLE: Texto como números, busca e geração
 #+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js@4/
 #+REVEAL_THEME: night
 #+REVEAL_PLUGINS: (highlight)
 #+REVEAL_MARGIN: 0.1
 #+REVEAL_MIN_SCALE: 0.5
 #+REVEAL_MAX_SCALE: 2.0
+#+REVEAL_EXTRA_CSS:
+#+REVEAL_HEAD_PREAMBLE: <script src="./slide_fixes.js"></script>
 #+OPTIONS: toc:nil num:nil
 #+REVEAL_TITLE_SLIDE: <p style="font-size:0.7em;opacity:0.6;">%a</p><br/><h2>%t</h2><br/><p style="font-size:0.85em;opacity:0.8;">%s</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 #+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_08.gif
 
-* O que são Embeddings?
+* 📰 Fofocas da Semana
+
+#+ATTR_HTML: :style font-size:0.55em;
+- *Claude Fable 5 / Mythos 5 banidos* (12/06) — Gov. dos EUA emite diretiva de *controle de exportação* citando segurança nacional. Anthropic forçada a desativar ambos globalmente — nem clientes pagantes usam. Amazon (AWS) levou ao白宫 após jailbreak de 3 palavras. Restrição se aplica a *qualquer estrangeiro*, incluindo funcionários da própria Anthropic. Opus 4.8 = fallback, mas com mais falsos positivos 🔒⚠️
+  - Fable 5 era a versão "pública" do Mythos 5 (restrito a governo). Agora nenhum dos dois existe comercialmente
+- *GLM-5.2 open-weight* (13/06) — Zhipu/Z.ai lança 753B MoE (40B ativos), 1M contexto, *MIT*. SWE-bench Pro 62.1 (GPT-5.5 = 58.6). AIME 2026 = 99.2. Custo ~1/6 do GPT-5.5. Primeiro modelo chinês no top 3 global. "Novo DeepSeek moment" em coding 🔓
+  - Lancado *no mesmo dia* do ban da Anthropic — contraste perfeito: fechamento vs abertura
+
+#+REVEAL: split
+
+#+ATTR_HTML: :style font-size:0.55em;
+- *Ornith-1.0* (25/06) — Família de LLMs de *agentic coding* open-source (MIT): 9B Dense, 31B Dense, 35B MoE, 397B MoE. Post-trained em cima de Gemma 4 e Qwen 3.5. SWE-Bench 82.4 (verified), Terminal-Bench 77.5. Self-improving RL: gera soluções + scaffolds. 🔓
+  - ⚠️ *Benchmaxxing:* falha espectacularmente em SWE-Bench Verified Single-turn (fora do padrão de treino). Benchmarks otimizados pra autopromo, não pra uso real
+- *Laneformer 2B* (25/06) — Kog AI treina arquitetura própria do zero (6T tokens, Nemotron). *3.000 tokens/s* em 8× AMD MI300X via Delayed Tensor Parallelism (DTP). HumanEval+ 45.1% greedy (Qwen3.5 2B = 31.1%), 65.0% com best-of-8 em 1.3s. Apache 2.0, pesos + recipe abertos 🔓
+  - 3.000 tok/s requer 8× MI300X (enterprise). Relevância local = arquitetura inovadora (DTP), não roda em GPU consumer
+- *LFM 2.5-350M* (25/06) — Liquid AI solta 350M params treinado com 28T tokens + RL. Roda de GPU cloud a *CPU barata*. Versão Retrievers: embedding multilíngue (11 idiomas, 350M). Arquitetura LFM2 (Liquid Foundation Models) 🔓
+
+#+REVEAL: split
+
+#+ATTR_HTML: :style font-size:0.55em;
+- *GPT-5.6 restrito* (25/06) — Trump admin pede à OpenAI para limitar rollout a *parceiros aprovados pelo governo*, "cliente por cliente" durante preview. GPT-5.6 visto como "equivalente ao Mythos" em cybersecurity. *Primeira vez* que EUA bloqueia release de frontier AI *antes* do lançamento público. Altman em memo interno: "não é nosso modelo preferido a longo prazo" 🔒⚠️
+  - Veio *duas semanas* depois do ban da Anthropic — agora OpenAI também está sob controle federal
+- *AI Incident Reporting Bill* (25/06) — Rep. Nathaniel Moran (R-TX) propõe *lei federal*: devs de frontier AI devem reportar incidentes ao Commerce Dept em *7 dias*. Incidentes graves (segurança nacional) → Congresso em *48h*. Cobre: evadir oversight humano, roubo de weights, cyberattacks em infra crítica, CBRNE 🔒⚠️
+  - Contexto: Anthropic acusa *Alibaba* de distilling industrial do Mythos — 25K contas fake, 30M interações. O "catch-it-early and sound-the-alarm bill"
+  - Ironia: o fear-mongering dos labs de fronteira virou regulamentação *pra todos* — não escapou ninguém
+- *Sakana Fugu* (22/06) — Lab japonês lança *LLM treinado pra orquestrar outros LLMs*. Fugu = "one model to command them all": manda uma request, ele decide se responde direto ou monta equipe de especialistas. Baseado em 2 papers ICLR 2026 (Trinity + Conductor). Pitch geopolítico: *"single-vendor dependency is a vulnerability"* — se um provider cai por export control, Fugu roteia automaticamente. Fugu Ultra claima nível Fable 5 nos benchmarks, mas testes reais (Ethan Mollick) = 30 min por tarefa, resultados aquém do prometido 🐡
+  - Não é modelo novo — é *orquestração como produto*. O "AI sovereignty" como pitch comercial
+
+* 📌 Projeto Final
 
 #+ATTR_REVEAL: :frag (appear)
-Imagine que cada palavra ou texto pode ser representado por uma lista de números.
-Esses números capturam o *significado* do texto.
+Vocês já têm as ferramentas pra construir seus próprios agentes!
+
+#+ATTR_REVEAL: :frag (appear)
+Na aula que vem é a apresentação final — preparem algo pra mostrar!
+
+#+REVEAL: split
+
+#+ATTR_HTML: :style font-size:0.6em;
+**Sugestões de projeto:**
+- Agente tutor de uma matéria
+- Assistente de produtividade (tarefas, lembretes)
+- Agente de pesquisa com ferramentas web
+- Chatbot de atendimento com personalidade
+- Agente criativo (roteiros, poemas, brainstorm)
 
 #+ATTR_REVEAL: :frag (appear)
 #+begin_quote
-"Embeddings são como coordenadas num mapa de significados."
+Comecem pelo que quiserem — o melhor projeto é o que *vocês* querem usar.
 #+end_quote
 
-* Exemplo visual
-
-| Texto | Vetor (simplificado) |
-|-------|---------------------|
-| "gato" | [0.2, 0.8, 0.1] |
-| "cachorro" | [0.3, 0.7, 0.2] |
-| "carro" | [0.9, 0.1, 0.3] |
+* 🔴 O problema: LLMs não sabem tudo
 
 #+ATTR_REVEAL: :frag (appear)
-"gato" e "cachorro" são mais próximos!
-"carro" está longe.
-
-* Similaridade por Cosseno
+LLMs não conhecem:
 
 #+ATTR_REVEAL: :frag (appear)
+- Seus documentos pessoais
+- PDFs da empresa
+- Notas privadas
+- Informações recentes (pós-treinamento)
+
+#+ATTR_REVEAL: :frag (appear)
+E agora?
+
+* 🔴 A solução: RAG
+
+#+ATTR_REVEAL: :frag (appear)
+RAG = *Retrieval Augmented Generation*
+
+#+ATTR_REVEAL: :frag (appear)
+=Buscar= informações relevantes =antes= de =gerar= a resposta.
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+"RAG = buscar antes de responder."
+#+end_quote
+
+** Analogia
+
+#+ATTR_REVEAL: :frag (appear)
+- *Sem RAG:* aluno fazendo prova de *memória*
+- *Com RAG:* aluno fazendo prova com *livro aberto*
+
+** Fluxo RAG
+
+#+ATTR_HTML: :style font-size:0.65em;
+#+ATTR_REVEAL: :frag (appear)
+1. *Chunking* → divide documentos em pedaços
+2. *Embeddings* → transforma texto em vetores
+3. *Vector Store* → guarda os vetores
+4. *Retrieval* → busca pedaços relevantes
+5. *Generation* → LLM responde com contexto
+
+** Mas como funciona a "busca"?
+
+#+ATTR_REVEAL: :frag (appear)
+O *retrieval* é o coração do RAG.
+
+#+ATTR_REVEAL: :frag (appear)
+E a busca tem *duas abordagens* que se complementam:
+
+#+ATTR_REVEAL: :frag (appear)
+- *Busca lexical* — encontra palavras exatas
+- *Busca semântica* — encontra significados
+
+#+ATTR_REVEAL: :frag (appear)
+Vamos ver cada uma separadamente, e depois juntar.
+
+* 🟡 Busca Lexical: BM25
+
+#+ATTR_REVEAL: :frag (appear)
+"Como o Google buscava *antes* de IA."
+
+#+ATTR_REVEAL: :frag (appear)
+BM25 (=Best Matching 25=) é o algoritmo de busca lexical mais usado.
+
+#+ATTR_REVEAL: :frag (appear)
+Está no Elasticsearch, no Lucene, no Sphinx...
+
+#+ATTR_REVEAL: :frag (appear)
+E é mais inteligente do que parece.
+
+** A fórmula (não se assuste!)
+
+#+BEGIN_EXPORT html
+<div style="text-align:center; margin:1em 0; font-size:0.4em; white-space:nowrap; overflow:hidden;">
+<code>score(q,D) = &Sigma;<sub>i</sub> <span style="color:#7EE787"><b>IDF</b>(q<sub>i</sub>)</span> &middot; <span style="color:#58A6FF">f(q<sub>i</sub>,D)</span> &middot; (k<sub>1</sub>+1) / [ <span style="color:#58A6FF">f(q<sub>i</sub>,D)</span> + <span style="color:#F0883E"><b>k<sub>1</sub></b></span> &middot; (1 &minus; <span style="color:#BB86FC"><b>b</b></span> + <span style="color:#BB86FC">b</span> &middot; <span style="color:#FF6B6B"><b>fieldLen</b> / <b>avgFieldLen</b></span> ) ]</code>
+</div>
+#+END_EXPORT
+
+#+ATTR_HTML: :style font-size:0.55em;
+#+ATTR_REVEAL: :frag (appear)
+Parece assustador? *Calma.* Cada parte é bom senso. Vamos decompor:
+
+#+ATTR_HTML: :style font-size:0.55em;
+#+ATTR_REVEAL: :frag (appear)
+*🟢 IDF* = *Inverse Document Frequency* — termos raros valem mais. "elefante" em poucos docs → IDF alto → vale mais. "the" em quase todos → IDF baixo → vale menos.
+
+#+ATTR_HTML: :style font-size:0.55em;
+#+ATTR_REVEAL: :frag (appear)
+*🔵 f(q,D)* = quantas vezes o termo aparece no documento. Mais aparições = provavelmente mais relevante.
+
+#+ATTR_HTML: :style font-size:0.55em;
+#+ATTR_REVEAL: :frag (appear)
+*🟠 k₁* = *saturação* — a 1ª menção vale muito, a 10ª vale quase nada extra. "gato" 100 vezes ≠ 100× mais relevante que 1 vez. Default: =k₁ = 1.2=
+
+#+ATTR_HTML: :style font-size:0.55em;
+#+ATTR_REVEAL: :frag (appear)
+*🟣 b* = quanto o *tamanho* do doc afeta o score. =b = 0= → tamanho não importa. =b = 1= → importa muito. Default: =0.75=. Tweet com "gato" > livro de 300 páginas com "gato" 1 vez.
+
+#+ATTR_HTML: :style font-size:0.55em;
+#+ATTR_REVEAL: :frag (appear)
+*🔴 fieldLen/avgFieldLen* = tamanho *relativo* à média. Doc curto acima da média → score sobe. Doc longo acima da média → score cai.
+
+#+ATTR_HTML: :style font-size:0.55em;
+#+ATTR_REVEAL: :frag (appear)
+BM25 é bom senso codificado em matemática. Bom pra: nomes, termos técnicos, códigos, IDs. Mas não entende sinônimos.
+
+* 🟢 Busca Semântica: Embeddings
+
+#+ATTR_REVEAL: :frag (appear)
+E se a pessoa busca por "animal que faz miau" mas o documento diz "gato"?
+
+#+ATTR_REVEAL: :frag (appear)
+BM25 não acha. Mas *embeddings* sim.
+
+#+ATTR_REVEAL: :frag (appear)
+Cada texto vira um *vetor* — uma lista de números que captura *significado*.
+
+** Exemplo visual
+
+#+BEGIN_EXPORT html
+<div style="display:flex; gap:2em; align-items:center; justify-content:center;">
+<div style="flex:1;">
+#+END_EXPORT
+
+#+ATTR_HTML: :style font-size:0.6em;
+| Texto       | Vetor (simplificado) |
+|-------------+---------------------|
+| "gato"      | [0.2, 0.8, 0.1]     |
+| "cachorro"  | [0.3, 0.7, 0.2]     |
+| "carro"     | [0.9, 0.1, 0.3]     |
+
+#+BEGIN_EXPORT html
+</div>
+<div style="flex:1; text-align:center;">
+<img src="./embeddings_3d.png" alt="Visualização 3D de embeddings" style="max-width:100%; border-radius:8px;" />
+</div>
+</div>
+#+END_EXPORT
+
+#+ATTR_REVEAL: :frag (appear)
+"gato" e "cachorro" são mais próximos! "carro" está longe.
+
+** Espaço vetorial
+
+#+ATTR_REVEAL: :frag (appear)
+- Textos com significado parecido = setas na *mesma direção*
+- Textos com significado diferente = setas em *direções diferentes*
+
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+"Mesma direção" = *ângulo pequeno* entre elas.
+#+end_quote
+
+** Similaridade por Cosseno
+
 *Conexão com Geometria Analítica!*
 
-Você já estudou ângulos entre vetores?
-A similaridade por cosseno usa exatamente isso.
-
-** Fórmula:
+#+ATTR_HTML: :style font-size:0.7em;
 $$\cos(\theta) = \frac{\vec{A} \cdot \vec{B}}{|\vec{A}| \cdot |\vec{B}|}$$
 
-** Interpretação:
+#+ATTR_REVEAL: :frag (appear)
+- ângulo = 0° → cosseno = 1 → *idênticos*
+- ângulo = 90° → cosseno = 0 → *independentes*
+- ângulo = 180° → cosseno = -1 → *opostos*
+
+* 🟣 Busca Híbrida: o melhor dos dois mundos
 
 #+ATTR_REVEAL: :frag (appear)
-- ângulo = 0° → vetores iguais → cosseno = 1 → *muito similares*
-- ângulo = 90° → vetores perpendiculares → cosseno = 0 → *nada similares*
-- ângulo = 180° → vetores opostos → cosseno = -1 → *opostos*
-
-** Por que funciona?
+- *BM25* acha termos exatos (nomes, códigos, IDs)
+- *Embeddings* acham significados (paráfrases, conceitos)
 
 #+ATTR_REVEAL: :frag (appear)
-- Textos com significado parecido = vetores na mesma direção
-- Textos com significado diferente = vetores em direções diferentes
+*Por que não usar os dois?*
 
-* Por que isso importa?
+#+REVEAL: split
+
+#+ATTR_HTML: :style font-size:0.6em;
+*RRF (Reciprocal Rank Fusion)* — junta os rankings das duas buscas.
+
+#+ATTR_HTML: :style font-size:0.6em;
+$$\text{RRF}(d) = \sum_{m \in \text{métodos}} \frac{1}{k + \text{rank}_m(d)}$$
 
 #+ATTR_REVEAL: :frag (appear)
-Embeddings são a base para:
+Cada método ordena os documentos. O RRF combina as posições.
 
-- **Busca semântica:** encontrar textos parecidos
-- **RAG:** buscar documentos relevantes
-- **Tradução:** entender significados entre idiomas
-- **Classificação:** agrupar textos por tema
+#+ATTR_REVEAL: :frag (appear)
+#+begin_quote
+Cada método vê um lado. Juntos, veem mais.
+#+end_quote
 
-* Prática
+* 📓 Demo prática: FAISS
 
-#+BEGIN_SRC python
-from sentence_transformers import SentenceTransformer
+#+ATTR_HTML: :style font-size:0.55em;
+Vamos ver isso funcionando *de verdade* no Colab!
 
-# Carregar modelo
-model = SentenceTransformer('all-MiniLM-L6-v2')
+#+ATTR_HTML: :style font-size:0.55em;
+- Modelo: =nomic-embed-text-v2-moe= (256 dim, Matryoshka)
+- Vector store: *FAISS* (Facebook AI Similarity Search)
+- Agente: =gemma4:e2b-it-qat= com ferramenta de busca
 
-# Converter textos em embeddings
-textos = ["Eu amo gatos", "Eu adoro cachorros", "O carro é vermelho"]
-embeddings = model.encode(textos)
-
-# Calcular similaridade
-from numpy import dot
-from numpy.linalg import norm
-
-cos_sim = lambda a, b: dot(a, b) / (norm(a) * norm(b))
-#+END_SRC
-
-** Resultado esperado:
-
-#+BEGIN_SRC python
-print(f"gatos vs cachorros: {cos_sim(embeddings[0], embeddings[1]):.3f}")
-# ~0.7 (parecidos)
-
-print(f"gatos vs carro: {cos_sim(embeddings[0], embeddings[2]):.3f}")
-# ~0.1 (diferentes)
-#+END_SRC
+#+ATTR_HTML: :style font-size:0.55em;
+[[https://colab.research.google.com/github/luksamuk/guilda-ia/blob/main/notebooks/aula08_embeddings_rag_colab.ipynb][📓 Colab]]
 
 * Para lembrar
+:PROPERTIES:
+:REVEAL_BACKGROUND: ./slide_08.gif
+:END:
 
-#+ATTR_REVEAL: :frag (appear)
-1. Embeddings = texto transformado em números
-2. Similaridade por cosseno = ângulo entre vetores
-3. Textos parecidos = vetores na mesma direção
-4. Conexão com geometria analítica no seu curso
+#+ATTR_HTML: :style font-size:0.55em;
+1. *RAG* = buscar antes de responder
+2. *BM25* = busca lexical (IDF, frequência, saturação, tamanho)
+3. *Embeddings* = texto como vetores (similaridade por cosseno)
+4. *Busca híbrida* = BM25 + embeddings + RRF
+5. *FAISS* = vector store rápido e simples pra demo
 
-* Próxima semana
-
-#+ATTR_REVEAL: :frag (appear)
-**RAG:** vamos usar embeddings para criar
-um agente que "lê" documentos!
-
-* Perguntas?
+#+begin_quote
+"Embeddings transformam significado em geometria. RAG transforma geometria em respostas."
+#+end_quote
