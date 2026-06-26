@@ -5,10 +5,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Embeddings e Similaridade - Texto como números</title>
+<title>Embeddings, Similaridade e RAG - Texto como números, busca e geração</title>
 <meta name="author" content="Lucas S. Vieira" />
 <meta name="description" content="Material didático do curso de IA Generativa da Guilda de IA
-Semana 9 - Guilda de IA: Entendendo embeddings e similaridade por cosseno" />
+Semana 8 - Guilda de IA: RAG, BM25, embeddings, similaridade por cosseno, busca híbrida, FAISS e engenharia de memória" />
 <meta name="generator" content="Org Mode" />
 <style type="text/css">
   #content { max-width: 60em; margin: auto; }
@@ -214,16 +214,16 @@ gtag('config', 'G-22RF3F5XE0');
 <script src="/js/nav-scroll.js"></script>
 <meta property="og:url" content="https://luksamuk.codes/pages/guilda-ia/08-embeddings.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Embeddings e Similaridade - Texto como números">
+<meta property="og:title" content="Embeddings, Similaridade e RAG - Texto como números, busca e geração">
 <meta property="og:description" content="Material didático do curso de IA Generativa da Guilda de IA
-Semana 9 - Guilda de IA: Entendendo embeddings e similaridade por cosseno">
+Semana 8 - Guilda de IA: RAG, BM25, embeddings, similaridade por cosseno, busca híbrida, FAISS e engenharia de memória">
 <meta property="og:image" content="https://luksamuk.codes/img/banner-full.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:domain" content="luksamuk.codes">
 <meta name="twitter:url" content="https://luksamuk.codes/pages/guilda-ia/08-embeddings.html">
-<meta name="twitter:title" content="Embeddings e Similaridade - Texto como números">
+<meta name="twitter:title" content="Embeddings, Similaridade e RAG - Texto como números, busca e geração">
 <meta name="twitter:description" content="Material didático do curso de IA Generativa da Guilda de IA
-Semana 9 - Guilda de IA: Entendendo embeddings e similaridade por cosseno">
+Semana 8 - Guilda de IA: RAG, BM25, embeddings, similaridade por cosseno, busca híbrida, FAISS e engenharia de memória">
 <meta name="twitter:image" content="https://luksamuk.codes/img/banner.png">
 <script>
   window.MathJax = {
@@ -260,141 +260,580 @@ Semana 9 - Guilda de IA: Entendendo embeddings e similaridade por cosseno">
 </head>
 <body>
 <div id="preamble" class="status">
-<div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">Embeddings e Similaridade - Texto como números</h1>
+<div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">Embeddings, Similaridade e RAG - Texto como números, busca e geração</h1>
 </div>
 <div id="content" class="content">
-<div id="outline-container-org993cafd" class="outline-2">
-<h2 id="org993cafd">Semana 9 - Embeddings e Similaridade</h2>
-</div>
-
-<div id="outline-container-org403f765" class="outline-2">
-<h2 id="org403f765">O que são Embeddings?</h2>
-<div class="outline-text-2" id="text-org403f765">
+<div id="outline-container-orgb7f97dd" class="outline-2">
+<h2 id="orgb7f97dd">Semana 8 - Embeddings, Similaridade e RAG</h2>
+<div class="outline-text-2" id="text-orgb7f97dd">
 <p>
-Imagine que cada palavra ou texto pode ser representado por uma lista de números.
-Esses números capturam o <b>significado</b> do texto.
+Esta semana juntamos dois temas que são duas faces da mesma moeda: como fazer um agente "ler" documentos (RAG) e como representar texto como números (embeddings). Começamos pelo problema, passamos pela busca lexical (BM25), pela busca semântica (embeddings), pela busca híbrida, e terminamos com engenharia real.
+</p>
+</div>
+</div>
+<div id="outline-container-org4587834" class="outline-2">
+<h2 id="org4587834">O problema: LLMs não sabem tudo</h2>
+<div class="outline-text-2" id="text-org4587834">
+<p>
+LLMs não conhecem seus documentos pessoais, PDFs da empresa, notas privadas, nem informações recentes (pós-treinamento).
+</p>
+
+<p>
+Precisamos de uma forma de <b>buscar</b> informações relevantes e entregá-las ao LLM <b>antes</b> de ele gerar a resposta.
+</p>
+</div>
+</div>
+<div id="outline-container-org1f7e604" class="outline-2">
+<h2 id="org1f7e604">RAG: o agente que lê documentos</h2>
+<div class="outline-text-2" id="text-org1f7e604">
+<p>
+RAG (<b>Retrieval Augmented Generation</b>) resolve isso: buscar informações relevantes antes de gerar a resposta.
 </p>
 
 <blockquote>
 <p>
-"Embeddings são como coordenadas num mapa de significados."
+"RAG = buscar antes de responder."
 </p>
 </blockquote>
 </div>
-<div id="outline-container-org0972b91" class="outline-3">
-<h3 id="org0972b91">Como funciona?</h3>
-<div class="outline-text-3" id="text-org0972b91">
-<p>
-Palavras com significados parecidos ficam próximas no "espaço vetorial":
-</p>
-
+<div id="outline-container-orgf7317a2" class="outline-3">
+<h3 id="orgf7317a2">Analogia</h3>
+<div class="outline-text-3" id="text-orgf7317a2">
 <ul class="org-ul">
-<li>"gato" e "cachorro" → vetores próximos</li>
-<li>"gato" e "carro" → vetores distantes</li>
-</ul>
-
-<p>
-Quem decide esses números? Um modelo de ML treinado em bilhões de textos.
-</p>
-</div>
-</div>
-</div>
-<div id="outline-container-org9ea386f" class="outline-2">
-<h2 id="org9ea386f">Similaridade por Cosseno</h2>
-<div class="outline-text-2" id="text-org9ea386f">
-<p>
-<b><b>Conexão com Geometria Analítica!</b></b>
-</p>
-
-<p>
-Você já estudou ângulos entre vetores? A similaridade por cosseno usa exatamente isso.
-</p>
-
-<p>
-<b><b>Fórmula:</b></b>
-\[\cos(\theta) = \frac{\vec{A} \cdot \vec{B}}{|\vec{A}| \cdot |\vec{B}|}\]
-</p>
-
-<p>
-<b><b>Interpretação:</b></b>
-</p>
-<ul class="org-ul">
-<li>ângulo = 0° → vetores iguais → cosseno = 1 → <b>muito similares</b></li>
-<li>ângulo = 90° → vetores perpendiculares → cosseno = 0 → <b>nada similares</b></li>
-<li>ângulo = 180° → vetores opostos → cosseno = -1 → <b>opostos</b></li>
-</ul>
-
-<p>
-<b><b>Por que funciona?</b></b>
-</p>
-<ul class="org-ul">
-<li>Textos com significado parecido = vetores na mesma direção</li>
-<li>Textos com significado diferente = vetores em direções diferentes</li>
+<li><b>Sem RAG:</b> aluno fazendo prova de <b>memória</b></li>
+<li><b>Com RAG:</b> aluno fazendo prova com <b>livro aberto</b></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org01d3ee3" class="outline-2">
-<h2 id="org01d3ee3">Por que isso importa?</h2>
-<div class="outline-text-2" id="text-org01d3ee3">
-<p>
-Embeddings são a base para:
-</p>
-<ul class="org-ul">
-<li><b><b>Busca semântica:</b></b> encontrar textos parecidos</li>
-<li><b><b>RAG:</b></b> buscar documentos relevantes (próxima semana!)</li>
-<li><b><b>Tradução:</b></b> entender significados entre idiomas</li>
-<li><b><b>Classificação:</b></b> agrupar textos por tema</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-org29ee119" class="outline-2">
-<h2 id="org29ee119">Prática: calculando similaridade</h2>
-<div class="outline-text-2" id="text-org29ee119">
+<div id="outline-container-orgc7e631b" class="outline-3">
+<h3 id="orgc7e631b">Fluxo RAG</h3>
+<div class="outline-text-3" id="text-orgc7e631b">
+<ol class="org-ol">
+<li><b>Chunking</b> → divide documentos em pedaços menores</li>
+<li><b>Embeddings</b> → transforma cada pedaço em vetor</li>
+<li><b>Vector Store</b> → guarda os vetores num banco de dados</li>
+<li><b>Retrieval</b> → busca os pedaços mais relevantes</li>
+<li><b>Generation</b> → LLM recebe a pergunta + os pedaços encontrados e responde</li>
+</ol>
+
 <div class="org-src-container">
-<pre class="src src-python"><span class="org-keyword">from</span> sentence_transformers <span class="org-keyword">import</span> SentenceTransformer
-<span class="org-keyword">from</span> numpy <span class="org-keyword">import</span> dot
-<span class="org-keyword">from</span> numpy.linalg <span class="org-keyword">import</span> norm
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Carregar modelo
-</span><span class="org-variable-name">model</span> <span class="org-operator">=</span> SentenceTransformer(<span class="org-string">'all-MiniLM-L6-v2'</span>)
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Converter textos em embeddings
-</span><span class="org-variable-name">textos</span> <span class="org-operator">=</span> [<span class="org-string">"Eu amo gatos"</span>, <span class="org-string">"Eu adoro cachorros"</span>, <span class="org-string">"O carro &#233; vermelho"</span>]
-<span class="org-variable-name">embeddings</span> <span class="org-operator">=</span> model.encode(textos)
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Calcular similaridade por cosseno
-</span><span class="org-variable-name">cos_sim</span> <span class="org-operator">=</span> <span class="org-keyword">lambda</span> a, b: dot(a, b) <span class="org-operator">/</span> (norm(a) <span class="org-operator">*</span> norm(b))
-
-<span class="org-builtin">print</span>(f<span class="org-string">"gatos vs cachorros: </span>{cos_sim(embeddings[0], embeddings[1]):.3f}<span class="org-string">"</span>)
-<span class="org-builtin">print</span>(f<span class="org-string">"gatos vs carro: </span>{cos_sim(embeddings[0], embeddings[2]):.3f}<span class="org-string">"</span>)
+<pre class="src src-text">Documento &#8594; Chunks &#8594; Embeddings &#8594; Vector Store
+                                         &#8595;
+Usu&#225;rio pergunta                        &#8595;
+      &#8595;                                 &#8595;
+Pergunta &#8594; Embedding &#8594; Busca similar &#8594; Chunks relevantes
+                                              &#8595;
+                              LLM recebe pergunta + chunks
+                                              &#8595;
+                                         Resposta
 </pre>
 </div>
 
 <p>
-<b><b>Resultado esperado:</b></b>
+O <b>retrieval</b> é o coração do RAG. E a busca tem duas abordagens que se complementam: busca lexical e busca semântica.
 </p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc497269" class="outline-2">
+<h2 id="orgc497269">Busca Lexical: BM25</h2>
+<div class="outline-text-2" id="text-orgc497269">
+<p>
+"Como o Google buscava antes de IA."
+</p>
+
+<p>
+BM25 (<code>Best Matching 25</code>) é o algoritmo de busca lexical mais usado. Está no Elasticsearch, no Lucene, no Sphinx — e é mais inteligente do que parece.
+</p>
+</div>
+<div id="outline-container-orgb72d3f6" class="outline-3">
+<h3 id="orgb72d3f6">A fórmula</h3>
+<div class="outline-text-3" id="text-orgb72d3f6">
+<p>
+\[\text{score}(q, D) = \sum_{i} \text{IDF}(q_i) \cdot \frac{f(q_i, D) \cdot (k_1 + 1)}{f(q_i, D) + k_1 \cdot \left(1 - b + b \cdot \frac{\text{fieldLen}}{\text{avgFieldLen}}\right)}\]
+</p>
+
+<p>
+Parece assustador, mas cada parte é bom senso. Vamos decompor:
+</p>
+</div>
+</div>
+<div id="outline-container-org87ce6c9" class="outline-3">
+<h3 id="org87ce6c9">IDF — Inverse Document Frequency</h3>
+<div class="outline-text-3" id="text-org87ce6c9">
+<p>
+\[\text{IDF}(q_i) = \log\left(1 + \frac{\text{docCount} - \text{docFreq} + 0.5}{\text{docFreq} + 0.5}\right)\]
+</p>
+
 <ul class="org-ul">
-<li>"gatos vs cachorros" → ~0.7 (parecidos!)</li>
-<li>"gatos vs carro" → ~0.1 (diferentes)</li>
+<li><code>docCount</code> = total de documentos que têm valor no campo</li>
+<li><code>docFreq</code> = quantos documentos contêm o termo de busca</li>
+</ul>
+
+<p>
+O IDF "penaliza" termos comuns. Se você busca "the elephant", "elephant" é muito mais informativo que "the" — porque "the" aparece em quase todo documento em inglês.
+</p>
+
+<blockquote>
+<p>
+Termos raros são mais informativos.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-orgd760d21" class="outline-3">
+<h3 id="orgd760d21">f(q<sub>i</sub>, D) — Frequência do termo no documento</h3>
+<div class="outline-text-3" id="text-orgd760d21">
+<p>
+Quantas vezes o termo de busca aparece no documento. Mais aparições = provavelmente mais relevante. Um documento que menciona "gato" 3 vezes provavelmente tem mais a ver com gatos que um que menciona uma vez.
+</p>
+</div>
+</div>
+<div id="outline-container-org8252943" class="outline-3">
+<h3 id="org8252943">k₁ — Saturação da frequência</h3>
+<div class="outline-text-3" id="text-org8252943">
+<p>
+Controla como a frequência do termo <b>satura</b>. A 1ª menção vale muito, a 2ª vale um pouco menos, a 10ª vale quase nada extra.
+</p>
+
+<p>
+Um documento que diz "gato" 100 vezes não é 100× mais relevante que um que diz 1 vez — a contribuição se aproxima de uma assíntota.
+</p>
+
+<p>
+Default no Elasticsearch: <code>k₁ = 1.2</code>.
+</p>
+
+<ul class="org-ul">
+<li><code>k₁ = 0</code> → só IDF importa, frequência é ignorada</li>
+<li><code>k₁ alto</code> → cada ocorrência adicional continua somando bastante</li>
+</ul>
+
+<p>
+Documentos longos e diversos (livros) pedem <code>k₁</code> maior. Documentos curtos (notícias) pedem <code>k₁</code> menor.
+</p>
+</div>
+</div>
+<div id="outline-container-orgc2a27bc" class="outline-3">
+<h3 id="orgc2a27bc">b — Normalização por tamanho do documento</h3>
+<div class="outline-text-3" id="text-orgc2a27bc">
+<p>
+Controla quanto o <b>tamanho</b> do documento afeta o score.
+</p>
+
+<ul class="org-ul">
+<li><code>b = 0</code> → tamanho não importa</li>
+<li><code>b = 1</code> → tamanho importa muito</li>
+<li>Default: <code>b = 0.75</code></li>
+</ul>
+
+<blockquote>
+<p>
+Um tweet que menciona "gato" uma vez é mais relevante que um livro de 300 páginas que menciona "gato" uma vez.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-orgfff36af" class="outline-3">
+<h3 id="orgfff36af">fieldLen / avgFieldLen — Tamanho relativo</h3>
+<div class="outline-text-3" id="text-orgfff36af">
+<p>
+Tamanho do documento dividido pela média de tamanho dos documentos. Se um documento é maior que a média, o score diminui; se é menor, aumenta.
+</p>
+
+<p>
+Isso é o "bom senso codificado em matemática."
+</p>
+</div>
+</div>
+<div id="outline-container-org23c8904" class="outline-3">
+<h3 id="org23c8904">Resumo do BM25</h3>
+<div class="outline-text-3" id="text-org23c8904">
+<ul class="org-ul">
+<li><b>IDF</b>: termos raros valem mais</li>
+<li><b>f(q,D)</b>: mais aparições = mais relevante</li>
+<li><b>k₁</b>: saturação (a 100ª menção não vale 100× mais)</li>
+<li><b>b</b>: tamanho do doc importa (ou não)</li>
+<li><b>fieldLen/avgFieldLen</b>: normalização por tamanho</li>
+</ul>
+
+<p>
+BM25 é bom pra: nomes, termos técnicos, códigos, IDs. Mas não entende sinônimos ou paráfrases.
+</p>
+</div>
+</div>
+<div id="outline-container-org048ef15" class="outline-3">
+<h3 id="org048ef15">Referências</h3>
+<div class="outline-text-3" id="text-org048ef15">
+<ul class="org-ul">
+<li><a href="https://www.elastic.co/blog/practical-bm25-part-1-how-shards-affect-relevance-scoring-in-elasticsearch">Practical BM25 — Parte 1: How Shards Affect Relevance Scoring (Elastic Blog)</a></li>
+<li><a href="https://www.elastic.co/pt/blog/practical-bm25-part-2-the-bm25-algorithm-and-its-variables">Practical BM25 — Parte 2: The BM25 Algorithm and its Variables (Elastic Blog, em português)</a></li>
+<li><a href="https://www.elastic.co/blog/practical-bm25-part-3-considerations-for-picking-b-and-k1-in-elasticsearch">Practical BM25 — Part 3: Considerations for Picking b and k1 (Elastic Blog)</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org66224aa" class="outline-2">
-<h2 id="org66224aa">Resumo</h2>
-<div class="outline-text-2" id="text-org66224aa">
+</div>
+<div id="outline-container-org13e45fb" class="outline-2">
+<h2 id="org13e45fb">Busca Semântica: Embeddings</h2>
+<div class="outline-text-2" id="text-org13e45fb">
+<p>
+E se a pessoa busca por "animal que faz miau" mas o documento diz "gato"? BM25 não acha. Mas embeddings sim.
+</p>
+
+<p>
+Cada texto vira um <b>vetor</b> — uma lista de números que captura o <b>significado</b> do texto. Textos com significado parecido ficam próximos no "espaço vetorial".
+</p>
+</div>
+<div id="outline-container-org7537481" class="outline-3">
+<h3 id="org7537481">Exemplo visual</h3>
+<div class="outline-text-3" id="text-org7537481">
+
+<div id="orge8f2e76" class="figure">
+<p><img src="img/embeddings_3d.png" alt="Visualização 3D de embeddings" style="width: 100%; max-width: 500px;" />
+</p>
+</div>
+
+<p>
+Três palavras como vetores no espaço:
+</p>
+
+<ul class="org-ul">
+<li>🟢 <b>gato</b> e 🔵 <b>cachorro</b> apontam em direções muito parecidas — ângulo pequeno, cos(θ) ≈ 0.97 = <b>muito similar</b></li>
+<li>🟠 <b>carro</b> aponta em outra direção — ângulo maior, cos(θ) ≈ 0.64 = <b>pouco similar</b></li>
+</ul>
+
+<p>
+Quanto menor o ângulo entre os vetores, mais parecidos são os significados.
+</p>
+</div>
+</div>
+<div id="outline-container-org01d25c1" class="outline-3">
+<h3 id="org01d25c1">Espaço vetorial</h3>
+<div class="outline-text-3" id="text-org01d25c1">
+<ul class="org-ul">
+<li>Textos com significado parecido = setas na <b>mesma direção</b></li>
+<li>Textos com significado diferente = setas em <b>direções diferentes</b></li>
+<li>"Mesma direção" = <b>ângulo pequeno</b> entre elas</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org20aa0e4" class="outline-3">
+<h3 id="org20aa0e4">Similaridade por Cosseno</h3>
+<div class="outline-text-3" id="text-org20aa0e4">
+<p>
+<b>Conexão com Geometria Analítica!</b>
+</p>
+
+<p>
+\[\cos(\theta) = \frac{\vec{A} \cdot \vec{B}}{|\vec{A}| \cdot |\vec{B}|}\]
+</p>
+
+<ul class="org-ul">
+<li>ângulo = 0° → cosseno = 1 → <b>idênticos</b> (mesma direção)</li>
+<li>ângulo = 90° → cosseno = 0 → <b>independentes</b> (sem relação)</li>
+<li>ângulo = 180° → cosseno = -1 → <b>opostos</b> (rei/rainha, sim/não)</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org0495dab" class="outline-3">
+<h3 id="org0495dab">Matryoshka Embeddings</h3>
+<div class="outline-text-3" id="text-org0495dab">
+<p>
+Embeddings que podem ser <b>truncados</b>.
+</p>
+
+<ul class="org-ul">
+<li>Normal: 768 dimensões fixas</li>
+<li>Matryoshka: 768, 512, 256, 128&#x2026; (flexível)</li>
+</ul>
+
+<p>
+<b>Vantagem:</b> economiza espaço e tempo. Analogia: bonecas russas — cada uma contém a próxima, mas qualquer tamanho já funciona.
+</p>
+</div>
+</div>
+<div id="outline-container-org73d956e" class="outline-3">
+<h3 id="org73d956e">Como escolher um modelo de embedding?</h3>
+<div class="outline-text-3" id="text-org73d956e">
+<p>
+<b>Critérios práticos:</b>
+</p>
+<ul class="org-ul">
+<li><b>Dimensões:</b> mais dimensões = mais informação, mas mais lento</li>
+<li><b>Tamanho do modelo:</b> menores = mais rápido, menos preciso</li>
+<li><b>Linguagem:</b> modelos específicos vs multilinguais</li>
+<li><b>Licença:</b> MIT/Apache = livre pra usar</li>
+<li><b>Matryoshka:</b> flexível pra diferentes tamanhos</li>
+</ul>
+
+<p>
+<b>Exemplos:</b>
+</p>
+<ul class="org-ul">
+<li><code>all-MiniLM-L6-v2</code> — 384 dim, leve, multilingue</li>
+<li><code>bge-m3</code> — 1024 dim, multilingue, open-weight</li>
+<li><code>nomic-embed-text</code> — 768 dim, longo contexto, open-weight, Matryoshka</li>
+<li><code>gte-Qwen2</code> — variedade de tamanhos, Matryoshka</li>
+</ul>
+
+<blockquote>
+<p>
+O melhor modelo é o que <b>funciona pra o seu caso</b>. Teste antes de otimizar.
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+<div id="outline-container-org88428f2" class="outline-2">
+<h2 id="org88428f2">Busca Híbrida: o melhor dos dois mundos</h2>
+<div class="outline-text-2" id="text-org88428f2">
+<ul class="org-ul">
+<li><b>BM25</b> acha termos exatos (nomes, códigos, IDs)</li>
+<li><b>Embeddings</b> acham significados (paráfrases, sinônimos, conceitos)</li>
+</ul>
+
+<p>
+<b>Por que não usar os dois?</b>
+</p>
+
+<p>
+<b>RRF (Reciprocal Rank Fusion)</b> junta os rankings das duas buscas:
+</p>
+
+<p>
+\[\text{RRF}(d) = \sum_{m \in \text{métodos}} \frac{1}{k + \text{rank}_m(d)}\]
+</p>
+
+<p>
+Cada método ordena os documentos. O RRF combina as posições — documentos que aparecem bem em ambos sobem.
+</p>
+
+<blockquote>
+<p>
+Cada método vê um lado. Juntos, veem mais.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-org39e27b8" class="outline-2">
+<h2 id="org39e27b8">Demo prática: FAISS</h2>
+<div class="outline-text-2" id="text-org39e27b8">
+<p>
+Vamos ver isso funcionando de verdade no Colab!
+</p>
+
+<ul class="org-ul">
+<li>Modelo: <code>nomic-embed-text-v2-moe</code> (256 dim, Matryoshka)</li>
+<li>Vector store: <b>FAISS</b> (Facebook AI Similarity Search)</li>
+<li>Agente: <code>gemma4:e2b-it-qat</code> com ferramenta de busca</li>
+</ul>
+
+<p>
+O notebook carrega ~20 fatos sobre filosofia e computação, gera embeddings, indexa com FAISS, e mostra:
+</p>
+
 <ol class="org-ol">
-<li>Embeddings = texto transformado em números</li>
-<li>Similaridade por cosseno = ângulo entre vetores</li>
-<li>Textos parecidos = vetores na mesma direção</li>
-<li>Conexão direta com geometria analítica</li>
+<li><b>Busca semântica:</b> pergunta → embedding → FAISS → resultados formatados</li>
+<li><b>Agente RAG:</b> agente com ferramenta de busca → LLM busca e combina fatos</li>
+</ol>
+
+<p>
+<a href="https://colab.research.google.com/github/luksamuk/guilda-ia/blob/main/notebooks/aula08_embeddings_rag_colab.ipynb">📓 Abrir no Colab</a>
+</p>
+</div>
+<div id="outline-container-org94353d8" class="outline-3">
+<h3 id="org94353d8">Sobre o FAISS</h3>
+<div class="outline-text-3" id="text-org94353d8">
+<p>
+FAISS (Facebook AI Similarity Search) é uma biblioteca da Meta para busca de similaridade em vetores densos. É rápida, simples, e funciona bem em memória.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">import</span> faiss
+<span class="org-keyword">from</span> sentence_transformers <span class="org-keyword">import</span> SentenceTransformer
+
+<span class="org-variable-name">model</span> <span class="org-operator">=</span> SentenceTransformer(<span class="org-string">'nomic-ai/nomic-embed-text-v2-moe'</span>)
+<span class="org-variable-name">vetores</span> <span class="org-operator">=</span> model.encode(documentos, truncate_dim<span class="org-operator">=</span>256)  <span class="org-comment-delimiter"># </span><span class="org-comment">256 dim (Matryoshka!)
+</span>
+<span class="org-variable-name">index</span> <span class="org-operator">=</span> faiss.IndexFlatL2(256)  <span class="org-comment-delimiter"># </span><span class="org-comment">cria &#237;ndice
+</span>index.add(vetores)              <span class="org-comment-delimiter"># </span><span class="org-comment">adiciona vetores
+</span>
+<span class="org-variable-name">query</span> <span class="org-operator">=</span> model.encode([<span class="org-string">"animal que faz miau"</span>], truncate_dim<span class="org-operator">=</span>256)
+<span class="org-variable-name">distancias</span>, <span class="org-variable-name">indices</span> <span class="org-operator">=</span> index.search(query, k<span class="org-operator">=</span>3)  <span class="org-comment-delimiter"># </span><span class="org-comment">busca os 3 mais pr&#243;ximos</span>
+</pre>
+</div>
+
+<p>
+FAISS não é um banco de dados de verdade — não persiste, não tem metadata, não tem busca híbrida nativa. Mas para uma <b>demo conceitual</b> de "embeddings → vector store → retrieval", é ideal.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb57d0bf" class="outline-2">
+<h2 id="orgb57d0bf">Engenharia na prática: Sprachspiel</h2>
+<div class="outline-text-2" id="text-orgb57d0bf">
+<p>
+Como essas ideias aparecem num projeto real?
+</p>
+
+<p>
+<b>Sprachspiel</b> — harness de interação cognitiva com LLMs.
+</p>
+</div>
+<div id="outline-container-org4a38ccd" class="outline-3">
+<h3 id="org4a38ccd">Memória persistente</h3>
+<div class="outline-text-3" id="text-org4a38ccd">
+<ul class="org-ul">
+<li>Fatos, notas, documentos com <b>busca semântica</b></li>
+<li><b>Decay Ebbinghaus:</b> memórias "esquecem" com o tempo
+<ul class="org-ul">
+<li>Relembrar = reforçar a memória</li>
+<li>Esquecer = natural, não é bug</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org82692ff" class="outline-3">
+<h3 id="org82692ff">SOUL.md — personalidade do agente</h3>
+<div class="outline-text-3" id="text-org82692ff">
+<ul class="org-ul">
+<li>Arquivo que define <b>quem o agente é</b></li>
+<li>Tom de voz, valores, estilo de resposta</li>
+<li>Não é só system prompt — é <b>identidade persistente</b></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org3a99a9d" class="outline-3">
+<h3 id="org3a99a9d">Busca híbrida real</h3>
+<div class="outline-text-3" id="text-org3a99a9d">
+<ul class="org-ul">
+<li>BM25 (lexical) + vetores (semântica) + RRF (fusão)</li>
+<li>O agente não escolhe uma — usa as <b>duas juntas</b></li>
+</ul>
+
+<blockquote>
+<p>
+É exatamente o que vimos: BM25 + embeddings + RRF. Sem mágica — só engenharia.
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+<div id="outline-container-org9e451ff" class="outline-2">
+<h2 id="org9e451ff">🔥 Pontos Extras (para reflexão)</h2>
+<div class="outline-text-2" id="text-org9e451ff">
+</div>
+<div id="outline-container-org721e801" class="outline-3">
+<h3 id="org721e801">1. Similaridade não é 1.0 nem aleatória — é interpretável</h3>
+<div class="outline-text-3" id="text-org721e801">
+<p>
+No Teste 2 do notebook, a busca por Church-Turing retornou similarity = 0.82, enquanto a busca por Spinoza retornou 0.64. O que isso significa?
+</p>
+
+<ul class="org-ul">
+<li>0.82 = o embedding da query está muito próximo do embedding do fato (conceitos específicos, nomes técnicos)</li>
+<li>0.64 = o embedding está moderadamente próximo (termos mais abstratos, filosóficos)</li>
+</ul>
+
+<p>
+Embeddings não são busca exata nem adivinhação — a similaridade por cosseno dá um <b>número</b> que pode ser usado como threshold (ex: "só mostre resultados acima de 0.7").
+</p>
+
+<p>
+<b>Pergunta extra:</b> Em qual situação uma similarity baixa (ex: 0.4) poderia ser útil?
+</p>
+</div>
+</div>
+<div id="outline-container-org60feeb2" class="outline-3">
+<h3 id="org60feeb2">2. O agente busca em inglês e responde em português</h3>
+<div class="outline-text-3" id="text-org60feeb2">
+<p>
+Os fatos estão em inglês, mas o system prompt obriga o agente a responder em português. O agente:
+</p>
+<ol class="org-ol">
+<li>Lê a pergunta em português</li>
+<li><b>Traduz mentalmente</b> a query para inglês ao chamar a ferramenta</li>
+<li>Recupera fatos em inglês</li>
+<li><b>Reformula</b> a resposta em português</li>
+</ol>
+
+<p>
+Isso mostra que embeddings são <b>cross-linguais</b> — o significado transcende o idioma. E prova que o LLM está compreendendo, não copiando.
+</p>
+
+<p>
+<b>Pergunta extra:</b> O que aconteceria se os fatos estivessem em português e o agente fosse instruído a responder em inglês? Funcionaria igual?
+</p>
+</div>
+</div>
+<div id="outline-container-orgf7bf05a" class="outline-3">
+<h3 id="orgf7bf05a">3. O system prompt força a busca — sem ele, o LLM responde de memória</h3>
+<div class="outline-text-3" id="text-orgf7bf05a">
+<p>
+No notebook, o system prompt diz explicitamente: <b>"NEVER answer from your own knowledge"</b> e <b>"ALWAYS use search<sub>facts</sub> before answering"</b>. Sem isso, o Gemma 4 pode simplesmente responder direto, sem buscar nada.
+</p>
+
+<p>
+Isso é o coração do RAG: o LLM tem conhecimento nos pesos, mas <b>não confiamos nele</b>. O RAG substitui a confiança nos pesos por confiança no <b>retrieval</b>.
+</p>
+
+<p>
+<b>Pergunta extra:</b> Por que "confiar nos pesos" é problemático? Dê um exemplo de quando o LLM poderia alucinar sem buscar.
+</p>
+</div>
+</div>
+<div id="outline-container-org6f416a2" class="outline-3">
+<h3 id="org6f416a2">4. O agente faz múltiplas buscas e combina resultados</h3>
+<div class="outline-text-3" id="text-org6f416a2">
+<p>
+No Teste 2, o agente chamou a ferramenta <b>duas vezes</b> — uma para Church-Turing, outra para Spinoza — e depois <b>sintetizou</b> uma análise comparativa. Isso é o ciclo Thought → Action → Observation repetido, automaticamente, pelo <code>create_agent</code>.
+</p>
+
+<p>
+O agente não recebeu instrução de "busque duas vezes". Ele decidiu sozinho, com base na pergunta, que precisava de duas buscas.
+</p>
+
+<p>
+<b>Pergunta extra:</b> Como o agente decidiu que precisava de duas buscas em vez de uma? O que na pergunta sugeriu isso?
+</p>
+</div>
+</div>
+<div id="outline-container-org442e232" class="outline-3">
+<h3 id="org442e232">5. RCEF-TC no system prompt: quando cortar E e F</h3>
+<div class="outline-text-3" id="text-org442e232">
+<p>
+O system prompt do agente usa R (Role) e C (Context), mas corta E (Examples) e F (Format). Por quê? Porque o Gemma 4 E2B é um modelo <b>pequeno</b> — um system prompt muito longo reduz a qualidade das respostas. Num modelo maior (30B+), valeria a pena adicionar exemplos de buscas boas vs ruins e definir o formato de saída.
+</p>
+
+<p>
+Isso é engenharia de prompt aplicada: o framework RCEF-TC é um guia, não uma checklist rígida. Cada decisão de corte tem um <b>porquê</b>.
+</p>
+
+<p>
+<b>Pergunta extra:</b> Se você fosse usar um modelo de 70B+ para o mesmo RAG, quais elementos do RCEF-TC você adicionaria de volta?
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org27fd116" class="outline-2">
+<h2 id="org27fd116">Resumo</h2>
+<div class="outline-text-2" id="text-org27fd116">
+<ol class="org-ol">
+<li><b>RAG</b> = buscar antes de responder (chunking → embeddings → retrieval → generation)</li>
+<li><b>BM25</b> = busca lexical (IDF, frequência, saturação k₁, normalização b, tamanho relativo)</li>
+<li><b>Embeddings</b> = texto como vetores (similaridade por cosseno)</li>
+<li><b>Matryoshka</b> = embeddings flexíveis em tamanho</li>
+<li><b>Busca híbrida</b> = BM25 + embeddings + RRF</li>
+<li><b>FAISS</b> = vector store rápido e simples para demo</li>
+<li><b>Sprachspiel</b> = tudo isso junto num projeto real</li>
 </ol>
 </div>
 </div>
-<div id="outline-container-orgfaa9c76" class="outline-2">
-<h2 id="orgfaa9c76">Próxima semana</h2>
-<div class="outline-text-2" id="text-orgfaa9c76">
+<div id="outline-container-org17d4687" class="outline-2">
+<h2 id="org17d4687">Próxima semana</h2>
+<div class="outline-text-2" id="text-org17d4687">
 <p>
-<b><b>Semana 9 - RAG (Retrieval-Augmented Generation):</b></b> vamos usar embeddings para criar um agente que "lê" documentos!</p>
+<b><b>Semana 9 - Apresentação final:</b></b> hora de mostrar os projetos!</p>
 </div>
 </div>
 </div>
