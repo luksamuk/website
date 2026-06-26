@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<title>Embeddings e Similaridade</title>
+<title>Embeddings, Similaridade e RAG</title>
 <meta name="author" content="Lucas S. Vieira"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -25,31 +25,257 @@
     }
 </script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="./slide_fixes.js"></script>
 </head>
 <body>
 <div class="reveal">
 <div class="slides">
-<section id="sec-title-slide" data-background="./slide_08.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Embeddings e Similaridade</h2><br/><p style="font-size:0.85em;opacity:0.8;">Texto como números</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+<section id="sec-title-slide" data-background="./slide_08.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Embeddings, Similaridade e RAG</h2><br/><p style="font-size:0.85em;opacity:0.8;">Texto como números, busca e geração</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 </section>
 <section>
-<section id="slide-org950e120">
-<h2 id="org950e120">O que são Embeddings?</h2>
+<section id="slide-org4c0fa9d">
+<h2 id="org4c0fa9d">📰 Fofocas da Semana</h2>
+<ul style="font-size:0.55em;">
+<li><b>Claude Fable 5 / Mythos 5 banidos</b> (12/06) — Gov. dos EUA emite diretiva de <b>controle de exportação</b> citando segurança nacional. Anthropic forçada a desativar ambos globalmente — nem clientes pagantes usam. Amazon (AWS) levou ao白宫 após jailbreak de 3 palavras. Restrição se aplica a <b>qualquer estrangeiro</b>, incluindo funcionários da própria Anthropic. Opus 4.8 = fallback, mas com mais falsos positivos 🔒⚠️
+<ul>
+<li>Fable 5 era a versão "pública" do Mythos 5 (restrito a governo). Agora nenhum dos dois existe comercialmente</li>
+
+</ul></li>
+<li><b>GLM-5.2 open-weight</b> (13/06) — Zhipu/Z.ai lança 753B MoE (40B ativos), 1M contexto, <b>MIT</b>. SWE-bench Pro 62.1 (GPT-5.5 = 58.6). AIME 2026 = 99.2. Custo ~1/6 do GPT-5.5. Primeiro modelo chinês no top 3 global. "Novo DeepSeek moment" em coding 🔓
+<ul>
+<li>Lancado <b>no mesmo dia</b> do ban da Anthropic — contraste perfeito: fechamento vs abertura</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-org4c0fa9d-split">
+
+<ul style="font-size:0.55em;">
+<li><b>Ornith-1.0</b> (25/06) — Família de LLMs de <b>agentic coding</b> open-source (MIT): 9B Dense, 31B Dense, 35B MoE, 397B MoE. Post-trained em cima de Gemma 4 e Qwen 3.5. SWE-Bench 82.4 (verified), Terminal-Bench 77.5. Self-improving RL: gera soluções + scaffolds. 🔓
+<ul>
+<li>⚠️ <b>Benchmaxxing:</b> falha espectacularmente em SWE-Bench Verified Single-turn (fora do padrão de treino). Benchmarks otimizados pra autopromo, não pra uso real</li>
+
+</ul></li>
+<li><b>Laneformer 2B</b> (25/06) — Kog AI treina arquitetura própria do zero (6T tokens, Nemotron). <b>3.000 tokens/s</b> em 8× AMD MI300X via Delayed Tensor Parallelism (DTP). HumanEval+ 45.1% greedy (Qwen3.5 2B = 31.1%), 65.0% com best-of-8 em 1.3s. Apache 2.0, pesos + recipe abertos 🔓
+<ul>
+<li>3.000 tok/s requer 8× MI300X (enterprise). Relevância local = arquitetura inovadora (DTP), não roda em GPU consumer</li>
+
+</ul></li>
+<li><b>LFM 2.5-350M</b> (25/06) — Liquid AI solta 350M params treinado com 28T tokens + RL. Roda de GPU cloud a <b>CPU barata</b>. Versão Retrievers: embedding multilíngue (11 idiomas, 350M). Arquitetura LFM2 (Liquid Foundation Models) 🔓</li>
+
+</ul>
+
+</section>
+<section id="slide-org4c0fa9d-split">
+
+<ul style="font-size:0.55em;">
+<li><b>GPT-5.6 restrito</b> (25/06) — Trump admin pede à OpenAI para limitar rollout a <b>parceiros aprovados pelo governo</b>, "cliente por cliente" durante preview. GPT-5.6 visto como "equivalente ao Mythos" em cybersecurity. <b>Primeira vez</b> que EUA bloqueia release de frontier AI <b>antes</b> do lançamento público. Altman em memo interno: "não é nosso modelo preferido a longo prazo" 🔒⚠️
+<ul>
+<li>Veio <b>duas semanas</b> depois do ban da Anthropic — agora OpenAI também está sob controle federal</li>
+
+</ul></li>
+<li><b>AI Incident Reporting Bill</b> (25/06) — Rep. Nathaniel Moran (R-TX) propõe <b>lei federal</b>: devs de frontier AI devem reportar incidentes ao Commerce Dept em <b>7 dias</b>. Incidentes graves (segurança nacional) → Congresso em <b>48h</b>. Cobre: evadir oversight humano, roubo de weights, cyberattacks em infra crítica, CBRNE 🔒⚠️
+<ul>
+<li>Contexto: Anthropic acusa <b>Alibaba</b> de distilling industrial do Mythos — 25K contas fake, 30M interações. O "catch-it-early and sound-the-alarm bill"</li>
+<li>Ironia: o fear-mongering dos labs de fronteira virou regulamentação <b>pra todos</b> — não escapou ninguém</li>
+
+</ul></li>
+<li><b>Sakana Fugu</b> (22/06) — Lab japonês lança <b>LLM treinado pra orquestrar outros LLMs</b>. Fugu = "one model to command them all": manda uma request, ele decide se responde direto ou monta equipe de especialistas. Baseado em 2 papers ICLR 2026 (Trinity + Conductor). Pitch geopolítico: <b>"single-vendor dependency is a vulnerability"</b> — se um provider cai por export control, Fugu roteia automaticamente. Fugu Ultra claima nível Fable 5 nos benchmarks, mas testes reais (Ethan Mollick) = 30 min por tarefa, resultados aquém do prometido 🐡
+<ul>
+<li>Não é modelo novo — é <b>orquestração como produto</b>. O "AI sovereignty" como pitch comercial</li>
+
+</ul></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgb5b9866">
+<h2 id="orgb5b9866">📌 Projeto Final</h2>
 <p class="fragment (appear)">
-Imagine que cada palavra ou texto pode ser representado por uma lista de números.
-Esses números capturam o <b>significado</b> do texto.
+Vocês já têm as ferramentas pra construir seus próprios agentes!
 </p>
+
+<p class="fragment (appear)">
+Na aula que vem é a apresentação final — preparem algo pra mostrar!
+</p>
+
+</section>
+<section id="slide-orgb5b9866-split">
+
+<p style="font-size:0.6em;">
+<b><b>Sugestões de projeto:</b></b>
+</p>
+<ul>
+<li>Agente tutor de uma matéria</li>
+<li>Assistente de produtividade (tarefas, lembretes)</li>
+<li>Agente de pesquisa com ferramentas web</li>
+<li>Chatbot de atendimento com personalidade</li>
+<li>Agente criativo (roteiros, poemas, brainstorm)</li>
+
+</ul>
 
 <blockquote  class="fragment (appear)">
 <p>
-"Embeddings são como coordenadas num mapa de significados."
+Comecem pelo que quiserem — o melhor projeto é o que <b>vocês</b> querem usar.
 </p>
 </blockquote>
 </section>
 </section>
 <section>
-<section id="slide-orga040fd4">
-<h2 id="orga040fd4">Exemplo visual</h2>
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<section id="slide-org3e3051f">
+<h2 id="org3e3051f">🔴 O problema: LLMs não sabem tudo</h2>
+<p class="fragment (appear)">
+LLMs não conhecem:
+</p>
+
+<ul>
+<li class="fragment appear">Seus documentos pessoais</li>
+<li class="fragment appear">PDFs da empresa</li>
+<li class="fragment appear">Notas privadas</li>
+<li class="fragment appear">Informações recentes (pós-treinamento)</li>
+
+</ul>
+
+<p class="fragment (appear)">
+E agora?
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgfa554ff">
+<h2 id="orgfa554ff">🔴 A solução: RAG</h2>
+<p class="fragment (appear)">
+RAG = <b>Retrieval Augmented Generation</b>
+</p>
+
+<p class="fragment (appear)">
+<code>Buscar</code> informações relevantes <code>antes</code> de <code>gerar</code> a resposta.
+</p>
+
+<blockquote  class="fragment (appear)">
+<p>
+"RAG = buscar antes de responder."
+</p>
+</blockquote>
+</section>
+<section id="slide-orgebf13de">
+<h3 id="orgebf13de">Analogia</h3>
+<ul>
+<li class="fragment appear"><b>Sem RAG:</b> aluno fazendo prova de <b>memória</b></li>
+<li class="fragment appear"><b>Com RAG:</b> aluno fazendo prova com <b>livro aberto</b></li>
+
+</ul>
+</section>
+<section id="slide-org5d95d37">
+<h3 id="org5d95d37">Fluxo RAG</h3>
+<ol style="font-size:0.65em;">
+<li class="fragment appear"><b>Chunking</b> → divide documentos em pedaços</li>
+<li class="fragment appear"><b>Embeddings</b> → transforma texto em vetores</li>
+<li class="fragment appear"><b>Vector Store</b> → guarda os vetores</li>
+<li class="fragment appear"><b>Retrieval</b> → busca pedaços relevantes</li>
+<li class="fragment appear"><b>Generation</b> → LLM responde com contexto</li>
+
+</ol>
+</section>
+<section id="slide-org0f6b95e">
+<h3 id="org0f6b95e">Mas como funciona a "busca"?</h3>
+<p class="fragment (appear)">
+O <b>retrieval</b> é o coração do RAG.
+</p>
+
+<p class="fragment (appear)">
+E a busca tem <b>duas abordagens</b> que se complementam:
+</p>
+
+<ul>
+<li class="fragment appear"><b>Busca lexical</b> — encontra palavras exatas</li>
+<li class="fragment appear"><b>Busca semântica</b> — encontra significados</li>
+
+</ul>
+
+<p class="fragment (appear)">
+Vamos ver cada uma separadamente, e depois juntar.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org57a6083">
+<h2 id="org57a6083">🟡 Busca Lexical: BM25</h2>
+<p class="fragment (appear)">
+"Como o Google buscava <b>antes</b> de IA."
+</p>
+
+<p class="fragment (appear)">
+BM25 (<code>Best Matching 25</code>) é o algoritmo de busca lexical mais usado.
+</p>
+
+<p class="fragment (appear)">
+Está no Elasticsearch, no Lucene, no Sphinx&#x2026;
+</p>
+
+<p class="fragment (appear)">
+E é mais inteligente do que parece.
+</p>
+</section>
+<section id="slide-org684d5f4">
+<h3 id="org684d5f4">A fórmula (não se assuste!)</h3>
+<div style="text-align:center; margin:1em 0; font-size:0.4em; white-space:nowrap; overflow:hidden;">
+<code>score(q,D) = &Sigma;<sub>i</sub> <span style="color:#7EE787"><b>IDF</b>(q<sub>i</sub>)</span> &middot; <span style="color:#58A6FF">f(q<sub>i</sub>,D)</span> &middot; (k<sub>1</sub>+1) / [ <span style="color:#58A6FF">f(q<sub>i</sub>,D)</span> + <span style="color:#F0883E"><b>k<sub>1</sub></b></span> &middot; (1 &minus; <span style="color:#BB86FC"><b>b</b></span> + <span style="color:#BB86FC">b</span> &middot; <span style="color:#FF6B6B"><b>fieldLen</b> / <b>avgFieldLen</b></span> ) ]</code>
+</div>
+
+<p class="fragment (appear)" style="font-size:0.55em;">
+Parece assustador? <b>Calma.</b> Cada parte é bom senso. Vamos decompor:
+</p>
+
+<p class="fragment (appear)" style="font-size:0.55em;">
+<b>🟢 IDF</b> = <b>Inverse Document Frequency</b> — termos raros valem mais. "elefante" em poucos docs → IDF alto → vale mais. "the" em quase todos → IDF baixo → vale menos.
+</p>
+
+<p class="fragment (appear)" style="font-size:0.55em;">
+<b>🔵 f(q,D)</b> = quantas vezes o termo aparece no documento. Mais aparições = provavelmente mais relevante.
+</p>
+
+<p class="fragment (appear)" style="font-size:0.55em;">
+<b>🟠 k₁</b> = <b>saturação</b> — a 1ª menção vale muito, a 10ª vale quase nada extra. "gato" 100 vezes ≠ 100× mais relevante que 1 vez. Default: <code>k₁ = 1.2</code>
+</p>
+
+<p class="fragment (appear)" style="font-size:0.55em;">
+<b>🟣 b</b> = quanto o <b>tamanho</b> do doc afeta o score. <code>b = 0</code> → tamanho não importa. <code>b = 1</code> → importa muito. Default: <code>0.75</code>. Tweet com "gato" &gt; livro de 300 páginas com "gato" 1 vez.
+</p>
+
+<p class="fragment (appear)" style="font-size:0.55em;">
+<b>🔴 fieldLen/avgFieldLen</b> = tamanho <b>relativo</b> à média. Doc curto acima da média → score sobe. Doc longo acima da média → score cai.
+</p>
+
+<p class="fragment (appear)" style="font-size:0.55em;">
+BM25 é bom senso codificado em matemática. Bom pra: nomes, termos técnicos, códigos, IDs. Mas não entende sinônimos.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org758855b">
+<h2 id="org758855b">🟢 Busca Semântica: Embeddings</h2>
+<p class="fragment (appear)">
+E se a pessoa busca por "animal que faz miau" mas o documento diz "gato"?
+</p>
+
+<p class="fragment (appear)">
+BM25 não acha. Mas <b>embeddings</b> sim.
+</p>
+
+<p class="fragment (appear)">
+Cada texto vira um <b>vetor</b> — uma lista de números que captura <b>significado</b>.
+</p>
+</section>
+<section id="slide-orge06a31a">
+<h3 id="orge06a31a">Exemplo visual</h3>
+<div style="display:flex; gap:2em; align-items:center; justify-content:center;">
+<div style="flex:1;">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" style="font-size:0.6em;">
 
 
 <colgroup>
@@ -81,123 +307,119 @@ Esses números capturam o <b>significado</b> do texto.
 </tbody>
 </table>
 
+</div>
+<div style="flex:1; text-align:center;">
+<img src="./embeddings_3d.png" alt="Visualização 3D de embeddings" style="max-width:100%; border-radius:8px;" />
+</div>
+</div>
+
 <p class="fragment (appear)">
-"gato" e "cachorro" são mais próximos!
-"carro" está longe.
+"gato" e "cachorro" são mais próximos! "carro" está longe.
 </p>
 </section>
+<section id="slide-orgdfa7e4e">
+<h3 id="orgdfa7e4e">Espaço vetorial</h3>
+<ul>
+<li class="fragment appear">Textos com significado parecido = setas na <b>mesma direção</b></li>
+<li class="fragment appear">Textos com significado diferente = setas em <b>direções diferentes</b></li>
+
+</ul>
+
+<blockquote  class="fragment (appear)">
+<p>
+"Mesma direção" = <b>ângulo pequeno</b> entre elas.
+</p>
+</blockquote>
 </section>
-<section>
-<section id="slide-orgb7097ae">
-<h2 id="orgb7097ae">Similaridade por Cosseno</h2>
-<p class="fragment (appear)">
+<section id="slide-orgca19019">
+<h3 id="orgca19019">Similaridade por Cosseno</h3>
+<p>
 <b>Conexão com Geometria Analítica!</b>
 </p>
 
-<p>
-Você já estudou ângulos entre vetores?
-A similaridade por cosseno usa exatamente isso.
-</p>
-</section>
-<section id="slide-orgdc80839">
-<h3 id="orgdc80839">Fórmula:</h3>
-<p>
+<p style="font-size:0.7em;">
 \[\cos(\theta) = \frac{\vec{A} \cdot \vec{B}}{|\vec{A}| \cdot |\vec{B}|}\]
 </p>
-</section>
-<section id="slide-orgd66f643">
-<h3 id="orgd66f643">Interpretação:</h3>
-<ul>
-<li class="fragment appear">ângulo = 0° → vetores iguais → cosseno = 1 → <b>muito similares</b></li>
-<li class="fragment appear">ângulo = 90° → vetores perpendiculares → cosseno = 0 → <b>nada similares</b></li>
-<li class="fragment appear">ângulo = 180° → vetores opostos → cosseno = -1 → <b>opostos</b></li>
 
-</ul>
-</section>
-<section id="slide-orgff35a91">
-<h3 id="orgff35a91">Por que funciona?</h3>
 <ul>
-<li class="fragment appear">Textos com significado parecido = vetores na mesma direção</li>
-<li class="fragment appear">Textos com significado diferente = vetores em direções diferentes</li>
+<li class="fragment appear">ângulo = 0° → cosseno = 1 → <b>idênticos</b></li>
+<li class="fragment appear">ângulo = 90° → cosseno = 0 → <b>independentes</b></li>
+<li class="fragment appear">ângulo = 180° → cosseno = -1 → <b>opostos</b></li>
 
 </ul>
 </section>
 </section>
 <section>
-<section id="slide-org7f2d40a">
-<h2 id="org7f2d40a">Por que isso importa?</h2>
+<section id="slide-orgd49af19">
+<h2 id="orgd49af19">🟣 Busca Híbrida: o melhor dos dois mundos</h2>
+<ul>
+<li class="fragment appear"><b>BM25</b> acha termos exatos (nomes, códigos, IDs)</li>
+<li class="fragment appear"><b>Embeddings</b> acham significados (paráfrases, conceitos)</li>
+
+</ul>
+
 <p class="fragment (appear)">
-Embeddings são a base para:
+<b>Por que não usar os dois?</b>
 </p>
 
-<ul>
-<li><b><b>Busca semântica:</b></b> encontrar textos parecidos</li>
-<li><b><b>RAG:</b></b> buscar documentos relevantes</li>
-<li><b><b>Tradução:</b></b> entender significados entre idiomas</li>
-<li><b><b>Classificação:</b></b> agrupar textos por tema</li>
+</section>
+<section id="slide-orgd49af19-split">
+
+<p style="font-size:0.6em;">
+<b>RRF (Reciprocal Rank Fusion)</b> — junta os rankings das duas buscas.
+</p>
+
+<p style="font-size:0.6em;">
+\[\text{RRF}(d) = \sum_{m \in \text{métodos}} \frac{1}{k + \text{rank}_m(d)}\]
+</p>
+
+<p class="fragment (appear)">
+Cada método ordena os documentos. O RRF combina as posições.
+</p>
+
+<blockquote  class="fragment (appear)">
+<p>
+Cada método vê um lado. Juntos, veem mais.
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org27a1d76">
+<h2 id="org27a1d76">📓 Demo prática: FAISS</h2>
+<p style="font-size:0.55em;">
+Vamos ver isso funcionando <b>de verdade</b> no Colab!
+</p>
+
+<ul style="font-size:0.55em;">
+<li>Modelo: <code>nomic-embed-text-v2-moe</code> (256 dim, Matryoshka)</li>
+<li>Vector store: <b>FAISS</b> (Facebook AI Similarity Search)</li>
+<li>Agente: <code>gemma4:e2b-it-qat</code> com ferramenta de busca</li>
 
 </ul>
+
+<p style="font-size:0.55em;">
+<a href="https://colab.research.google.com/github/luksamuk/guilda-ia/blob/main/notebooks/aula08_embeddings_rag_colab.ipynb" style="font-size:0.55em;">📓 Colab</a>
+</p>
 </section>
 </section>
 <section>
-<section id="slide-orgc0ea073">
-<h2 id="orgc0ea073">Prática</h2>
-<div class="org-src-container">
-
-<pre   ><code class="python" >from sentence_transformers import SentenceTransformer
-
-# Carregar modelo
-model = SentenceTransformer('all-MiniLM-L6-v2')
-
-# Converter textos em embeddings
-textos = ["Eu amo gatos", "Eu adoro cachorros", "O carro é vermelho"]
-embeddings = model.encode(textos)
-
-# Calcular similaridade
-from numpy import dot
-from numpy.linalg import norm
-
-cos_sim = lambda a, b: dot(a, b) / (norm(a) * norm(b))
-</code></pre>
-</div>
-</section>
-<section id="slide-org4e92ac1">
-<h3 id="org4e92ac1">Resultado esperado:</h3>
-<div class="org-src-container">
-
-<pre   ><code class="python" >print(f"gatos vs cachorros: {cos_sim(embeddings[0], embeddings[1]):.3f}")
-# ~0.7 (parecidos)
-
-print(f"gatos vs carro: {cos_sim(embeddings[0], embeddings[2]):.3f}")
-# ~0.1 (diferentes)
-</code></pre>
-</div>
-</section>
-</section>
-<section>
-<section id="slide-orgd771ee4">
-<h2 id="orgd771ee4">Para lembrar</h2>
-<ol>
-<li class="fragment appear">Embeddings = texto transformado em números</li>
-<li class="fragment appear">Similaridade por cosseno = ângulo entre vetores</li>
-<li class="fragment appear">Textos parecidos = vetores na mesma direção</li>
-<li class="fragment appear">Conexão com geometria analítica no seu curso</li>
+<section id="slide-org7e83336" data-background="./slide_08.gif">
+<h2 id="org7e83336">Para lembrar</h2>
+<ol style="font-size:0.55em;">
+<li><b>RAG</b> = buscar antes de responder</li>
+<li><b>BM25</b> = busca lexical (IDF, frequência, saturação, tamanho)</li>
+<li><b>Embeddings</b> = texto como vetores (similaridade por cosseno)</li>
+<li><b>Busca híbrida</b> = BM25 + embeddings + RRF</li>
+<li><b>FAISS</b> = vector store rápido e simples pra demo</li>
 
 </ol>
-</section>
-</section>
-<section>
-<section id="slide-orgab4c025">
-<h2 id="orgab4c025">Próxima semana</h2>
-<p class="fragment (appear)">
-<b><b>RAG:</b></b> vamos usar embeddings para criar
-um agente que "lê" documentos!
+
+<blockquote >
+<p>
+"Embeddings transformam significado em geometria. RAG transforma geometria em respostas."
 </p>
-</section>
-</section>
-<section>
-<section id="slide-orgffa2b92">
-<h2 id="orgffa2b92">Perguntas?</h2>
+</blockquote>
 </section>
 </section>
 </div>
