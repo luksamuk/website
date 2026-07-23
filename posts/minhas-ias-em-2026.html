@@ -1,0 +1,2457 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR" xml:lang="pt_BR">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Minhas IAs em 2026: Como rodar LLMs com hardware modesto</title>
+<meta name="author" content="Lucas S. Vieira" />
+<meta name="description" content="Programming, Tech, and occasional rant space by Lucas Vieira" />
+<meta name="generator" content="Org Mode" />
+<style type="text/css">
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-22RF3F5XE0"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-22RF3F5XE0');
+</script>
+<link rel="stylesheet" type="text/css" href="/css/main.css" />
+<link rel="stylesheet" type="text/css" href="/css/syntax.css" />
+<link id="theme-css" rel="stylesheet" type="text/css" href="/css/dark-theme.css" />
+<link rel="icon" type="image/jpg" href="/img/cat-i-mage.jpg" />
+<link rel="alternate" type="application/atom+xml" title="The Alchemist's Hideout" href="/feed.xml" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#14171e">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="/js/theme-toggle.js"></script>
+<script src="/js/nav-scroll.js"></script>
+<meta property="og:url" content="https://luksamuk.codes/posts/minhas-ias-em-2026.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Minhas IAs em 2026: Como rodar LLMs com hardware modesto">
+<meta property="og:description" content="Programming, Tech, and occasional rant space by Lucas Vieira">
+<meta property="og:image" content="https://luksamuk.codes/posts/img/thumb-minhas-ias-em-2026.png">
+<meta property="article:author" content="Lucas S. Vieira">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:domain" content="luksamuk.codes">
+<meta name="twitter:url" content="https://luksamuk.codes/posts/minhas-ias-em-2026.html">
+<meta name="twitter:title" content="Minhas IAs em 2026: Como rodar LLMs com hardware modesto">
+<meta name="twitter:description" content="Programming, Tech, and occasional rant space by Lucas Vieira">
+<meta name="twitter:image" content="https://luksamuk.codes/posts/img/thumb-minhas-ias-em-2026.png">
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">Minhas IAs em 2026: Como rodar LLMs com hardware modesto</h1><p><i>Escrito em July 23th, 2026 por Lucas S. Vieira</i></p>
+</div>
+<div id="content" class="content">
+<div id="table-of-contents" role="doc-toc">
+<h2>&Iacute;ndice</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgd4c2f58">LLMs Cloud (para projetos maiores)</a>
+<ul>
+<li><a href="#org4cc6732">Ollama Cloud</a></li>
+</ul>
+</li>
+<li><a href="#org49011cc">LLMs locais</a>
+<ul>
+<li><a href="#org8b7764f"><code>llama-swap</code></a></li>
+<li><a href="#org72343c8">Backends e ferramentas de inferência</a>
+<ul>
+<li><a href="#org0a01c6d"><code>llama.cpp</code> (upstream)</a></li>
+<li><a href="#orga049d10"><code>ik_llama.cpp</code></a></li>
+<li><a href="#orgb162af8">Ollama (local)</a></li>
+<li><a href="#orgb061597">LM Studio</a></li>
+</ul>
+</li>
+<li><a href="#org6cf2b18">Modelos e quantizações</a>
+<ul>
+<li><a href="#orga8a152a">Modelos principais</a></li>
+<li><a href="#org0359c25">Menções honrosas e modelos auxiliares</a></li>
+<li><a href="#org58ffa3f">Modelos de difusão (geração de imagem)</a></li>
+<li><a href="#org5f52769">Recomendações ao escolher modelos</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgc8952ef">Harnesses e Agentes</a>
+<ul>
+<li><a href="#org0fd1fbf">Hermes Agent</a></li>
+<li><a href="#org661f5d1">OpenCode</a>
+<ul>
+<li><a href="#orgd258075">OMO (Oh-My-OpenCode)</a></li>
+</ul>
+</li>
+<li><a href="#org6379a1a">Pi Coding Agent</a>
+<ul>
+<li><a href="#orgdec044c">OMP (Oh-My-Pi)</a></li>
+</ul>
+</li>
+<li><a href="#org0faa4e1">Servidores MCP</a>
+<ul>
+<li><a href="#orgba990c8">SearXNG e DuckDuckGo</a></li>
+</ul>
+</li>
+<li><a href="#orge625075">Emacs e integrações com IA</a>
+<ul>
+<li><a href="#org36ac49b">Agent-Shell</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org31430d6">Conclusão</a></li>
+</ul>
+</div>
+</div>
+
+<div id="org4d881af" class="figure">
+<p><img src="./img/thumb-minhas-ias-em-2026.png" alt="thumb-minhas-ias-em-2026.png" />
+</p>
+</div>
+
+<p>
+Oi, pessoal.  Faz um bom  tempo que  não posto nada  aqui. Como sempre,  eu ando
+extremamente ocupado.  Mas eu estou  tentando buscar  algum tempo pra  falar com
+vocês com  mais frequência, porque  LLMs e IA  generativa em geral  está mudando
+absolutamente todo  dia! Mesmo nos meses  de maio e junho  teve muito lançamento
+interessante, e eu não falei nada no meu blog.
+</p>
+
+<p>
+O intuito desse post é falar a respeito de como todo o meu <i>fleet</i> de LLMs que uso
+para projetos pessoais  MUDOU, e inclusive eu não necessariamente  uso as mesmas
+ferramentas e soluções que falei com vocês no post anterior. Eu disse que traria
+mais informações  sobre meu uso, e  isso acabou ficando travado  em rascunhos de
+posts que nunca concluí.
+</p>
+
+<p>
+A questão  é que as LLMs  que uso no  meu dia-a-dia mudaram RADICALMENTE.  E com
+essa atualização,  vou trazer para  vocês algumas dicas, recomendações  e coisas
+interessantes para  que vocês  possam trazer  para os  seus worflows  também, em
+especial se vocês tiverem interesse em rodar LLMs localmente.
+</p>
+<div id="outline-container-orgd4c2f58" class="outline-2">
+<h2 id="orgd4c2f58">LLMs Cloud (para projetos maiores)</h2>
+<div class="outline-text-2" id="text-orgd4c2f58">
+
+<div id="orgff2d231" class="figure">
+<p><img src="./img/llms2-cloud.png" alt="llms2-cloud.png" />
+</p>
+</div>
+
+<p>
+Antes de adentrarmos LLMs que rodam  efetivamente em um computador mais modesto,
+eu quero  conversar com  vocês sobre  os modelos que  estou usando  atualmente e
+onde, especificamente para lidar com  meus projetos pessoais. Eu realmente tenho
+a  perspectiva de  que teremos  em breve  modelos que  não vão  exigir tanto  do
+hardware e  que vão servir muito  pra programação, mas infelizmente  isso é algo
+que fica difícil  porque existe uma barreira diretamente  relacionada ao TAMANHO
+do  modelo,  em   termos  de  parâmetros<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>,  que  diz   respeito  a  algumas
+características como a retenção  de conhecimento dele em uma determinada área.
+</p>
+
+<p>
+Isso  significa  que,  pelo  menos   por  enquanto,  as  reais  powerhouses  pra
+programação são os  modelos que você paga  e acessa em um  ambiente cloud (estou
+desconsiderando outras  áreas aqui,  porque não  tenho domínio  dessa informação
+para elas).
+</p>
+
+<p>
+Sendo assim,  eu optei por  me envolver  com o uso  de modelos de  fronteira que
+sejam necessariamente <i>open-weights</i><sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>.  O motivo pra isso é que  eu não quero
+ter um  gasto absurdo com  IA. O  valor de uma  assinatura, atualmente, já  é um
+gasto muito elevado,  e mesmo para opções mais baratas,  pode ser inclusive algo
+que vai aumentar (o que pode se manifestar primeiro em redução de limites).
+</p>
+</div>
+<div id="outline-container-org4cc6732" class="outline-3">
+<h3 id="org4cc6732">Ollama Cloud</h3>
+<div class="outline-text-3" id="text-org4cc6732">
+
+<div id="org60b69e4" class="figure">
+<p><img src="./img/llms2-ollama.png" alt="llms2-ollama.png" />
+</p>
+</div>
+
+<p>
+O que  uso atualmente  é um plano  da Ollama  Cloud. E isso  é algo  que preciso
+explicar, porque muita gente me pergunta:  Ollama é, ao mesmo tempo, uma startup
+e um  produto que você PODE  instalar DE GRAÇA no  seu computador, especialmente
+pensando em rodar  modelos localmente. <b>Mas poucas pessoas sabem  que eles também
+têm uma cloud.</b> E o  legal da Cloud deles é que eles têm  servidores nos EUA e na
+Europa<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup> e  têm uma preocupação  grande com privacidade.  Além  disso, eles
+praticamente só tem modelos OPEN WEIGHTS pra você usar.
+</p>
+
+<p>
+Hoje, <b>através dos servidores do Ollama Cloud</b>, eu uso:
+</p>
+
+<ul class="org-ul">
+<li>GLM 5.2, da Z.ai;</li>
+<li>MiniMax M3, da MiniMax AI;</li>
+<li>Kimi K2.7 Code, da Moonshot AI;</li>
+<li>Nemotron 3 Ultra, da NVIDIA.</li>
+</ul>
+
+<p>
+Como você  pode ver, a maioria  dos modelos que uso  são chineses, e eu  sei que
+existe uma  certa desconfiança  com relação  a compartilhamento  de dados  com a
+China  (como se  os EUA  também não  coletassem, haha&#x2026;),  mas a  questão aqui,
+especialmente  para quem  for residente  nos EUA,  é que  esses modelos  não têm
+conexão com  os servidores  dos fabricantes.
+</p>
+
+<p>
+Essa é a beleza dos modelos <i>open  weights</i>: Se você tiver hardware pra isso, você
+baixa, instala e usa. No caso,  esses modelos são realmente muito grandes, então
+dificilmente você vai ter como rodar em casa algum desses modelos&#x2026;
+</p>
+
+<p>
+Mesmo assim,  isso significa  que provedores cloud  podem justamente  usar esses
+modelos e  hospedá-los. Ou seja,  barateamento do  custo, e portanto  valor mais
+justo pra gente<sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>. ☺
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org49011cc" class="outline-2">
+<h2 id="org49011cc">LLMs locais</h2>
+<div class="outline-text-2" id="text-org49011cc">
+
+<div id="orga5eb371" class="figure">
+<p><img src="./img/llms2-local.png" alt="llms2-local.png" />
+</p>
+</div>
+
+<p>
+Das  coisas  sobre as  quais  mais  sou perguntado,  figura  o  fato de  que  eu
+atualmente  consigo rodar  modelos  relativamente pequenos  ou  médios na  minha
+máquina, com uma velocidade MUITO  decente, especialmente para decodificação. Na
+verdade, quando  menciono o que eu  consegui de velocidade aqui,  o pessoal acha
+até que é mágica.
+</p>
+
+<p>
+Eu uso atualmente um laptop Dell G15 5530, com:
+</p>
+
+<ul class="org-ul">
+<li>Um processador Intel i7 13650HX, 20 núcleos, 4.90GHz, 13ª geração;</li>
+<li>Uma placa de vídeo NVIDIA GeForce RTX 3050 Laptop, com  apenas 6GB de VRAM;</li>
+<li>Um SSD de meros 500GB;</li>
+<li>32GB de memória RAM DDR5.</li>
+</ul>
+
+<p>
+Como sistema  operacional, uso Arch Linux  e Hyprland como ambiente  de desktop,
+que  é   muito  bonito  e   leve.   Interessante  ressaltar  também   que,  como
+historicamente  drivers da  NVIDIA têm  seus  problemas no  Linux, eu  desativei
+completamente os gráficos integrados do processador  e uso apenas a placa NVIDIA
+para offload total de renderização. Nesse ponto, o ambiente mais leve na GPU faz
+muita diferença.
+</p>
+
+<p>
+Aliás, deixa  eu ser claro  com relação a  <b>velocidade de execução</b>,  porque vamos
+falar agora dos modelos que rodo localmente:
+</p>
+
+<ul class="org-ul">
+<li>O momento de  <b>prefill</b> é o momento em  que o modelo vai processar  o prompt que
+você enviou, e calcular  a <b>atenção</b> sobre o contexto (a  conversa até agora, as
+instruções inicialmente recebidas  e também o que você está  promptando). É um
+passo antes de emitir qualquer token, em que ele vai realizar cálculos em cima
+de uma estrutura chamada <b>cache chave-valor</b> (KV cache).</li>
+<li>O momento  de <b>decode</b> é  o momento  em que a  LLM está "respondendo",  ou seja,
+emitindo tokens. Ela vai tomar o  cálculo de atenção realizado anteriormente e
+vai começar a trabalhar em cima dele gerando um token após o outro com base em
+probabilidade.</li>
+</ul>
+
+<p>
+Esses dois momentos são importantes para você medir a performance da sua LLM, em
+especial se  você ainda não  tiver "interagido" com ela  na sessão atual  (o que
+significa que seu cache KV estaria limpo).
+</p>
+
+<p>
+O motivo para eu falar disso é porque  nós temos uma <b>velocidade de prefill</b> e uma
+<b>velocidade  de decode</b>.  No meu  setup, eu  consegui alcançar  uma velocidade  de
+<b>decode</b> bem  aceitável de <b>30  tokens por  segundo</b>, e um  prefill que chega  a ser
+lento mas não tanto assim.
+</p>
+
+<p>
+Em definitivo, vou  falar do utilitário que uso para  alternar entre modelos sob
+demanda,  dos <i>backends</i>  para  executar  modelos, dos  modelos  que  uso hoje,  e
+explicar algumas dicas para conseguir boa performance em hardware tão limitado.
+</p>
+</div>
+<div id="outline-container-org8b7764f" class="outline-3">
+<h3 id="org8b7764f"><code>llama-swap</code></h3>
+<div class="outline-text-3" id="text-org8b7764f">
+
+<div id="org3c207b6" class="figure">
+<p><img src="./img/llms2-llama-swap.png" alt="llms2-llama-swap.png" />
+</p>
+</div>
+
+<p>
+O primeiro componente  é o <a href="https://github.com/mostlygeek/llama-swap">llama-swap</a>, um projeto muito  legal que permite rodar
+vários  tipos de  modelos de  IA generativa  sob um  único guarda-chuva.  O mais
+importante desse  componente é que ele  permite que você faça  alternância entre
+modelos de forma simples.
+</p>
+
+<p>
+Recentemente o <code>llama.cpp</code> em si adicionou  uma implementação que permite que você
+faça algo similar, mas o interessante  do <code>llama-swap</code> é que você pode integrá-lo,
+inclusive, com outros <i>backends</i> como vLLM, e também com <b>forks do llama.cpp</b>, o que
+é especialmente importante  em um ambiente como  o meu, algo que já  vou falar a
+seguir.
+</p>
+
+<p>
+A configuração  do <code>llama-swap</code> envolve você  declarar um arquivo YAML  com várias
+especificações  de  como   lançar  o  binário  <code>llama-server</code>,   e  também  outras
+ferramentas  que  você vier  a  utilizar.
+</p>
+
+<p>
+Abaixo você pode ver  um exemplo de como eu faço o  deploy do Ornith-1.0-35B. A
+ideia é o seguinte:  ele é um modelo grande em que  inevitavelmente eu vou fazer
+offload para a memória RAM "normal" (por não caber em 6GB de VRAM), então eu vou
+rodar ele com <code>ik_llama.cpp</code> e dar a  ele um timeout de inatividade de 15 minutos,
+o que  economiza dores de  cabeça com tempo  de prefill, dependendo  da situação
+(caso o modelo seja descarregado ou usado para, por exemplo, compactação).
+</p>
+
+<p>
+Note  que a  configuração  é  basicamente muitos  metadados  e  um comando  para
+executar o <code>llama-server</code> especificamente do <code>ik_llama.cpp</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"># --- llama-swap config (fragmento abridged) ---
+
+macros:
+  models_dir: ${env.HOME}/.llama-models
+  templates_dir: ${env.HOME}/git/ai-dotfiles/llama-swap/templates
+  ik_llama_server: ${env.HOME}/git/ik_llama.cpp/build/bin/llama-server
+  # ... outras macros (sampler defaults, cache types, etc) ...
+
+models:
+  ornith-1.0-35b:
+    name: Ornith 1.0 35B
+    cmd: |
+      ${ik_llama_server} --port ${PORT}
+      --model ${models_dir}/ornith-1.0-35b/Ornith-1.0-35B-APEX-I-Compact.gguf
+      --fit
+      --fit-margin 1024
+      --ctx-size 131072
+      --temp 1.0
+      --top-p 1.0
+      --top-k 40
+      --min-p 0.02
+      --repeat-penalty 1.05
+      --reasoning on
+      --jinja
+      --chat-template-file ${templates_dir}/qwen-fixed-chat-template.jinja
+      --parallel 1
+      --parallel-tool-calls
+      --cache-type-k q4_0
+      --cache-type-v q4_0
+      --k-cache-hadamard
+      --v-cache-hadamard
+      --flash-attn auto
+      --defer-experts
+      --prefetch-experts
+      --spec-type ngram-mod:n_max=64,n_min=48,ngram_size_n=24
+      --metrics
+    filters:
+      stripParams: "temperature, top_p"
+      setParamsByID:
+        ${MODEL_ID}:
+          chat_template_kwargs:
+            enable_thinking: false
+          temperature: 1.0
+          top_p: 1.0
+        ${MODEL_ID}:think:
+          chat_template_kwargs:
+            enable_thinking: true
+          temperature: 1.0
+          top_p: 1.0
+    ttl: 900
+    capabilities:
+      in: [text]
+      out: [text]
+      tools: true
+      context: 131072
+    # ... mais metadados (metadata, source, architecture, etc) ...
+
+  # ... outros modelos ...
+
+# ... (config-footer.yaml: hooks, matrix, evict_costs) ...
+</pre>
+</div>
+
+<p>
+Isso é só um exemplo, mas resolvi pegar especificamente o caso do Ornith 1.0 35B
+para que você  possa observar o tipo de  coisa com o qual tento  me preocupar ao
+descrever  a  configuração das  <i>flags</i>  para  execução  do <code>llama-server</code>  de  cada
+implementação. Claro, a escolha desses argumentos e <i>flags</i> dizem muito a respeito
+da capacidade do meu computador, de como  eu quero que o modelo se comporte, mas
+sobretudo, visando  tirar o máximo  de performance sem sacrificar  capacidade de
+contexto.
+</p>
+
+<p>
+Não se  preocupe demais se não  entender as nomenclaturas; mais  tarde vou falar
+de  características  específicas dos  modelos  e  você  vai entender  com  maior
+profundidade.
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="orgdda212b"></a><code>--fit</code> / <code>--fit-margin 1024</code><br />
+<div class="outline-text-5" id="text-orgdda212b">
+<p>
+A flag <code>--fit</code> só existe no <code>ik_llama.cpp</code>.  Ela realiza <i>offload</i> inteligente de camadas
+da LLM para a  memória RAM normal, mantendo na memória de  vídeo (VRAM) apenas o
+que cabe. Uso também  o <code>--fit-margin</code> para reservar um espaço de  1024 MB na VRAM
+pra que a primeira flag não tente usar  toda a VRAM da placa de vídeo. Assim, eu
+pago  um  pouco  de  velocidade  em  prol  de  conseguir  continuar  usando  meu
+computador.
+</p>
+
+<p>
+Essa  configuração é  o principal  motivo pelo  qual eu  uso <code>ik_llama.cpp</code>  aqui,
+porque ele consegue  fazer com que esse offload continue  tendo boa performance,
+através  de memory  pinning e  <i>direct-memory access</i>  (DMA). E  como modelos  MoE
+(mixture-of-experts)  não precisam  de todas  as camadas  o tempo  todo (já  que
+dividem seus pesos  em <i>especialistas</i> e só ativam alguns  especialistas para cada
+token), a velocidade fica  muito boa. Esse é o meu segredo  para fazer um modelo
+de 16.5GB rodar relativamente bem enquanto ocupa só 5.1GB de VRAM.
+</p>
+</div>
+</li>
+<li><a id="org166b1c3"></a><code>--ctx-size 131072</code><br />
+<div class="outline-text-5" id="text-org166b1c3">
+<p>
+LLMs  precisam executar  o <i>prefill</i>  e o  algoritmo de  atenção em  uma parte  da
+memória, que  obrigatoriamente tem  que ficar  na VRAM, chamada  de KV  Cache. O
+tamanho  desse KV  cache  determina  a quantidade  de  tokens  que seu  contexto
+suporta. Aqui, eu prezo sempre por  usar 131k. Com o restante das configurações,
+isso fica confortável e eu não passo  por problemas que poderiam causar erros de
+OOM (<i>out-of-memory</i>).
+</p>
+
+<p>
+Se você  tiver problemas  com essa  parte, eu  sugiro reduzir  o tamanho  do seu
+contexto, mas lembre-se  que se você quer  realmente um <i>agente</i>, menos  de 64k de
+contexto vai ser um problema sério  para você, em especial dependendo do <i>harness</i>
+que você estiver utilizando.
+</p>
+</div>
+</li>
+<li><a id="org5f26787"></a><code>--reasoning on</code> / <code>--jinja</code> / <code>--chat-template-file</code><br />
+<div class="outline-text-5" id="text-org5f26787">
+<p>
+A primeira <i>flag</i>  basicamente liga o modo <i>thinking</i> (<i>reasoning</i>,  pensamento, o que
+você quiser chamar) antes de emitir a  resposta. Veja que isso meramente <b>ativa o
+suporte</b>, e não necessariamente induz a LLM a emitir esse bloco.
+</p>
+
+<p>
+Os demais  parâmetros são indicadores de  como fazer o parsing  das respostas da
+LLM. A  forma como uma  LLM emite  texto é através  de criar marcadores  que vão
+determinar  onde começa  e  onde termina  o pensamento,  a  resposta básica,  as
+chamadas de  ferramentas&#x2026; e até  marcadores de encerramento da  mensagem sendo
+emitida. Pra  gente, isso  se apresenta  como um marcador  qualquer, mas  para o
+vocabulário da LLM, geralmente isso se apresenta como um <i>token</i>.
+</p>
+
+<p>
+Então o  que a gente  faz é  basicamente ativar o  suporte a templates  Jinja, e
+geralmente eles vêm  embutidos no arquivo GGUF do modelo.  Mas você pode definir
+um <b>chat  template file</b>  caso queira  usar um outro  template Jinja  com melhores
+ajustes, que é o que eu faço aqui&#x2026; os modelos da família Qwen (base do Ornith)
+tinham  um bug  no  formato  das chamadas  de  ferramentas,  alguém lançou  esse
+template corrigido, e eu estou usando.
+</p>
+</div>
+</li>
+<li><a id="org81bc8cb"></a><code>--cache-type-k q4_0</code> / <code>--cache-type-v q4_0</code> / <code>--k-cache-hadamard</code> / <code>--v-cache-hadamard</code><br />
+<div class="outline-text-5" id="text-org81bc8cb">
+<p>
+Essa parte aqui  também é muito importante  quando o assunto é o  KV cache. Como
+mencionei  antes, seu  contexto  também  usa VRAM,  e  BASTANTE.  Mas você  pode
+quantizá-lo. Claro, você  vai perder um pouco da precisão  do seu contexto assim
+como também perde precisão em uma  quantização de uma LLM, mas em contrapartida,
+vai usar muito menos VRAM.
+</p>
+
+<p>
+O KV  cache é um  cache chave/valor (não vou  me aprofundar demais  em conceitos
+aqui), então  o <code>ik_llama.cpp</code> permite  que você quantize  as chaves e  os valores
+separadamente. Aplicando  uma quantização  <code>Q4_0</code> em  ambos, você  reduz em  75% o
+tamanho do  cache com relação à  quantização original (<code>F16</code>). Então  vale muito a
+pena.
+</p>
+
+<p>
+Adicionalmente, o <code>ik_llama.cpp</code> tem flags que te permitem aplicar uma rotação nos
+tensores de  cache chamada  Hadamard Rotation<sup><a id="fnr.5" class="footref" href="#fn.5" role="doc-backlink">5</a></sup>,  que preserva  a qualidade
+deles enquanto permite comprimir o cache de forma ainda mais agressiva.
+</p>
+
+<p>
+Esses dois caras  em particular são o  segredo pra ter um modelo  tão grande com
+um contexto tão grande rodando na minha máquina.
+</p>
+</div>
+</li>
+<li><a id="org42b976a"></a><code>--flash-attn auto</code><br />
+<div class="outline-text-5" id="text-org42b976a">
+<p>
+Basicamente habilita <i>Flash Attention</i> caso a  sua placa de vídeo suporte. Uma RTX
+3050 como a minha e outras placas da NVIDIA suportam isso sem problemas.
+</p>
+
+<p>
+Essa  funcionalidade  é importante  porque,  se  fôssemos utilizar  um  processo
+"padrão" de atenção,  seria necessário calcular uma matriz quadrada  N*N, onde N
+seria a quantidade de tokens no contexto. Se a gente tivesse um contexto de 131k
+cheio, a  matriz de  atenção "pura"  dele seria  uma matriz  131k *  131k floats
+(F16). Ridiculamente grande, e não caberia na VRAM. E olha que isso é uma matriz
+<b>intermediária</b> que nem é algo pra ficar salvo em lugar nenhum.
+</p>
+
+<p>
+O que o <i>flash attention</i> faz é basicamente não materializar essa matriz completa,
+e através  de técnicas como <i>tiling</i>,  fusão, e um softmax  (algoritmo de atenção)
+incremental, ele permite calcular fragmentos da atenção incrementalmente e muito
+rapidamente na SRAM  da GPU, uma memória  pequena porém ainda mais  rápida que a
+VRAM. Falando  assim, parece até  mágica. Junte  isso também com  quantização de
+contexto e as rotações&#x2026; e você tem o pacote completo.
+</p>
+</div>
+</li>
+<li><a id="orgf2d6b5c"></a><code>--parallel 1</code> / <code>--parallel-tool-calls</code><br />
+<div class="outline-text-5" id="text-orgf2d6b5c">
+<p>
+Esses parâmetros  tratam de aspectos de  paralelismo no modelo. A  primeira flag
+foi  um dos  sacrifícios que  precisei fazer:  eu só  tolero uma  requisição por
+vez. O <code>llama-swap</code> em  si existe para fazer troca entre  modelos sob demanda, mas
+quando  você quer  o mesmo  modelo operando  com até  duas requisições  ao mesmo
+tempo, por  exemplo, você  precisa aumentar  o valor de  <code>--parallel</code>, e  pra cada
+execução paralela, <b>tem que ter espaço para um KV cache a mais</b>. Esse é o <i>tradeoff</i>
+que você tem que fazer. Se eu tivesse mais VRAM pra esbanjar, eu aumentaria esse
+número.
+</p>
+
+<p>
+A outra  flag é algo  bem mais trivial. Basicamente,  a maioria dos  modelos pra
+código e  <i>agentic coding</i> hoje  em dia  tendem a enviar  mensagens intermediárias
+pedindo  para  executar  mais  de  uma  ferramenta  ao  mesmo  tempo,  na  mesma
+mensagem.  A  flag <code>--parallel-tool-calls</code>  basicamente  só  prepara o  parser  da
+requisição para esse cenário, para que ele possa agregar e formatar as respostas
+usando o template Jinja fornecido.
+</p>
+</div>
+</li>
+<li><a id="org3c606f3"></a><code>--defer-experts</code> / <code>--prefetch-experts</code><br />
+<div class="outline-text-5" id="text-org3c606f3">
+<p>
+Essas  flags aqui  só funcionam  para modelos  MoE (mixture-of-experts),  porque
+esses  modelos  operam através  de  operar  com  um  especialista fixo  que  faz
+roteamento da atenção  para outros experts que  podem ou não estar na  GPU ou no
+offload para  a RAM  normal, e  com esses  outros especialistas  que normalmente
+"interpretam" coisas específicas.
+</p>
+
+<p>
+Você pode deferir o carregamento de  experts com <code>--defer-experts</code> para evitar que
+sejam  carregados   os  <i>experts</i>  menos   utilizados  para   a  VRAM  e   para  a
+RAM. Adicionalmente, você pode pré-carregar  também os experts mais prováveis de
+serem ativados no próximo token, usando <code>--prefetch-experts</code>.
+</p>
+
+<p>
+Essas flags juntas ajudam a aliviar um pouco a pressão do modelo sobre a RAM e a
+VRAM.
+</p>
+</div>
+</li>
+<li><a id="org326b9a7"></a><code>--spec-type ngram-mod:n_max=64,n_min=48,ngram_size_n=24</code><br />
+<div class="outline-text-5" id="text-org326b9a7">
+<p>
+<i>Speculative decoding</i> (basicamente,  acelerar a emissão de tokens  através de uma
+"previsão"  dos  tokens  mais  prováveis   a  seguir),  porém  sem  nenhuma  das
+tecnologias mais novas como DFlash ou MTP.  Não vou entrar em tantos detalhes de
+como essa flag funciona, mas basta você  saber que é uma boa alternativa se você
+não tem VRAM a mais para carregar os  <i>drafters</i> de DFlash e MTP (que são pequenos
+modelos extras carregados junto com o modelo-base).
+</p>
+</div>
+</li>
+<li><a id="org975c493"></a><code>--temp 1.0</code> / <code>--top-p 1.0</code> / <code>--top-k 40</code> / <code>--min-p 0.02</code> / <code>--repeat-penalty 1.05</code><br />
+<div class="outline-text-5" id="text-org975c493">
+<p>
+Esses   parâmetros  são   <i>samplers</i>,   também  conhecidos   como  <i>parâmetros   de
+inferência</i>.  Esses  caras são  bem  importantes  e  são normalmente  alguns  dos
+parâmetros que você vai querer ajustar  quando você baixar aquele modelo da moda
+que tá todo mundo  falando bem, mas que magicamente só  no seu computador parece
+ser uma porcaria e entrar facilmente em  <i>loop</i>.
+</p>
+
+<p>
+Vou deixar  aqui uma pequena tabela  baseada na <a href="https://docs.ollama.com/modelfile">documentação do  Ollama</a> para que
+você possa entender melhor o que cada um é.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Nome</th>
+<th scope="col" class="org-left">Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>temp</code></td>
+<td class="org-left">Temperatura do modelo. Aumentar a temperatura vai tornar o modelo mais criativo, mas mais suscetível a alucinação.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>top-p</code></td>
+<td class="org-left">Funciona em conjunto com outros samplers. Alto, próximo de 1.0 = textos mais diversos; baixo = textos mais conservadores.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>top-k</code></td>
+<td class="org-left">Reduz a probabilidade de alucinação. Alto, próximo de 100 = mais diverso. Menor = respostas mais conservadoras.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>min-p</code></td>
+<td class="org-left">Alternativa a <code>top_p</code>, manobra o balanço entre qualidade e variedade da saida (probabilidade mínima dos tokens).</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>repeat_penalty</code></td>
+<td class="org-left">Define a penalização para repetição de tokens. Mais alto (1.5) = mais penalidade; mais baixo (1.0) = leniência.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Sempre procure no site da Unsloth e  no <i>model card</i> do fabricante do modelo quais
+são os parâmetros  de inferência recomendados, ou, se for  um <i>fine tune</i>, procure
+pelos parâmetros do modelo-base, no pior dos casos.
+</p>
+
+<p>
+E lembre-se: Se o seu modelo estiver entrando em loop e falando abobrinha, antes
+de assumir  que é  um modelo  de má-qualidade  (o que  pode até  ocorrer), tente
+primeiro ajustar algum parâmetro desses para valores que fazem sentido.
+</p>
+</div>
+</li>
+<li><a id="org4fb0789"></a><code>filters: stripParams</code> / <code>setParamsByID</code><br />
+<div class="outline-text-5" id="text-org4fb0789">
+<p>
+Essas chaves já não estão mais no comando de execução do <code>llama-server</code> em si, mas
+são <i>templates</i>  usados para  alterar a forma  como o modelo  vai se  comportar no
+momento da requisição, sem precisar carregar ou descarregar o modelo da memória.
+</p>
+
+<p>
+A chave  <code>stripParams</code> especifica  que os  valores de  temperatura e  <code>top-p</code>, caso
+informados na  requisição do cliente, serão  <b>ignorados</b>. Isso é porque,  por mais
+que a  execução do  <code>llama-server</code> seja  feita com valores  padrão, ainda  assim é
+possível que o cliente, via requisição, altere esses valores quando o modelo for
+responder à requisição. Então estamos explicitamente ignorando-os e confiando só
+no nosso deploy.
+</p>
+
+<p>
+O outro ponto  <b>muito importante</b> é o  <code>setParamsByID</code>. O que ele  faz é basicamente
+mudar um  ou mais  parâmetros da execução  do modelo, como  se fosse  algo sendo
+especificado via requisição. Só que, em vez de esperar que o usuário envie esses
+parâmetros de forma  simples, isso é feito  através do acesso a  uma <i>variante</i> do
+modelo.
+</p>
+
+<p>
+A ideia  é extremamente simples:  A <i>tag</i>  do Ornith 1.0  para que eu  possa fazer
+requisições nele é  <code>ornith-1.0-35b</code>. Porém, se você fizer uma  requisição para um
+modelo  chamado  <code>ornith-1.0-35b:think</code>,  ele   vai  necessariamente  habilitar  o
+parâmetro <code>enable_thinking</code>.
+</p>
+
+<p>
+Lembra que eu disse  que o <code>--reasoning</code> apenas define se  o modelo tem capacidade
+ou não de emitir  blocos de pensamento? Pois então, o que  habilita ou não esses
+blocos na maioria dos modelos é justamente o <code>enable_thinking</code>.
+</p>
+</div>
+</li>
+<li><a id="orgb3794c8"></a><code>ttl: 900</code><br />
+<div class="outline-text-5" id="text-orgb3794c8">
+<p>
+Talvez seja  o parâmetro mais  simples: trata-se  do <i>time-to-live</i> do  modelo, ou
+seja:  quando o  modelo  ficar  ocioso, ele  ainda  vai  permanecer um  tempinho
+ocupando processamento.
+</p>
+
+<p>
+Para evitar que  modelos grandes fiquem fazendo <i>eviction</i> toda  hora, eu aumentei
+esse tempo para 15 minutos, e o Ornith foi um dos modelos que sofreu essas alterações.
+</p>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org72343c8" class="outline-3">
+<h3 id="org72343c8">Backends e ferramentas de inferência</h3>
+<div class="outline-text-3" id="text-org72343c8">
+
+<div id="org45980a7" class="figure">
+<p><img src="./img/llms2-backends.png" alt="llms2-backends.png" />
+</p>
+</div>
+
+<p>
+Quando o assunto  é rodar LLMs localmente, existem vários  tipos de <i>engines</i> para
+fazer isso, até  mesmo usando diretamente código em Python.  Mas você vai querer
+escolher  seu  <i>backend</i> de  inferência  a  dedo porque  cada  um  tem seu  nicho:
+performance, compatibilidade, facilidade de uso.
+</p>
+
+<p>
+A seguir, vou descrever alguns dos backends que uso na minha máquina.
+</p>
+</div>
+<div id="outline-container-org0a01c6d" class="outline-4">
+<h4 id="org0a01c6d"><code>llama.cpp</code> (upstream)</h4>
+<div class="outline-text-4" id="text-org0a01c6d">
+<p>
+O <code>llama.cpp</code> é o backend de  referência para hospedar modelos localmente, pensado
+para consumidor  final. Implementado em C++,  usa um formato de  arquivo para os
+modelos chamado GGUF. Esse backend tem um amplo suporte a várias arquiteturas de
+laboratórios variados (<code>qwen</code>,  <code>gemma</code>, <code>glm</code>, <code>cohere</code>&#x2026;), e  implementa pontos muito
+importantes como <i>flash attention</i>, quantização de cache KV, rotações de Hadamard,
+soluções para acelerar a geração  de tokens via <i>speculative decoding</i> (algoritmos
+e suporte a decoders DFlash, MTP, n-gram, EAGLE-3&#x2026;).
+</p>
+
+<p>
+O <code>llama.cpp</code> também sabe fazer <i>offload</i> de  parte do seu modelo para a memória RAM
+normal e portanto você não precisa usar ele só para modelos que cabem totalmente
+na  sua VRAM,  mas ele  não  é o  melhor  <i>backend</i> para  ambientes limitados.  De
+qualquer forma, ainda assim ele é  um excelente backend para o consumidor final,
+como disse anteriormente.
+</p>
+
+<p>
+Seria justo  comparar o <code>llama.cpp</code>  a outras soluções  como SGLang e  vLLM. Essas
+duas outras engines  servem modelos com foco em <b>alta  concorrência</b>, sendo ideais
+para  cenários  de  múltiplas  GPUs  e requisições  simultâneas,  o  que  requer
+otimização de <i>throughput</i>. Elas assumem que  o modelo inteiro cabe na VRAM porque
+foram otimizadas para diversas requisições  por segundo sendo realizadas para os
+modelos, e não para situações em que  um modelo poderia ser grande demais para a
+sua GPU. O <code>llama.cpp</code> age justamente na  contramão disso, em cenários em que você
+tenha  uma  única GPU,  e  que  talvez ela  nem  seja  o suficiente.  Então  ele
+implementa ferramentas  para lidar com  isso (<i>offload</i>, quantização de  KV cache,
+etc).
+</p>
+
+<p>
+Curiosamente, eu prefiro usar esse backend justamente quando eu consigo usar uma
+quantização  de   modelo  e  um  cache   KV  que  caibam  totalmente   na  minha
+VRAM. Geralmente eu prefiro o <code>ik_llama.cpp</code> mesmo.
+</p>
+</div>
+</div>
+<div id="outline-container-orga049d10" class="outline-4">
+<h4 id="orga049d10"><code>ik_llama.cpp</code></h4>
+<div class="outline-text-4" id="text-orga049d10">
+<p>
+O  <code>ik_llama.cpp</code> é  um <i>fork</i>  do <code>llama.cpp</code>  otimizado para  hardware limitado,  em
+especial quando  <i>offload</i> para RAM normal  é necessário. Exatamente por  isso, as
+<i>flags</i> para usar  o <code>ik_llama.cpp</code> podem ser completamente  diferentes do <code>llama.cpp</code>
+normal. Acredito que a  feature principal dele seja o fato  de que você consegue
+fazer o <i>offload</i> para RAM normal usando <i>memory pinning</i><sup><a id="fnr.6" class="footref" href="#fn.6" role="doc-backlink">6</a></sup>.
+</p>
+
+<p>
+Em  geral, a  não ser  que tenha  alguma exceção,  como por  exemplo no  caso de
+incompatibilidade   de  arquitetura,   eu  uso   o  <code>ik_llama.cpp</code>   para  modelos
+grandes. Especialmente se eles forem <i>mixture-of-experts</i> (MoE).
+</p>
+</div>
+</div>
+<div id="outline-container-orgb162af8" class="outline-4">
+<h4 id="orgb162af8">Ollama (local)</h4>
+<div class="outline-text-4" id="text-orgb162af8">
+<p>
+O Ollama é o <i>backend</i> para execução local de modelos da mesma empresa homônima, e
+inclusive esse  <i>backend</i> pode  servir como  proxy para  os modelos  hospedados na
+cloud da mesma  empresa. Ele já foi um  fork maior do <code>llama.cpp</code>, mas  hoje ele é
+uma espécie de redistribuição e usa o <code>llama.cpp</code> diretamente como backend. Possui
+um CLI  amigável e  implementa também uma  API REST própria  e outras  APIs para
+garantir camada de compatibilidade.
+</p>
+
+<p>
+Em geral, o Ollama  decide por si mesmo a maior parte  da configuração de deploy
+do  modelo  e  não  te  deixa   customizar  com  a  mesma  granularidade  que  o
+<code>llama.cpp</code>. Para  configuração fina de  modelos, você precisa criar  um <code>Modelfile</code>
+(similar a um <code>Dockerfile</code> em sintaxe) e então dar um <code>ollama create</code> no arquivo com
+a  tag  e  o nome  que  quiser.  Isso  ajuda,  mas não  substitui  você  alterar
+diretamente as <i>flags</i> de execução do próprio servidor.
+</p>
+
+<p>
+Já usei  bastante essas funcionalidades  e até  recomendo como ponto  de entrada
+caso você esteja  com dúvida de como configurar modelos,  mas abandonei o Ollama
+como backend em  favor de poder realizar  ajustes mais finos e o  controle que o
+<code>llama.cpp</code> "cru" e seus forks me dão.
+</p>
+
+<p>
+O Ollama também é  capaz de orquestrar os modelos de acordo  com a capacidade da
+sua máquina, carregando e descarregando modelos sob demanda.
+</p>
+
+<p>
+O Ollama também  é interessante com relação  ao suporte a aceleração  via MLX no
+Mac  e  também tem  uma  boa  interface GUI  para  Windows.  Macs têm  sido  bem
+receptivos ao  uso de IA.  Windows&#x2026; bom,  se for testar,  boa sorte e  me diga
+depois se conseguiu ter bons resultados&#x2026;
+</p>
+</div>
+</div>
+<div id="outline-container-orgb061597" class="outline-4">
+<h4 id="orgb061597">LM Studio</h4>
+<div class="outline-text-4" id="text-orgb061597">
+<p>
+O LM Studio é  um projeto muito interessante. Ele é primariamente  um GUI que te
+ajuda a pesquisar, instalar e configurar modelos, tanto para chat quanto rodando
+como servidor.  Pense nele  como uma interface  e um facilitador  para o  uso do
+<code>llama.cpp</code>,  e uma  boa porta  de entrada  para esse  backend em  específico, com
+algumas coisas  extras. Você  também tem  a oportunidade  de realizar  tweaks na
+forma como  o modelo é  deployado com maior  flexibilidade que no  Ollama, mesmo
+através  da interface.  E  opcionalmente, ele  tem uma  ferramenta  de linha  de
+comando também.
+</p>
+
+<p>
+A única coisa  que ele não faz é substituir  a automação de carregar/descarregar
+modelos sob  demanda como  o <code>llama-swap</code> e  o Ollama fazem.  Mas é  uma excelente
+aplicação, recomendo muito utilizar.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org6cf2b18" class="outline-3">
+<h3 id="org6cf2b18">Modelos e quantizações</h3>
+<div class="outline-text-3" id="text-org6cf2b18">
+<p>
+Depois de falar dos backends, vamos falar um pouco a respeito dos modelos que eu
+uso  e  dos meus  critérios  para  selecionar  a  quantização adequada  para  um
+deles. Em  geral, eu priorizo modelos  que rodam com velocidade  aceitável e que
+aguentam  uma boa  quantidade  de contexto.  Então vou  apresentar  a lista  dos
+modelos que  tenho instalados aqui,  e depois vou  falar sobre como  escolher os
+quants para cada um.
+</p>
+</div>
+<div id="outline-container-orga8a152a" class="outline-4">
+<h4 id="orga8a152a">Modelos principais</h4>
+<div class="outline-text-4" id="text-orga8a152a">
+<p>
+Os  modelos a  seguir são  alguns dos  que tenho  instalados no  meu <i>fleet</i>  (meu
+conjunto de  modelos de  linguagem e visão).  São os modelos  que diria  que são
+indispensáveis ou que são os meus preferidos.
+</p>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-ornith.png" class="model-entry-logo" alt="Ornith-1.0-35B">
+<div class="model-entry-info">
+<div class="model-entry-name">Ornith-1.0-35B</div>
+<div class="model-entry-meta"><span>Quant: APEX I-Compact</span><span>Backend: <code>ik_llama.cpp</code></span><span>Prefill: 114.4 tok/s</span><span>Decode: 36.5 tok/s</span><span>HF: <a href="https://huggingface.co/mudler/Ornith-1.0-35B-APEX-GGUF">mudler/Ornith-1.0-35B-APEX-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+O modelo estrela e o principal do meu <i>fleet</i> atualmente. Trata-se de um fine tune
+do Qwen3.5-35B-A3B, que  atualmente é o melhor modelo de  código que tenho. Veja
+que  seu modelo-base  está  uma geração  "atrás" do  Qwen3.6  (falarei dele  nas
+menções honrosas), mas  mesmo assim, consegue ser melhor que  ele nas tarefas de
+código.
+</p>
+
+<p>
+Esse modelo não  possui capacidade de visão, diferente do  Qwen3.5 base, mas não
+faz falta  porque o  foco aqui é  código, e  nisso ele ganhou  em todos  os meus
+testes. O  Ornith 1.0 35B  atualmente é  meu modelo principal  para programação,
+quando os meus tokens da semana acabam&#x2026;
+</p>
+
+<p>
+De qualquer forma,  o Ornith também tem uma quantização  APEX I-Compact, então o
+setup é bem parecido com o  Qwen3.6-35B-A3B. Em geral, essa quantização, modelos
+MoE e suporte no backend <code>ik_llama.cpp</code> é o que sempre vou considerar para modelos
+que exigem offload dessa forma.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-glm.png" class="model-entry-logo" alt="GLM-4.7-Flash">
+<div class="model-entry-info">
+<div class="model-entry-name">GLM-4.7-Flash</div>
+<div class="model-entry-meta"><span>Quant: APEX I-Compact</span><span>Backend: <code>llama.cpp</code></span><span>Prefill: 65.0 tok/s</span><span>Decode: 33.0 tok/s</span><span>HF: <a href="https://huggingface.co/mudler/GLM-4.7-Flash-APEX-GGUF">mudler/GLM-4.7-Flash-APEX-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Eu já tive uma  história de amor e ódio com esse modelo  porque, quando usei ele
+pela primeira vez, foi via Ollama, com a quantização que tinha. E ele rodava com
+todo o hardware do meu computador no talo, usando muita memória RAM e quase nada
+de VRAM, porque eu  não sabia configurar minha infraestrutura, e  eu fazia uns 5
+tok/s.  De qualquer  forma,  depois  de uma  madrugada  com  todos os  programas
+fechados e esse modelo configurado no OpenCode,  foi esse cara que iniciou o meu
+projeto do harness que estou desenvolvendo, o Sprachspiel.
+</p>
+
+<p>
+Mas  agora tudo  mudou  aqui!  Com uma  quantização  APEX I-Compact  apropriada,
+finalmente consegui rodar  ele de tal forma que tenho  um desempenho aceitável e
+ainda assim consigo  usar meu computador normalmente. A Z.ai  manda muito bem, e
+depois  desse  modelo,  veio  a  família do  GLM  5.x,  que  é  o  que  mais  uso
+atualmente. Recomendo demais esse modelo para  desenvolvimento em geral. É o meu
+favorito depois do Ornith 1.0.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-qwen-old.png" class="model-entry-logo" alt="Qwen3.5-4B">
+<div class="model-entry-info">
+<div class="model-entry-name">Qwen3.5-4B</div>
+<div class="model-entry-meta"><span>Quant: Unsloth Q4_K_M</span><span>Backend: <code>llama.cpp</code></span><span>Prefill: 363.3 tok/s</span><span>Decode: 46.1 tok/s</span><span>HF: <a href="https://huggingface.co/unsloth/Qwen3.5-4B-GGUF">unsloth/Qwen3.5-4B-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+A família  de modelos Qwen3.5  foi muito importante  quando lançou nesse  ano de
+2026, porque  foi um  dos primeiros  indicativos de  que poderíamos  ter modelos
+pequenos realmente  capazes de fazer  coisas. Esse é  um dos menores  modelos da
+família, sendo maior  apenas que um de  800 milhões (0.8B) e outro  de 2 bilhões
+(2B) de parâmetros. Aqui,  eu uso ele como um modelo muito  capaz e muito rápido
+para tarefas mais simples.
+</p>
+
+<p>
+Eu arrisco  dizer que,  se você precisa  de um chatbot  com capacidades  de tool
+calling mais simples, o  Qwen3.5 4B pode ser uma EXCELENTE  opção.  Caso você já
+tenha usado o  GPT-4o, que foi o "xodozinho"  de muita gente, o Qwen3.5  4B é um
+<b>substituto direto</b> para ele. E isso  é um representativo dos saltos da indústria:
+estamos comparando um  modelo grande, rodando em datacenter, de  agosto de 2024,
+com um modelo minúsculo, rodando dentro do  seu computador, de março de 2026. Em
+um ano e  meio, a mesma capacidade  desceu de centenas de  bilhões de parâmetros
+(estima-se que GPT-4o tinha uns 200B) para apenas quatro bilhões.
+</p>
+
+<p>
+Ah, todos os modelos da família  Qwen3.5 (sem treinamento extra) suportam visão,
+mas  eu <b>deliberadamente</b>  desativo a  visão neles  para não  ter que  carregar um
+arquivo <code>mmproj</code>, economizando VRAM no processo.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-qwen-old.png" class="model-entry-logo" alt="Qwen3.5-9B">
+<div class="model-entry-info">
+<div class="model-entry-name">Qwen3.5-9B</div>
+<div class="model-entry-meta"><span>Quant: MoQ-3.6</span><span>Backend: <code>ik_llama.cpp</code></span><span>Prefill: 76.4 tok/s</span><span>Decode: 15.9 tok/s</span><span>HF: <a href="https://huggingface.co/w-ahmad/Qwen3.5-9B-GGUF-MoQ">w-ahmad/Qwen3.5-9B-GGUF-MoQ</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Esse é o irmão  relativamente maior e o último que compõe  a família dos Qwen3.5
+realmente pequenos.  O 9B é significativamente  melhor que o 4B  em praticamente
+tudo,  especialmente se  você estiver  falando de  matemática e  código (podemos
+fazer  comparação direta  entre  ele e  o  GPT-OSS de  120B,  então temos  outra
+situação de centenas de bilhões de parâmetros reduzidos a meros bilhões).
+</p>
+
+<p>
+O 9B pode ser usado como substituto do 4B quando você precisa que o modelo tenha
+um  "raciocínio" mais  apurado  e  mais qualitativo.  Tamanho  também  é um  bom
+indicador  de  retenção  de  quantidade  de conhecimento  de  mundo,  e  isso  é
+relativamente importante  para ajudar o  modelo a explorar  caminhos diferentes,
+coisa que você vai precisar com código e com um agente.
+</p>
+
+<p>
+Uso uma  quantização Mixture-of-Quants (MoQ),  o que  é agressivo mas  não perde
+tanto desempenho assim. No  meu computador ele é mais lento que o  4B, e meu uso
+principal dele é quando preciso tratar algum assunto mais filosófico de pesquisa
+ou quando preciso de uma revisão de código em busca de bugs, algo com o qual ele
+surpreendentemente se  dá muito bem, até  marginalmente melhor que o  Ornith 1.0
+nos  meus testes  (isso  é um  resultado  mais  preliminar,  ainda  estou
+trabalhando nesses testes).
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-gemma.png" class="model-entry-logo" alt="Gemma-4-E2B">
+<div class="model-entry-info">
+<div class="model-entry-name">Gemma-4-E2B-QAT</div>
+<div class="model-entry-meta"><span>Quant: UD-Q4_K_XL</span><span>Backend: <code>llama.cpp</code></span><span>Prefill: 600.4 tok/s</span><span>Decode: 89.8 tok/s</span><span>HF: <a href="https://huggingface.co/google/gemma-4-E2B-it-qat-q4_0-gguf">google/gemma-4-E2B-it-qat-q4_0-gguf</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Gemma4 foi  uma excelente surpresa da  Google esse ano, uma  família de pequenos
+modelos abertos  e focados justamente  em sistemas mais limitados.   Digamos que
+seja a resposta ocidental direta à família Qwen3.5.
+</p>
+
+<p>
+Ao contrário do que  o nome sugere, os modelos E2B e E4B  não significam que são
+2B parâmetros e  nem 4B parâmetros. Os  "E" vem de parâmetros  EFETIVOS. Não vou
+entrar em  nuances aqui,  mas isso  significa que,  na verdade,  o E2B  tem 4.6B
+parâmetros, mais especificamente, com 2B efetivos.
+</p>
+
+<p>
+Esse modelo foi particularmente importante pra mim nas aulas que ministrei sobre
+como  criar  agentes  com  LangChain   porque,  para  pessoas  com  computadores
+limitados, era  mais interessante instalar  Ollama em uma  VM do Google  Colab e
+rodar esse  modelo de forma  persistente, já que  ele é suficientemente  bom com
+tool calling. Além  disso, eu uso uma quantização <code>Q4_K_XL</code>  provida pela Unsloth,
+mas que  também foi feita em  cima da variante QAT  do Google, que é  um tipo de
+treinamento realizado já com o objetivo de o modelo ser quantizado em sequência,
+o que significa que  ele compensa já no treinamento a perda  de precisão que vai
+sofrer, evitando perda de qualidade.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-gemma.png" class="model-entry-logo" alt="Gemma-4-E4B">
+<div class="model-entry-info">
+<div class="model-entry-name">Gemma-4-E4B</div>
+<div class="model-entry-meta"><span>Quant: Q4_K_M</span><span>Backend: <code>ik_llama.cpp</code></span><span>Prefill: 79.7 tok/s</span><span>Decode: 22.2 tok/s</span><span>HF: <a href="https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF">unsloth/gemma-4-E4B-it-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Essa é a variante "effective" maior do  E2B, sendo ela uma E4B. Portanto ela tem
+4B parâmetros  "efetivos", mas  o seu  tamanho real é  7.5B parâmetros.  Uso uma
+quantização  <code>Q4_K_M</code>  da  Unsloth (veja  que  ela  não  é  <code>XL</code>, que  tornaria  ela
+incompatível com  <code>ik_llama.cpp</code>, o backend que  mais utilizo). O E4B  é um modelo
+mais poderoso  e gosto de  pensar nele como uma  resposta direta ao  Qwen3.5 9B,
+porém ele ainda peca um pouco com relação ao modelo chinês.
+</p>
+
+<p>
+De forma  interessante, eu não  uso a versão QAT  desse modelo porque,  nos meus
+testes, uma quantização  <code>Q4</code> com QAT (executada no <code>llama.cpp</code>  vanilla) não apenas
+implicou em  ganho algum  de performance  na minha placa  de vídeo,  como também
+perdeu  ligeiramente em  qualidade  da  tarefa que  usei  como  teste (algo  que
+potencialmente deve  estar na margem  de erro). Ou seja,  como a versão  QAT não
+trouxe benefícios,  optei pela quantização  <code>Q4_K_M</code> PTQ  da Unsloth, que  além de
+compatível com <code>ik_llama.cpp</code>, teve melhor performance nos meus testes.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-lfm.png" class="model-entry-logo" alt="LFM2.5-8B-A1B">
+<div class="model-entry-info">
+<div class="model-entry-name">LFM2.5-8B-A1B</div>
+<div class="model-entry-meta"><span>Quant: APEX I-Compact</span><span>Backend: <code>llama.cpp</code></span><span>Prefill: 256.8 tok/s</span><span>Decode: 94.9 tok/s</span><span>HF: <a href="https://huggingface.co/mudler/LFM2.5-8B-A1B-APEX-GGUF">mudler/LFM2.5-8B-A1B-APEX-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Esse modelo é encantador. A Liquid AI é uma empresa muito voltada para a criação
+de modelos  MUITO pequenos e  a incentivar a  comunidade a construir  coisas com
+seus modelos, inclusive realizar <i>fine tuning</i>  deles. Esse modelo, em especial, é
+uma pequena obra prima: 8B de parâmetros  totais, então é um modelo pequeno. Mas
+com apenas  1B de  parâmetros ativos.  Ou seja,  é MoE  (então em  extremo caso,
+podemos  fazer offload  tranquilamente); é  suportado no  <code>ik_llama.cpp</code>; e  ainda
+existe quantização APEX I-Compact para ele. É o melhor de todos os mundos.
+</p>
+
+<p>
+Preciso  ser sincero  com relação  a  um aspecto  desse modelo:  <b>não use-o  para
+código</b>. Ele simplesmente não presta para  programar. Ouso dizer que até mesmo um
+Qwen3.5 2B poderia  ser melhor. E são dois os  motivos: primeiramente, em apenas
+8B, você  não empacota tanto conhecimento  de mundo e programação;  segundo, por
+ser um MoE  A1B, na prática ele vai  agir a maior parte do tempo  como um modelo
+1B, e isso não é praticamente NADA em termos de parâmetros.
+</p>
+
+<p>
+Esse modelo vai brilhar  em qualquer situação em que você precisar  de chat e de
+um <b>agente</b>  capaz de realizar  tool calls em uma  longa cadeia de  interações. Ou
+seja: você  consegue usar ele  como um pequeníssimo  modelo em algo  como Hermes
+Agent  ou  OpenClaw,  assumindo  que  você só  queira  algo  que  responda  suas
+solicitações, tome decisões relativamente elaboradas sobre certos dados, precise
+agir de forma simples em pipelines, etc. Até mesmo para um virtual pet que ainda
+seja capaz  de realizar coisas  úteis&#x2026;  Esse é o  cara que consulta  e remarca
+compromissos no  calendário enquanto entende  sua solicitação que foi  feita com
+linguagem natural.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-qwen-old.png" class="model-entry-logo" alt="Qwen3-VL-4B">
+<div class="model-entry-info">
+<div class="model-entry-name">Qwen3-VL-4B</div>
+<div class="model-entry-meta"><span>Quant: Q4_K_M</span><span>Backend: <code>llama.cpp</code></span><span>Prefill: 770.3 tok/s</span><span>Decode: 29.0 tok/s</span><span>HF: <a href="https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct-GGUF">Qwen/Qwen3-VL-4B-Instruct-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Como eu disse antes, eu desativei  completamente a capacidade de visão (input de
+imagem)  em todos  os meus  modelos maiores,  porque isso  gasta mais  VRAM para
+carregar os <i>encoders</i> visuais e a camada de projeção, que efetivamente transforma
+a entrada da imagem para o formato que a LLM "entende".
+</p>
+
+<p>
+A  forma que  eu uso  para  mitigar isso  é  ter bons  modelos especialistas  em
+visão.  São também  LLMs, mas  como são  especialistas em  imagens, costumam  se
+referir a elas  como VLMs. É o caso  aqui do Qwen3-VL: trata-se de  um modelo um
+pouco mais  velho (anterior  ao Qwen3.5),  mas que é  especialista em  lidar com
+imagens, sobretudo muito bom em gerar  <i>groundings</i>, ou seja, delimitar e legendar
+elementos específicos em imagens.
+</p>
+
+<p>
+Essa  versão   do  Qwen3-VL   em  especial,   que  só   tem  4B   parâmetros,  é
+excepcionalmente boa em  tudo isso, sendo meu modelo de  visão mais confiável do
+fleet para  essa tarefa.  Quando eu preciso  de algo do  tipo, eu  controlo meus
+harnesses pra  que eles redirecionem  tarefas de reconhecimento de  elementos via
+visão computacional para o Qwen3-VL, e o <code>llama-swap</code> trata de descarregar uma LLM
+pra colocar ele no lugar e responder à requisição, e vice-versa. Obviamente você
+pode perceber que isso  tem um impacto em performance e  acaba causando um <i>cache
+miss</i>, mas bem, quem não tem cão, caça como gato&#x2026;
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-glm.png" class="model-entry-logo" alt="GLM-OCR">
+<div class="model-entry-info">
+<div class="model-entry-name">GLM-OCR</div>
+<div class="model-entry-meta"><span>Quant: Q8_0</span><span>Backend: <code>llama.cpp</code></span><span>Prefill: 75.9 tok/s</span><span>Decode: 77.5 tok/s</span><span>HF: <a href="https://huggingface.co/ggml-org/GLM-OCR-GGUF">ggml-org/GLM-OCR-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+O GLM-OCR é um lindo e pequeníssimo modelo criado pela Z.ai (mesmos criadores do
+GLM  5.2) que  é especialista  em leitura  de documentos,  e também  é capaz  de
+extrair tabelas formatadas  e fórmulas. É uma VLM, portanto,  com apenas 940M de
+parâmetros (menos  de 1B!). Cabe  inteiro na VRAM,  quase não precisa  de cache,
+etc.
+</p>
+
+<p>
+O uso dele é extremamente limitado e  ele tem também formas muito específicas de
+ser chamado, você  não vai passar textos  e mais textos de prompt  para ele. Ele
+não foi  treinado para  isso. Então,  é basicamente  um utilitário  de propósito
+muito específico.
+</p>
+
+<p>
+O legal de você ter  um modelo como o GLM-OCR é justamente o  fato de ele ter um
+tamanho de  1.4GB, não precisar  ser quantizado,  não usar praticamente  NADA de
+memória  de vídeo,  e  substituir uma  stack  inteira de  extração  de dados  de
+documentos que  poderia ser  feita com Tesseract,  Poppler ou  bibliotecas desse
+tipo.   Vai te  servir para  a grande  maioria das  situações.  Apenas  crie uma
+aplicação  ou pipeline,  carregue  o  modelo, e  faça  ele  trabalhar para  você
+digitalizando documentos. Simples e confiável.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-tencent.png" class="model-entry-logo" alt="Hy-MT2-1.8B">
+<div class="model-entry-info">
+<div class="model-entry-name">Hy-MT2-1.8B</div>
+<div class="model-entry-meta"><span>Quant: Q4_K_M</span><span>Backend: <code>llama.cpp</code></span><span>Prefill: 296.8 tok/s</span><span>Decode: 72.1 tok/s</span><span>HF: <a href="https://huggingface.co/tencent/Hy-MT2-1.8B-GGUF">tencent/Hy-MT2-1.8B-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Esse modelo aqui é interessante demais.  Trata-se de um modelo capaz de realizar
+<i>tradução</i> de 33 línguas e cinco dialetos, totalizando 38, feito pela Tencent. Atualmente  é o modelo que
+eu uso para tradução de texto.
+</p>
+
+<p>
+O legal dele é  justamente ter um tamanho de 1.8B, então não  faz nem cócegas na
+minha máquina. Todavia, o  grande problema desse modelo é que  ele não tem muito
+conhecimento de mundo,  já que é tão  pequeno. Se você precisar  de algum modelo
+que exija uma  tradução com mais nuances da língua  que você estiver traduzindo,
+recomendo dar uma olhada  no TranslateGemma, que tem suporte a  72 línguas e tem
+tamanhos de 4B ou 12B, a depender da sua necessidade.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-bonsai.png" class="model-entry-logo" alt="Bonsai 27B 1-bit">
+<div class="model-entry-info">
+<div class="model-entry-name">Bonsai 27B 1-bit</div>
+<div class="model-entry-meta"><span>Quant: Q1_0 (1.125 bpw)</span><span>Backend: <code>bonsai-llama.cpp</code></span><span>Prefill: 142.8 tok/s</span><span>Decode: 21.6 tok/s</span><span>Tamanho: ~3.9 GB</span><span>HF: <a href="https://huggingface.co/prism-ml/Bonsai-27B-gguf">prism-ml/Bonsai-27B-gguf</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Esse  modelo, quantizado  a 1-bit,  e  o modelo  Ternary  (do qual  vou falar  a
+respeito  mais tarde),  saíram enquanto  eu ainda  estava escrevendo  esse post,
+então  tive  que dar  uma  parada  e testá-los.  E  eu  devo dizer,  são  marcos
+INCRÍVEIS.
+</p>
+
+<p>
+O Bonsai 27B  1-bit é uma quantização do Qwen3.6-27B  muito especial, feita pela
+PrismML, que  comprimiu o modelo de  tal forma que  ele tivesse o tamanho  de um
+modelo de 4B de parâmetros com quantização Q4.
+</p>
+
+<p>
+Uma quantização tão extrema é excelente porque fornece para a gente uma prova de
+conceito de que é possível ter modelos  com tamanhos ainda menores no disco e na
+memória, mas com a mesma quantidade de parâmetros de um modelo ainda maior.
+</p>
+
+<p>
+O Qwen3.6-27B é atualmente o estado da  arte para os modelos locais, e agora, se
+você tiver uma placa de vídeo de  8GB, pode usufruir desse modelo rodando em uma
+velocidade decente e com um contexto longo!  O Bonsai ainda não é excelente para
+iterar  sobre tarefas  de edição  de código  por um  longo período<sup><a id="fnr.7" class="footref" href="#fn.7" role="doc-backlink">7</a></sup>,  mas a
+PrismML promete mitigar isso no futuro.
+</p>
+
+<p>
+<b>Importante:</b> para conseguir as velocidades aí  acima, eu precisei reduzir o contexto
+dele  para 32K.  Isso  realmente não  é  muito. Eu  diria que  menos  de 64K  já
+inviabiliza o uso de um modelo em um agente.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-internscience.png" class="model-entry-logo" alt="Agents-A1-4B">
+<div class="model-entry-info">
+<div class="model-entry-name">Agents-A1-4B</div>
+<div class="model-entry-meta"><span>Quant: Q4_K_M</span><span>Backend: <code>ik_llama.cpp</code></span><span>Prefill: 1287.9 tok/s</span><span>Decode: 42.9 tok/s</span><span>HF: <a href="https://huggingface.co/InternScience/Agents-A1-4B-Q4_K_M-GGUF">InternScience/Agents-A1-4B-Q4_K_M-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Esse é um pequeno modelo da InternScience  que saiu pouco depois do seu variante
+35B-A3B. Como o variante maior, é um <i>fine tune</i> do Qwen3.5-4B. Mas o interessante
+desse modelo é que ele apresenta  alguns incrementos interessantes com relação à
+sua base:  foi treinado para comportamento  <i>agentic</i> e de <i>long-horizon</i>,  ou seja,
+foi feito para servir como um agente capaz de operar de forma autônoma por muito
+tempo, em cima do mesmo prompt.
+</p>
+
+<p>
+Esse modelo,  porém, não  é o  melhor modelo  para código  da sua  categoria. Eu
+recomendo muito esse modelo caso você  esteja interessado em pesquisa e contexto
+<b>científico</b>. Nos testes em  que fiz, dei a ele uns quatro  PDFs diferentes e pedi
+para  ele fazer  uma síntese  e  amarrar os  conceitos  entre os  quatro, e  ele
+executou essa tarefa  com maestria. Também fiz  um outro teste em  que pedi para
+que ele  pesquisasse na  internet e  categorizasse as fontes  em um  relatório e
+também  em um  CSV com  bastante  rigor, e  ele  executou todas  as tarefas  com
+perfeição segundo o meu critério, e por bastante tempo.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org0359c25" class="outline-4">
+<h4 id="org0359c25">Menções honrosas e modelos auxiliares</h4>
+<div class="outline-text-4" id="text-org0359c25">
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-qwen-new.png" class="model-entry-logo" alt="Qwen3.6-35B-A3B">
+<div class="model-entry-info">
+<div class="model-entry-name">Qwen3.6-35B-A3B</div>
+<div class="model-entry-meta"><span>Quant: APEX I-Compact</span><span>Backend: <code>ik_llama.cpp</code></span><span>Prefill: 98.7 tok/s</span><span>Decode: 33.7 tok/s</span><span>HF: <a href="https://huggingface.co/mudler/Qwen3.5-35B-A3B-APEX-GGUF">mudler/Qwen3.5-35B-A3B-APEX-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+O modelo  "estrela" para execução local  em hardware mais limitado,  criado pela
+Alibaba,  da notória  família Qwen  de  modelos cujas  versões open-weights  são
+adoradas pelo mundo todo.   É o maior modelo "de fábrica" que  tenho, e em geral
+funciona muito  bem para tudo, sendo  um modelo grande com  boa performance. Sua
+arquitetura é baseada  no Qwen3.5 de mesmo tamanho, mas  ele recebeu treinamento
+extra para agentes e para execução de longo tempo.
+</p>
+
+<p>
+Para  o  deploy do  modelo  ficar  mais  leve,  eu deliberadamente  desativei  a
+capacidade de <i>visão</i>  dele. Isso é um ponto importante,  porque significa que não
+precisamos carregar  tensores <code>mmproj</code> para  tratar o  input de imagem,  fazendo o
+modelo precisar  de bem menos  memória em geral  para carregar, e  permitindo um
+contexto muito maior.
+</p>
+
+<p>
+Esse modelo tem  uma arquitetura MoE (mixture of experts),  o que significa que,
+dos 35  bilhões de parâmetros  no modelo, nem  todos estarão ativados  ao emitir
+cada token, mas sim apenas os <i>experts</i>  para aquele token a ser emitido. Isso nos
+dá uma  vantagem em sistemas mais  limitados: acaba se tornando  possível para a
+gente deixar os "experts mais importantes", ou os principais, na placa de vídeo,
+e o resto a gente faz offload para a memória normal. Ou seja, se são 35B, com 3B
+ativos (por  token), então o modelo  vai acabar se comportando,  em maioria, com
+uma velocidade de um modelo de 3 bilhões  de parâmetros, o que é muito rápido no
+meu computador.  Junte isso  ao <code>ik_llama.cpp</code>  como backend,  feito especialmente
+para sistemas mais limitados, e você pode realizar <i>memory pinning</i>, o que permite
+que  a GPU  se comunique  diretamente com  as partes  da memória  RAM em  que os
+experts estão carregados, via DMA. Esse é  o segredo da mágica dos 30 tokens por
+segundo de decode com esses modelos MoE.
+</p>
+</div>
+</div>
+
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-cohere.png" class="model-entry-logo" alt="North-Mini-Code">
+<div class="model-entry-info">
+<div class="model-entry-name">North-Mini-Code</div>
+<div class="model-entry-meta"><span>Quant: UD-Q3_K_M</span><span>Backend: <code>ik_llama.cpp</code></span><span>Prefill: 58.3 tok/s</span><span>Decode: 25.2 tok/s</span><span>HF: <a href="https://huggingface.co/unsloth/North-Mini-Code-1.0-GGUF">unsloth/North-Mini-Code-1.0-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+O lançamento desse modelo foi bela  supresa. Trata-se de um modelo relativamente
+leve e confiável  para código, que uso esporadicamente para  tarefas pequenas. O
+único defeito dele é ser grande demais em comparação com o Ornith e o Qwen3.6, o
+que significa  que eu  acabo preferindo  os outros  dois, mas  é uma  boa opção,
+especialmente quando você  precisa de um código analisado por  uma IA diferente,
+como uma espécie de "segunda opinião". Criado pela empresa canadense Cohere.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-internscience.png" class="model-entry-logo" alt="Agents-A1-35B">
+<div class="model-entry-info">
+<div class="model-entry-name">Agents-A1-35B</div>
+<div class="model-entry-meta"><span>Quant: APEX I-Compact</span><span>Backend: <code>ik_llama.cpp</code></span><span>Prefill: 90.6 tok/s</span><span>Decode: 34.9 tok/s</span><span>HF: <a href="https://huggingface.co/mudler/Agents-A1-APEX-GGUF">mudler/Agents-A1-APEX-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Esse modelo é  meio engraçado. Ele é  um fine tune do  Qwen3.5-35B-A3B, na mesma
+pegada  do Ornith  1.0 35B.  Porém,  apesar de  ele ser  decente em  programação
+(ficando atrás do Ornith e do Qwen3.6 em testes que fiz aqui), ele aparentemente
+foi feito  com a pretensão  de ser um orquestrador  de outros modelos.  Por isso
+acredito em utilizá-lo para planejamento e distribuição de tarefas.
+</p>
+
+<p>
+Mas meu computador dificilmente roda um modelo ao mesmo tempo, então o Agents-A1
+ficou para outra oportunidade.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-openbmb.png" class="model-entry-logo" alt="MiniCPM-V-4.6">
+<div class="model-entry-info">
+<div class="model-entry-name">MiniCPM-V-4.6</div>
+<div class="model-entry-meta"><span>Quant: Q5_K_M</span><span>Backend: <code>llama.cpp</code></span><span>Prefill: 404.5 tok/s</span><span>Decode: 86.8 tok/s</span><span>HF: <a href="https://huggingface.co/openbmb/MiniCPM-V-4.6-gguf">openbmb/MiniCPM-V-4.6-gguf</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Esse é um  modelo especialista em vision,  sendo portanto algo que  a gente pode
+chamar de  VLM também. Antes de  usar o Qwen3-VL,  esse era o modelo  que estava
+utilizando, e inclusive ele  é rápido o suficiente para que  eu consiga usar uma
+quantização   Q5  em   vez  de   Q4  (o   que  significa   uma  ligeira   melhor
+qualidade).   Recomendo  como   uma  alternativa   mais  lightweight,   para  um
+especialista em visão.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-qwen-new.png" class="model-entry-logo" alt="Qwen-AgentWorld-35B">
+<div class="model-entry-info">
+<div class="model-entry-name">Qwen-AgentWorld-35B</div>
+<div class="model-entry-meta"><span>Quant: APEX I-Compact</span><span>Backend: <code>ik_llama.cpp</code></span><span>Prefill: 99.1 tok/s</span><span>Decode: 35.3 tok/s</span><span>HF: <a href="https://huggingface.co/mudler/Qwen-AgentWorld-35B-A3B-APEX-GGUF">mudler/Qwen-AgentWorld-35B-A3B-APEX-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Esse modelo é  bem interessante, porque ele  não é um modelo para  chat nem para
+agente.  Trata-se  de  um World  Model.  Esse  tipo  de  modelo foi  feito  para
+renderizar estados de um certo domínio após a aplicação de certas ações sobre um
+estado anterior. No caso específico do Qwen-AgentWorld, a ideia é fazer isso com
+uma LLM clássica treinada do zero para isso<sup><a id="fnr.8" class="footref" href="#fn.8" role="doc-backlink">8</a></sup>.
+</p>
+
+<p>
+Eu diria que existe muito espaço pra  esses modelos, por enquanto como modelo de
+apoio para  construção de  agentes, mas  por enquanto não  temos adoção  nem uma
+compreensão robusta da maioria sobre o potencial desses caras.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-lfm.png" class="model-entry-logo" alt="LFM2.5-VL (450M / 1.6B / Extract)">
+<div class="model-entry-info">
+<div class="model-entry-name">LFM2.5-VL (450M / 1.6B / Extract)</div>
+<div class="model-entry-meta"><span>Quant: Q8_0 (450M e 1.6B), Q4_K_M (Extract)</span><span>Backend: <code>llama.cpp</code></span><span>Prefill: 4789.3 tok/s (450M)</span><span>Decode: 312.4 tok/s (450M)</span><span>HF: <a href="https://huggingface.co/LiquidAI/LFM2.5-VL-450M-GGUF">LiquidAI/LFM2.5-VL-450M-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Esses  modelos são  muito  legais, e  na  verdade são  um  conjunto de  pequenos
+modelos. Os  LFM2.5-VL são modelos  especializados em visão computacional  e que
+inclusive entendem <i>groundings</i> (enquadramento com coordenadas exatas de elementos
+em imagens).  Existem variantes  de 450M  e 1.6B parâmetros,  e em  especial uma
+variante <code>extract</code> para esses dois tamanhos, que responde só com JSON.
+</p>
+
+<p>
+A Liquid AI recomenda inclusive fazer <i>fine tuning</i> dos modelos deles para as suas
+necessidades, e eu consegui inclusive  fazer <i>fine tune</i> do <code>LFM2.5-VL-450M-Extract</code>
+para que ele fizesse reconhecimento e <i>groundings</i> de mãos em imagens, e inclusive
+usando esse mesmo hardware limitado que tenho! Recomendo bastante a experiência.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-bonsai.png" class="model-entry-logo" alt="Bonsai 27B Ternary">
+<div class="model-entry-info">
+<div class="model-entry-name">Bonsai 27B Ternary</div>
+<div class="model-entry-meta"><span>Quant: Q2_0_g128 (1.71 bpw)</span><span>Backend: <code>bonsai-llama.cpp</code></span><span>Tamanho: ~7.2 GB</span><span>HF: <a href="https://huggingface.co/prism-ml/Ternary-Bonsai-27B-gguf">prism-ml/Ternary-Bonsai-27B-gguf</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Esse modelo  aqui é exatamente  a mesma coisa do  Bonsai 27B com  quantização de
+1-bit, a diferença é  que ele usa uma quantização em <i>trinário</i>.  Se você tiver um
+pouco  mais de  hardware para  ceder para  execução de  um modelo  como esse,  é
+interessante  que você  experimente essa  variante porque  ela tende  a ter  uma
+qualidade  melhor,  sobretudo  em  termos de  codificação.  Todavia,  a  PrismML
+recomenda  mais a  variante de  1-bit justamente  porque o  objetivo é  vencer a
+<i>constraint</i>  de tamanhos,  em  especial quando  o assunto  for  rodar modelos  em
+celulares e dispositivos embarcados.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-nomic.png" class="model-entry-logo" alt="Nomic-Embed-Text-v2-MoE">
+<div class="model-entry-info">
+<div class="model-entry-name">Nomic-Embed-Text-v2-MoE</div>
+<div class="model-entry-meta"><span>Quant: Q4_K_M</span><span>Backend: <code>llama.cpp</code></span><span>Encode: 907.1 tok/s</span><span>Dims: 768</span><span>HF: <a href="https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe-GGUF">nomic-ai/nomic-embed-text-v2-moe-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Diferente dos outros modelos, esse aqui  é um modelo para <i>gerar embeddings</i>. Esse
+tipo de modelo é particularmente interessante quando o assunto é RAG, indexação,
+pesquisa semântica,  etc. O  legal especificamente  desse modelo  é que  ele foi
+treinado  com  uma técnica  chamada  <i>Matryoshka  embeddings</i>. É  meio  complicado
+explicar do  que se trata  isso, mas imaginando que  o <i>embedding</i> seja  um grande
+vetor multidimensional  em que  cada valor dele  corresponda mais-ou-menos  a um
+conceito semântico específico para a LLM, esse tipo de treinamento faz com que o
+modelo  priorize  as  dimensões  de  maior carga  semântica  para  o  <b>início</b>  do
+vetor. Isso significa que, se for necessário <b>descartar</b> valores ao final do vetor
+de embeddings, você pode fazer isso sem perder tanta qualidade no <i>embedding</i>.
+</p>
+
+<p>
+O valor de <i>encoding</i> que registrei ali em  cima é bem alto, como podemos ver, e o
+mais legal disso é que é um valor  CPU-only. Eu nem gasto a minha placa de vídeo
+quando o assunto é rodar modelos de <i>embedding</i>.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-lfm.png" class="model-entry-logo" alt="LFM2.5-Embed-350M">
+<div class="model-entry-info">
+<div class="model-entry-name">LFM2.5-Embedding-350M</div>
+<div class="model-entry-meta"><span>Quant: Q8_0</span><span>Backend: <code>llama.cpp</code></span><span>Encode: 328.3 tok/s</span><span>Dims: 1024</span><span>HF: <a href="https://huggingface.co/LiquidAI/LFM2.5-Embedding-350M-GGUF">LiquidAI/LFM2.5-Embedding-350M-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Mais  um  modelo  pequeno  da  Liquid   AI,  dessa  vez  para  gerar  <i>embeddings</i>
+também. Mais uma vez,  é o tipo de modelo que eu executo  CPU-only. Veja que ele
+tem uma diferença considerável  na performance, mas isso também tem  a ver com o
+fato de que o <i>embedding</i> dele tem mais dimensões (1K).
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org58ffa3f" class="outline-4">
+<h4 id="org58ffa3f">Modelos de difusão (geração de imagem)</h4>
+<div class="outline-text-4" id="text-org58ffa3f">
+
+<div id="org12657e6" class="figure">
+<p><img src="./img/llms2-diffuse.png" alt="llms2-diffuse.png" />
+</p>
+</div>
+
+<p>
+Os modelos  a seguir  não são  modelos que rodam  normalmente na  minha máquina,
+porque   pressupõem    que   você   tenha   uma    certa   infraestrutura   para
+executá-lo. Talvez  você se  dê bem  usando algo como  ComfyUI para  rodar esses
+caras,  mas para  conseguir  rodar por  aqui, eu  fiz  uma verdadeira  <i>gambiarra
+vibecodada</i> (hehe), usando  o Hermes Agent (discuto mais a  seguir), de tal forma
+que  o modelo  opera  em "etapas"  e  vai  descarregando da  memória  o que  não
+precisa<sup><a id="fnr.9" class="footref" href="#fn.9" role="doc-backlink">9</a></sup>.
+</p>
+
+<p>
+Essa ferramenta que criei,  e que chamei de <code>diffuse</code>, nada mais  é que um wrapper
+feito em  Python que  tem a função  de invocar o  <i>backend</i> correto  para executar
+qualquer  modelo (<code>sd.cpp</code>  na maioria  dos  casos, e  às vezes  algo custom  como
+<code>gemlite</code>). Além disso, como alguns dos  modelos dependem de uma escrita cuidadosa
+do prompt,  escolhi criar um  mecanismo de  facilitar a melhoria  dessa escrita,
+através de um parâmetro <code>--enhance</code>, que vai  modelar o prompt usando uma das LLMs
+anteriores que já mencionei.
+</p>
+
+<p>
+De qualquer forma, pude atestar que esses  modelos funcionam muito bem com o meu
+<i>setup</i> modesto, dado que você tenha um  pouco de paciência com o tempo de geração
+dessas imagens.
+</p>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-hidream.png" class="model-entry-logo" alt="HiDream-O1-Image-Dev">
+<div class="model-entry-info">
+<div class="model-entry-name">HiDream-O1-Image-Dev</div>
+<div class="model-entry-meta"><span>Quant: SDNQ uint4-svd-r32</span><span>Backend: <code>transformers + accelerate</code></span><span>Tamanho: ~7.3 GB</span><span>HF: <a href="https://huggingface.co/HiDream-ai/HiDream-O1-Image-Dev">HiDream-ai/HiDream-O1-Image-Dev</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Esse é um excelente  modelo não apenas para geração de  imagens, mas também para
+edição delas:  você pode fornecer  uma imagem como exemplo  e ele vai  gerar uma
+nova imagem usando-a como base, de acordo com o prompt que você fornecer.
+</p>
+
+<p>
+As únicas ressalvas que  faço são o seguinte: primeiro, ele  tem uma tendência a
+gerar imagens com uma iluminação e um detalhamento mais cartunesco; segundo, por
+algum motivo, ele tende a <b>envelhecer, e  muito</b>, as pessoas que for gerar. Isso é
+contornável com  um bom trabalho de  <i>prompting</i>, mas eu precisei  embutir um modo
+<code>enhance</code>  no meu  utilitário para  que uma  LLM qualquer  (à escolha)  saiba como
+mitigar e contornar esses problemas.
+</p>
+
+<p>
+Esse modelo também  faz <i>snap</i> do tamanho  da imagem para 2048x2048,  por isso ele
+pode   demorar  mais   na  geração,   e  também   gerar  imagens   de  altíssima
+qualidade. Como isso sugere, esse é o  modelo mais lento e mais pesado, mas vale
+o teste.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-ideogram.png" class="model-entry-logo" alt="Ideogram 4">
+<div class="model-entry-info">
+<div class="model-entry-name">Ideogram 4</div>
+<div class="model-entry-meta"><span>Quant: Q4_0</span><span>Backend: <code>sd-cli (GGUF)</code></span><span>Tamanho: ~14.9 GB</span><span>HF: <a href="https://huggingface.co/leejet/ideogram-4-GGUF">leejet/ideogram-4-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Esse é  o modelo principal  que uso hoje, mantenho  ele instalado sempre.  É sem
+dúvida o modelo que gera imagens com a melhor qualidade em geral. A melhor forma
+de fazer  os inputs para  ele é  com uma estrutura  em JSON que  eu pessoalmente
+tenho  MUITA PREGUIÇA  de escrever,  e  por isso  mais  uma vez  uso a  extensão
+<code>--enhance</code> da ferramenta de  geração de imagens que criei para  fazer com que uma
+LLM do meu <i>fleet</i> gere o prompt adequadamente pra mim.
+</p>
+
+<p>
+Esse modelo gera  verdadeiras obras de arte  de alta qualidade e  lida muito bem
+com gerar imagens com texto também.
+</p>
+
+<p>
+O único defeito desse modelo é a <b>censura</b> embutida nele, que é exagerada. Uma das
+coisas que fiz para testar esses modelos quando os instalei foi gerar uma imagem
+do Alucard,  da franquia  Castlevania. E  é impossível  descrever o  Alucard sem
+falar em  vampiros, tema gótico,  estilo <i>chiaroscuro</i>,  etc. O resultado  de usar
+prompts desse  tipo é  que o  modelo acaba bloqueando  completamente a  imagem e
+renderizando apenas uma imagem de cor sólida com um letreiro de "content blocked
+by safety  filter". Mas isso  é simples de  contornar na maioria  das situações,
+basta fazer um prompt melhor, mesmo.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-bonsai.png" class="model-entry-logo" alt="Bonsai Image 4B">
+<div class="model-entry-info">
+<div class="model-entry-name">Bonsai Image 4B</div>
+<div class="model-entry-meta"><span>Quant: ternary/binary (gemlite)</span><span>Backend: <code>gemlite</code></span><span>Tamanho: ~4.5 GB</span><span>HF: <a href="https://huggingface.co/prism-image/bonsai-image-4b">prism-image/bonsai-image-4b</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+O Bonsai  Image 4B é  de longe o  modelo mais leve em  termos de tamanho.  Foi o
+primeiro modelo de difusão  que coloquei aqui. Ele possui uma  base de um FLUX.2
+Klein 4B,  porém quantizado para 1.58-bit  em ternário. Como você  pode ver, ele
+lembra um pouco o que a PrismML fez com o Bonsai 27B, e a forma de criar prompts
+para ele  é mais com descrições  da cena em linguagem  natural. <i>Keyword stacking</i>
+(ex. insistir em  referenciar alta qualidade várias vezes)  e <i>mood</i> contraditório
+não são com ele.
+</p>
+
+<p>
+A ferramenta  que criei para  rodar esses modelos  de difusão começou  a existir
+primariamente por causa  desse modelo, porque ele depende de  um backend próprio
+(<code>gemlite</code>) para execução.
+</p>
+</div>
+</div>
+
+<div class="model-entry">
+<div class="model-entry-header">
+<img src="/posts/img/llms2-qwen-new.png" class="model-entry-logo" alt="Z-Image-Turbo">
+<div class="model-entry-info">
+<div class="model-entry-name">Z-Image-Turbo</div>
+<div class="model-entry-meta"><span>Quant: Q3_K_S (GGUF)</span><span>Backend: <code>sd-cli (GGUF)</code></span><span>Tamanho: ~6.4 GB</span><span>HF: <a href="https://huggingface.co/jayn7/Z-Image-Turbo-GGUF">jayn7/Z-Image-Turbo-GGUF</a></span></div>
+</div>
+</div>
+<div class="model-entry-desc">
+<p>
+Esse modelo foi produzido pela Alibaba (criadores da família Qwen). Usa uma base
+Lumina2, e opera melhor gerando imagens  1024x1024 que 512x512, sendo portanto o
+único modelo referenciado  aqui que prefere resoluções maiores. É  um bom modelo
+para gerações de boa qualidade. Se estiver  em dúvida de onde começar, esse é um
+bom começo.
+</p>
+</div>
+</div>
+</div>
+<ul class="org-ul">
+<li><a id="org5c1ee5c"></a>Galeria de Comparação<br />
+<div class="outline-text-5" id="text-org5c1ee5c">
+<p>
+Abaixo, você  pode ver  algumas imagens  geradas para cada  modelo. Foi  usado o
+prompt a seguir:
+</p>
+
+<blockquote>
+<p>
+A serene sunset landscape  with a small wooden cabin by  a calm lake, surrounded
+by pine forest, golden hour light reflecting on water, photorealistic.
+</p>
+</blockquote>
+
+<p>
+O  Ideogram 4  passou pelo  processo de  refinamento do  prompt para  JSON, e  o
+HiDream realizou o snapping para a resolução 2048x2048, portanto o resultado com
+o tamanho  a seguir envolveu  eu redimensionar  manualmente a imagem  gerada com
+ImageMagick.
+</p>
+
+<div class="diff-comparison">
+<figure><img src="/posts/img/llms2-diff-bonsai.png" alt="Bonsai Image 4B">
+<figcaption>Bonsai 4B · 56s · 4 steps · 1.58-bit</figcaption></figure>
+<figure><img src="/posts/img/llms2-diff-zimage.png" alt="Z-Image-Turbo">
+<figcaption>Z-Image-Turbo · 78s · 8 NFE · Q3_K_S</figcaption></figure>
+<figure><img src="/posts/img/llms2-diff-hidream.png" alt="HiDream SDNQ">
+<figcaption>HiDream SDNQ · 211s · 28 steps · SDNQ int4</figcaption></figure>
+<figure><img src="/posts/img/llms2-diff-ideogram.png" alt="Ideogram 4">
+<figcaption>Ideogram 4 · 125s · 20 steps · Q4_0</figcaption></figure>
+</div>
+
+<p>
+O tema da foto não permite identificar  as diferenças entre os modelos que estou
+apresentando, mas  HiDream tende a  ser o mais  cartunesco, porém com  suporte a
+edição de  imagens; Bonsai é o  mais leve e  rápido de todos, com  uma qualidade
+surpreendente  para  apenas  quatro  <i>steps</i> de  geração.  Z-Image-Turbo  tende  a
+entregar com  grande qualidade, apesar de  ser relativamente mais devagar  que o
+restante. E o Ideogram 4, apesar dos problemas de censura meio absurdos, é o que
+eu mais gosto (inclusive, alguns mascotes nesse post foram gerados com ele!).
+</p>
+
+<p>
+O  que  importa  é:  com  uma estratégia  cuidadosa  de  offloads  em  situações
+intermediárias, é possível rodar esses modelos em uma mera RTX 3050 Laptop 6GB.
+</p>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org5f52769" class="outline-4">
+<h4 id="org5f52769">Recomendações ao escolher modelos</h4>
+<div class="outline-text-4" id="text-org5f52769">
+<p>
+O que fica de lição da apresentação  desses modelos e <i>backends</i> de execução é que
+é bem possível você rodar muitos modelos,  mas você <b>precisa escolhê-los a dedo</b> e
+também experimentar  para ver se vão  funcionar. Eis algumas dicas  práticas que
+costumo levar em consideração quando vou escolher um modelo para experimentar no
+meu <i>fleet</i>:
+</p>
+
+<ul class="org-ul">
+<li>O melhor cenário  possível é quando um modelo cabe  inteiramente dentro da sua
+VRAM, independente do <i>backend</i>;</li>
+<li>Caso  o modelo  não caiba  totalmente  na VRAM,  você  vai ter  que começar  a
+considerar quantizações e redução de tamanho de contexto;</li>
+<li>Menos  de 64k  de contexto  em um  modelo significa  que ele  <b>não presta</b>  para
+agentes, porque  vai ficar compactando toda  hora, se é que  vai rodar. Comece
+testando  com  um  contexto  mais  alto,  e  vá  reduzindo  enquanto  não  der
+OOM. Lembre-se  também de  reservar uma  boa quantidade de  VRAM pra  que você
+possa continuar usando o seu computador, enquanto roda sua LLM;</li>
+<li>Se você quiser rodar  um modelo bem maior do que o que  a sua GPU tolera (ex.,
+no  meu caso  6GB de  VRAM), você  vai ter  que dar  preferência para  modelos
+<i>mixture-of-experts</i>,   senão   a   velocidade  de   decodificação   vai   ficar
+<b>horrível</b>. Esse é o motivo para eu preferir Qwen3.6-35B-A3B (MoE) a Qwen3.6-27B
+(que é melhor, porém é denso);</li>
+<li>Mesmo ao  utilizar modelos MoE,  prefira quantizações pensadas  para ambientes
+mais restritivos. Por  exemplo, quantizações como MoQ (veja  o usuário <code>w-ahmad</code>
+no HuggingFace)  ou quantizações APEX  (em especial I-Compact; veja  o usuário
+<code>mudler</code>). Essas técnicas tendem a  quantizar, de forma seletiva, certas camadas
+da sua LLM, em especial APEX e modelos MoE;</li>
+<li>Se você  não encontrar as  quantizações anteriores, pode começar  a considerar
+quantizações Q5, Q4  ou Q3, dependendo da capacidade da  sua GPU. Lembre-se de
+que, via de regra, quanto menor o modelo, mais afetado ele fica pela perda de
+qualidade de uma  quantização (ex: um modelo Q3 não  perde tanta qualidade com
+relação  ao  Q4  se  for  35B;  um  modelo  4B,  todavia,  pode  perder  muita
+qualidade). Evite Q2 e abaixo, se qualidade for importante para você;</li>
+<li>Outra dica também é sempre ficar de olho nas quantizações da Unsloth. Todavia,
+cuidado porque modelos com sufixo XL  tendem a não funcionar ou causar <i>crashes</i>
+no <code>ik_llama.cpp</code>;</li>
+<li>Use bastante  as flags do <code>ik_llama.cpp</code>,  sobretudo quando você souber  que seu
+modelo precisa fazer <i>offload</i> de camadas para a RAM;</li>
+<li>Se você estiver carregando um modelo denso, em especial se ele cabe inteiro na
+sua VRAM,  a sua melhor  opção é o <code>llama.cpp</code>  <i>upstream</i> mesmo, que  costuma ter
+mais suporte a mais arquiteturas, e tende a ser mais estável;</li>
+<li>Se a quantidade de VRAM estiver muito apertada, considere <b>desabilitar</b> o <code>mmproj</code>
+que acompanha  o modelo. Isso vai  remover a capacidade do  modelo de realizar
+reconhecimento de  imagens (<i>vision</i>),  ou até  mesmo outros  tipos de  input em
+modelos multimodais, mas é um preço baixo a se pagar em prol de velocidade, já
+que  você pode  mitigar de  outras  formas (ex:  usar uma  VLM especialista  e
+pequena);</li>
+<li>Você pode  considerar também quantizar  o cache  KV (em alguns  backends, pode
+quantizar K (chaves)  e V (valores) separadamente, e  também realizar rotações
+de Hadamard  para comprimi-lo mais ainda  e também melhorar a  qualidade. Isso
+vai  permitir que  você  economize VRAM  para nela  carregar  mais camadas  do
+modelo, ou deixar mais VRAM livre para suas aplicações;</li>
+<li>Finalmente,  o <i>tradeoff</i>  real de  velocidade com  quantizações tão  extremas e
+hardware tão limitado  ocorre, em maioria, <b>no prefill</b>. Ou  seja, você consegue
+fazer seu  modelo emitir  tokens mais  rápido (<i>decode</i>), mas  pode ter  um TTFT
+(<i>time-to-first-token</i>) mais elevado,  porque vai perder velocidade  na etapa de
+<i>prefill</i> do cache, que é quantizado.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc8952ef" class="outline-2">
+<h2 id="orgc8952ef">Harnesses e Agentes</h2>
+<div class="outline-text-2" id="text-orgc8952ef">
+<p>
+O uso mais efetivo  de IA, como você deve saber,  envolve usarmos algum programa
+que dá  à LLM a  capacidade de invocar ferramentas  e portanto fazer  coisas por
+você.  A  gigantesca  maioria  da  população  hoje  ainda  trata  LLMs  como  um
+chat<sup><a id="fnr.10" class="footref" href="#fn.10" role="doc-backlink">10</a></sup>.  Mas  existem   vários  outros  usos  interessantes   para  LLMs,  e
+programação inclusive é só um deles.
+</p>
+
+<p>
+Para tirar  proveito dessas LLMs, você  vai precisar de um  bom <i>harness</i>. Porque,
+bem,  harness +  LLM =  agent. E  tem  harness de  todo tipo.  Vou mostrar  meus
+principais.
+</p>
+</div>
+<div id="outline-container-org0fd1fbf" class="outline-3">
+<h3 id="org0fd1fbf">Hermes Agent</h3>
+<div class="outline-text-3" id="text-org0fd1fbf">
+
+<div id="org3a045ca" class="figure">
+<p><img src="./img/llms2-hermes-agent.png" alt="llms2-hermes-agent.png" />
+</p>
+</div>
+
+<p>
+Esse sem  dúvida nenhuma é o  que eu mais uso.  O Hermes Agent é  um agente mais
+abrangente que a maioria  porque ele opera à base da ideia  de <b>reter memória</b>. Ou
+seja,  ele aprende  com  o seu  uso.  Abrir  uma nova  sessão  não envolve  você
+necessariamente relembrá-lo de  tudo o que você fez, porque  ele tem ferramentas
+ativas e passivas pra guardar o que você fez anteriormente.
+</p>
+
+<p>
+Combine isso também com o fato de ele ser extremamente estável e também permitir
+comunicação de várias  formas (por exemplo, uso via Telegram  e Discord), e você
+tem literalmente um  assistente pessoal que vai ser limitado  apenas com relação
+ao tipo de provedor e modelo de LLM que você utilizar.
+</p>
+
+<p>
+Sempre me perguntam para que eu  uso Hermes Agent. É realmente difícil responder
+essa  pergunta, porque  a resposta  certa seria  <b>tudo</b>. Mas  vou tentar  enumerar
+alguns usos específicos:
+</p>
+
+<ul class="org-ul">
+<li>Configuração dos  meus modelos  locais. Vou  falar mais  disso depois,  mas eu
+deixo  o Hermes  brilhar  e  inclusive fazer  testes  e  benchmarks com  minha
+orientação;</li>
+<li>Planejamento de tarefas;</li>
+<li>Organização de documentos;</li>
+<li>Planejamento e execução de limpezas em arquivos (SEMPRE com o meu aval);</li>
+<li>Elaboração de material de aula  (com minha supervisão, sempre!): slides, texto
+complementar (revisado sempre), <b>produção de vídeos complementares</b>;</li>
+<li>Pesquisas aleatórias, agregar informações;</li>
+<li>Organizar roadmap do Sprachspiel;</li>
+<li>Edição de TCC com LaTeX (coisa que fiz recentemente para uma amiga);</li>
+<li>Organização de currículo e LinkedIn (e pesquisa de boas práticas);</li>
+<li>Refatorou todo  o visual do  meu site, que inclusive  é exportado com  Emacs e
+arquivos Org, coisa incomum;</li>
+<li>Muito mais coisas que eu não consigo nem lembrar pra colocar aqui.</li>
+</ul>
+
+<p>
+A  questão  do  Hermes  Agent  é  que, assim  como  o  concorrente  dele  direto
+(OpenClaw), trata-se de um tipo de agente em que, se você for capaz de imaginar,
+passar a ideia e tentar fazer prompts direitinho, ele faz absolutamente tudo pra
+você. E a Nous Research tá sempre  adicionando skills novas. Além disso, se você
+faz algo,  ele mesmo  vai ativamente criar  skills a respeito  do que  você está
+fazendo, pra  que das próximas vezes  ele também se  lembre de como fazer  o que
+você precisa.  E às vezes, você  não precisa nem necessariamente  usar um modelo
+tão  bom assim:  o  Hermes  muitas vezes  consegue  compensar  muitas coisas.  É
+realmente um agente formidável.
+</p>
+
+<p>
+Hoje uso Hermes  Agent com GLM 5.2  via Ollama Cloud, mas  tenho também profiles
+separados  exclusivamente para  operações  de software  e  code review  (Hefesto
+Agent,  com MiniMax  M3), uso  heavy-duty com  modelos locais  (Lain Agent,  com
+Qwen3.6  35B-A3B, usando  Qwen3-VL para  apoio com  <i>vision</i>); e  uso pequeno  com
+pequenos  modelos  (Lumin  Agent,  com LFM2.5  8B-A1B,  que  é  excepcionalmente
+incompetente pra código mas um <b>excelente  assistente pessoal</b>, e isso é melhor do
+que parece).
+</p>
+</div>
+</div>
+<div id="outline-container-org661f5d1" class="outline-3">
+<h3 id="org661f5d1">OpenCode</h3>
+<div class="outline-text-3" id="text-org661f5d1">
+
+<div id="org47e3efa" class="figure">
+<p><img src="./img/llms2-opencode.png" alt="llms2-opencode.png" />
+</p>
+</div>
+
+<p>
+OpenCode, hoje,  é o meu harness  primário de codificação. Uso  ele pra qualquer
+projeto maior  de programação, atualmente,  ou para  a maioria deles.  Faço isso
+porque ele  tem "profiles"  diferentes para situações  específicas, e  você pode
+também definir modelos e configurações para cada profile.
+</p>
+
+<p>
+A princípio,  ele vem com os  profiles de Plan  e Build, que já  são suficientes
+para a maioria  das situações. Para ambos, uso só o GLM 5.2.
+</p>
+
+<p>
+Aí, eu  adicionei também os profiles:
+</p>
+
+<ul class="org-ul">
+<li>Fix para consertar bugs rapidamente (Kimi K2.7 Code);</li>
+<li>Research,  para  realizar  pesquisa,  varrer a  codebase  e  pesquisar  coisas
+(MiniMax M3);</li>
+<li>Review, para revisão de código (MiniMax M3);</li>
+<li>Debug,  para executar  cenários de  instrumentação  e debug  (GLM 5.1),  sendo
+também atrelado a um plugin que instalei.</li>
+</ul>
+
+<p>
+Não usei  nenhum critério específico para  decidir quais modelos usar  e em qual
+situação. Esses são mais uma questão de  <i>feeling</i>, e do que achei melhor utilizar
+à  medida que  experimentei. Geralmente  recomendam certos  modelos para  certas
+operações, mas o que  descobri foi que é sempre melhor  adaptar cada situação de
+acordo com  o que você  experimentar dos  modelos e decidir  VOCÊ MESMO o  que é
+melhor.
+</p>
+</div>
+<div id="outline-container-orgd258075" class="outline-4">
+<h4 id="orgd258075">OMO (Oh-My-OpenCode)</h4>
+<div class="outline-text-4" id="text-orgd258075">
+<p>
+Existe uma extensão comunitária muito  interessante chamada Oh-My-OpenCode que é
+particularmente  interessante  se você  estiver  interessado  em <i>vibecoding</i>  (em
+específico,  estou usando  esse termo  para me  referir a  usar alguns  pequenos
+prompts e  não fazer  muito a  não ser revisar  alguma coisa  no final).  Eu não
+adaptei muito  com essa  forma de programar,  mas talvez seja  uma boa,  se você
+prefere algo mais autônomo. Ele tem  excelentes ideias embutidas, de ter modelos
+desempenhando  funções específicas  automaticamente,  de revisão,  planejamento,
+verificação, etc.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org6379a1a" class="outline-3">
+<h3 id="org6379a1a">Pi Coding Agent</h3>
+<div class="outline-text-3" id="text-org6379a1a">
+
+<div id="org404f12f" class="figure">
+<p><img src="./img/llms2-pi-coding-agent.png" alt="llms2-pi-coding-agent.png" />
+</p>
+</div>
+
+<p>
+Pi  é  um  agente  extremamente  interessante porque  ele  foi  feito  para  ser
+MINIMALISTA. Então ele não vem com  praticamente nada, e você tem que configurar
+tudo. Ele  é a  coisa mais  próxima de uma  Filosofia Unix  que você  pode obter
+quando o assunto é um harness voltado pra código. Ele vem com o básico e pronto,
+sem muitos guardrails, mas extremamente flexível.
+</p>
+
+<p>
+Se você estiver procurando  uma experiência mínima, esse aqui é  o cara que você
+tem que usar. Gosto de pensar nele como um <code>vi</code> ou <code>vim</code> básico, sem configuração. E
+uso  ele da  mesma maneira  (meu editor  principal é  Emacs, só  uso <code>vim</code>  quando
+preciso fazer uma edição rápida via terminal em alguma coisa).
+</p>
+</div>
+<div id="outline-container-orgdec044c" class="outline-4">
+<h4 id="orgdec044c">OMP (Oh-My-Pi)</h4>
+<div class="outline-text-4" id="text-orgdec044c">
+<p>
+Essa é  uma distribuição do  Pi que adiciona  coisas interessantes a  ele, assim
+como  no caso  do OMO,  mas  ele é  fundamentalmente diferente.  Ainda estou  me
+acostumando com ele, mas  é bem robusto e adiciona muitas coisas  ao Pi base que
+podem deixar  você muito mais  confortável. Em  especial, permitir que  o modelo
+crie sub-agentes para subdividir as tarefas  é uma das partes mais interessantes
+desse harness.
+</p>
+
+<p>
+Como comparei  o Pi  básico ao  <code>vim</code>, acho que  seria adequado  comparar o  OMP a
+Neovim ou coisa parecida.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org0faa4e1" class="outline-3">
+<h3 id="org0faa4e1">Servidores MCP</h3>
+<div class="outline-text-3" id="text-org0faa4e1">
+
+<div id="org55264d1" class="figure">
+<p><img src="./img/llms2-mcp.png" alt="llms2-mcp.png" />
+</p>
+</div>
+
+<p>
+Servidores MCP  são interessantes para estender  a capacidade do seu  agente com
+novas funcionalidades sem que você precise sair muito fora de como agentes em si
+funcionam. Pense  em um  servidor MCP  como uma  forma de  definir dinamicamente
+novas  ferramentas que  o  seu  agente pode  chamar,  o  que é  fundamentalmente
+diferente  de fornecer  uma ferramente  CLI  para ele  e ensiná-lo  a usar  essa
+ferramenta<sup><a id="fnr.11" class="footref" href="#fn.11" role="doc-backlink">11</a></sup>. Esses servidores podem vir como serviços que esperam que o seu
+cliente MCP  se conecte a eles  via HTTP (trabalho para  o harness e não  para a
+LLM),  ou  que o  servidor  seja  iniciado como  subprocesso  e  que seja  feita
+interação  com  ele  através  de   input/output  padrão  do  console,  via  file
+descriptors  mesmo, como  se você  estivesse digitando  e lendo  em um  terminal
+(stdio).
+</p>
+
+<p>
+Já  vi algumas  pessoas dizendo  que  MCP é  desnecessário quando  você tem  uma
+ferramenta  CLI,  mas  acho  que   são  paradigmas  diferentes.  Instalar  novas
+ferramentas no agente  não é igual a permitir  que o agente chame um  CLI, a meu
+ver.
+</p>
+</div>
+<div id="outline-container-orgba990c8" class="outline-4">
+<h4 id="orgba990c8">SearXNG e DuckDuckGo</h4>
+<div class="outline-text-4" id="text-orgba990c8">
+<p>
+Um agente que se preze tem que ser  capaz de pesquisar na internet. Porém isso é
+uma coisa  particularmente complicada e  às vezes  até controversa! Do  ponto de
+vista de  comodidade, é esperado  que você  consiga fazer pesquisas  na internet
+através do  seu agente. Mas  isso pressupõe  bombardear, em pouco  tempo, alguns
+provedores  de pesquisa  com requisições  de pesquisa  é às  vezes até  realizar
+scraping em websites.
+</p>
+
+<p>
+Controvérsias à parte, você pode fazer isso  de forma mais básica (a maioria dos
+<i>harnesses</i>  vão  fornecer out-of-the-box  ou  com  pouca configuração)  acesso  a
+pesquisa através de DuckDuckGo.
+</p>
+
+<p>
+Quando o DDG  não estiver disponível (porque afinal, o  próprio DDG realiza rate
+limiting), você  pode optar  por uma  opção como  SearXNG<sup><a id="fnr.12" class="footref" href="#fn.12" role="doc-backlink">12</a></sup>: trata-se  de um
+agregador de pesquisas com cache que você pode rodar dentro do seu computador ou
+em  algum hardware  dedicado  como um  Raspberry  Pi, e  você  pode instalar  um
+servidor MCP  que se  conecte a ele  para que você  possa realizar  pesquisas da
+forma que  precisar. O  legal e  diferente de usar  DDG puro  é que  ele realiza
+pesquisa em  vários provedores ao  mesmo tempo, não  apenas DDG, e  te apresenta
+resultados  agregados de  várias fontes  de  pesquisa. É  também uma  ferramenta
+interessante do ponto  de vista de privacidade, e você  pode inclusive usar como
+engine padrão de pesquisa.
+</p>
+
+<p>
+Esses serviços em si  não fornecem, por si só, servidores  MCP oficiais que você
+pode instalar, mas  como você provavelmente vai precisar  de pesquisa, recomendo
+dar uma olhada nessas duas opções, em especial no SearXNG.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orge625075" class="outline-3">
+<h3 id="orge625075">Emacs e integrações com IA</h3>
+<div class="outline-text-3" id="text-orge625075">
+<p>
+O último  ponto a  falar a  respeito é a  configuração do  meu editor  de texto,
+Emacs.
+</p>
+
+<p>
+No meu  post anterior, mencionei  que eu estava  usando o Ellama,  mas abandonei
+esse setup  faz tempo. Passei também  pelo GPTel, mas acabei  não me acostumando
+porque ele  tem uma  gerência de  memória muito  manual. Finalmente,  acabei por
+encontrar uma nova  ferramenta: o <code>agent-shell</code>, que tem servido  como uma luva no
+Emacs.
+</p>
+</div>
+<div id="outline-container-org36ac49b" class="outline-4">
+<h4 id="org36ac49b">Agent-Shell</h4>
+<div class="outline-text-4" id="text-org36ac49b">
+
+<div id="org63ffdeb" class="figure">
+<p><img src="./img/llms2-agent-shell.png" alt="llms2-agent-shell.png" />
+</p>
+</div>
+
+<p>
+O Agent-Shell é uma extensão interessante  para o Emacs, que implementa um shell
+com um buffer que se conecta com  qualquer agente, desde que esse agente suporte
+<i>Agent Client Protocol</i> (ACP).
+</p>
+
+<p>
+A vantagem dessa extensão é que,  diferente de implementações de agentes nativas
+dentro do  Emacs, o Agent-Shell  simplesmente usa praticamente  qualquer <i>harness</i>
+sem que você precise se preocupar com o  suporte dele ao Emacs. Ou seja, se você
+usa Pi,  Claude Code, Codex,  Hermes&#x2026; não  importa; você pode  usar exatamente
+esses mesmos agentes,  porém conectados através do Emacs.  Isso adianta bastante
+caso você queira manter um buffer aberto enquanto edita um arquivo.
+</p>
+
+<p>
+O Agent-Shell também  tem um visualizador de tráfego para  inspecionar o tráfego
+JSON entre o Emacs e o agente em tempo real e skills embutidas para lidar com as
+funcionalidades do Emacs, via <code>emacs-skills</code>.
+</p>
+
+<p>
+Em outras palavras,  o Agent-Shell é apenas uma interface  para <i>harnesses</i> que já
+existem.  Dessa forma,  eu  só preciso  atualizar o  <i>harness</i>  para tê-lo  também
+atualizado  no  Emacs.  E isso  também  significa  que  eu  posso ter  todas  as
+facilidades  de  memória  persistente  que  o  Hermes  Agent  tem  sem  precisar
+reconfigurar isso, por exemplo.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org31430d6" class="outline-2">
+<h2 id="org31430d6">Conclusão</h2>
+<div class="outline-text-2" id="text-org31430d6">
+<p>
+Nesse  artigo, acabei  falando bastante  coisa a  respeito da  forma como  estou
+atualmente trabalhando  com modelos  tanto cloud quanto  locais, os  <i>harnesses</i> e
+ferramentas que  estou utilizando,  e também  o tipo  de limitação  que precisei
+enfrentar para fazer com que esses modelos rodem na minha máquina.
+</p>
+
+<p>
+Rodar um  modelo 35B na  minha máquina atualmente  é praticamente um  milagre, e
+mesmo assim,  tenho muitas limitações com  relação a isso. Mas  finalmente sinto
+que  estou convergindo  para um  setup  que seja  relativamente confortável,  em
+especial quando meus tokens do Ollama Cloud acabam&#x2026;
+</p>
+
+<p>
+Espero que, com esse artigo, eu tenha  colocado um pouco mais de luz com relação
+a como rodar modelos em hardware extremamente  modesto quando o assunto é LLMs e
+IA. Não  citei vários  projetos que  desenvolvi e  que estou  desenvolvendo, que
+também  se aproveitam  de todo  esse  setup, mas  esses assuntos  ficam para  os
+próximos posts (vamos ver se consigo escrevê-los mais rapidamente!).
+</p>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Notas de Rodap&eacute;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Veja <a href="https://www.youtube.com/watch?v=5eqRuVp65eY">esse vídeo aqui do Welch Labs</a>, que fala de Neural Scaling Laws.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+É meio  inadequado a gente falar de "open  source" quando estamos falando
+de LLMs porque  modelos não são código, mas sim  arquitetura empacotada em algum
+formato, e  pesos depois de  um investimento  absurdo em treinamento.  Daria pra
+falar em "open  source" em LLMs se  a gente fala do  pessoal divulgando scripts,
+metodologia, detalhes de arquitetura e  até mesmo talvez datasets de treinamento
+do modelo, mas por via das dúvidas, a gente aponta que o que foi aberto foram os
+PESOS do modelo.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Meu objetivo  aqui  era só  usar essa  informação  para demonstrar  que
+latência não será um grande problema. Mas,  se você for realizar <i>pitch</i> do Ollama
+Cloud  para  o compliance  da  sua  empresa,  talvez  essa seja  uma  informação
+relevante, porque  eles hospedam modelos  chineses em servidores  ocidentais. Há
+quem ainda tenha ojeriza a servidores na China, vai entender.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Acho  que essa  parte  merece  um  pequeno  destaque: você  não  precisa
+necessariamente dos melhores modelos para todas  as tarefas. Prova disso é que o
+mercado tem se guiado para situações assim.  Não sei quando você está lendo esse
+post, mas temos situações de ferramentas  que usam provedores de IA recomendando
+combinações  de  modelos  mais  caros   e  mais  baratos  para  realizar  certas
+tarefas. Temos situações falando  em usar Claude Fable 5 +  Claude Sonnet 5, por
+exemplo.  Geralmente,  um planejador  forte e  um executor  mais barato.  Ou até
+modelos relativamente  mais caros como Claude  Fable 5 planejando +  GPT 5.6 Sol
+executando, por ser  justamente mais barato, ainda que seja  considerado caro em
+geral. Do nosso  ponto de vista de consumidores, modelos  ainda mais baratos que
+esses que citei estimulam concorrência, e isso se converte em incentivo a preços
+melhores para nós.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5" role="doc-backlink">5</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+A   rotação  Hadamard  (ou   <i>transformada  de  Walsh-Hadamard</i>)   é  uma
+transformada ortogonal que pertence à  mesma família da transformada de Fourier,
+mas que decompõe sinais em funções de  Walsh (ondas quadradas) em vez de senos e
+cossenos.  Ela  também é  uma  das  operações  mais fundamentais  em  computação
+quântica: o  "Hadamard gate" cria  superposição de estados quânticos  (lembro há
+muito tempo de ver isso como  conceito formal numa <a href="https://en.wikipedia.org/wiki/Quantum_Computation_Language">linguagem de programação para
+computadores quânticos chamada QCL</a>). No contexto do KV cache, essa rotação serve
+pra suprimir  <i>outliers</i> que  destroem a qualidade  da quantização.  Ao "espalhar"
+esses valores entre as dimensões, a distribuição fica mais uniforme (gaussiana),
+permitindo que a quantização em <code>Q4_0</code> perca muito menos qualidade.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6" role="doc-backlink">6</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+De forma didática, o <i>memory pinning</i> é uma forma de o backend "morder" um
+pedaço da sua  RAM e deixá-lo alocado  apenas para que a GPU  possa acessá-lo. E
+aqui tem uma questão interessante que  diferencia o <code>ik</code> do <i>upstream</i>: essa memória
+pinada é feita via função <code>cudaMemAlloc</code> e permite acesso direto via <i>direct memory
+access</i> (DMA).  Ou seja,  isso significa  "cortar" o  processador do  processo de
+acessar  essa  memória.   Desse  jeito,  o  gargalo  fica  só   no  tráfego  via
+barramento. Isso ainda  gera muito gargalo, é claro, mas  também torna o <i>offload</i>
+mais rápido  por cortar o  homem-do-meio. Aliás, DMA é  uma coisa tão  antiga na
+computação&#x2026; quem diria que continua sendo extremamente útil até hoje.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.7" class="footnum" href="#fnr.7" role="doc-backlink">7</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Isso  é o  que normalmente  chamamos de <i>agentic coding</i>.  O  modelo é
+treinado  para  ter "agência",  o  que  geralmente  implica fazer  vários  <i>loops</i>
+envolvendo  chamar ferramentas,  analisar  a  consequência do  que  fez e  então
+produzir mais  chamadas de ferramentas  e resultados; e programação,  é evidente
+por si.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.8" class="footnum" href="#fnr.8" role="doc-backlink">8</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Uma pequena ideia que pretendo explorar: Acredito que AgentWorld seja uma
+excelente ferramenta  que você  poderia configurar  para que  um agente  faça um
+processo de ping-pong com ele, passando o estado inicial e passando as operações
+que ele pretende executar, antes de executá-las de fato.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.9" class="footnum" href="#fnr.9" role="doc-backlink">9</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Não é minha intenção aprofundar demais nesse tipo de modelo, mas em geral
+eles tendem a precisar de uma LLM  "clássica" para servir de <i>text encoder</i> para a
+geração da imagem,  LLM essa geralmente sendo um <code>Qwen3-4B</code>  (uma geração atrás da
+família Qwen3.5). O  que a ferramenta que  criei faz é basicamente  rodar o <i>text
+encoder</i>  e/ou  cada  passo  da  difusão  e  descarregar  o  passo  ou  o  modelo
+anterior. Também uso  um tratamento para realizar um <i>evict</i>  de modelos que estão
+carregados no meu <code>llama-swap</code>,  então ele se adapta muito ao  meu workflow. É uma
+ferramenta que funciona pra mim e com as minhas limitações.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.10" class="footnum" href="#fnr.10" role="doc-backlink">10</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Um ponto  interessante: se a pessoa  só precisa de um chat,  a pessoa não
+precisa de uma assinatura cara de LLM.  Talvez uma pessoa que só quer desabafar,
+consultar horóscopo  ou saber  notícias, só  precisa de um  Qwen 3.5  4B rodando
+através de uma  interface web como Open  WebUI (que na verdade já  até faz muita
+coisa, como  você pode ver  até pelo meu post  anterior), e uma  configuração de
+ferramenta pra  LLM conseguir  chamar pesquisa no  DuckDuckGo ou  Google.  Pense
+nisso caso alguém te peça acesso a LLMs para meramente conversar com elas.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.11" class="footnum" href="#fnr.11" role="doc-backlink">11</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Toda vez que você for pensar em  "ensinar" algo ao agente, como dar a ele
+um manual de instruções resumido, é sinal de que você precisa criar uma <i>skill</i>.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.12" class="footnum" href="#fnr.12" role="doc-backlink">12</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+A pronúncia é "Search Engine", ok?! "search enn-djinn".
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<h3><a href="/pages/blog.html">&#8592; Voltar ao Blog</a></h3><p style="font-size: 0.85em; color: #888; margin-top: 1em; padding: 0.5em; border-left: 3px solid #555;">Os comentários foram desativados em razão da <a href="https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/L15211.htm" style="color: #888; text-decoration: underline;">Lei 15.211/2025</a> (ECA Digital, "Lei Felca"). A legislação impõe exigências de moderação que inviabilizam recursos interativos em sites pessoais sem estrutura para tanto.</p>
+</div>
+</body>
+</html>
