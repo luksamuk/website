@@ -1,0 +1,624 @@
+#+title: Gamedev no PlayStation 1
+#+subtitle: Hardware, constraints e engenharia de software
+#+author: Lucas S. Vieira
+#+email: lucasvieira at protonmail dot com
+#+date: 26 de agosto de 2026
+#+language: en_us
+#+reveal_margin: 0.2
+#+reveal_trans: linear
+#+reveal_theme: night
+#+reveal_plugins: (print-pdf zoom)
+#+options: num:nil timestamp:nil toc:nil
+#+reveal_init_options: slideNumber:true
+#+startup: latexpreview showall inlineimages
+# #+options: reveal_single_file:t
+
+#+reveal_title_slide: <div class="psx-title"><span class="word-gamedev">GAMEDEV</span> <span class="word-para">PARA</span> <span class="word-playstation">PLAYSTATION</span> <span class="word-1">1</span></div><img src="./psxprog/sony-playstation.png" height=160px style="margin-top:0.5em;"><div class="psx-subtitle">Hardware, constraints e engenharia de software</div><div class="psx-author">%a<br/>%d</div><div class="psx-event">BolhaDev Talks</div>
+# #+reveal_title_slide: <h3><b>%t</b></h3><p>%s</p><p>%a<br/>%d</p>
+
+# Disable code syntax highlighting
+#+bind: org-html-htmlize-output-type nil
+
+:HTML_OPTIONS:
+#+html_head: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+#+html_head: <link rel="stylesheet" href="./psxprog/custom-theme.css">
+
+#+html: <style>
+#+html: .container{
+#+html:     display: flex;
+#+html:     align-items: center;
+#+html: }
+#+html: .col{
+#+html:     flex: 1;
+#+html: }
+#+html: </style>
+:END:
+
+* Quem sou eu?
+
+# container begin
+#+html: <div class="container">
+
+# Column begin
+#+html: <div class="col">
+#+attr_html: :style font-size:0.6em;text-align:left;
+Senior Developer
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+*Interesses:*  Ciência  cognitiva,  teoria  da  computação,  desenvolvimento  de
+linguagens, desenvolvimento de jogos, programação bare-metal, IA local e deploy
+
+#+html: <div style="font-size:0.6em;text-align:left;">
+#+html: <p>Co-fundador da Common Lisp Brasil
+#+html: <br/>
+#+html: <i class="fa fa-globe" aria-hidden="true"></i><code> lisp.com.br</code>
+#+html: </p></div>
+
+# Column end
+#+html: </div>
+
+# Column begin
+#+html: <div class="col">
+
+#+attr_html: :width 200
+#+attr_org: :width 200
+[[file:psxprog/eu-retouched.jpg]]
+
+#+html: <div style="font-size:0.6em;text-align:left;">
+#+html: <i class="fa fa-linkedin" aria-hidden="true"></i><code> luksamuk</code><br/>
+#+html: <i class="fa fa-globe" aria-hidden="true"></i><code> https://luksamuk.codes/</code><br/>
+#+html: <i class="fa fa-github" aria-hidden="true"></i><code> luksamuk</code>
+#+html: </div>
+
+# Column end
+#+html: </div>
+
+# container end
+#+html: </div>
+
+* Visão Geral
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+attr_html: :style font-size:0.6em;text-align:left;
+- Contexto histórico
+- Hardware
+- Ferramentas de desenvolvimento
+- Pipeline de gráficos
+- Exemplo de código
+- Limitações e workarounds
+- Homebrews e links úteis
+#+html: </div>
+
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/ps1-pic.png">
+#+html: </div>
+#+html: </div>
+
+* Contexto histórico
+
+#+HTML: <img class="r-stretch" src="./psxprog/kutaragi-psx.png">
+
+#+attr_html: :style font-size:0.6em;text-align:center;
+*Figura:* Ken Kutaragi e o Sony PlayStation
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+- *Sony:* Ken Kutaragi -- engenheiro responsável pelo *S-SMP* (sound chip do SNES)
+- Parceria Sony x Nintendo para um add-on de CD-ROM (*Nintendo Play Station*)
+- Nintendo "trai" a Sony e fecha com a Philips
+- Sony decide desenvolver seu próprio console
+
+** Quinta geração: a era 3D (1993)
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+attr_html: :style font-size:0.6em;text-align:left;
+Consoles de 32-bits, CD-ROM como mídia, polígonos na tela.
+
+- Sega Saturn (1994)
+- Sony PlayStation (1994)
+- Nintendo 64 (1996)
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+*Exceto o Nintendo 64 (cartucho).*
+#+html: </div>
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/fifthgen.png">
+#+html: </div>
+#+html: </div>
+
+#+reveal: split
+
+#+HTML: <img src="./psxprog/sonicr-32.gif">
+#+HTML: <img src="./psxprog/crash-32.gif">
+#+HTML: <img src="./psxprog/zelda-32.gif">
+
+#+attr_html: :style font-size:0.6em;text-align:center;
+*Sonic R* (Sega  Saturn), *Crash Bandicoot* (Sony PlayStation) e  *The Legend of
+Zelda: Ocarina of Time* (Nintendo 64).
+
+* Ferramentas de desenvolvimento
+
+** Toolchain moderna
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+attr_html: :style font-size:0.6em;text-align:left;
+- Linguagem C
+- Psy-Q + Nugget + GCC-MIPSEL
+- Extensão PSX.Dev (VSCode)
+#+html: </div>
+#+html: <div class="col">
+#+html: <img class="r-stretch" src="./psxprog/vscode.png">
+#+attr_html: :style font-size:0.6em;text-align:left;
+*Figura:* Dashboard da extensão PSX.Dev para VSCode.
+#+html: </div>
+#+html: </div>
+
+** Toolchains alternativas
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+- *PSn00bSDK* (C + ASM) -- SDK open-source moderno
+- PsyQo + EASTL (C++) -- framework C++ sobre Psy-Q
+- Assembly puro (~armips~)
+
+#+attr_html: :style font-size:0.5em;text-align:left;
+/Nota:/ Psy-Q era o único SDK licenciado pela Sony. SDKs alternativos podem causar problemas de compatibilidade em emuladores antigos (ex: caso Sonic XA).
+
+** Demo: PSX.Dev do zero
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+/Vamos ao vivo:/
+
+1. Criar um projeto novo com a extensão PSX.Dev no VSCode
+2. Entender a estrutura: ~main.c~, ~Makefile~, ~third_party/nugget~
+3. Build com ~make~ -- GCC-MIPSEL + Psy-Q convertido
+4. Rodar no emulador (PCSX-Redux)
+
+* Hardware
+
+#+HTML: <img class="r-stretch" src="./psxprog/psx-motherboard.png">
+
+#+attr_html: :style font-size:0.6em;text-align:center;
+*Figura:* Placa-mãe de um PlayStation modelo SCPH-1000.
+
+** CPU
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+attr_html: :style font-size:0.6em;text-align:left;
+- LSI Logic MIPS R3000A 32-bit (RISC) @ 33.86 MHz
+- *Co-processadores:*
+  - *Cop0:* /System Control/ (cache, interrupções...)
+  - *Cop2:* /Geometry Transformation Engine/ (GTE)
+- *MDEC:* /Motion Decoder/ (DSP para decodificar vídeo)
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+*AO LADO:* Dieshot do CXD8530Q (primeira revisão), tirado da apresentação do Ken
+Kutaragi na Hot Chips '99.
+
+#+attr_html: :style font-size:0.6em;text-align:center;
+*Fonte:* PlayStation Dev Wiki
+#+html: </div>
+
+#+html: <div class="col">
+#+html: <img class="r-stretch" src="./psxprog/cpu-dieshot.jpg">
+#+html: </div>
+#+html: </div>
+
+
+#+reveal: split
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+A  especificação das  CPUs  MIPS  32-bit possuía  um  co-processador *Cop1*  para
+/float/, e um D-Cache para acesso à RAM.
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+*O PlayStation 1 não possui nenhum dos dois.*
+
+#+attr_html: :style font-size:0.6em;text-align:center;
+Solução: /fixed-points/ e /scratchpad/.
+
+** Memória, GPU e outras estruturas
+
+#+attr_html: :style font-size:0.55em;text-align:left;
+- *RAM:* 2 MB EDO -- acesso livre (sem segmentation faults), 1 KB /scratchpad/
+- *GPU:* SCPH-9000 (Toshiba) -- rasterização 2D apenas, *1 MB VRAM*
+- *SPU:* 16-bit, ADPCM, 24 canais, *512 KB SRAM*
+- *CD-ROM:* ISO 9660, CD-DA, CD-ROM XA
+- *MDEC:* DSP para decodificar vídeo (FMVs)
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+html: <img src="./psxprog/spider-psx.gif" height=300px>
+#+html: </div>
+#+html: <div class="col">
+#+attr_html: :style font-size:0.6em;text-align:left;
+*Jogo:* Spider-Man (PSX). Tente notar os artefatos (/polygon jittering/,
+/z-fighting/, /t-junctions/...).
+#+html: </div>
+#+html: </div>
+
+* Fixed-point arithmetic
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+- PSX /não possui/ FPU (Cop1) -- =float= em C é emulado em software (lento demais)
+- Solução: *fixed-point* -- inteiro com bits reservados para a parte fracionária
+- Formato mais comum no PSX: *20.12* (20 bits inteiro, 12 bits fracionário)
+- *1.0* = *4096* (2^{12}), *0.5* = *2048*, *0.25* = *1024*
+
+#+reveal: split
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+/Operações básicas/ (formato 20.12):
+
+#+begin_src c :eval never
+// Soma e subtração: direto
+int32_t a = 2048;     // 0.5
+int32_t b = 1024;     // 0.25
+int32_t c = a + b;    // 3072 = 0.75
+
+// Multiplicação: precisa compensar os bits fracionários
+int32_t d = (a * b) >> 12;   // 0.125
+
+// Divisão: precisa pré-multiplicar
+int32_t e = (a << 12) / b;  // 2.0
+#+end_src
+
+#+reveal: split
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+/Exemplo real/ (extraído do Sonic XA): a câmera trabalha em fixed-point, mas na
+hora de desenhar, converte para pixels inteiros com =>> 12=:
+
+#+begin_src c :eval never
+// camera.c -- posição em 20.12, conversão para pixels
+anchorx -= (camera->pos.vx >> 12) - CENTERX;
+
+// util.c -- divisão em fixed-point
+int32_t div12(int32_t a, int32_t b) {
+    return ((a << 12) / b) & ~(uint32_t)0xfff;
+}
+#+end_src
+
+* COMMENT MIPS Assembly
+
+** Exercício
+
+Converta o código em C a seguir para MIPS Assembly do PSX.
+
+#+begin_src c :tangle no :eval never
+unsigned a = 1;
+unsigned b = 1;
+unsigned aux;
+
+unsigned n = 5;
+
+do {
+    aux = b;
+    b = a + b;
+    a = aux;
+    n--;
+} while(n > 0);
+printf("a = %u\nb = %u\n", a, b);
+#+end_src
+
+** Estrutura básica
+
+#+begin_src asm :eval never
+        .psx
+        .create "exercicio1.bin", 0x80010000
+        .org    0x80010000
+Main:
+        ;; Código aqui...
+Halt:   j Halt
+	nop
+End:
+        .close
+#+end_src
+
+** Primeira tentativa
+
+#+begin_src asm :eval never
+Main:   li      $t0, 0x1         ; a = $t0 <- 1
+        li      $t1, 0x1         ; b = $t1 <- 1
+        li      $t2, 0x5         ; n = $t2 <- 5
+Loop:   move    $t3, $t1         ; aux = $t3 <- b
+        add     $t1, $t0         ; b <- b + a
+        move    $t0, $t3         ; a <- aux
+        addi    $t2, $t2, -0x1   ; n <- n + (-1)
+        ble     $r0, $t2, Loop   ; goto Loop if (n <= 0)
+Halt:   j Halt
+	nop
+#+end_src
+
+#+attr_html: :style font-size:0.7em;text-align:center;
+...Fofo. Só que não funciona. :)
+
+** Pipeline do processador
+
+Um dos erros:
+
+#+begin_example
+exercicio1.s(13) error: This instruction can't be in a delay slot
+#+end_example
+
+As linhas em questão:
+
+#+begin_src asm :eval never
+        ble     $r0, $t2, Loop ; L12
+Halt:   j Halt                 ; L13
+#+end_src
+
+#+attr_html: :style font-size:0.7em;text-align:center;
+*??????????????????????????*
+
+#+reveal: split
+
+O  processador  MIPS  possui  uma  *pipeline*.  Isso  significa  que  até  cinco
+instruções podem estar sendo processadas simultaneamente.
+
+- Algumas instruções demoram mais que outras.
+  - Jumps, em particular, demoram um ciclo a mais.
+- Instruções imediatas demoram um ciclo.
+
+#+html: <img class="r-stretch" src="./psxprog/mips-pipeline.png">
+
+#+reveal: split
+
+Em outras palavras, enquanto ainda estamos preparando o jump a ser executado por
+~ble~, já estaríamos processando o jump de ~j~. *ISSO NÃO PODE ACONTECER!*
+
+#+begin_src asm :eval never
+        ble     $r0, $t2, Loop
+Halt:   j Halt                 ; no delay slot de ble!
+#+end_src
+
+** Segunda tentativa
+
+#+attr_html: :style font-size:0.7em;text-align:center;
+Podemos  tentar  fazer isso  de  uma  forma  ingênua,  garantindo que  todas  as
+instruções "lentas" tenham amplo tempo de execução:
+
+#+begin_src asm :eval never
+Loop:   move    $t3, $t1         ; aux = $t3; aux <- b
+	nop
+        add     $t1, $t0         ; b <- b + a
+	nop
+        move    $t0, $t3         ; a <- aux
+	nop
+        addi    $t2, $t2, -0x1   ; n <- n + (-1)
+        ble     $r0, $t2, Loop   ; goto Loop if (n <= 0)
+	nop
+Halt:   j Halt
+	nop
+#+end_src
+
+#+reveal: split
+
+#+attr_html: :style font-size:0.7em;text-align:center;
+...ou  podemos ser  mais  inteligentes que  isso e  pensar  em quais  instruções
+realmente precisariam ter seus delay slots garantidos.
+
+#+begin_src asm :eval never
+Loop:   move    $t3, $t1         ; aux = $t3; aux <- b
+        add     $t1, $t0         ; b <- b + a
+	addi    $t2, $t2, -0x1   ; n <- n + (-1)
+        move    $t0, $t3         ; a <- aux
+        ble     $r0, $t2, Loop   ; goto Loop if (n <= 0)
+	nop
+Halt:   j Halt
+	nop
+#+end_src
+
+** Montando e executando
+
+#+begin_src bash :eval never
+armips exercicio1.s
+bin2exe.py exercicio1.bin exercicio1.exe
+#+end_src
+
+#+begin_example
+➜  ~ file exercicio1.exe
+exercicio1.exe: Sony Playstation executable PC=0x80010000,
+GP=0xffffffff, .text=[0x80010000,0x800], Stack=0x801fff00,
+()
+#+end_example
+
+#+reveal: split
+
+#+html: <img class="r-stretch" src="./psxprog/emulator-1.png">
+
+* GTE (Geometry Transformation Engine)
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+- *Cop2* (GTE): coprocessador dedicado a matemática 3D
+- Rotação, translação, projeção em perspectiva, /backface culling/, Z médio
+- Tudo em /hardware/ -- a CPU fica livre pra outra coisa
+- Instruções /específicas/ (não genéricas) pra operações 3D
+
+#+attr_html: :style font-size:0.6em;text-align:center;
+*Razão pela qual o PSX consegue colocar polígonos na tela.*
+
+#+reveal: split
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+O GTE opera com instruções /específicas/ para operações 3D. O fluxo típico para
+um triângulo é:
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+1. Carregar 3 vértices (~gte_ldv0~, ~gte_ldv1~, ~gte_ldv2~)
+2. Rotacionar, transladar e projetar (~gte_rtpt~)
+3. /Backface culling/ (~gte_nclip~)
+4. Extrair coordenadas de tela (~gte_stsxy3~)
+5. Calcular Z médio para a /ordering table/ (~gte_avsz3~, ~gte_stotz~)
+
+#+attr_html: :style font-size:0.5em;text-align:left;
+/Ver ao vivo:/ função ~RotAverageNclip3~ em ~util.c~ no repositório do Sonic XA.
+
+* Gráficos
+
+#+HTML: <div style="background:#fff;padding:1em;border-radius:4px;"><img class="r-stretch" src="./psxprog/psx-graphics-system.png"></div>
+
+#+attr_html: :style font-size:0.6em;text-align:center;
+*Fonte:* PlayStation Hardware Reference
+
+** Entendendo o Frame Buffer
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/timtool.png">
+#+html: </div>
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/framebuffer.png">
+#+html: </div>
+#+html: </div>
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+- Color depth: 24bpp, 15bpp ou usando CLUTs (4bpp ou 8bpp).
+- Dividido em /texture pages/ (TPAGEs).
+- Comporta o /double buffer/ da tela.
+- Comporta texturas (tam. máx.: 256x256, precisão de 1 byte)
+- Polígonos suportam */gouraud shading/*...
+
+** O que é Gouraud shading?
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+- Henri Gouraud, 1971
+- Interpolação contínua de cores, pode simular luz
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/gouraud-sphere.gif">
+#+attr_html: :style font-size:0.6em;text-align:left;
+Esfera low-poly com reflexão especular.
+#+html: </div>
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/banjo.png">
+#+attr_html: :style font-size:0.6em;text-align:left;
+Banjo, personagem de *Banjo-Kazooie*, como visto no Nintendo 64.
+#+html: </div>
+#+html: </div>
+
+** Ordering Table (em vez de Z-buffer)
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+A  GPU  do  PSX  é  um  /rasterizador  2D/.   Ela  /não  sabe/  qual  pixel  está  à
+frente  de  qual.   Não  existe  *Z-buffer*.   Então,  como  desenhar  polígonos  na
+ordem certa?
+
+#+reveal: split
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+A solução  é a *ordering  table* (OT):  um array de  /linked lists/ indexado  por
+profundidade.   Cada  posição  do  array  representa  uma  "fatia"  de  Z.   O  GTE
+calcula o Z médio de  cada triângulo (=gte_stotz=), e o triângulo  é inserido na
+posição correspondente da OT.
+
+#+begin_src c :eval never
+// Inserir primitiva na OT na posição calculada pelo GTE
+addPrim(ot[otz], poly);
+
+// Desenhar tudo, de trás (longe) para frente (perto)
+DrawOTag(ot + OT_LENGTH - 1);
+#+end_src
+
+* Exemplo de código
+
+#+html: <img class="r-stretch" src="./psxprog/psy-q.jpg">
+
+#+attr_html: :style font-size:0.6em;text-align:center;
+*Figura:* Detalhe do Psy-Q SDK.
+
+#+attr_html: :style font-size:0.6em;text-align:center;
+/Demo ao vivo:/ projeto ~gouraud-shading~ -- cubo gouraud-shaded em C.
+
+* Limitações e workarounds
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+| *Limitação* | *Workaround* |
+|---+---|
+| Sem FPU (float em software) | *Fixed-point* 20.12 (~4096 = 1.0~) |
+| Sem Z-buffer na GPU | *Ordering table* (linked lists por profundidade) |
+| 2 MB de RAM | *Scratchpad* de 1 KB como "cache manual" |
+| 1 MB de VRAM | Texturas, CLUTs e /double buffer/ competem pelo mesmo espaço |
+| CD-ROM (~300ms de seek) | /Pre-load/ e /streaming/ de dados |
+| Sem perspectiva correction | /Polygon jittering/ (artefatos visíveis) |
+
+* Sonic XA (~engine-psx~)
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+html: <img class="r-stretch" src="./psxprog/sonicxa-title.gif">
+#+html: </div>
+#+html: <div class="col">
+#+html: <img class="r-stretch" src="./psxprog/sonicxa-level1.gif">
+#+html: </div>
+#+html: <div class="col">
+#+html: <img class="r-stretch" src="./psxprog/sonicxa-greenhill.gif">
+#+html: </div>
+#+html: </div>
+
+#+attr_html: :style font-size:0.6em;text-align:center;
+Fan-game de  Sonic The Hedgehog  utilizando técnicas  do hardware do  PSX.
+
+#+html: <div style="font-size:0.76em;text-align:center;">
+ [[https://luksamuk.itch.io/sonic-the-hedgehog-xa][Página no itch.io]] // [[https://github.com/luksamuk/engine-psx][CÓDIGO-FONTE]]
+#+html: </div>
+
+* O que programar pra PS1 te ensina
+
+#+attr_html: :style font-size:0.55em;text-align:left;
+- *Entender o hardware*: sem abstraction leak pra te salvar
+- *Otimizar na camada certa*: /informed/ optimization
+- *Pensar em memória explicitamente*: scratchpad = /cache awareness/ manual
+- *Trade-offs conscientes*: precisão vs velocidade, qualidade vs framerate
+- Hoje, abstrações escondem tudo: garbage collector, GPU drivers, frameworks
+- *Nenhuma abstração é perfeita. Conhecer o que está embaixo te faz melhor em cima.*
+
+* Links
+
+#+attr_html: :style font-size:0.6em;text-align:left;
+- Cursos e Tutoriais
+  - Pikuma.com: [[https://pikuma.com/courses/ps1-programming-mips-assembly-language][PS1 Programming with MIPS Assembly & C]]
+  - [[http://lameguy64.net/tutorials/pstutorials/index.html][Lameguy's PlayStation Programming Series]]
+  - [[https://wiki.arthus.net/][Website do Schnappy]]
+  - Website do Alex Free: [[https://alex-free.github.io/psx-cdr/][The Ultimate Guide to PSX CD-R's]]
+- Comunidades
+  - [[https://www.psxdev.net/][Fórum PSXDEV Network]]
+  - [[https://www.psxdev.net/discord.php][Discord Server da PSXDEV Network]]
+- Documentação
+  - [[http://www.problemkaputt.de/psx-spx.htm][PSX Spex]] ([[https://psx-spx.consoledev.net/][nova versão em HTML]])
+  - [[https://www.psdevwiki.com/ps1/Main_Page][PlayStation Dev Wiki]] (engenharia reversa)
+  - [[https://psx.arthus.net/sdk/Psy-Q/DOCS/Devrefs/Hardware.pdf][PlayStation Hardware Reference]] (oficial)
+- Outros
+  - [[https://all-things-andy-gavin.com/2011/02/02/making-crash-bandicoot-part-1/][Blog do Andy Gavin: Making Crash Bandicoot]]
+  - [[https://www.copetti.org/writings/consoles/playstation/][PlayStation Architecture por Rodrigo Copetti]] ([[https://www.copetti.org/pt-br/writings/consoles/playstation/][versão PT-BR]])
+
+* Obrigado!
+
+#+html: <div class="container">
+#+html: <div class="col">
+#+HTML: <img src="./psxprog/ps1-logo.png">
+#+html: </div>
+#+html: <div class="col">
+
+#+attr_html: :style font-size:0.6em;text-align:center;
+*Acesse esta apresentação:*
+
+#+attr_html: :style font-size:0.75em;text-align:center;
+https://luksamuk.codes/talks/psx-programming-tech.html
+
+#+html: <div style="font-size:0.6em;text-align:center;">
+#+html: <i class="fa fa-envelope" aria-hidden="true"></i> <code>lucasvieira at protonmail dot com</code><br/>
+#+html: <i class="fa fa-linkedin" aria-hidden="true"></i><code> luksamuk</code><br/>
+#+html: <i class="fa fa-globe" aria-hidden="true"></i><code> https://luksamuk.codes/</code><br/>
+#+html: <i class="fa fa-github" aria-hidden="true"></i><code> luksamuk</code>
+#+html: </div>
+
+#+html: </div>
+#+html: </div>
+
+#+html: <br/>
+
+
