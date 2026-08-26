@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en_us">
+<head>
+<meta charset="utf-8"/>
+<title>Gamedev no PlayStation 1</title>
+<meta name="author" content="Lucas S. Vieira"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/night.css" id="theme"/>
+
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/npm/reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="./psxprog/custom-theme.css">
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><div class="psx-title"><span class="word-gamedev">GAMEDEV</span> <span class="word-para">PARA</span> <span class="word-playstation">PLAYSTATION</span> <span class="word-1">1</span></div><img src="./psxprog/sony-playstation.png" height=160px style="margin-top:0.5em;"><div class="psx-subtitle">Hardware, constraints e engenharia de software</div><div class="psx-author">Lucas S. Vieira<br/>26 de agosto de 2026</div><div class="psx-event">BolhaDev Talks</div>
+</section>
+<style>
+.container{
+display: flex;
+align-items: center;
+}
+.col{
+flex: 1;
+}
+</style>
+<section>
+<section id="slide-org9c81950">
+<h2 id="org9c81950">Quem sou eu?</h2>
+<div class="container">
+
+<div class="col">
+<p style="font-size:0.6em;text-align:left;">
+Senior Developer
+</p>
+
+<p style="font-size:0.6em;text-align:left;">
+<b>Interesses:</b>  Ciência  cognitiva,  teoria  da  computação,  desenvolvimento  de
+linguagens, desenvolvimento de jogos, programação bare-metal, IA local e deploy
+</p>
+
+<div style="font-size:0.6em;text-align:left;">
+<p>Co-fundador da Common Lisp Brasil
+<br/>
+<i class="fa fa-globe" aria-hidden="true"></i><code> lisp.com.br</code>
+</p></div>
+
+</div>
+
+<div class="col">
+
+
+<div id="org1d49bf9" class="figure">
+<p><img src="psxprog/eu-retouched.jpg" alt="eu-retouched.jpg" width="200" />
+</p>
+</div>
+
+<div style="font-size:0.6em;text-align:left;">
+<i class="fa fa-linkedin" aria-hidden="true"></i><code> luksamuk</code><br/>
+<i class="fa fa-globe" aria-hidden="true"></i><code> https://luksamuk.codes/</code><br/>
+<i class="fa fa-github" aria-hidden="true"></i><code> luksamuk</code>
+</div>
+
+</div>
+
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org51aa520">
+<h2 id="org51aa520">Visão Geral</h2>
+<div class="container">
+<div class="col">
+<ul style="font-size:0.6em;text-align:left;">
+<li>Contexto histórico</li>
+<li>Hardware</li>
+<li>Ferramentas de desenvolvimento</li>
+<li>Pipeline de gráficos</li>
+<li>Exemplo de código</li>
+<li>Limitações e workarounds</li>
+<li>Homebrews e links úteis</li>
+
+</ul>
+</div>
+
+<div class="col">
+<img src="./psxprog/ps1-pic.png">
+</div>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org7f16714">
+<h2 id="org7f16714">Contexto histórico</h2>
+<img class="r-stretch" src="./psxprog/kutaragi-psx.png">
+
+<p style="font-size:0.6em;text-align:center;">
+<b>Figura:</b> Ken Kutaragi e o Sony PlayStation
+</p>
+
+<ul style="font-size:0.6em;text-align:left;">
+<li><b>Sony:</b> Ken Kutaragi &#x2013; engenheiro responsável pelo <b>S-SMP</b> (sound chip do SNES)</li>
+<li>Parceria Sony x Nintendo para um add-on de CD-ROM (<b>Nintendo Play Station</b>)</li>
+<li>Nintendo "trai" a Sony e fecha com a Philips</li>
+<li>Sony decide desenvolver seu próprio console</li>
+
+</ul>
+</section>
+<section id="slide-org8e19991">
+<h3 id="org8e19991">Quinta geração: a era 3D (1993)</h3>
+<div class="container">
+<div class="col">
+<p style="font-size:0.6em;text-align:left;">
+Consoles de 32-bits, CD-ROM como mídia, polígonos na tela.
+</p>
+
+<ul>
+<li>Sega Saturn (1994)</li>
+<li>Sony PlayStation (1994)</li>
+<li>Nintendo 64 (1996)</li>
+
+</ul>
+
+<p style="font-size:0.6em;text-align:left;">
+<b>Exceto o Nintendo 64 (cartucho).</b>
+</p>
+</div>
+<div class="col">
+<img src="./psxprog/fifthgen.png">
+</div>
+</div>
+
+</section>
+<section id="slide-org8e19991-split">
+
+<img src="./psxprog/sonicr-32.gif">
+<img src="./psxprog/crash-32.gif">
+<img src="./psxprog/zelda-32.gif">
+
+<p style="font-size:0.6em;text-align:center;">
+<b>Sonic R</b> (Sega  Saturn), <b>Crash Bandicoot</b> (Sony PlayStation) e  <b>The Legend of
+Zelda: Ocarina of Time</b> (Nintendo 64).
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org2dd5f9c">
+<h2 id="org2dd5f9c">Ferramentas de desenvolvimento</h2>
+<div class="outline-text-2" id="text-org2dd5f9c">
+</div>
+</section>
+<section id="slide-org53a84a5">
+<h3 id="org53a84a5">Toolchain moderna</h3>
+<div class="container">
+<div class="col">
+<ul style="font-size:0.6em;text-align:left;">
+<li>Linguagem C</li>
+<li>Psy-Q + Nugget + GCC-MIPSEL</li>
+<li>Extensão PSX.Dev (VSCode)</li>
+
+</ul>
+</div>
+<div class="col">
+<img class="r-stretch" src="./psxprog/vscode.png">
+<p style="font-size:0.6em;text-align:left;">
+<b>Figura:</b> Dashboard da extensão PSX.Dev para VSCode.
+</p>
+</div>
+</div>
+</section>
+<section id="slide-org59b6146">
+<h3 id="org59b6146">Toolchains alternativas</h3>
+<ul style="font-size:0.6em;text-align:left;">
+<li><b>PSn00bSDK</b> (C + ASM) &#x2013; SDK open-source moderno</li>
+<li>PsyQo + EASTL (C++) &#x2013; framework C++ sobre Psy-Q</li>
+<li>Assembly puro (<code>armips</code>)</li>
+
+</ul>
+
+<p style="font-size:0.5em;text-align:left;">
+<i>Nota:</i> Psy-Q era o único SDK licenciado pela Sony. SDKs alternativos podem causar problemas de compatibilidade em emuladores antigos (ex: caso Sonic XA).
+</p>
+</section>
+<section id="slide-orgdc195b2">
+<h3 id="orgdc195b2">Demo: PSX.Dev do zero</h3>
+<p style="font-size:0.6em;text-align:left;">
+<i>Vamos ao vivo:</i>
+</p>
+
+<ol>
+<li>Criar um projeto novo com a extensão PSX.Dev no VSCode</li>
+<li>Entender a estrutura: <code>main.c</code>, <code>Makefile</code>, <code>third_party/nugget</code></li>
+<li>Build com <code>make</code> &#x2013; GCC-MIPSEL + Psy-Q convertido</li>
+<li>Rodar no emulador (PCSX-Redux)</li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-orga090c58">
+<h2 id="orga090c58">Hardware</h2>
+<img class="r-stretch" src="./psxprog/psx-motherboard.png">
+
+<p style="font-size:0.6em;text-align:center;">
+<b>Figura:</b> Placa-mãe de um PlayStation modelo SCPH-1000.
+</p>
+</section>
+<section id="slide-orgf913235">
+<h3 id="orgf913235">CPU</h3>
+<div class="container">
+<div class="col">
+<ul style="font-size:0.6em;text-align:left;">
+<li>LSI Logic MIPS R3000A 32-bit (RISC) @ 33.86 MHz</li>
+<li><b>Co-processadores:</b>
+<ul>
+<li><b>Cop0:</b> <i>System Control</i> (cache, interrupções&#x2026;)</li>
+<li><b>Cop2:</b> <i>Geometry Transformation Engine</i> (GTE)</li>
+
+</ul></li>
+<li><b>MDEC:</b> <i>Motion Decoder</i> (DSP para decodificar vídeo)</li>
+
+</ul>
+
+<p style="font-size:0.6em;text-align:left;">
+<b>AO LADO:</b> Dieshot do CXD8530Q (primeira revisão), tirado da apresentação do Ken
+Kutaragi na Hot Chips '99.
+</p>
+
+<p style="font-size:0.6em;text-align:center;">
+<b>Fonte:</b> PlayStation Dev Wiki
+</p>
+</div>
+
+<div class="col">
+<img class="r-stretch" src="./psxprog/cpu-dieshot.jpg">
+</div>
+</div>
+
+
+</section>
+<section id="slide-orgf913235-split">
+
+<p style="font-size:0.6em;text-align:left;">
+A  especificação das  CPUs  MIPS  32-bit possuía  um  co-processador <b>Cop1</b>  para
+<i>float</i>, e um D-Cache para acesso à RAM.
+</p>
+
+<p style="font-size:0.6em;text-align:left;">
+<b>O PlayStation 1 não possui nenhum dos dois.</b>
+</p>
+
+<p style="font-size:0.6em;text-align:center;">
+Solução: <i>fixed-points</i> e <i>scratchpad</i>.
+</p>
+</section>
+<section id="slide-org6fa25d8">
+<h3 id="org6fa25d8">Memória, GPU e outras estruturas</h3>
+<ul style="font-size:0.55em;text-align:left;">
+<li><b>RAM:</b> 2 MB EDO &#x2013; acesso livre (sem segmentation faults), 1 KB <i>scratchpad</i></li>
+<li><b>GPU:</b> SCPH-9000 (Toshiba) &#x2013; rasterização 2D apenas, <b>1 MB VRAM</b></li>
+<li><b>SPU:</b> 16-bit, ADPCM, 24 canais, <b>512 KB SRAM</b></li>
+<li><b>CD-ROM:</b> ISO 9660, CD-DA, CD-ROM XA</li>
+<li><b>MDEC:</b> DSP para decodificar vídeo (FMVs)</li>
+
+</ul>
+
+<div class="container">
+<div class="col">
+<img src="./psxprog/spider-psx.gif" height=300px>
+</div>
+<div class="col">
+<p style="font-size:0.6em;text-align:left;">
+<b>Jogo:</b> Spider-Man (PSX). Tente notar os artefatos (<i>polygon jittering</i>,
+<i>z-fighting</i>, <i>t-junctions</i>&#x2026;).
+</p>
+</div>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org2dfbc7f">
+<h2 id="org2dfbc7f">Fixed-point arithmetic</h2>
+<ul style="font-size:0.6em;text-align:left;">
+<li>PSX <i>não possui</i> FPU (Cop1) &#x2013; <code>float</code> em C é emulado em software (lento demais)</li>
+<li>Solução: <b>fixed-point</b> &#x2013; inteiro com bits reservados para a parte fracionária</li>
+<li>Formato mais comum no PSX: <b>20.12</b> (20 bits inteiro, 12 bits fracionário)</li>
+<li><b>1.0</b> = <b>4096</b> (2<sup>12</sup>), <b>0.5</b> = <b>2048</b>, <b>0.25</b> = <b>1024</b></li>
+
+</ul>
+
+</section>
+<section id="slide-org2dfbc7f-split">
+
+<p style="font-size:0.6em;text-align:left;">
+<i>Operações básicas</i> (formato 20.12):
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-c"   ><code trim><span class="org-comment-delimiter">// </span><span class="org-comment">Soma e subtra&#231;&#227;o: direto
+</span><span class="org-type">int32_t</span> <span class="org-variable-name">a</span> = 2048;     <span class="org-comment-delimiter">// </span><span class="org-comment">0.5
+</span><span class="org-type">int32_t</span> <span class="org-variable-name">b</span> = 1024;     <span class="org-comment-delimiter">// </span><span class="org-comment">0.25
+</span><span class="org-type">int32_t</span> <span class="org-variable-name">c</span> = a + b;    <span class="org-comment-delimiter">// </span><span class="org-comment">3072 = 0.75
+</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">Multiplica&#231;&#227;o: precisa compensar os bits fracion&#225;rios
+</span><span class="org-type">int32_t</span> <span class="org-variable-name">d</span> = (a * b) &gt;&gt; 12;   <span class="org-comment-delimiter">// </span><span class="org-comment">0.125
+</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">Divis&#227;o: precisa pr&#233;-multiplicar
+</span><span class="org-type">int32_t</span> <span class="org-variable-name">e</span> = (a &lt;&lt; 12) / b;  <span class="org-comment-delimiter">// </span><span class="org-comment">2.0</span>
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org2dfbc7f-split">
+
+<p style="font-size:0.6em;text-align:left;">
+<i>Exemplo real</i> (extraído do Sonic XA): a câmera trabalha em fixed-point, mas na
+hora de desenhar, converte para pixels inteiros com <code>&gt;&gt; 12</code>:
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-c"   ><code trim><span class="org-comment-delimiter">// </span><span class="org-comment">camera.c -- posi&#231;&#227;o em 20.12, convers&#227;o para pixels
+</span>anchorx -= (camera-&gt;pos.vx &gt;&gt; 12) - CENTERX;
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">util.c -- divis&#227;o em fixed-point
+</span><span class="org-type">int32_t</span> <span class="org-function-name">div12</span>(<span class="org-type">int32_t</span> <span class="org-variable-name">a</span>, <span class="org-type">int32_t</span> <span class="org-variable-name">b</span>) {
+    <span class="org-keyword">return</span> ((a &lt;&lt; 12) / b) &amp; ~(<span class="org-type">uint32_t</span>)0xfff;
+}
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgad84e6f">
+<h2 id="orgad84e6f">GTE (Geometry Transformation Engine)</h2>
+<ul style="font-size:0.6em;text-align:left;">
+<li><b>Cop2</b> (GTE): coprocessador dedicado a matemática 3D</li>
+<li>Rotação, translação, projeção em perspectiva, <i>backface culling</i>, Z médio</li>
+<li>Tudo em <i>hardware</i> &#x2013; a CPU fica livre pra outra coisa</li>
+<li>Instruções <i>específicas</i> (não genéricas) pra operações 3D</li>
+
+</ul>
+
+<p style="font-size:0.6em;text-align:center;">
+<b>Razão pela qual o PSX consegue colocar polígonos na tela.</b>
+</p>
+
+</section>
+<section id="slide-orgad84e6f-split">
+
+<p style="font-size:0.6em;text-align:left;">
+O GTE opera com instruções <i>específicas</i> para operações 3D. O fluxo típico para
+um triângulo é:
+</p>
+
+<ol style="font-size:0.6em;text-align:left;">
+<li>Carregar 3 vértices (<code>gte_ldv0</code>, <code>gte_ldv1</code>, <code>gte_ldv2</code>)</li>
+<li>Rotacionar, transladar e projetar (<code>gte_rtpt</code>)</li>
+<li><i>Backface culling</i> (<code>gte_nclip</code>)</li>
+<li>Extrair coordenadas de tela (<code>gte_stsxy3</code>)</li>
+<li>Calcular Z médio para a <i>ordering table</i> (<code>gte_avsz3</code>, <code>gte_stotz</code>)</li>
+
+</ol>
+
+<p style="font-size:0.5em;text-align:left;">
+<i>Ver ao vivo:</i> função <code>RotAverageNclip3</code> em <code>util.c</code> no repositório do Sonic XA.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org7e66b72">
+<h2 id="org7e66b72">Gráficos</h2>
+<div style="background:#fff;padding:1em;border-radius:4px;"><img class="r-stretch" src="./psxprog/psx-graphics-system.png"></div>
+
+<p style="font-size:0.6em;text-align:center;">
+<b>Fonte:</b> PlayStation Hardware Reference
+</p>
+</section>
+<section id="slide-org9f0c3f8">
+<h3 id="org9f0c3f8">Entendendo o Frame Buffer</h3>
+<div class="container">
+<div class="col">
+<img src="./psxprog/timtool.png">
+</div>
+<div class="col">
+<img src="./psxprog/framebuffer.png">
+</div>
+</div>
+
+<ul style="font-size:0.6em;text-align:left;">
+<li>Color depth: 24bpp, 15bpp ou usando CLUTs (4bpp ou 8bpp).</li>
+<li>Dividido em <i>texture pages</i> (TPAGEs).</li>
+<li>Comporta o <i>double buffer</i> da tela.</li>
+<li>Comporta texturas (tam. máx.: 256x256, precisão de 1 byte)</li>
+<li>Polígonos suportam <b><i>gouraud shading</i></b>&#x2026;</li>
+
+</ul>
+</section>
+<section id="slide-orgb957bae">
+<h3 id="orgb957bae">O que é Gouraud shading?</h3>
+<ul style="font-size:0.6em;text-align:left;">
+<li>Henri Gouraud, 1971</li>
+<li>Interpolação contínua de cores, pode simular luz</li>
+
+</ul>
+
+<div class="container">
+<div class="col">
+<img src="./psxprog/gouraud-sphere.gif">
+<p style="font-size:0.6em;text-align:left;">
+Esfera low-poly com reflexão especular.
+</p>
+</div>
+<div class="col">
+<img src="./psxprog/banjo.png">
+<p style="font-size:0.6em;text-align:left;">
+Banjo, personagem de <b>Banjo-Kazooie</b>, como visto no Nintendo 64.
+</p>
+</div>
+</div>
+</section>
+<section id="slide-org938e267">
+<h3 id="org938e267">Ordering Table (em vez de Z-buffer)</h3>
+<p style="font-size:0.6em;text-align:left;">
+A  GPU  do  PSX  é  um  <i>rasterizador  2D</i>.   Ela  <i>não  sabe</i>  qual  pixel  está  à
+frente  de  qual.   Não  existe  <b>Z-buffer</b>.   Então,  como  desenhar  polígonos  na
+ordem certa?
+</p>
+
+</section>
+<section id="slide-org938e267-split">
+
+<p style="font-size:0.6em;text-align:left;">
+A solução  é a <b>ordering  table</b> (OT):  um array de  <i>linked lists</i> indexado  por
+profundidade.   Cada  posição  do  array  representa  uma  "fatia"  de  Z.   O  GTE
+calcula o Z médio de  cada triângulo (<code>gte_stotz</code>), e o triângulo  é inserido na
+posição correspondente da OT.
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-c"   ><code trim><span class="org-comment-delimiter">// </span><span class="org-comment">Inserir primitiva na OT na posi&#231;&#227;o calculada pelo GTE
+</span><span class="org-function-name">addPrim</span>(<span class="org-type">ot</span>[otz], poly);
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">Desenhar tudo, de tr&#225;s (longe) para frente (perto)
+</span><span class="org-function-name">DrawOTag</span>(ot + OT_LENGTH - 1);
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org040b521">
+<h2 id="org040b521">Exemplo de código</h2>
+<img class="r-stretch" src="./psxprog/psy-q.jpg">
+
+<p style="font-size:0.6em;text-align:center;">
+<b>Figura:</b> Detalhe do Psy-Q SDK.
+</p>
+
+<p style="font-size:0.6em;text-align:center;">
+<i>Demo ao vivo:</i> projeto <code>gouraud-shading</code> &#x2013; cubo gouraud-shaded em C.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org8284d89">
+<h2 id="org8284d89">Limitações e workarounds</h2>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" style="font-size:0.6em;text-align:left;">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left"><b>Limitação</b></th>
+<th scope="col" class="org-left"><b>Workaround</b></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Sem FPU (float em software)</td>
+<td class="org-left"><b>Fixed-point</b> 20.12 (<code>4096 = 1.0</code>)</td>
+</tr>
+
+<tr>
+<td class="org-left">Sem Z-buffer na GPU</td>
+<td class="org-left"><b>Ordering table</b> (linked lists por profundidade)</td>
+</tr>
+
+<tr>
+<td class="org-left">2 MB de RAM</td>
+<td class="org-left"><b>Scratchpad</b> de 1 KB como "cache manual"</td>
+</tr>
+
+<tr>
+<td class="org-left">1 MB de VRAM</td>
+<td class="org-left">Texturas, CLUTs e <i>double buffer</i> competem pelo mesmo espaço</td>
+</tr>
+
+<tr>
+<td class="org-left">CD-ROM (~300ms de seek)</td>
+<td class="org-left"><i>Pre-load</i> e <i>streaming</i> de dados</td>
+</tr>
+
+<tr>
+<td class="org-left">Sem perspectiva correction</td>
+<td class="org-left"><i>Polygon jittering</i> (artefatos visíveis)</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+<section id="slide-org34bff04">
+<h2 id="org34bff04">Sonic XA (<code>engine-psx</code>)</h2>
+<div class="container">
+<div class="col">
+<img class="r-stretch" src="./psxprog/sonicxa-title.gif">
+</div>
+<div class="col">
+<img class="r-stretch" src="./psxprog/sonicxa-level1.gif">
+</div>
+<div class="col">
+<img class="r-stretch" src="./psxprog/sonicxa-greenhill.gif">
+</div>
+</div>
+
+<p style="font-size:0.6em;text-align:center;">
+Fan-game de  Sonic The Hedgehog  utilizando técnicas  do hardware do  PSX.
+</p>
+
+<div style="font-size:0.76em;text-align:center;">
+<p>
+<a href="https://luksamuk.itch.io/sonic-the-hedgehog-xa">Página no itch.io</a> // <a href="https://github.com/luksamuk/engine-psx">CÓDIGO-FONTE</a>
+</p>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org85cda89">
+<h2 id="org85cda89">O que programar pra PS1 te ensina</h2>
+<ul style="font-size:0.55em;text-align:left;">
+<li><b>Entender o hardware</b>: sem abstraction leak pra te salvar</li>
+<li><b>Otimizar na camada certa</b>: <i>informed</i> optimization</li>
+<li><b>Pensar em memória explicitamente</b>: scratchpad = <i>cache awareness</i> manual</li>
+<li><b>Trade-offs conscientes</b>: precisão vs velocidade, qualidade vs framerate</li>
+<li>Hoje, abstrações escondem tudo: garbage collector, GPU drivers, frameworks</li>
+<li><b>Nenhuma abstração é perfeita. Conhecer o que está embaixo te faz melhor em cima.</b></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org33084d9">
+<h2 id="org33084d9">Links</h2>
+<ul style="font-size:0.6em;text-align:left;">
+<li>Cursos e Tutoriais
+<ul>
+<li>Pikuma.com: <a href="https://pikuma.com/courses/ps1-programming-mips-assembly-language">PS1 Programming with MIPS Assembly &amp; C</a></li>
+<li><a href="http://lameguy64.net/tutorials/pstutorials/index.html">Lameguy's PlayStation Programming Series</a></li>
+<li><a href="https://wiki.arthus.net/">Website do Schnappy</a></li>
+<li>Website do Alex Free: <a href="https://alex-free.github.io/psx-cdr/">The Ultimate Guide to PSX CD-R's</a></li>
+
+</ul></li>
+<li>Comunidades
+<ul>
+<li><a href="https://www.psxdev.net/">Fórum PSXDEV Network</a></li>
+<li><a href="https://www.psxdev.net/discord.php">Discord Server da PSXDEV Network</a></li>
+
+</ul></li>
+<li>Documentação
+<ul>
+<li><a href="http://www.problemkaputt.de/psx-spx.htm">PSX Spex</a> (<a href="https://psx-spx.consoledev.net/">nova versão em HTML</a>)</li>
+<li><a href="https://www.psdevwiki.com/ps1/Main_Page">PlayStation Dev Wiki</a> (engenharia reversa)</li>
+<li><a href="https://psx.arthus.net/sdk/Psy-Q/DOCS/Devrefs/Hardware.pdf">PlayStation Hardware Reference</a> (oficial)</li>
+
+</ul></li>
+<li>Outros
+<ul>
+<li><a href="https://all-things-andy-gavin.com/2011/02/02/making-crash-bandicoot-part-1/">Blog do Andy Gavin: Making Crash Bandicoot</a></li>
+<li><a href="https://www.copetti.org/writings/consoles/playstation/">PlayStation Architecture por Rodrigo Copetti</a> (<a href="https://www.copetti.org/pt-br/writings/consoles/playstation/">versão PT-BR</a>)</li>
+
+</ul></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org92eb60b">
+<h2 id="org92eb60b">Obrigado!</h2>
+<div class="container">
+<div class="col">
+<img src="./psxprog/ps1-logo.png">
+</div>
+<div class="col">
+
+<p style="font-size:0.6em;text-align:center;">
+<b>Acesse esta apresentação:</b>
+</p>
+
+<p style="font-size:0.75em;text-align:center;">
+<a href="https://luksamuk.codes/talks/psx-programming-tech.html" style="font-size:0.75em;text-align:center;">https://luksamuk.codes/talks/psx-programming-tech.html</a>
+</p>
+
+<div style="font-size:0.6em;text-align:center;">
+<i class="fa fa-envelope" aria-hidden="true"></i> <code>lucasvieira at protonmail dot com</code><br/>
+<i class="fa fa-linkedin" aria-hidden="true"></i><code> luksamuk</code><br/>
+<i class="fa fa-globe" aria-hidden="true"></i><code> https://luksamuk.codes/</code><br/>
+<i class="fa fa-github" aria-hidden="true"></i><code> luksamuk</code>
+</div>
+
+</div>
+</div>
+
+<br/>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+slideNumber:true,
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+,
+ { src: 'https://cdn.jsdelivr.net/npm/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } }]
+
+});
+
+</script>
+</body>
+</html>
