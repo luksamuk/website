@@ -29,13 +29,15 @@ cp -r \
    src/talks/psxprog \
    docs/talks/
 
-# Copy slide assets (images, gifs, js, css)
+# Copy slide assets (images, gifs, js, css, media)
 mkdir -p docs/slides
 cp src/slides/*.gif docs/slides/ 2>/dev/null || true
 cp src/slides/*.png docs/slides/ 2>/dev/null || true
 cp src/slides/*.jpg docs/slides/ 2>/dev/null || true
 cp src/slides/*.js docs/slides/ 2>/dev/null || true
 cp src/slides/*.css docs/slides/ 2>/dev/null || true
+cp src/slides/*.mp4 docs/slides/ 2>/dev/null || true
+cp src/slides/*.mp3 docs/slides/ 2>/dev/null || true
 
 cp -r static docs/
 

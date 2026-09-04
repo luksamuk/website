@@ -12,134 +12,108 @@
 #+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_01.gif
 
 * O Problema
-#+ATTR_REVEAL: :frag (appear)
 - Muita gente usa termos como se fossem a mesma coisa
 - *Não são*
 - Entender a diferença é fundamental
 
-** Quatro termos principais
-#+ATTR_REVEAL: :frag (appear)
+** Cinco termos principais
 - IA (Inteligência Artificial)
 - LLM (Large Language Model)
+- Difusão (Modelos de Difusão)
 - RAG (Retrieval Augmented Generation)
 - Agente (AI Agent)
 
 * 1. IA - Inteligência Artificial
-#+ATTR_REVEAL: :frag (appear)
 - *O que é:* Campo geral
 - Qualquer sistema que faz algo "inteligente"
 
 ** Exemplos de IA
-#+ATTR_REVEAL: :frag (appear)
 - Spam filter do email → IA
 - Reconhecimento facial → IA
 - Chess engine → IA
 - ChatGPT → IA
 
 * 2. LLM - Large Language Model
-#+ATTR_REVEAL: :frag (appear)
-- *O que é:* Um TIPO de IA
+- *O que é:* Um TIPO de IA *generativa*
 - Modelo que prevê próxima palavra
 
 ** Capacidades que importam (pra construtores)
 - *Tool calling* → Consegue chamar ferramentas externas
 - *Raciocínio* → Pensamento passo a passo explícito
-- *Contexto longo* → Janela de 100K+ tokens
+- *Contexto longo* → Para agentes: 64K mínimo; conversacional pode ser menos
 - *Multimodalidade* → Imagem, áudio, vídeo
 
-** Dica: estabilidade
-#+ATTR_REVEAL: :frag (appear)
-Para construir agentes, o essencial é *tool calling + estabilidade*. Modelos densos (não-MoE) tendem a ser mais estáveis.
+** Dica: o essencial pra agentes
+Para construir agentes, o essencial é *tool calling + contexto longo*. Modelos densos (não-MoE) tendem a ser mais consistentes nisso.
 
-** Modelos de LLM (Abril 2026)
-- *Proprietários:* Gemini 3 Flash, Gemini 3.1 Pro, Claude Opus 4.7, GPT-5.4
-- *API gratuita:* Gemini 2.5 Flash, Gemini 3.1 Flash-Lite
-- *API barata:* DeepSeek V3.2, MiniMax M2.5, GLM-5.1
-- *Para edge/celular:* Gemma 4 E2B, Qwen3.5-4B
-- *Para agentes:* Qwen3.5-27B, Qwen 3.6-35B-A3B
+** O panorama (Setembro 2026)
+- *Frontier proprietário:* GPT-6 Astra, Claude Fable 5.1, Gemini 3.8 Flash
+- *Open weights topo:* GLM-5.3 (MIT), Kimi K3, DeepSeek V4 Pro
+- *Custo-benefício:* DeepSeek V4 Flash, GLM-5.3 Flash, MiniMax M3
+- *Edge/celular:* Gemma 4 E2B, Qwen3.5-4B, LFM2.5-2.6B
+- *Agentes locais:* Qwen3.8-27B, Qwen 3.6-35B-A3B, Ornith-1.5
 
-** Open Weights (Abril 2026)
-#+REVEAL_SPLIT:
-- GLM-5.1 (MIT!) — agente open robusto
-- Kimi K2.5 — multimodal agentic
-- Qwen3.5 (série) — de 0.5B a 397B, Apache 2.0
-- DeepSeek V3.2 — MoE eficiente, barato na API
-- Gemma 4 — de E2B a 31B, Apache 2.0
-- Qwen 3.6-35B-A3B — 3B ativos, supera 27B densos
+** Destaques da semana (03-04/09)
+#+HTML: <div style="font-size:0.75em;">
+- *GPT-6 Astra* (ontem!): computer use nativo — primeiro modelo classificado *CRÍTICO* em cybersecurity, lançamento com monitoramento total de trajetórias
+- *Claude Fable 5.1 / Mythos 5.1* (01/09): mesma arquitetura, salvaguardas diferentes; Fable tem *fallback automático pro Opus 5*
+- *Gemini 3.8 Flash* (ontem): workhorse rápido
+
+#+begin_quote
+GPT-5.6 ficou em três tiers: *Sol* (topo), *Terra* (~GPT-5.5 por 2x menos), *Luna* (econômico).
+#+end_quote
+#+HTML: </div>
+
+** Open weights: os destaques
+- *GLM-5.3 vs Flash:* 5.3 é o topo em coding; Flash é rápido, barato e tem *visão nativa* (o 5.3 não tem)
+- *DeepSeek V4 Flash:* ~USD 0.14/0.28 por M tokens — *14x mais barato* que o V4 Pro, 1M de contexto
+- *Pequenos que rodam em tudo:* LFM2.5-2.6B (denso, o destaque pra celular) e Qwen 3.6-35B-A3B / Ornith-1.5 (MoE, 3B ativos)
 
 ** Paradoxo da eficiência
-#+ATTR_REVEAL: :frag (appear)
-- 2023: GPT-4 era SOTA com ~1.8T parâmetros
-- 2026: Gemma 4 E4B (4B) alcança desempenho comparable
+- 2023: GPT-4 era o estado da arte, com ~1,8 trilhão de parâmetros (*estimativa*)
+- 2026: Qwen3.5-4B tem 4 bilhões de parâmetros e rivaliza com o GPT-4o
 - Modelos modernos são *~450x menores* e igualmente capazes
 
-#+ATTR_REVEAL: :frag (appear)
 #+begin_quote
-Como? Mais dados de treino, distilação, MoE, pós-treino.
+Como? Mais dados de treino, destilação, MoE e pós-treino.
 #+end_quote
 
-** Estado da Arte (Abril 2026)
-| Modelo | Tipo | Destaque |
-|--------+------+----------|
-| Claude Opus 4.7 | Proprietário | Top geral |
-| Gemini 3.1 Pro | Proprietário | Top Google |
-| GPT-5.4 | Proprietário | 1M contexto |
-| Gemini 3 Flash | Proprietário | Agentic, pago |
-| GLM-5.1 | Open (MIT) | Coding open forte |
-
-** GLM-5.1: o open que compete
-GLM-5.1 (open weights) empata com GPT-5.4 em coding, custando uma fração. Qwen 3.6-35B-A3B (3B ativos) roda em hardware modesto e supera modelos 10x maiores.
-
 ** Sobre o termo "AGI"
-#+ATTR_REVEAL: :frag (appear)
 - "AGI virou um termo de hype, não um termo com significado preciso" — Andrew Ng (Google Brain)
 
-#+ATTR_REVEAL: :frag (appear)
 #+begin_quote
 Para quem constrói: o que importa são capacidades mensuráveis. O modelo faz tool calling? É estável? Foco no que você pode testar.
 #+end_quote
 
 ** Modelos Densos vs MoE
-#+ATTR_REVEAL: :frag (appear)
-- *Densos:* Todos parâmetros ativos (estável)
-- *MoE:* Mixture of Experts (eficiente, mas instável)
-- Para agentes: prefira modelos *densos*
+#+HTML: <div style="font-size:0.75em;">
+- *Densos:* todos os parâmetros ativos em cada inferência
+- *MoE (Mixture of Experts):* só uma fração dos parâmetros ativa por token
+- Densos tendem a ser mais *estáveis* em tool calling; MoE *pode* variar mais de um modelo pra outro
+- MoE é *amigável ao hardware*: modelo maior, custo de inferência menor
+- A escolha entre "27B denso ou 35B MoE" é, na prática, uma *decisão de hardware*: quanta memória de vídeo você tem (e se vale offload)
+#+HTML: </div>
 
 ** O que LLM NÃO faz
-#+ATTR_REVEAL: :frag (appear)
 - Não calcula (234 × 987 = ? → ele chuta)
 - Não sabe fatos específicos (suas notas, documentos)
 - Não tem memória de longo prazo
 
 * 3. RAG - Retrieval Augmented Generation
-#+ATTR_REVEAL: :frag (appear)
+#+HTML: <div style="font-size:0.75em;">
 - *O que é:* Técnica para fazer LLM "saber" coisas
 - Usado para documentos que não estavam no treinamento
+- Fluxo: pergunta → busca em documentos → documentos + pergunta → LLM → resposta
+- (Aula inteira sobre isso na Semana 9!)
 
-** Fluxo RAG
-#+ATTR_REVEAL: :frag (appear)
-1. Usuário pergunta
-2. Sistema busca em documentos (Retrieval)
-3. Passa documentos + pergunta para LLM (Augmented)
-4. LLM responde baseado nos documentos (Generation)
-
-** Exemplo
-*Sem RAG:*
 #+BEGIN_SRC text
 "Quando foi fundada a Liga de IA?"
-→ LLM: "Não sei" ou inventa data
+→ LLM sem RAG: "Não sei" ou inventa data
+→ Com RAG: busca no documento, encontra "2025", responde "2025"
 #+END_SRC
-
-*Com RAG:*
-#+BEGIN_SRC text
-"Quando foi fundada a Liga de IA?"
-→ Sistema busca no documento
-→ Encontra: "fundada em 2025"
-→ LLM responde: "2025"
-#+END_SRC
+#+HTML: </div>
 
 * 4. Agente (AI Agent)
-#+ATTR_REVEAL: :frag (appear)
 - *O que é:* Sistema que usa LLM + ferramentas + memória
 - Diferença: LLM só fala, Agente *faz coisas*
 
@@ -157,32 +131,84 @@ Agente: "Deixa eu calcular..."
 #+END_SRC
 
 ** Componentes de um agente
-#+ATTR_REVEAL: :frag (appear)
 1. *LLM* → faz inferência com linguagem natural
 2. *Ferramentas* → o que ele pode fazer
 3. *Memória* → histórico da conversa
 4. *Decisão* → lógica de quando usar cada ferramenta
 
-#+ATTR_REVEAL: :frag (appear)
 #+begin_quote
 LLM só fala. Agente fala E faz coisas.
 #+end_quote
 
+* 5. IA Generativa além do texto — Modelos de Difusão
+- LLM é IA generativa de *texto*
+- *Difusão* é outra família de IA generativa: gera *imagem, vídeo e música*
+- Funciona por "denoising": começa com ruído, remove em passos até formar a mídia
+
+** Modelos de difusão: onde os LLMs não chegam
+- LLM gera *texto*; difusão gera *pixels* e *áudio*
+- *Z-Image* (imagem) → difusão de imagem, rápida e local
+- *MiniMax H3* → vídeo com áudio nativo
+- *MiniMax Music 3* → música completa (letra + melodia + vozes)
+
+** Demo 1: Z-Image — geração de imagem
+#+HTML: <div style="display:flex; gap:2em; align-items:center; justify-content:center; font-size:0.75em;">
+#+HTML: <div style="flex:1;">
+- A imagem foi gerada por difusão a partir de um prompt de texto
+- *Texto legível no quadro* ("AI = fun") — desafio histórico dos geradores, hoje resolvido
+- Geração local: RTX 3050 6GB, ~4 minutos, 1024x1024
+#+HTML: </div>
+#+HTML: <div style="flex:1; text-align:center;">
+#+ATTR_HTML: :height 420px
+[[file:z-image-demo.png]]
+#+HTML: </div>
+#+HTML: </div>
+
+** Demo 2: MiniMax H3 — vídeo a partir de uma referência
+#+HTML: <div style="display:flex; gap:2em; align-items:center; justify-content:center; font-size:0.75em;">
+#+HTML: <div style="flex:1;">
+- O clipe foi gerado a partir de uma imagem de referência
+- *4 segundos com áudio nativo* (fala, efeitos e movimento no mesmo passe)
+- Geração local: RTX 3050 6GB, ~11 minutos
+#+HTML: </div>
+#+HTML: <div style="flex:1; text-align:center;">
+#+HTML: <video width="460" controls preload="metadata">
+#+HTML: <source src="sonic-h3-demo.mp4" type="video/mp4">
+#+HTML: Seu navegador não suporta vídeo HTML5.
+#+HTML: </video>
+#+HTML: </div>
+#+HTML: </div>
+
+** Demo 3: MiniMax Music 3 — música completa
+- Faixa gerada com o Music 3: letra fornecida, melodia e vozes geradas
+- Ouça a qualidade da geração:
+
+#+HTML: <audio controls preload="metadata" style="width: 90%;">
+#+HTML: <source src="tokens-na-roca-music3.mp3" type="audio/mpeg">
+#+HTML: Seu navegador não suporta áudio HTML5.
+#+HTML: </audio>
+
+** Os três modelos de difusão da demo
+- *Z-Image* → imagem a partir de texto
+- *MiniMax H3* → vídeo a partir de referência, com áudio nativo
+- *MiniMax Music 3* → música completa a partir de letra
+
+#+begin_quote
+Exemplos independentes — cada um demonstra sua própria modalidade.
+#+end_quote
+
 * Resumo Visual
+#+HTML: <div style="font-size:0.8em;">
 
 | Termo | O que é | Exemplo |
 |-------+---------+---------|
-| IA | Campo geral | Spam filter, Xadrez, ChatGPT |
-| LLM | Modelo de linguagem | GPT-5.4, Gemma 4 |
+| IA | Campo geral (contém tudo) | Spam filter, Xadrez, ChatGPT |
+| LLM | IA generativa de texto | GPT-6 Astra, GLM-5.3, Gemma 4 |
+| Difusão | IA generativa de imagem/vídeo/música | Z-Image, MiniMax H3, Music 3 |
 | RAG | Busca + geração | Chatbot que consulta PDFs |
-| Agente | LLM + ferramentas | Assistente que calcula, busca, age |
+| Agente | LLM + ferramentas + memória | Assistente que calcula, busca, age |
 
-** Hierarquia
-#+ATTR_REVEAL: :frag (appear)
-- IA → contém tudo
-- LLM → subconjunto de IA
-- RAG → usa LLM + documentos
-- Agente → usa LLM + ferramentas + memória
+#+HTML: </div>
 
 * Confusões Comuns
 
@@ -193,30 +219,25 @@ LLM só fala. Agente fala E faz coisas.
 | "O agente alucina" | LLM alucina |
 | "Preciso treinar minha IA" | LLM fine-tuning |
 
-* Por que importa?
-
-Se você sabe a diferença, não se perde.
-
-#+ATTR_REVEAL: :frag (appear)
-- *"RAG"* → embeddings, vector store, retrieval
-- *"Agente"* → ferramentas, loops, decisão
-- *"LLM"* → prompt, token, contexto
-- *"IA"* → genérico, pode ser qualquer coisa
-
 * Roadmap
+#+HTML: <div style="font-size:0.75em;">
 
 | Semana | Conceito |
 |--------+----------|
 | 1 | IA, LLM, RAG, Agentes (conceitos) |
-| 2-3 | Prompting, Python mínimo |
-| 4-5 | Estrutura de um agente, primeira ferramenta |
-| 6-7 | Ferramentas múltiplas, embeddings |
-| 8 | RAG |
-| 9-10 | Agente completo, desenvolvimento |
+| 2 | Prompting básico |
+| 3 | Demo prática de agentes |
+| 4-5 | Python mínimo, Python + API de LLM |
+| 6-8 | Estrutura de um agente, ferramentas, ferramentas múltiplas |
+| 9 | Embeddings, similaridade e RAG |
+| 10 | Fine-tuning |
+| 11 | Apresentação final |
+
+#+HTML: </div>
 
 * Perguntas?
 :PROPERTIES:
 :REVEAL_BACKGROUND: ./slide_01.gif
 :END:
 
-No final, você vai ouvir "RAG", "Agente", "LLM" e saber exatamente o que é.
+Agora, você vai ouvir "RAG", "Agente", "LLM" e saber exatamente o que é.

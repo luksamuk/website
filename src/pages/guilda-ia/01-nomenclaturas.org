@@ -1,10 +1,10 @@
 #+TITLE: IA, LLM, RAG, Agentes: Entendendo as Nomenclaturas
-# Semana 01 - 17/04/2026
+# Semana 01 - 04/09/2026
 #+DESCRIPTION: Semana 01 - Guilda de IA: Entendendo as nomenclaturas fundamentais de IA
 #+SETUPFILE: ./setupfile.org
 #+LANGUAGE: pt_BR
 #+STARTUP: inlineimages showall latexpreview
-#+DATE: 17/04/2026
+#+DATE: 04/09/2026
 
 * O Problema
 
@@ -48,14 +48,14 @@ Ao escolher um modelo, o que importa são as **capacidades**, não o marketing:
 | Capacidade | O que faz | Modelos com essa capacidade |
 |------------|-----------|-----------------------------|
 | *Geração de texto* | Completa prompts | Todos os LLMs |
-| *Contexto longo* | Janela de contexto grande (100K+) | Gemini 3 Flash/3.1 Flash-Lite (1M), Claude 4.7 (1M), Qwen 3.6 Plus (1M), Kimi K2.5 (128K), GLM-5.1 (~200K) |
-| *Tool calling* | Consegue chamar ferramentas externas | Gemini 3 Flash, Claude 4.7, GPT-5.4, Qwen 3.6 Plus, GLM-5.1, Gemma 4 31B |
-| *Raciocínio* | Pensamento passo a passo explícito | DeepSeek R1, o1, Gemini 3 Flash Thinking, Gemma 4 31B, Qwen 3.6 Plus (always-on CoT) |
-| *Multimodalidade* | Imagem, áudio, vídeo | Gemini 3 Flash, Qwen 3.6 Plus, Gemma 4, Kimi K2.5, Qwen 3.6-35B-A3B |
-| *Vision* | Processa imagens | Gemini 3 Flash, Claude 4.7, Qwen 3.6 Plus, Gemma 4, Kimi K2.5 |
+| *Contexto longo* | Para agentes: 64K mínimo; conversacional pode ser menos | DeepSeek V4 (1M), Gemini 3.8 Flash (1M), GPT-6 Astra, Claude Fable 5.1, Qwen 3.6-35B-A3B (262K) |
+| *Tool calling* | Consegue chamar ferramentas externas | GPT-6 Astra, Claude Fable 5.1, GLM-5.3, Kimi K3, Qwen 3.6-35B-A3B, Ornith-1.5, Gemma 4 31B |
+| *Raciocínio* | Pensamento passo a passo explícito | DeepSeek V4, Gemini 3.8 Flash, GLM-5.3, Qwen3.8 (always-on CoT) |
+| *Multimodalidade* | Imagem, áudio, vídeo | Gemini 3.8 Flash, Qwen 3.6-35B-A3B, Gemma 4, Kimi K3 |
+| *Vision* | Processa imagens | Gemini 3.8 Flash, Claude Fable 5.1, GLM-5.3 Flash (nativa), Gemma 4, Kimi K3 |
 
 #+begin_quote
-*Dica:* Para construir agentes, o essencial é **tool calling** e **estabilidade**. Modelos densos (não-MoE) tendem a ser mais estáveis nisso.
+*Dica:* Para construir agentes, o essencial é **tool calling** e **contexto longo** (64K mínimo). Modelos densos (não-MoE) tendem a ser mais consistentes nisso.
 #+end_quote
 
 ** Sobre o termo "AGI"
@@ -89,7 +89,7 @@ Os LLMs fundamentam-se na arquitetura Transformer proposta por Vaswani et al. (2
 A evolução de LLMs foi exponencial em duas dimensões: tamanho e eficiência.
 
 #+begin_quote
-*Paradoxo da eficiência:* Em 2023, GPT-4 foi o estado da arte com ~1.8T parâmetros. Em 2026, Gemma 4 E4B (4B parâmetros) alcança desempenho comparable em muitos benchmarks. Modelos modernos são ~450x menores e igualmente capazes.
+*Paradoxo da eficiência:* Em 2023, GPT-4 foi o estado da arte com ~1,8 trilhão de parâmetros (estimativa não-oficial). Em 2026, Qwen3.5-4B tem 4 bilhões de parâmetros e rivaliza com o GPT-4o. Modelos modernos são ~450x menores e igualmente capazes.
 #+end_quote
 
 *** Como a eficiência aumentou
@@ -107,7 +107,7 @@ A tabela abaixo mostra o progresso:
 |--------+------------+-------------------+------+--------|
 | GPT-2 | 1.5B | ~40B | 2019 | Histórico |
 | GPT-3 | 175B | ~300B | 2020 | Histórico |
-| GPT-4 | ~1.8T | ~13T | 2023 | Proprietário |
+| GPT-4 | ~1,8T* | ~13T | 2023 | Proprietário |
 | Llama 3.1 405B | 405B | ~15T | 2024 | Open Weights |
 | [[https://huggingface.co/deepseek-ai/DeepSeek-V3.2][DeepSeek V3.2]] | 671B MoE | ~14.8T | 2025 | Open Weights |
 | *[[https://huggingface.co/zai-org/GLM-5][GLM-5]]* | 744B MoE (40B ativos) | ~28.5T | 2026 | Open Weights (MIT) |
@@ -131,33 +131,51 @@ A tabela abaixo mostra o progresso:
 *Nota:* DeepSeek V3.2 tem 671B parâmetros totais, mas só usa ~37B por inferência (MoE). Gemma 4 31B é denso — todos os parâmetros são usados.
 #+end_quote
 
-** Estado da Arte (Abril 2026)
+** Estado da Arte (Setembro 2026)
 
-Top modelos por benchmark (MMLU Pro):
+Top modelos por família (setembro de 2026):
 
-| Modelo | Tipo | MMLU Pro | Contexto | Preço/M tokens |
-|--------|------|----------|----------|----------------|
-| *[[https://huggingface.co/deepseek-ai/DeepSeek-V3.2][DeepSeek V3.2]]* | Open Weights | 82.3% | 128K | USD 0.30 (~BRL 1.65) |
-| *[[https://huggingface.co/moonshotai/Kimi-K2.5][Kimi K2.5]]* | Open Weights | ~83% | 128K | Local (grátis) |
-| *[[https://huggingface.co/Qwen/Qwen3.5-397B-A17B][Qwen3.5-397B-A17B]]* | Open Weights | 81.5% | 128K | Local (grátis) |
-| *[[https://huggingface.co/MiniMaxAI/MiniMax-M2.5][MiniMax M2.5]]* | Open Weights (MIT mod.) | 80.1% | ~200K | USD 0.15/1.20 (~BRL 0.83/6.60) |
-| *[[https://huggingface.co/MiniMaxAI/MiniMax-M2.7][MiniMax M2.7]]* | Open Weights (MIT mod.) | ~84% | 204K | USD 0.30 (~BRL 1.65) |
-| *Gemini 3 Flash* | Proprietário | 88.0% | 1M tokens | USD 0.50/3.00 (~BRL 2.75/16.50) |
-| *Gemini 3.1 Flash-Lite* | Proprietário | 88.9% | 256K tokens | Gratuito* |
-| *[[https://huggingface.co/zai-org/GLM-5][GLM-5]]* | Open Weights (MIT) | ~85% | 128K | USD 2.10 (~BRL 11.55) / Local |
-| *[[https://huggingface.co/zai-org/GLM-5.1][GLM-5.1]]* | Open Weights (MIT) | ~86% | ~200K | ~USD 0.95/3.15 (~BRL 5.23/17.33) / Local |
-| *Qwen 3.6 Plus* | Proprietário | 88.5% | 1M tokens | API only |
-| *GPT-5.4* | Proprietário | ~88% | 1M tokens | USD 5.00 (~BRL 27.50) |
-| *Claude Opus 4.7* | Proprietário | ~90% | 1M tokens | USD 5.00 (~BRL 27.50) |
-| *[[https://huggingface.co/Qwen/Qwen3.6-35B-A3B][Qwen 3.6-35B-A3B]]* | Open Weights (Apache 2.0) | 85.2% | 262K | Local (grátis) |
+| Modelo | Tipo | Contexto | Preço/M tokens |
+|--------|------|----------|----------------|
+| *[[https://openai.com/index/gpt-6-astra/][GPT-6 Astra]]* | Proprietário | — | até USD 50 (reportado) |
+| *[[https://openai.com/index/gpt-5-6/][GPT-5.6 Sol / Terra / Luna]]* | Proprietário | 1M | Sol topo, Terra ~2x mais barato, Luna econômico |
+| *[[https://www.anthropic.com/claude-fable-and-mythos-5-1][Claude Fable 5.1]]* | Proprietário | 1M | Pago (fallback p/ Opus 5 em requests bloqueados) |
+| *Claude Mythos 5.1* | Proprietário (restrito) | 1M | Não disponível publicamente |
+| *Gemini 3.8 Flash* | Proprietário | 1M | Pago (workhorse rápido) |
+| *[[https://huggingface.co/deepseek-ai/DeepSeek-V4][DeepSeek V4 Flash]]* | Open Weights | 1M | ~USD 0.14/0.28 (input/output) — 14x mais barato que o Pro |
+| *[[https://huggingface.co/deepseek-ai/DeepSeek-V4][DeepSeek V4 Pro]]* | Open Weights | 1M | ~USD 0.435/0.87 (input/output) |
+| *[[https://huggingface.co/zai-org/GLM-5.3][GLM-5.3]]* | Open Weights (MIT) | ~200K | API / Local |
+| *GLM-5.3 Flash* | Open Weights (MIT) | ~200K | Mais barato, rápido, com visão nativa |
+| *[[https://huggingface.co/moonshotai/Kimi-K3][Kimi K3]]* | Open Weights | ~256K | API / Local |
+| *[[https://huggingface.co/Qwen/Qwen3.6-35B-A3B][Qwen 3.6-35B-A3B]]* | Open Weights (Apache 2.0) | 262K | Local (grátis) |
+| *[[https://huggingface.co/ornith-ai/Ornith-1.5-35B-A3B][Ornith-1.5-35B-A3B]]* | Open Weights (MIT) | 262K | Local (grátis) |
+
+# FATO A VERIFICAR (Setembro 2026): campos com "-" ou dados aproximados pendentes de fact-check.
+# - GPT-6 Astra: lancado 03/09/2026 (confirmado por multiplas fontes BR). Preco "ate USD 50" reportado
+#   pela economicnewsbrasil — confirmar tier/estrutura exata. Contexto: verificar.
+# - GPT-5.6 tiers Sol/Terra/Luna: estrutura confirmada (openai.com, jul/2026). Terra ~ performance
+#   GPT-5.5 por 2x menos. Luna economico. Precos exatos por tier: verificar.
+# - Claude Fable 5.1 / Mythos 5.1: lancados 01/09/2026 (tec Mundo, MacMagazine, anthropic.com).
+#   Fallback automatico para Opus 5 (support.claude.com). Mythos restrito a orgs confiaveis.
+#   Preco e contexto: verificar.
+# - Gemini 3.8 Flash: lancado 02/09/2026 (blog.google). 3.6 Flash existe desde jul/2026; "3.7 Pro"
+#   NAO existe (Trusted sources dizem tratar referencias como imprecisas). Preco: verificar.
+# - DeepSeek V4 Flash: USD 0.14/0.28 e 1M ctx confirmados (benchlm.ai, coworker.ai, Forbes). V4 Pro
+#   USD 0.435/0.87 (14x mais caro). Cache-hit mais barato ainda.
+# - GLM-5.3 Flash: visao nativa (user-confirmed via uso). MMLU Pro e precos: verificar.
+# - Kimi K3: contexto aproximado; MMLU Pro: verificar.
+# - Cambio de referencia do material anterior: USD 1 = BRL 5.50 (verificar cambio atual).
+#
+# Tabela de abril (2026.1) preservada como referencia historica em comentario — ver git blame
+# ou a versao anterior deste arquivo se precisar dos precos/benchmarks de abril.
 
 #+begin_quote
-*Nota:* Qwen 3.6 Plus NÃO é open weights (diferente da maioria dos Qwen), tem 1M de contexto e reasoning always-on. Qwen 3.6-35B-A3B é open weights (Apache 2.0), 35B/3B MoE, supera o Qwen3.5-27B em coding. GPT-4o foi aposentado em Fevereiro/2026. GPT-5.4 (março/2026) substituiu o GPT-5.2 com computer use nativo e 1M de contexto. Gemini 3.1 Flash-Lite tem tier gratuito na API (500 RPD). Gemini 3 Flash (SWE-bench 78%, τ²-bench 90.2%) é pago: USD 0.50/3.00 por M tokens. Não existe "Gemini 3.1 Flash" — os modelos de texto da série 3 são: 3 Flash (agentic, pago), 3.1 Flash-Lite (leve, gratuito), 3.1 Pro (top, pago). Gemini 2.5 Flash (gratuito, 1.500 RPD) ainda é a opção free mais generosa para Colab/API. GLM-5.1 (MIT License) é o modelo open weights mais forte em coding — SWE-bench Pro 58.4%, execução autônoma de até 8 horas. MiniMax M2.5 é mais barato que M2.7 (USD 0.15 vs USD 0.30/M input) e melhor pra batch processing; M2.7 tem self-evolution e é melhor pra coding interativo. Atenção: M2.7 tem licença MIT modificada que proíbe uso comercial. Câmbio: USD 1 = BRL 5.50.
+*Nota:* DeepSeek V4 Flash exemplifica a tendência MoE: qualidade de fronteira por preço de commodity. GPT-6 Astra estreia computer use nativo (opera o computador sozinho) e é o primeiro modelo da OpenAI classificado CRÍTICO em cybersecurity — o lançamento veio com monitoramento total de trajetórias (incluindo cadeias de raciocínio), mas a própria OpenAI admite que a monitorabilidade do modelo *diminuiu* em relação ao GPT-5.6 Sol. Mais capacidade, menos observabilidade. Fable 5.1 e Mythos 5.1 compartilham arquitetura e se diferenciam por salvaguardas: Mythos fica restrito, Fable vai ao público com fallback automático para o Opus 5 quando os guardrails bloqueiam algo.
 #+end_quote
 
-*** Destaque: MiniMax M2.7 e Self-Evolution
+*** Destaque: MiniMax M2.7 e Self-Evolution (geração anterior — jun/2026)
 
-MiniMax M2.7 é o **primeiro modelo com auto-evolução real**:
+MiniMax M2.7 foi o **primeiro modelo com auto-evolução real** — hoje na geração M3 (lançada em junho, 1M de contexto via MSA, coding/agentic de fronteira; o M3.1 foi anunciado na WAIC 2026 mas ainda sem API/pesos públicos):
 
 - **56.22% SWE-Bench Pro** — entre os melhores open para coding
 - **ELO 1495 GDPval-AA** — topo entre open-source
@@ -183,7 +201,7 @@ MiniMax M2.5 é o modelo "prático" da família:
 *M2.5 vs M2.7:* M2.5 é melhor para batch processing e tarefas onde custo importa mais que velocidade. M2.7 é melhor para coding interativo (self-evolution, mais estável em loops de agente). Atenção: ambos usam licença MIT modificada que proíbe uso comercial — diferente de GLM-5 (MIT puro) e Qwen (Apache 2.0).
 #+end_quote
 
-**Comparação: Modelos Flagship Recentes**
+**Comparação: Modelos Flagship Recentes (contexto de meados de 2026)**
 
 | Modelo | Open Weights | Treinamento | Destaque |
 |--------|--------------|-------------|----------|
@@ -196,17 +214,18 @@ MiniMax M2.5 é o modelo "prático" da família:
 | Claude Opus 4.7 | **Não** | Standard | SWE-bench Verified 87.6%, GPQA 94.2% |
 
 #+begin_quote
-*Tendência:* A disputa entre modelos proprietários e open weights está cada vez mais acirrada. GLM-5.1 (MIT, 754B MoE) empata com GPT-5.4 e Opus 4.6 em SWE-bench Pro, custando uma fração do preço. Qwen 3.6-35B-A3B (3B ativos, Apache 2.0) roda em hardware modesto e supera modelos 10x maiores em coding.
+*Tendência:* A disputa entre modelos proprietários e open weights está cada vez mais acirrada. GLM-5.1 (MIT, 754B MoE) empata com os frontiers proprietários em SWE-bench Pro, custando uma fração do preço. Qwen 3.6-35B-A3B (3B ativos, Apache 2.0) roda em hardware modesto e supera modelos 10x maiores em coding.
 #+end_quote
 
-*** Modelos de Acesso Restrito (Abril 2026)
+*** Modelos de Acesso Restrito (2026)
 
-Em abril/2026, Anthropic e OpenAI anunciaram modelos de acesso controlado para cybersecurity:
+Em 2026, Anthropic e OpenAI mantêm modelos de acesso controlado para cybersecurity:
 
 | Modelo | Empresa | Acesso | Destaque |
 |--------|---------|--------|----------|
-| Claude Mythos | Anthropic | Governo EUA + empresas selecionadas | SWE-bench 93.9%, exploração autônoma de vulnerabilidades |
+| Claude Mythos 5.1 | Anthropic | Organizações confiáveis (desde 01/09: sucessor do Mythos original) | Mesma arquitetura do Fable 5.1, salvaguardas reforçadas |
 | GPT-5.4-Cyber | OpenAI | Programa Trusted Access for Cyber | Cybersecurity defensiva, 3000+ vulnerabilidades corrigidas |
+| GPT-6 Astra | OpenAI | Deploy com monitoramento total de trajetórias (03/09) | Computer use nativo — primeiro modelo classificado CRÍTICO em cybersecurity |
 
 #+begin_quote
 *Por que acesso restrito?* Esses modelos têm capacidade avançada de encontrar e explorar falhas de segurança em software. Por isso, não estão disponíveis publicamente. Mythos foi o primeiro a demonstrar exploração autônoma de sistemas com segurança robusta, gerando debate sobre a responsabilidade de liberar capacidades ofensivas. GPT-5.4-Cyber é a resposta da OpenAI, focada em defesa. O GPT-5.4-Cyber NÃO é equivalente ao Mythos — é defensivo, não ofensivo.
@@ -228,22 +247,26 @@ Para rodar localmente em CPU/GPU modesta:
 | *[[https://huggingface.co/Qwen/Qwen3.6-35B-A3B][Qwen 3.6-35B-A3B]]* | 35B (3B ativos) | Agentic coding, supera 27B densos, multimodal | Apache 2.0 |
 | *[[https://huggingface.co/Qwen/Qwen3.5-27B][Qwen3.5-27B]]* | 27B denso | Referência para agentes, estável | Apache 2.0 |
 | *[[https://huggingface.co/google/gemma-4-31b][Gemma 4 31B]]* | 31B denso | #3 open model, coding (80% LiveCodeBench) | Apache 2.0 |
+| *[[https://huggingface.co/LiquidAI/LFM2.5-2.6B][LFM2.5-2.6B]]* | 2.6B denso | *O destaque pra telefone* — roda liso em qualquer coisa, incluindo celular | LFM Open License (não-Apache) |
 
 #+begin_quote
 *Dica:* Para agentes locais, Gemma 4 31B e Qwen3.5-27B são as escolhas mais robustas. Ambos densos, ambos com tool calling estável. Gemma 4 vence em coding, Qwen3.5 vence em multilingual. Prefira modelos densos (não-MoE) para tool calling estável. Qwen 3.6-35B-A3B é exceção: sendo MoE de 3B ativos, roda em hardware modesto e ainda supera o 27B denso em coding — boa opção para quem tem GPU limitada.
 #+end_quote
 
-** Google AI Edge Gallery
+** Rodando IA no celular: alternativas
 
-Aplicativo Android (beta) para rodar modelos localmente:
+O Google AI Edge Gallery é só uma opção. Apps para experimentar LLMs localmente no celular:
 
-- Roda Gemma 4 E2B e E4B no celular
-- Funciona **offline**, sem API, sem custo
-- Suporta texto, imagem e áudio
-- Disponível na Google Play Store
+*Android:*
+- *Google AI Edge Gallery* — app oficial do Google: roda Gemma 4 e outros offline, com download de modelos dentro do próprio app. Play Store
+- *Atomic Chat* — chat local open-source (só conversa, sem ferramentas extras). Play Store
+- *Kai 9000* — assistente open-source com memória persistente, excelente, mas o download é via *F-Droid* (fora da Play Store) e não tem gerenciador de modelos — você precisa importar o GGUF manualmente
+
+*iPhone/iPad:*
+- *Locally AI* — dos criadores do LM Studio: app nativo, rápido, baixa modelos dentro do próprio app. App Store
 
 #+begin_quote
-*Para iniciantes:* O AI Edge Gallery é a forma mais fácil de experimentar IA local sem configurar nada. Instala e usa.
+*Para iniciantes:* O AI Edge Gallery é a forma mais fácil de experimentar IA local no Android — instala e usa. No iPhone, Locally AI. Os outros são ótimos, mas pedem um pouco mais de configuração.
 #+end_quote
 
 ** Referências
@@ -293,6 +316,61 @@ Action: Finish[A população do Brasil em 2024 é de aproximadamente 215 milhõe
 
 - Yao, S. et al. (2022). "ReAct: Synergizing Reasoning and Acting in Language Models". [[https://arxiv.org/abs/2210.03629][arXiv:2210.03629]]
 
+* Modelos de Difusão (Imagem, Vídeo e Música)
+
+** Definição formal
+
+Modelos de difusão são modelos generativos que criam dados (imagem, vídeo, áudio) através de um processo iterativo de remoção de ruído (denoising): partem de ruído puro e, em múltiplos passos, refinam até formar o conteúdo final.
+
+** Difusão vs LLMs
+
+| Aspecto | LLM | Modelo de Difusão |
+|---------|-----|-------------------|
+| Saída | Texto (tokens) | Pixels (imagem/vídeo) ou áudio |
+| Mecanismo | Previsão do próximo token | Denoising iterativo |
+| Controle | Prompt de texto | Prompt + parâmetros (passos, CFG, seed) |
+
+#+begin_quote
+*Isso vale até pro ChatGPT e o Gemini:* quando você pede "gere uma imagem" num chat, o LLM escreve um prompt e o *despacha para um modelo de difusão* — o texto e a imagem vêm de modelos diferentes trabalhando juntos.
+#+end_quote
+
+** Exemplos em uso real: Z-Image, MiniMax H3 e Music 3
+
+A Guilda usa modelos de difusão nos fluxos de mídia:
+
+- *Z-Image* — geração de imagem (rápida, local, texto legível)
+- *MiniMax H3* — geração de vídeo com áudio nativo (vídeo + som gerados juntos)
+- *MiniMax Music 3* — geração de música completa: letra fornecida verbatim, melodia e vozes geradas
+
+*** Exemplo 1: imagem com Z-Image
+
+Imagem gerada por difusão a partir de um prompt de texto. Note o texto "AI = fun" escrito corretamente no quadro — renderização de texto legível é um desafio histórico dos geradores de imagem, resolvido pelos modelos recentes:
+
+#+ATTR_HTML: :height 480px
+[[file:../../slides/z-image-demo.png]]
+
+*** Exemplo 2: vídeo H3 a partir de uma referência
+
+O clipe de 4 segundos abaixo foi gerado com o H3 usando uma imagem de referência como âncora de identidade — vídeo, fala e efeitos sonoros gerados no mesmo passe:
+
+#+HTML: <video width="720" controls preload="metadata">
+#+HTML: <source src="../../slides/sonic-h3-demo.mp4" type="video/mp4">
+#+HTML: Seu navegador não suporta vídeo HTML5.
+#+HTML: </video>
+
+*** Exemplo 3: música com o Music 3
+
+Faixa gerada com o Music 3: a letra foi fornecida verbatim e melodia/vozes foram geradas pelo modelo:
+
+#+HTML: <audio controls preload="metadata" style="width: 90%;">
+#+HTML: <source src="../../slides/tokens-na-roca-music3.mp3" type="audio/mpeg">
+#+HTML: Seu navegador não suporta áudio HTML5.
+#+HTML: </audio>
+
+#+begin_quote
+*Para lembrar:* LLM e difusão são famílias complementares. Um agente pode usar LLM para decidir *o que fazer* e um modelo de difusão para *gerar a mídia* — os dois se combinam em pipelines reais de criação de conteúdo.
+#+end_quote
+
 * Fine-tuning (Ajuste Fino)
 
 ** Definição formal
@@ -309,7 +387,7 @@ Treina o modelo com pares prompt-resposta:
 from trl import SFTTrainer
 
 trainer = SFTTrainer(
-    model="Qwen/Qwen2.5-0.5B",
+    model="LiquidAI/LFM2.5-350M",
     train_dataset=dataset,  # Prompt + resposta esperada
 )
 trainer.train()
@@ -396,7 +474,7 @@ from trl import GRPOTrainer, GRPOConfig
 
 config = GRPOConfig(output_dir="model-grpo", num_generations=4)
 trainer = GRPOTrainer(
-    model="Qwen/Qwen2-0.5B-Instruct",
+    model="LiquidAI/LFM2.5-2.6B",
     reward_funcs=reward_function,  # Função de recompensa customizada
     train_dataset=prompts,
 )
@@ -455,19 +533,19 @@ Modelos de linguagem podem ter diferentes arquiteturas:
 *** Modelos Densos
 
 - *Definição:* Todos os parâmetros são ativados a cada token
-- *Exemplos:* Qwen3.5:27B, Llama 3.1 405B
-- *Vantagens:* Estáveis, previsíveis, bons para tool calling
-- *Desvantagens:* Mais custosos para rodar
+- *Exemplos:* Qwen3.8-27B, Llama 3.1 405B
+- *Vantagens:* Comportamento mais consistente, bons para tool calling
+- *Desvantagens:* Mais custosos para rodar (todos os parâmetros na memória)
 
 *** MoE (Mixture of Experts)
 
 - *Definição:* Apenas um subconjunto de "experts" é ativado por token
 - *Exemplos:* DeepSeek V3.2 (671B total, ~37B ativos), Qwen3.5-397B-MoE, Qwen 3.6-35B-A3B (35B total, 3B ativos), GLM-5.1 (754B total, 40B ativos)
-- *Vantagens:* Mais eficientes, melhor custo-benefício
-- *Desvantagens:* Podem ser instáveis para agentes
+- *Vantagens:* Mais eficientes, amigáveis a hardware limitado (modelo grande, custo de inferência baixo)
+- *Desvantagens:* Qualidade pode variar mais entre tarefas
 
 #+begin_quote
-*Dica:* Para agentes com tool calling, prefira modelos densos (Qwen3.5:27B). MoE pode ter comportamento inconsistente.
+*Dica:* A escolha entre "27B denso ou 35B MoE" é, na prática, uma decisão de hardware: quanta memória de vídeo você tem (e se vale offload). Densos tendem a ser mais consistentes em tool calling.
 #+end_quote
 
 ** Recursos de Computação
@@ -530,14 +608,6 @@ ollama create meu-modelo -f Modelfile
 ollama run qwen3.5:27b
 /set parameter
 #+END_SRC
-
-** Ferramenta Recomendada: Unsloth
-
-[[https://unsloth.ai][Unsloth]] oferece guias para:
-- Fine-tuning de LLMs com LoRA/QLoRA
-- Deploy local de modelos
-- Otimização de parâmetros de inferência
-- Tutoriais para Qwen, Llama, Mistral
 
 ** Embedding
 
@@ -646,6 +716,8 @@ Para cada cenário abaixo, identifique qual tecnologia está sendo usada (IA, LL
 
 *Cenário E:* Uma empresa treina um modelo para responder no tom específico da sua marca.
 
+*Cenário F:* Você pede para o ChatGPT "gerar uma imagem de um gato astronauta" e ele te mostra a imagem.
+
 #+BEGIN_DETAILS
 📝 Respostas
 
@@ -654,6 +726,7 @@ Para cada cenário abaixo, identifique qual tecnologia está sendo usada (IA, LL
 - Cenário C: *LLM* - uso direto do modelo sem ferramentas
 - Cenário D: *Agente* - tem ferramentas, memória e ações
 - Cenário E: *Fine-tuning* - adaptação do modelo para estilo específico
+- Cenário F: *LLM + modelo de difusão* - o LLM escreve o prompt e despacha para a difusão gerar a imagem
 
 #+END_DETAILS
 
