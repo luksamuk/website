@@ -1,10 +1,10 @@
 #+TITLE: Prompt Engineering: Como Falar com IA
-# Semana 3 - 24/04/2026
-#+DESCRIPTION: Semana 3 - Guilda de IA: Aprendendo Prompt Engineering
+# Semana 2 - 11/09/2026
+#+DESCRIPTION: Semana 2 - Guilda de IA: Aprendendo Prompt Engineering
 #+SETUPFILE: ./setupfile.org
 #+LANGUAGE: pt_BR
 #+STARTUP: inlineimages showall latexpreview
-#+DATE: 24/04/2026
+#+DATE: 11/09/2026
 
 * O Problema
 
@@ -17,7 +17,7 @@ Você já deve ter notado: a mesma pergunta pode gerar respostas completamente d
 
 A diferença? *O prompt.*
 
-Mas há muito mais por trás de "perguntar melhor". Este artigo vamos explorar a ciência e a arte do Prompt Engineering, com fundamentação teórica e técnicas avançadas validadas por pesquisa.
+Mas há muito mais por trás de "perguntar melhor". Nesta aula vamos explorar a ciência e a arte do Prompt Engineering, com fundamentação teórica e técnicas avançadas validadas por pesquisa.
 
 * Fundamentos Teóricos
 
@@ -246,7 +246,7 @@ C: Sem bibliotecas externas, máximo 20 linhas.
 | Gemini 2.5 Flash | [[https://aistudio.google.com/][AI Studio]] | Grátis, 1.500 req/dia |
 | Mistral Le Chat | [[https://chat.mistral.ai][chat.mistral.ai]] | Grátis, rápido |
 | DeepSeek V4 Pro | [[https://chat.deepseek.com][chat.deepseek.com]] | Grátis, open weights |
-| Qwen3.5:4b | Ollama local | Leve, roda em notebook |
+| Gemma 4 E2B (QAT) | Ollama local | Leve, roda em notebook |
 
 * Prompting para Ferramentas (Preview)
 
@@ -286,108 +286,25 @@ Note que o =description= segue os mesmos princípios de RCEF-TC:
 - *Format:* o schema JSON define o formato de entrada
 - *Constraints:* "com ou sem formatação" reduz erros de formato
 
-#+ATTR_REVEAL: :frag (appear)
-💡 Isso vai ser fundamental nas aulas 06-08 (Ferramentas e Agentes).
+💡 Isso vai ser fundamental nas aulas de Ferramentas e Agentes.
 
-* Modelos em Destaque (Abril 2026)
+* Sprachspiel: Seu assistente no terminal
 
-** Fofoca da Semana
-
-Abril de 2026 foi intenso para IA:
-
-- *Kimi K2.6* (20/04) — 1T params, 32B ativos, 256K contexto, open weights (Modified MIT)
-- *DeepSeek V4 Pro* (24/04) — 1.6T params, 49B ativos, 1M contexto, open weights (MIT)
-- *Claude Code no Pro* (21/04) — Anthropic removeu Claude Code do plano Pro ($20/mês) e repôs em 12h após backlash
-
-** DeepSeek V4 Pro — Lançado em 24/04/2026
-
-O modelo mais recente da série DeepSeek, com dois variantes:
-
-| Propriedade | V4 Pro | V4 Flash |
-|-------------+--------+----------|
-| Parâmetros | 1.6T | 284B |
-| Ativos (MoE) | 49B | 13B |
-| Contexto | 1M tokens | 1M tokens |
-| Licença | MIT | MIT |
-| MMLU | 90.1% | 88.7% |
-| HumanEval | 76.8% | 69.5% |
-
-Destaque para o *contexto de 1M tokens* — cabe um livro inteiro no prompt!
-
-Onde testar: [[https://chat.deepseek.com][chat.deepseek.com]] (grátis) ou HuggingFace para download dos pesos.
-
-** Kimi K2.6 — Lançado em 20/04/2026
-
-Modelo open weights da Moonshot AI (China):
-
-| Propriedade | Valor |
-|-------------+-------|
-| Parâmetros | 1T total, 32B ativos (MoE) |
-| Contexto | 256K tokens |
-| Licença | Modified MIT |
-| SWE-bench Verified | 80.2% |
-| SWE-bench Pro | 58.6% |
-| Alucinação (AA-Omniscience) | 39% (reduzido de 65% do K2.5) |
-| Vision | Sim (imagem e vídeo) |
-| Tool calling | 96% τ²-Bench Telecom |
-| Swarm | Até 300 sub-agentes, 4.000 passos coordenados |
-
-Destaques:
-- *Long-horizon coding:* generaliza entre linguagens (Rust, Go, Python)
-- *Coding-driven design:* gera interfaces e workflows a partir de prompts + inputs visuais
-- *Baixa taxa de alucinação:* 39%, comparável ao Claude Opus 4.7 (36%)
-
-Onde testar: [[https://kimi.com][kimi.com]] (chat gratuito) ou =ollama run kimi-k2.6:cloud= (Ollama Cloud)
-
-⚠ *Atenção:* Estes modelos rodam em nuvem, não localmente. Para rodar localmente, use:
-- =qwen3.5:4b= — leve, bom para chat (4B parâmetros)
-- =qwen3.5:9b= — balanceado (9B parâmetros)
-
-** Mistral Le Chat
-
-Chat gratuito da Mistral AI — bom para demonstrações:
-
-| Propriedade | Valor |
-|-------------+-------|
-| Modelos | Mistral Medium, Small, Pixtral |
-| Acesso | [[https://chat.mistral.ai][chat.mistral.ai]] (grátis) |
-| Destaques | Flash Answers, voz, canvas, busca web |
-
-** Gemini 3 Flash via Ollama
-
-O Ollama agora suporta modelos de cloud, incluindo Gemini 3 Flash e DeepSeek V4:
-
-#+BEGIN_SRC shell
-# Gemini 3 Flash (cloud — roda nos servidores do Google)
-ollama run gemini-3-flash-preview
-
-# Kimi K2.6 (cloud)
-ollama run kimi-k2.6:cloud
-
-# DeepSeek V4 Flash (cloud)
-ollama run deepseek-v4-flash:cloud
-#+END_SRC
-
-⚠ *Atenção:* Estes modelos rodam em nuvem, não localmente. Para rodar localmente, use:
-- =qwen3.5:4b= — leve, bom para chat (4B parâmetros)
-- =qwen3.5:9b= — balanceado (9B parâmetros)
-
-** ask-ai: Seu assistente no terminal
-
-O [[https://github.com/luksamuk/ask-ai-rs][ask-ai]] é um CLI que conversa com modelos locais via Ollama:
+O [[https://github.com/luksamuk/sprachspiel][Sprachspiel]] é um CLI que conversa com modelos locais via Ollama:
 
 #+BEGIN_SRC shell
 # Chat interativo
-ask-ai chat -m qwen3.5:4b
+sprach chat
 
 # Pergunta direta
-ask-ai "Traduza para inglês: Bom dia"
+sprach "Traduza para inglês: Bom dia"
 
-# Com system prompt (role prompting!)
-ask-ai -p tool_user "Como formato um JSON?"
+# Tradução e OCR (especialidades do Sprachspiel)
+sprach translate en:pt "Hello world"
+sprach ocr documento.png
 #+END_SRC
 
-Os modos de prompt (=default=, =tool_user=) são *role prompting aplicado* — mudam o comportamento do modelo sem que você precise digitar o role manualmente.
+Os modos especializados (chat, translate, OCR, summarize) são *role prompting aplicado* — mudam o comportamento do modelo sem que você precise digitar o role manualmente.
 
 * Exercícios Práticos
 
