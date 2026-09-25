@@ -31,8 +31,8 @@
 <section id="sec-title-slide" data-background="./slide_06.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Primeira Ferramenta</h2><br/><p style="font-size:0.85em;opacity:0.8;">Dando poderes ao agente</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 </section>
 <section>
-<section id="slide-org0ed3ce3">
-<h2 id="org0ed3ce3">📰 Fofocas da Semana</h2>
+<section id="slide-org4e70ef2">
+<h2 id="org4e70ef2">📰 Fofocas da Semana</h2>
 <ul style="font-size:0.55em;">
 <li><b>Qwen3.7-Plus</b> (01/06) — multimodal (texto+visão), irmão do Max (text-only), 1M ctx, API-only preview
 <ul>
@@ -47,7 +47,7 @@
 </ul>
 
 </section>
-<section id="slide-org0ed3ce3-split">
+<section id="slide-org4e70ef2-split">
 
 <ul style="font-size:0.55em;">
 <li><b>OpenClaw</b> (02/06) — projeto open-source de agentes chega no Windows; integra com MXC (Microsoft Execution Containers), sandbox OS-level, fluxos multi-step com isolamento 🦞
@@ -72,7 +72,7 @@
 </ul>
 
 </section>
-<section id="slide-org0ed3ce3-split">
+<section id="slide-org4e70ef2-split">
 
 <ul style="font-size:0.55em;">
 <li><b>NVIDIA Nemotron 3 Ultra</b> (04/06) — 550B Hybrid Mamba-2/Transformer/LatMoE (55B ativos), #1 US open-weights (IA Index 48, atrás de Kimi K2.6 a 54), 1M ctx, 300+ tok/s, pesos BF16+NVFP4 🔓
@@ -88,7 +88,7 @@
 </ul>
 
 </section>
-<section id="slide-org0ed3ce3-split">
+<section id="slide-org4e70ef2-split">
 
 <ul style="font-size:0.55em;">
 <li><b>Magenta RealTime 2</b> (04/06) — geração de música em tempo real, decoder-only LLM, 2 sizes (230M small / 2.4B base), controle por texto+áudio+MIDI, SpectroStream codec 48kHz stereo, Apache 2.0 código + CC-BY 4.0 pesos 🔓
@@ -103,8 +103,8 @@
 </section>
 </section>
 <section>
-<section id="slide-orge32bf09">
-<h2 id="orge32bf09">O problema do LLM puro</h2>
+<section id="slide-org812e23b">
+<h2 id="org812e23b">O problema do LLM puro</h2>
 <p>
 LLMs são modelos de linguagem. Eles <b>preveem</b> texto, não calculam.
 </p>
@@ -122,8 +122,8 @@ Pode acertar, pode errar.
 </section>
 </section>
 <section>
-<section id="slide-orgabb73ee">
-<h2 id="orgabb73ee">A solução: ferramentas</h2>
+<section id="slide-org405a4cf">
+<h2 id="org405a4cf">A solução: ferramentas</h2>
 <p>
 Ferramenta = função Python que o agente pode chamar.
 </p>
@@ -132,8 +132,8 @@ Ferramenta = função Python que o agente pode chamar.
 <a href="https://colab.research.google.com/github/luksamuk/guilda-ia/blob/main/notebooks/aula06_primeira_ferramenta_colab.ipynb">📓 Colab</a>
 </p>
 </section>
-<section id="slide-org4417996">
-<h3 id="org4417996">Como funciona:</h3>
+<section id="slide-org37cfa1b">
+<h3 id="org37cfa1b">Como funciona:</h3>
 <ol>
 <li>O LLM recebe a descrição das ferramentas disponíveis</li>
 <li>Analisa a pergunta</li>
@@ -146,8 +146,8 @@ Ferramenta = função Python que o agente pode chamar.
 </section>
 </section>
 <section>
-<section id="slide-orgb2f025a">
-<h2 id="orgb2f025a">Exemplo: calculadora</h2>
+<section id="slide-org4f1117a">
+<h2 id="org4f1117a">Exemplo: calculadora</h2>
 <div class="org-src-container">
 
 <pre   ><code class="python" >@tool
@@ -169,8 +169,8 @@ Parâmetros nomeados: seguro e simples. Sem <code>eval</code>, sem parsing.
 </section>
 </section>
 <section>
-<section id="slide-org0c5d5a3">
-<h2 id="org0c5d5a3">Exemplo: tamanho de palavra</h2>
+<section id="slide-orgff5d297">
+<h2 id="orgff5d297">Exemplo: tamanho de palavra</h2>
 <div class="org-src-container">
 
 <pre   ><code class="python" >@tool
@@ -185,8 +185,8 @@ def get_word_length(word: str) -&gt; int:
 </section>
 </section>
 <section>
-<section id="slide-orga77520d">
-<h2 id="orga77520d">O segredo: descrição clara</h2>
+<section id="slide-org1621a82">
+<h2 id="org1621a82">O segredo: descrição clara</h2>
 <p>
 O modelo decide baseado na descrição.
 </p>
@@ -205,7 +205,7 @@ O modelo decide baseado na descrição.
 </p>
 
 </section>
-<section id="slide-orga77520d-split">
+<section id="slide-org1621a82-split">
 <p>
 <b>Descrição boa:</b>
 </p>
@@ -221,8 +221,8 @@ O modelo decide baseado na descrição.
 </section>
 </section>
 <section>
-<section id="slide-org37d9c72">
-<h2 id="org37d9c72">@tool: Pydantic resolve o parsing</h2>
+<section id="slide-org7e692ce">
+<h2 id="org7e692ce">@tool: Pydantic resolve o parsing</h2>
 <ul>
 <li class="fragment appear"><code>@tool</code> gera o schema JSON automaticamente</li>
 <li class="fragment appear">Pydantic valida e converte os tipos</li>
@@ -232,7 +232,7 @@ O modelo decide baseado na descrição.
 </ul>
 
 </section>
-<section id="slide-org37d9c72-split">
+<section id="slide-org7e692ce-split">
 
 <p>
 Sem <code>@tool</code>:
@@ -255,8 +255,8 @@ Com <code>@tool</code>:
 </section>
 </section>
 <section>
-<section id="slide-org2cdef6c">
-<h2 id="org2cdef6c">O ciclo manual: <code>bind_tools</code></h2>
+<section id="slide-org6aae1ac">
+<h2 id="org6aae1ac">O ciclo manual: <code>bind_tools</code></h2>
 <ol style="font-size:0.6em;">
 <li><code>invoke</code> → LLM <b>decide</b> (retorna <code>tool_calls</code>, não executa)</li>
 <li>Você executa a ferramenta com os argumentos</li>
@@ -265,7 +265,7 @@ Com <code>@tool</code>:
 </ol>
 
 </section>
-<section id="slide-org2cdef6c-split">
+<section id="slide-org6aae1ac-split">
 
 <p>
 Passo 1 — o LLM decide:
@@ -287,7 +287,7 @@ pprint(resposta.tool_calls)
 </p>
 
 </section>
-<section id="slide-org2cdef6c-split">
+<section id="slide-org6aae1ac-split">
 
 <p>
 Passo 2 — você executa:
@@ -318,8 +318,8 @@ resposta_final = llm_com_ferramentas.invoke(mensagens)
 </section>
 </section>
 <section>
-<section id="slide-org55c71f8">
-<h2 id="org55c71f8">ReAct se completa</h2>
+<section id="slide-org8d499d1">
+<h2 id="org8d499d1">ReAct se completa</h2>
 <p>
 O ciclo manual <b>é</b> ReAct em ação:
 </p>
@@ -338,8 +338,8 @@ O ciclo manual <b>é</b> ReAct em ação:
 </section>
 </section>
 <section>
-<section id="slide-org1cf6061">
-<h2 id="org1cf6061">O ciclo automático: <code>create_agent</code></h2>
+<section id="slide-org3a6bdfb">
+<h2 id="org3a6bdfb">O ciclo automático: <code>create_agent</code></h2>
 <p>
 O ciclo manual é bom pra entender. Na prática:
 </p>
@@ -362,8 +362,8 @@ Uma linha. Decide, executa, responde — tudo automático.
 </section>
 </section>
 <section>
-<section id="slide-orge383a88">
-<h2 id="orge383a88">Um gostinho de async</h2>
+<section id="slide-orgb6a3ab7">
+<h2 id="orgb6a3ab7">Um gostinho de async</h2>
 <div class="org-src-container">
 
 <pre   ><code class="python" >import asyncio
@@ -386,8 +386,8 @@ Solução: <code>nest_asyncio.apply()</code> antes de rodar.
 </section>
 </section>
 <section>
-<section id="slide-orgcfc4be4" data-background="./slide_06.gif">
-<h2 id="orgcfc4be4">Para lembrar</h2>
+<section id="slide-org1faf769" data-background="./slide_06.gif">
+<h2 id="org1faf769">Para lembrar</h2>
 <blockquote >
 <p>
 "Ferramenta transforma conversa em ação."
