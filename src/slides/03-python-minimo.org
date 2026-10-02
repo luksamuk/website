@@ -11,47 +11,26 @@
 #+REVEAL_TITLE_SLIDE: <p style="font-size:0.7em;opacity:0.6;">%a</p><br/><h2>%t</h2><br/><p style="font-size:0.85em;opacity:0.8;">%s</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 #+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_03.gif
 
-* 📰 Fofocas da Semana
+* Recap: última aula
 
-#+ATTR_HTML: :style font-size:0.6em;text-align:left;
-- *GPT-5.5 Instant* (8/mai) → novo modelo default do ChatGPT, 52% menos alucinação
-- *ZAYA1-8B* (7/mai) → MoE de 760M params ativos que bate modelos 30x maiores em math/coding
-- *Claude Sonnet 4.8 vazado* → source do Claude Code expôs 512K linhas e road map interno
-- *Mythos vs GPT-5.5 Cyber* → AISI testou: GPT-5.5 fez 71.4%, Mythos 68.6% em cyber — empate técnico
-- *Mistral Medium 3.5* → 128B params, 256K contexto, 77.6% SWE-bench, Apache 2.0
+Na demo de agentes, tudo era *Python por baixo*:
 
-* Fofoca: ZAYA1-8B
+- *OpenCode* — agente de código no terminal
+- *Pi* — coding agent minimalista
+- *Hermes Agent* — assistente com memória e skills
+- *Sprachspiel* — harness cognitivo local
 
-#+HTML: <blockquote style="font-size:0.55em;text-align:left;">
-8.4B total, 760M ativos por token (MoE++).
-Apache 2.0. Treinado em AMD MI300x (1024 nós).
-
-Mas: arquitetura customizada (CCA + router MLP) → *não roda em llama.cpp*. Precisa de vLLM/SGLang.
-#+HTML: </blockquote>
-
-#+HTML: <blockquote style="font-size:0.55em;text-align:left;">
-Daniel Lougen (M.S.): "ZAYA1-8B usa até *5.5M tokens por problema* pra chegar nos benchmarks. DeepSeek-R1? ~23K tokens. Isso é 240x mais compute em inferência. O framing de '4B active' soa eficiente, mas o resultado vem queimando test-time compute que outros modelos não precisam."
-#+HTML: </blockquote>
-
-* Fofoca: Mythos vs GPT-5.5 Cyber
-
-#+HTML: <blockquote style="font-size:0.55em;text-align:left;">
-AISI (UK) testou os dois modelos em cybersecurity:
-
-- GPT-5.5: 71.4% (tarefas Expert)
-- Mythos Preview: 68.6% (margem de erro se sobrepõe)
-
-Mythos resolveu ataque end-to-end em 3/10 tentativas. GPT-5.5 em 2/10.
-
-O detalhe: Mythos é acesso restrito (11 parceiros). GPT-5.5 é público.
-#+HTML: </blockquote>
+#+begin_quote
+Pra construir algo assim, você não precisa de Python inteiro.
+Precisa do *mínimo essencial* — e é isso que veremos hoje.
+#+end_quote
 
 * Por que Python?
 
 - *Sintaxe simples* → parece pseudocódigo
 - *Bibliotecas* → milhões de pacotes prontos
 - *Comunidade* → documentação em todo lugar
-- *O ecossistema de IA vive em Python* → Gemini, HuggingFace, Anthropic — todos lançam API primeiro em Python
+- *O ecossistema de IA vive em Python* → Ollama, LangChain, HuggingFace, PyTorch
 
 * Variáveis
 
@@ -81,6 +60,24 @@ pessoa["idade"] = 31     # atualiza
 pessoa["cidade"] = "BH"  # adiciona
 #+END_SRC
 
+* 🔑 A sacada: mensagens de LLM
+
+Uma conversa com um modelo é *uma lista de dicionários*:
+
+#+BEGIN_SRC python
+mensagens = [
+    {"role": "system",
+     "content": "Você é um tutor de Python."},
+    {"role": "user", "content": "O que é uma lista?"},
+    {"role": "assistant",
+     "content": "É uma coleção ordenada..."},
+]
+#+END_SRC
+
+#+begin_quote
+Listas + dicionários = 90% do que você precisa pra LLM.
+#+end_quote
+
 * Funções
 
 #+BEGIN_SRC python
@@ -90,6 +87,21 @@ def saudar(nome, saudacao="Olá"):
 saudar("Maria")        # "Olá, Maria!"
 saudar("João", "Oi")  # "Oi, João!"
 #+END_SRC
+
+* Funções com estado (sem classes!)
+
+#+BEGIN_SRC python
+chat = []
+chat.append({"role": "system",
+             "content": "Você é um tutor."})
+chat.append({"role": "user",
+             "content": "O que é uma lista?"})
+
+# Estado explícito: a lista É o histórico
+print(chat)
+#+END_SRC
+
+💡 *Sem classes* — menos complexidade, mais clareza.
 
 * Condicionais
 
@@ -120,15 +132,52 @@ while count < 3:
     count += 1
 #+END_SRC
 
-* 🔴 Demo: Python no Colab (3 min)
+* Strings — texto é tudo pra LLM
 
-1. Abrir =luksamuk.codes/pages/guilda-ia= → Semana 03
+#+BEGIN_SRC python
+texto = "Python é incrível"
+
+texto.lower()                # minúsculas
+texto.replace("incrível",
+              "poderoso")    # substituir
+texto.split()                # quebrar em palavras
+" ".join(["Eu", "amo",
+          "Python"])         # juntar
+resposta.strip()             # limpar resposta do LLM
+#+END_SRC
+
+* JSON — o formato das APIs
+
+#+BEGIN_SRC python
+import json
+
+dados = json.loads(resposta_api)
+
+dados["choices"][0]["message"]["content"]
+#+END_SRC
+
+JSON é a mesma família do dicionário Python —
+chaves e valores.
+
+#+begin_quote
+Toda resposta de API de LLM chega como JSON.
+#+end_quote
+
+* 🔴 Demo: Python no Colab (10-15 min)
+
+1. Abrir =luksamuk.codes/pages/guilda-ia= → Semana 04
 
 #+begin_quote
 Colab abre em modo SOMENTE LEITURA. Faça "Arquivo → Salvar uma cópia no Drive" antes de editar.
 #+end_quote
 
-* Para Lembrar
+* Recap
+
+#+ATTR_REVEAL: :frag (appear)
+- =Variáveis=, listas, dicts, funções
+- *Mensagens de LLM = lista de dicts*
+- Strings, JSON, loops e condicionais
+- 📓 Notebook do Colab com exercícios
 
 #+begin_quote
 "Python é a ferramenta.
@@ -136,9 +185,15 @@ O LLM é o cérebro.
 A API é a ponte entre eles."
 #+end_quote
 
-- *Variáveis, listas, dicts, funções* → base Python
-- *JSON* → o formato que APIs entendem
-- *Próxima aula* → requisições HTTP, APIs de LLM e chat com memória!
+* Para a próxima aula
+
+** Python + API de LLM
+
+Vamos fazer o Python *conversar* de verdade:
+
+- Requisições HTTP na prática
+- Chat com memória (o histórico das próximas aulas)
+- Tratamento de erros com =try/except=
 
 * Perguntas?
 :PROPERTIES:

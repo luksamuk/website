@@ -1,10 +1,23 @@
 #+TITLE: Python Mínimo
-# Semana 3
-#+DESCRIPTION: Semana 3 - Guilda de IA: Python mínimo para trabalhar com APIs de LLM
+# Semana 4 - 02/10/2026
+#+DESCRIPTION: Semana 4 - Guilda de IA: Python mínimo para trabalhar com LLMs locais
 #+SETUPFILE: ./setupfile.org
 #+LANGUAGE: pt_BR
 #+STARTUP: inlineimages showall latexpreview
-#+DATE: 08/05/2026
+#+DATE: 02/10/2026
+
+* Onde vamos chegar
+
+Na aula passada, os agentes da demo (OpenCode, Pi, Hermes, Sprachspiel) eram todos *Python por baixo*. Para construir um agente, você não precisa de Python inteiro — precisa do *mínimo essencial*.
+
+Ao final desta aula, você vai saber:
+- ✅ Criar variáveis e usar f-strings
+- ✅ Trabalhar com listas e dicionários
+- ✅ Escrever funções com estado (sem classes!)
+- ✅ Manipular strings e texto (essencial para LLMs)
+- ✅ Entender JSON — o formato que as APIs de LLM entendem
+
+O notebook do Colab acompanha esta apostila: [[https://colab.research.google.com/github/luksamuk/guilda-ia/blob/main/notebooks/aula03_python_minimo.ipynb][📓 abrir o Colab da aula]].
 
 * Por que Python?
 
@@ -14,56 +27,11 @@ Python é a linguagem mais usada em IA por três motivos:
 2. *Bibliotecas* → milhões de pacotes prontos
 3. *Comunidade* → documentação e tutoriais em todo lugar
 
-Mas mais importante: *o ecossistema de IA vive em Python*. Google Gemini, HuggingFace, Anthropic, Meta - todos lançam suas APIs primeiro em Python.
+Mas mais importante: *o ecossistema de IA vive em Python*. Ollama, LangChain, HuggingFace, PyTorch, vLLM — todos lançam primeiro em Python, e todos rodam com modelos *locais*.
 
-* Fundamentos Teóricos
+* Variáveis
 
-** O que é uma API?
-
-*Definição formal:* API (Application Programming Interface) é um conjunto de definições e protocolos que permite a comunicação entre sistemas de software, especificando os métodos e formatos de dados que podem ser usados para solicitar e trocar informações.
-
-*No contexto de LLMs:* Uma API de LLM é uma interface HTTP que permite enviar prompts (requests) para um modelo hospedado remotamente e receber respostas (responses), sem precisar rodar o modelo localmente.
-
-** Arquitetura Cliente-Servidor
-
-#+BEGIN_SRC dot :file img/cliente-servidor.svg :cache yes
-digraph ClienteServidor {
-    rankdir=LR;
-    node [shape=box, style="rounded,filled"];
-    
-    subgraph cluster_cliente {
-        label="SEU CÓDIGO\n(Cliente)";
-        style="rounded";
-        fillcolor="#fafafa";
-        codigo [label="python code", fillcolor="#e0e0e0"];
-    }
-    
-    subgraph cluster_servidor {
-        label="SERVIDOR LLM\n(Gemini, etc)";
-        style="rounded";
-        fillcolor="#fafafa";
-        api [label="API Endpoint", fillcolor="#f0f0ff"];
-        llm [label="LLM Processing", fillcolor="#f0f0ff"];
-    }
-    
-    codigo -> api [label="HTTP Request\n(JSON payload)", fontsize=10];
-    api -> llm;
-    llm -> api;
-    api -> codigo [label="HTTP Response\n(JSON result)", fontsize=10];
-}
-#+END_SRC
-
-** Conceitos Fundamentais
-
-- *Request (Requisição):* Mensagem enviada do cliente para o servidor. Contém: endpoint URL, método (POST/GET), headers, body
-- *Response (Resposta):* Mensagem retornada pelo servidor. Contém: status code, headers, body (dados)
-- *Endpoint:* URL específica que recebe requisições (ex: =https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent=)
-- *Autenticação:* Verificação de identidade via API Key (token secreto)
-- *Rate Limiting:* Limite de requisições por período (para evitar abuso)
-
-* O Mínimo que Você Precisa Saber de Python
-
-** Variáveis
+Uma variável é uma *caixa com etiqueta*: você guarda algo nela e usa o nome depois. O Python descobre o tipo sozinho (não precisa declarar).
 
 #+BEGIN_SRC python
 # Tipos básicos
@@ -77,37 +45,134 @@ mensagem = f"{nome} tem {idade} anos"
 print(mensagem)  # "Maria tem 25 anos"
 #+END_SRC
 
-** Listas e Dicionários
+F-strings aceitam expressões:
 
 #+BEGIN_SRC python
-# Lista: sequência ordenada
-frutas = ["maçã", "banana", "laranja"]
-frutas.append("uva")       # adiciona no final
-frutas[0]                  # "maçã" (primeiro elemento)
-frutas[-1]                 # "uva" (último elemento)
-len(frutas)                # 4 (tamanho)
+print(f"Ano que vem: {idade + 1} anos")
+print(f"Nome em maiúsculas: {nome.upper()}")
+print(f"Tamanho do nome: {len(nome)} caracteres")
+#+END_SRC
 
-# Dicionário: pares chave-valor
+* Listas
+
+Lista é uma *fila de coisas em ordem*. Cada item tem uma posição (índice), começando do *0*.
+
+#+BEGIN_SRC python
+# Criando listas
+frutas = ["maçã", "banana", "laranja"]
+numeros = [10, 20, 30, 40, 50]
+
+print(len(frutas))     # 3 (tamanho)
+print(frutas[0])       # "maçã" (primeiro)
+print(frutas[-1])      # "laranja" (último — truque!)
+#+END_SRC
+
+* Modificando listas
+
+#+BEGIN_SRC python
+frutas = ["maçã", "banana", "laranja"]
+
+frutas.append("uva")            # adiciona no final
+frutas.insert(1, "morango")     # insere na posição 1
+frutas.remove("banana")         # remove por valor
+removido = frutas.pop(0)        # remove e retorna o da posição 0
+
+print(frutas)
+#+END_SRC
+
+** Fatiando listas (slicing)
+
+#+BEGIN_SRC python
+numeros = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+print(numeros[2:5])     # [2, 3, 4]        — do índice 2 ao 4
+print(numeros[:4])      # [0, 1, 2, 3]     — do início ao 3
+print(numeros[6:])      # [6, 7, 8, 9]     — do 6 ao final
+print(numeros[::2])     # [0, 2, 4, 6, 8]  — de 2 em 2
+
+# Ordenar
+print(sorted(["z", "a", "m", "b"]))  # ['a', 'b', 'm', 'z']
+#+END_SRC
+
+* Dicionários
+
+Dicionário é uma *ficha com campos preenchidos*. Você acessa pelo nome do campo (chave), não pela posição.
+
+#+BEGIN_SRC python
 pessoa = {
     "nome": "João",
     "idade": 30,
     "cidade": "São Paulo"
 }
-pessoa["nome"]             # "João"
-pessoa["idade"] = 31       # atualiza valor
-pessoa["profissao"] = "Dev"  # adiciona nova chave
+print(pessoa["nome"])             # "João"
+
+# Adicionar ou atualizar
+pessoa["profissao"] = "Dev"       # adiciona nova chave
+pessoa["idade"] = 31              # atualiza existente
+
+# Ver chaves e valores
+print(pessoa.keys())              # dict_keys([...])
+print(pessoa.values())            # dict_values([...])
 #+END_SRC
 
-** Funções
+** Acesso seguro com .get()
+
+Se a chave não existe, =pessoa["chave"]= dá erro; =.get()= retorna =None= (ou um valor padrão) — muito útil com respostas de API:
+
+#+BEGIN_SRC python
+config = {"modelo": "gemma4:e2b-it-qat", "temperatura": 0.7}
+
+print(config.get("modelo"))                       # "gemma4:e2b-it-qat"
+print(config.get("api_key", "não configurada"))   # "não configurada"
+#+END_SRC
+
+* 🔑 A sacada: mensagens de LLM = lista de dicionários
+
+No ecossistema de LLMs, as mensagens que mandamos para o modelo seguem exatamente a estrutura que acabamos de aprender:
+
+#+BEGIN_SRC python
+mensagens = [
+    {"role": "system",
+     "content": "Você é um tutor de Python."},
+    {"role": "user", "content": "O que é uma lista?"},
+    {"role": "assistant",
+     "content": "Uma lista é uma coleção ordenada..."}
+]
+
+# Percorrer o histórico
+for msg in mensagens:
+    print(f"[{msg['role']}] {msg['content']}")
+#+END_SRC
+
+#+begin_quote
+Listas + dicionários = 90% do que você precisa para LLMs. A conversa inteira é uma lista; cada mensagem é um dicionário.
+#+end_quote
+
+** 🧪 Exercício
+
+Crie uma lista de mensagens representando esta conversa:
+
+1. Sistema: "Você é um assistente que responde em português."
+2. Você: "Qual a capital de Minas Gerais?"
+3. IA: "A capital de Minas Gerais é Belo Horizonte."
+
+Depois imprima apenas o conteúdo da resposta da IA.
+
+* Funções
+
+Função é uma *receita*: você dá os ingredientes (parâmetros) e recebe o prato pronto (retorno).
 
 #+BEGIN_SRC python
 # Definição básica
 def saudar(nome):
     return f"Olá, {nome}!"
 
-# Chamada
 resultado = saudar("João")  # "Olá, João!"
+#+END_SRC
 
+** Valor padrão e retorno múltiplo
+
+#+BEGIN_SRC python
 # Com valor padrão
 def saudar(nome, saudacao="Olá"):
     return f"{saudacao}, {nome}!"
@@ -115,33 +180,290 @@ def saudar(nome, saudacao="Olá"):
 saudar("Maria")            # "Olá, Maria!"
 saudar("Maria", "Oi")      # "Oi, Maria!"
 
-# Com retorno múltiplo
+# Retorno múltiplo (desempacotamento)
 def processar(texto):
     return len(texto), texto.upper()
 
 tamanho, maiusculo = processar("hello")  # (5, "HELLO")
 #+END_SRC
 
-** Tratamento de Exceções
+** Funções com estado — sem classes!
+
+Para manter o histórico de um chat, em vez de classes usamos funções + listas. O estado fica *explícito*: =chat= é a própria lista de mensagens, e toda função recebe e devolve o estado.
 
 #+BEGIN_SRC python
-# Try-except básico
-try:
-    resultado = 10 / 0
-except ZeroDivisionError:
-    resultado = None
-    print("Erro: divisão por zero")
+def criar_chat(sistema="Você é um assistente útil."):
+    """Cria um novo chat com estado limpo."""
+    return [{
+        "role": "system",
+        "content": sistema
+    }]
 
-# Com múltiplos erros
-try:
-    arquivo = open("nao_existe.txt")
-except FileNotFoundError:
-    print("Arquivo não encontrado")
-except PermissionError:
-    print("Sem permissão")
-except Exception as e:
-    print(f"Erro inesperado: {e}")
-finally:
-    print("Sempre executa")
+def enviar_mensagem(estado, texto):
+    """Adiciona a mensagem do usuário ao histórico."""
+    chat = estado + [{"role": "user", "content": texto}]
+    return chat
+
+def ver_historico(estado):
+    """Retorna o histórico sem o system prompt."""
+    return estado[1:]
+
+# Uso
+chat = criar_chat("Você é um tutor de Python.")
+chat = enviar_mensagem(chat, "O que é uma lista?")
+chat = enviar_mensagem(chat, "E um dicionário?")
+print(ver_historico(chat))
 #+END_SRC
 
+#+begin_quote
+*Por que sem classes?* =self=, =__init__= e herança adicionam complexidade que atrapalha iniciantes. Com funções + listas, o estado é explícito — basta =print(chat)= para ver tudo. Quando você dominar funções, evoluir para classes é natural.
+#+end_quote
+
+** 🧪 Exercício
+
+Crie a função =criar_mensagem_usuario(texto)= que retorna o dicionário no formato role/content, e teste: =print(criar_mensagem_usuario("Qual a capital de MG?"))= deve imprimir ~{'role': 'user', 'content': 'Qual a capital de MG?'}~.
+
+* Strings — essencial para LLMs
+
+Quando o LLM responde, você recebe *texto*. É essencial saber extrair, limpar e transformar isso.
+
+#+BEGIN_SRC python
+# Strings são listas de caracteres
+texto = "Python é incrível"
+
+print(texto[0])          # "P" — primeira letra
+print(texto[-1])         # "l" — última letra
+print(texto[:6])         # "Python" — fatia
+print(len(texto))        # 18
+
+# Métodos úteis
+print(texto.upper())     # "PYTHON É INCRÍVEL"
+print(texto.lower())     # "python é incrível"
+print(texto.strip())     # remove espaços nas pontas
+print(texto.replace("incrível", "poderoso"))
+print(texto.split())     # ['Python', 'é', 'incrível']
+
+# Verificar se contém
+print("Python" in texto)  # True
+#+END_SRC
+
+** Juntar strings e limpar resposta
+
+#+BEGIN_SRC python
+# Juntar — muito útil para reconstruir texto
+frase = " ".join(["Eu", "amo", "Python"])
+print(frase)  # "Eu amo Python"
+
+# Limpar resposta de LLM (exemplo real)
+resposta_llm = "  \nA capital do Brasil é Brasília.  \n"
+limpa = resposta_llm.strip()   # tira espaços/quebras nas pontas
+print(f"Limpa: '{limpa}'")
+print(f"Capitalizada: '{limpa.capitalize()}'")
+#+END_SRC
+
+* JSON — o formato das APIs
+
+**JSON** (JavaScript Object Notation) é o formato que APIs usam para trocar dados. Em Python, JSON = dicionários e listas aninhados — a mesma família de estruturas que já dominamos.
+
+Toda resposta de API de LLM chega como JSON.
+
+#+BEGIN_SRC python
+import json
+
+# JSON → Python (deserialização)
+resposta_api = '''
+{
+    "model": "gemma4:e2b-it-qat",
+    "choices": [{
+        "message": {
+            "role": "assistant",
+            "content": "A capital do Brasil é Brasília."
+        }
+    }],
+    "usage": {
+        "prompt_tokens": 15,
+        "completion_tokens": 8
+    }
+}
+'''
+
+dados = json.loads(resposta_api)   # string JSON → dicionário Python
+print(type(dados))                 # <class 'dict'>
+
+# Acessando dados aninhados
+modelo = dados["model"]
+resposta = dados["choices"][0]["message"]["content"]
+tokens = dados["usage"]["completion_tokens"]
+
+print(f"Modelo: {modelo}")
+print(f"Resposta: {resposta}")
+print(f"Tokens usados: {tokens}")
+#+END_SRC
+
+** Python → JSON (serialização)
+
+#+BEGIN_SRC python
+config = {
+    "model": "gemma4:e2b-it-qat",
+    "temperature": 0.7,
+    "messages": [
+        {"role": "user", "content": "Olá!"}
+    ]
+}
+
+json_texto = json.dumps(config, indent=2, ensure_ascii=False)
+print(json_texto)
+# ensure_ascii=False preserva acentos!
+#+END_SRC
+
+** 🧪 Exercício
+
+Dado o JSON abaixo (assuma que ele está na string =dados_modelo=):
+
+#+BEGIN_SRC python
+dados_modelo = '''
+{
+    "name": "gemma4:e2b-it-qat",
+    "spec": {
+        "parameters": "2B",
+        "languages": ["PT", "EN", "ZH"],
+        "capabilities": {
+            "reasoning": true,
+            "code": true,
+            "vision": false
+        }
+    }
+}
+'''
+#+END_SRC
+
+Extraia: nome, parâmetros, línguas e se o modelo raciocina. Gabarito na seção final.
+
+* Loops e Condicionais
+
+** for
+
+#+BEGIN_SRC python
+frutas = ["maçã", "banana", "laranja"]
+
+for fruta in frutas:
+    print(f"Eu gosto de {fruta}")
+
+# for com enumerate — índice + valor
+for i, fruta in enumerate(frutas):
+    print(f"{i}: {fruta}")
+
+# for com dicionários
+for chave, valor in pessoa.items():
+    print(f"{chave}: {valor}")
+#+END_SRC
+
+** if / elif / else
+
+#+BEGIN_SRC python
+def classificar_token(qtd):
+    if qtd < 100:
+        return "curto"
+    elif qtd < 500:
+        return "médio"
+    else:
+        return "longo"
+
+print(classificar_token(50))    # "curto"
+print(classificar_token(200))   # "médio"
+print(classificar_token(1000))  # "longo"
+#+END_SRC
+
+** List comprehension
+
+Criar listas de forma concisa — o idioma Pythonic:
+
+#+BEGIN_SRC python
+numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+# Forma tradicional
+pares_trad = []
+for n in numeros:
+    if n % 2 == 0:
+        pares_trad.append(n)
+
+# List comprehension (mesmo resultado, mais Pythonic)
+pares = [n for n in numeros if n % 2 == 0]
+print(pares)  # [2, 4, 6, 8, 10]
+#+END_SRC
+
+** Aplicação: extrair campos de mensagens
+
+#+BEGIN_SRC python
+mensagens = [
+    {"role": "user", "content": "Oi"},
+    {"role": "assistant", "content": "Olá!"},
+    {"role": "user", "content": "Tudo bem?"}
+]
+
+conteudos = [msg["content"] for msg in mensagens]
+print(conteudos)  # ['Oi', 'Olá!', 'Tudo bem?']
+#+END_SRC
+
+* Setup local (opcional, para quem quiser sair do Colab)
+
+O notebook roda 100% no Google Colab. Se quiser testar localmente na sua máquina:
+
+#+BEGIN_SRC shell
+# Instale o Ollama (Linux/macOS)
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Baixe o modelo do curso (roda até em notebook simples)
+ollama pull gemma4:e2b-it-qat
+#+END_SRC
+
+#+begin_quote
+No Colab o Ollama já vem pronto — local-first desde a primeira aula.
+#+end_quote
+
+* Para lembrar
+
+#+begin_quote
+"Python é a ferramenta.
+O LLM é o cérebro.
+A API é a ponte entre eles."
+#+end_quote
+
+- *Variáveis, listas, dicts, funções* → base Python
+- *Mensagens de LLM = lista de dicts* → a estrutura essencial
+- *JSON* → o formato que APIs entendem
+- *Próxima aula (09/10)* → requisições HTTP, chat com LLM local e chat com memória!
+
+* ⚠️ Gabaritos
+
+** 🧪 Conversa como lista de dicts
+
+#+BEGIN_SRC python
+conversa = [
+    {"role": "system",
+     "content": "Você é um assistente que responde em português."},
+    {"role": "user", "content": "Qual a capital de Minas Gerais?"},
+    {"role": "assistant",
+     "content": "A capital de Minas Gerais é Belo Horizonte."}
+]
+
+print(conversa[2]["content"])
+#+END_SRC
+
+** 🧪 criar_mensagem_usuario
+
+#+BEGIN_SRC python
+def criar_mensagem_usuario(texto):
+    """Retorna um dicionário no formato role/content."""
+    return {"role": "user", "content": texto}
+#+END_SRC
+
+** 🧪 Extração de JSON
+
+#+BEGIN_SRC python
+resultado = json.loads(dados_modelo)
+nome = resultado["name"]
+params = resultado["spec"]["parameters"]
+linguas = resultado["spec"]["languages"]
+raciocina = resultado["spec"]["capabilities"]["reasoning"]
+#+END_SRC
