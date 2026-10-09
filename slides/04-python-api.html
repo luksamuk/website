@@ -29,27 +29,14 @@
 <body>
 <div class="reveal">
 <div class="slides">
-<section id="sec-title-slide" data-background="./slide_04.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Python + API de LLM</h2><br/><p style="font-size:0.85em;opacity:0.8;">Conectando com modelos</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
+<section id="sec-title-slide" data-background="./slide_04.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Python + API de LLM</h2><br/><p style="font-size:0.85em;opacity:0.8;">Conectando com modelos locais</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 </section>
 <section>
-<section id="slide-orgeb0b4c9">
-<h2 id="orgeb0b4c9">📰 Fofocas da Semana</h2>
-<ul style="font-size:0.6em;text-align:left;">
-<li><b>Gemini 3.5 Flash</b> (19/mai) — Google I/O: 4x mais rápido que 3.1 Pro em agentes/coding, já default no app</li>
-<li><b>Qwen 3.7 Max</b> (20/mai) — modelo agêntico da Alibaba, foco em execução autônoma longa</li>
-<li><b>Microsoft cancela Claude Code</b> — billing por token inviável, Uber queimou orçamento 2026 em semanas</li>
-<li><b>Tencent Hy-MT2</b> — tradução 1.8B: 67 tok/s vs TranslateGemma 4B: 46 tok/s (testamos ontem!)</li>
-
-</ul>
-</section>
-</section>
-<section>
-<section id="slide-org89a07ae">
-<h2 id="org89a07ae">Recap: Semana 03</h2>
+<section id="slide-orgcd8e7aa">
+<h2 id="orgcd8e7aa">Recap: Semana 04</h2>
 <ul>
-<li class="fragment appear">Variáveis, listas, dicionários</li>
-<li class="fragment appear">Funções com estado (sem classes!)</li>
-<li class="fragment appear">Strings, JSON, loops e condicionais</li>
+<li class="fragment appear">Variáveis, listas, dicionários, funções</li>
+<li class="fragment appear">Loops, condicionais, strings e JSON</li>
 <li class="fragment appear"><b>Mensagens de LLM = lista de dicts</b></li>
 
 </ul>
@@ -62,12 +49,12 @@
 </section>
 </section>
 <section>
-<section id="slide-org9b5e48c">
-<h2 id="org9b5e48c">O que é uma API de LLM?</h2>
+<section id="slide-org1f9e0b2">
+<h2 id="org1f9e0b2">O que é uma API de LLM?</h2>
 <ul>
 <li class="fragment appear">API = garçom entre seu código e o modelo</li>
 <li class="fragment appear">Você manda JSON, recebe JSON</li>
-<li class="fragment appear"><b>Esse padrão é universal</b> — Gemini, Ollama, OpenAI, todos igual</li>
+<li class="fragment appear"><b>Esse padrão é universal</b> — Ollama, llama.cpp, OpenAI, todos igual</li>
 
 </ul>
 
@@ -79,85 +66,49 @@ Entender HTTP = entender todas as APIs de LLM.
 </section>
 </section>
 <section>
-<section id="slide-orga57e163">
-<h2 id="orga57e163">Cloud vs Local</h2>
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" style="font-size:0.7em;">
+<section id="slide-org679e789">
+<h2 id="org679e789">O setup: Ollama</h2>
+<div class="org-src-container">
 
+<pre   ><code class="bash" >curl -fsSL https://ollama.com/install.sh | sh
+ollama pull gemma4:e2b-it-qat
+</code></pre>
+</div>
 
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">Aspecto</th>
-<th scope="col" class="org-left">Cloud (Gemini)</th>
-<th scope="col" class="org-left">Local (Ollama)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">Setup</td>
-<td class="org-left">API key (2 min)</td>
-<td class="org-left">Install + download</td>
-</tr>
-
-<tr>
-<td class="org-left">Velocidade</td>
-<td class="org-left">~100+ tok/s</td>
-<td class="org-left">18-80 tok/s</td>
-</tr>
-
-<tr>
-<td class="org-left">Custos</td>
-<td class="org-left">Grátis com limites</td>
-<td class="org-left">100% grátis</td>
-</tr>
-
-<tr>
-<td class="org-left">Privacidade</td>
-<td class="org-left">Dados vão pro Google</td>
-<td class="org-left">Fica na máquina</td>
-</tr>
-
-<tr>
-<td class="org-left">Internet</td>
-<td class="org-left">Necessária</td>
-<td class="org-left">Não (após setup)</td>
-</tr>
-</tbody>
-</table>
-
-<blockquote >
-<p>
-Recomendação: comece pelo Gemini (rápido), depois experimente Ollama e LM Studio.
-</p>
-</blockquote>
-</section>
-</section>
-<section>
-<section id="slide-org3cfd022">
-<h2 id="org3cfd022">System Prompt e Parâmetros</h2>
 <ul>
-<li class="fragment appear"><b>System prompt</b> → instrução que guia o modelo</li>
-<li class="fragment appear"><b>temperature</b> → 0.0 (determinístico) a 2.0 (criativo)</li>
-<li class="fragment appear"><b>max<sub>tokens</sub></b> → limite de tamanho da resposta</li>
+<li class="fragment appear">Servidor local na porta <b>11434</b></li>
+<li class="fragment appear">Sem API key, sem conta, sem custo</li>
+<li class="fragment appear">Baixou, é seu — roda até sem internet</li>
 
 </ul>
 
 <blockquote >
 <p>
-System prompt = "Você é um tutor de Python." → muda completamente o comportamento.
+No Colab o notebook já faz o setup pra você.
 </p>
 </blockquote>
 </section>
 </section>
 <section>
-<section id="slide-org7a6f80f">
-<h2 id="org7a6f80f">Chat com Memória</h2>
+<section id="slide-org2e1f445">
+<h2 id="org2e1f445">🔴 Demo 1: Colab — Ollama + gemma4</h2>
+<ol>
+<li>Abrir <code>luksamuk.codes/pages/guilda-ia</code> → Semana 05</li>
+<li>Clicar em 📓 <b>Colab</b></li>
+<li>Rodar as células: setup → warm up → chat com memória</li>
+
+</ol>
+
+<blockquote >
+<p>
+Warm up de ~2-3 min na primeira vez. Depois: respostas rápidas.
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org2333628">
+<h2 id="org2333628">Chat com memória</h2>
 <ul>
 <li class="fragment appear">Cada chamada manda o <b>histórico completo</b></li>
 <li class="fragment appear">O modelo não "lembra" — <b>recebe tudo de novo</b></li>
@@ -173,8 +124,75 @@ System prompt = "Você é um tutor de Python." → muda completamente o comporta
 </section>
 </section>
 <section>
-<section id="slide-orgbf7ee0d">
-<h2 id="orgbf7ee0d">Tratamento de Erros</h2>
+<section id="slide-org6415ac9">
+<h2 id="org6415ac9">Direto no motor: llama-server</h2>
+<div class="org-src-container">
+
+<pre   ><code class="bash" >llama-server \
+  --port 8081 \
+  --model ~/.llama-models/lfm2.5-2.6b/LFM2.5-2.6B-QAD-Q4_0.gguf \
+  --fit on --fit-target 512 \
+  --ctx-size 8192 \
+  --jinja \
+  --temp 0.1 --top-p 0.9 --top-k 50 --min-p 0.0 \
+  --repeat-penalty 1.1 \
+  --cache-type-k q4_0 --cache-type-v q4_0 \
+  --flash-attn auto
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org539604e">
+<h2 id="org539604e">O padrão universal: <code>/v1/chat/completions</code></h2>
+<div class="org-src-container">
+
+<pre   ><code class="python" >import requests
+import json
+
+response = requests.post(
+    "http://localhost:12434/v1/chat/completions",
+    json={
+        "model": "lfm2.5-2.6b",
+        "messages": [
+            {"role": "system", "content": "..."},
+            {"role": "user", "content": "O que é Python?"}
+        ],
+        "temperature": 0.7,
+        "max_tokens": 8192
+    }
+)
+
+response_dict = response.json()
+print(json.dumps(response_dict, indent=2, sort_keys=True))
+</code></pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgf0a8774">
+<h2 id="orgf0a8774">Um código, N servidores</h2>
+<div class="org-src-container">
+
+<pre   ><code class="python" >requests.post(url, json=payload)
+</code></pre>
+</div>
+
+<ul>
+<li><b>O payload é idêntico. O HTTP não sabe a diferença.</b></li>
+
+</ul>
+
+<blockquote >
+<p>
+Ferramentas como o llama-swap trocam de modelo a quente.
+</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org299f84c">
+<h2 id="org299f84c">Tratamento de Erros</h2>
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" style="font-size:0.7em;">
 
 
@@ -194,9 +212,15 @@ System prompt = "Você é um tutor de Python." → muda completamente o comporta
 </thead>
 <tbody>
 <tr>
-<td class="org-right">401</td>
-<td class="org-left">Não autorizado</td>
-<td class="org-left">Verificar API key</td>
+<td class="org-right">ConnectionError</td>
+<td class="org-left">Servidor não existe</td>
+<td class="org-left">Subir o servidor!</td>
+</tr>
+
+<tr>
+<td class="org-right">404</td>
+<td class="org-left">Modelo não encontrado</td>
+<td class="org-left">Conferir em <code>/api/tags</code></td>
 </tr>
 
 <tr>
@@ -208,76 +232,25 @@ System prompt = "Você é um tutor de Python." → muda completamente o comporta
 <tr>
 <td class="org-right">500</td>
 <td class="org-left">Erro do servidor</td>
-<td class="org-left">Tentar mais tarde</td>
-</tr>
-
-<tr>
-<td class="org-right">503</td>
-<td class="org-left">Indisponível</td>
-<td class="org-left">Servidor sobrecarregado</td>
+<td class="org-left">Conferir payload</td>
 </tr>
 </tbody>
 </table>
 
 <blockquote >
 <p>
-Na apostila: <code>chamar_api()</code> com retry automático e backoff.
+Erro clássico: esquecer de subir o servidor antes da requisição.
 </p>
 </blockquote>
 </section>
 </section>
 <section>
-<section id="slide-orge5cc0c5">
-<h2 id="orge5cc0c5">🔴 Demo 1: Gemini API (Cloud)</h2>
+<section id="slide-orgda1bf3c">
+<h2 id="orgda1bf3c">Exercícios</h2>
 <ol>
-<li>Abrir <code>luksamuk.codes/pages/guilda-ia</code> → Semana 04</li>
-<li>Clicar em 📓 <b><b>Colab Gemini</b></b></li>
-<li>Rodar as células: API key, chat, system prompt</li>
-
-</ol>
-
-<blockquote >
-<p>
-Gemini = 1M tokens/dia gratuito. Sem GPU, sem instalação.
-</p>
-</blockquote>
-</section>
-</section>
-<section>
-<section id="slide-org4562b62">
-<h2 id="org4562b62">🔴 Demo 2: Ollama no Colab (Local)</h2>
-<ol>
-<li>No mesmo site → 📓 <b><b>Colab Ollama</b></b></li>
-<li>Mudar runtime pra T4 GPU</li>
-<li>Rodar setup → warm up (~2-3 min) → chat</li>
-
-</ol>
-
-<blockquote >
-<p>
-Warm up é de ~2-3 min na primeira vez. Depois: ~80 tok/s com Qwen 3.5 4B.
-</p>
-</blockquote>
-</section>
-</section>
-<section>
-<section id="slide-orgeecabf0">
-<h2 id="orgeecabf0">🔴 Demo 3: Terminal — Ollama, LM Studio, llama-swap</h2>
-<ol>
-<li>Abrir <code>chat.py</code> no editor</li>
-<li><code>uv run chat.py</code> — mesma requisição, 3 backends</li>
-<li><b>Mesmo código, mesma API, só muda a URL</b></li>
-
-</ol>
-</section>
-</section>
-<section>
-<section id="slide-org4fbfdd6">
-<h2 id="org4fbfdd6">Exercícios</h2>
-<ol>
-<li>Função <code>perguntar()</code> que funciona com qualquer API</li>
+<li>Função <code>perguntar()</code> universal (só muda a URL)</li>
 <li>Chat com memória (dicts, sem classes)</li>
-<li>Trocar de provedor (Gemini → Ollama → LM Studio)</li>
+<li>Dois servidores, mesma requisição</li>
 <li>Tratamento de erros com <code>try/except</code></li>
 
 </ol>
@@ -290,20 +263,19 @@ Todos os exercícios estão na apostila com gabarito.
 </section>
 </section>
 <section>
-<section id="slide-org05fb584">
-<h2 id="org05fb584">Para a próxima aula</h2>
+<section id="slide-org604ec91">
+<h2 id="org604ec91">Para a próxima aula</h2>
 <ul>
-<li class="fragment appear">Ter uma conta Google funcionando</li>
-<li class="fragment appear">Ter API key do Gemini</li>
-<li class="fragment appear">Começar a criar seus próprios códigos — Colab ou local, você escolhe</li>
-<li class="fragment appear"><b>Próxima aula:</b> vamos construir nosso primeiro agente!</li>
+<li class="fragment appear">Ter o Ollama instalado (local) — ou usar o Colab</li>
+<li class="fragment appear"><b>Nenhuma API key necessária</b> — o modelo é seu</li>
+<li class="fragment appear"><b>Próxima aula:</b> Estrutura de um agente!</li>
 
 </ul>
 </section>
 </section>
 <section>
-<section id="slide-orgef0f9d6" data-background="./slide_04.gif">
-<h2 id="orgef0f9d6">Perguntas?</h2>
+<section id="slide-org6ee4c0a" data-background="./slide_04.gif">
+<h2 id="org6ee4c0a">Perguntas?</h2>
 </section>
 </section>
 </div>

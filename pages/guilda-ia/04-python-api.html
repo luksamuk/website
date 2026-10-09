@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Python e APIs: Ferramentas do Ofício</title>
 <meta name="author" content="Lucas S. Vieira" />
-<meta name="description" content="Semana 4 - Guilda de IA: APIs de LLM com Python
+<meta name="description" content="Semana 5 - Guilda de IA: APIs de LLM locais com Python (Ollama e servidores llama.cpp)
 Material didático do curso de IA Generativa da Guilda de IA" />
 <meta name="generator" content="Org Mode" />
 <style type="text/css">
@@ -215,14 +215,14 @@ gtag('config', 'G-22RF3F5XE0');
 <meta property="og:url" content="https://luksamuk.codes/pages/guilda-ia/04-python-api.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Python e APIs: Ferramentas do Ofício">
-<meta property="og:description" content="Semana 4 - Guilda de IA: APIs de LLM com Python
+<meta property="og:description" content="Semana 5 - Guilda de IA: APIs de LLM locais com Python (Ollama e servidores llama.cpp)
 Material didático do curso de IA Generativa da Guilda de IA">
 <meta property="og:image" content="https://luksamuk.codes/img/banner-full.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:domain" content="luksamuk.codes">
 <meta name="twitter:url" content="https://luksamuk.codes/pages/guilda-ia/04-python-api.html">
 <meta name="twitter:title" content="Python e APIs: Ferramentas do Ofício">
-<meta name="twitter:description" content="Semana 4 - Guilda de IA: APIs de LLM com Python
+<meta name="twitter:description" content="Semana 5 - Guilda de IA: APIs de LLM locais com Python (Ollama e servidores llama.cpp)
 Material didático do curso de IA Generativa da Guilda de IA">
 <meta name="twitter:image" content="https://luksamuk.codes/img/banner.png">
 </head>
@@ -231,34 +231,45 @@ Material didático do curso de IA Generativa da Guilda de IA">
 <div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">Python e APIs: Ferramentas do Ofício</h1>
 </div>
 <div id="content" class="content">
-<div id="outline-container-org7aec765" class="outline-2">
-<h2 id="org7aec765">Continuação: Python e APIs</h2>
-<div class="outline-text-2" id="text-org7aec765">
+<div id="outline-container-org0844dc2" class="outline-2">
+<h2 id="org0844dc2">Continuação: Python e APIs</h2>
+<div class="outline-text-2" id="text-org0844dc2">
 <p>
-Na semana passada (<a href="./03-python-minimo.html">Python Mínimo</a>), aprendemos os fundamentos de Python: variáveis, listas, dicionários, funções e tratamento de erros. Também vimos conceitos de API e arquitetura cliente-servidor.
-</p>
-
-<p>
-Agora vamos colocar a mão na massa: conectar nosso código Python a modelos de linguagem reais usando APIs.
-</p>
-</div>
-</div>
-<div id="outline-container-org80a41f7" class="outline-2">
-<h2 id="org80a41f7">Preparação e Setup</h2>
-<div class="outline-text-2" id="text-org80a41f7">
-<p>
-Antes de escrever qualquer código, precisamos preparar o ambiente. O conceito-chave desta aula é:
+Na semana passada (<a href="./03-python-minimo.html">Python Mínimo</a>), montamos a base: variáveis, listas, dicionários e funções. E vimos a estrutura mais importante desta aula:
 </p>
 
 <blockquote>
 <p>
-<b>Toda API de LLM funciona com o mesmo padrão:</b> você manda um JSON via HTTP e recebe um JSON de volta. Muda a URL, muda o formato, mas o conceito é universal. Entender HTTP = entender todas as APIs de LLM.
+<b>Mensagens de LLM = lista de dicionários</b> com <code>role</code> e <code>content</code>.
 </p>
 </blockquote>
+
+<p>
+Hoje o Python <b>conversa de verdade</b> com o modelo — e tudo roda na sua própria máquina.
+</p>
 </div>
-<div id="outline-container-org8f0e809" class="outline-3">
-<h3 id="org8f0e809">O que você precisa ter</h3>
-<div class="outline-text-3" id="text-org8f0e809">
+</div>
+<div id="outline-container-org2e2a8c6" class="outline-2">
+<h2 id="org2e2a8c6">O conceito universal: HTTP request/response</h2>
+<div class="outline-text-2" id="text-org2e2a8c6">
+<p>
+Toda API de LLM funciona com o mesmo padrão, chame ela do nome que chamar:
+</p>
+
+<blockquote>
+<p>
+Você manda um JSON via HTTP e recebe um JSON de volta. Muda a URL, muda um detalhe do formato, mas o conceito é universal. Entender HTTP = entender <b>todas</b> as APIs de LLM.
+</p>
+</blockquote>
+
+<p>
+Pense num garçom: você entrega o pedido (request) e recebe o prato (response). O garçom não cozinha — ele transporta.
+</p>
+</div>
+</div>
+<div id="outline-container-orgb51b54e" class="outline-2">
+<h2 id="orgb51b54e">O que você precisa ter</h2>
+<div class="outline-text-2" id="text-orgb51b54e">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -272,39 +283,39 @@ Antes de escrever qualquer código, precisamos preparar o ambiente. O conceito-c
 <thead>
 <tr>
 <th scope="col" class="org-left">Item</th>
-<th scope="col" class="org-left">Cloud (Gemini)</th>
-<th scope="col" class="org-left">Local (Ollama)</th>
+<th scope="col" class="org-left">Ollama (local)</th>
+<th scope="col" class="org-left">Ollama no Colab</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="org-left">Conta Google</td>
-<td class="org-left">✅ Obrigatório</td>
+<td class="org-left">API key</td>
+<td class="org-left">❌ Não precisa</td>
 <td class="org-left">❌ Não precisa</td>
 </tr>
 
 <tr>
-<td class="org-left">GPU</td>
-<td class="org-left">❌ Não precisa</td>
-<td class="org-left">✅ Recomendado (T4 ou superior)</td>
+<td class="org-left">Conta em serviço</td>
+<td class="org-left">❌ Nenhuma</td>
+<td class="org-left">Só a conta Google pro Colab</td>
 </tr>
 
 <tr>
 <td class="org-left">Internet</td>
-<td class="org-left">✅ Sempre</td>
 <td class="org-left">⚠️ Só pra baixar o modelo</td>
+<td class="org-left">Sempre (Colab é cloud)</td>
 </tr>
 
 <tr>
-<td class="org-left">API key</td>
-<td class="org-left">✅ Sim (grátis)</td>
-<td class="org-left">❌ Não precisa</td>
+<td class="org-left">GPU</td>
+<td class="org-left">Opcional (roda em CPU)</td>
+<td class="org-left">T4 do Colab free</td>
 </tr>
 
 <tr>
 <td class="org-left">Python 3.10+</td>
 <td class="org-left">✅ Sim</td>
-<td class="org-left">✅ Sim</td>
+<td class="org-left">✅ Sim (vem pronto)</td>
 </tr>
 
 <tr>
@@ -317,900 +328,116 @@ Antes de escrever qualquer código, precisamos preparar o ambiente. O conceito-c
 
 <blockquote>
 <p>
-<b>Recomendação:</b> Comece pelo Gemini (setup rápido, sem GPU). Depois experimente o Ollama no Colab para entender como funciona localmente.
+<b>Zero API key, zero conta de provedor, zero custo.</b> O modelo é baixado uma vez e roda na máquina — o oposto do cloud, onde os dados saem da sua rede.
 </p>
 </blockquote>
 </div>
 </div>
-<div id="outline-container-org3bdafdb" class="outline-3">
-<h3 id="org3bdafdb">Conta Google e API key do Gemini</h3>
-<div class="outline-text-3" id="text-org3bdafdb">
-
-<div id="org00301d9" class="figure">
-<p><img src="./img/s04-aistudio-home.png" alt="s04-aistudio-home.png" />
+<div id="outline-container-org12ea86a" class="outline-2">
+<h2 id="org12ea86a">Setup: Ollama</h2>
+<div class="outline-text-2" id="text-org12ea86a">
+<p>
+O Ollama é um servidor que roda modelos de linguagem na sua máquina. Em quatro passos:
 </p>
-<p><span class="figure-number">Figura 1: </span>Google AI Studio — Playground principal</p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">1. Instalar (Linux/macOS)
+</span>curl -fsSL https://ollama.com/install.sh | sh
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">2. Baixar o modelo do curso (~2-3 GB, roda at&#233; em notebook simples)
+</span>ollama pull gemma4:e2b-it-qat
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">3. Conferir o que est&#225; instalado
+</span>ollama list
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">4. Conversar via terminal (teste r&#225;pido, sem c&#243;digo!)
+</span>ollama run gemma4:e2b-it-qat
+</pre>
 </div>
 
-<ol class="org-ol">
-<li>Acesse o Google AI Studio: <a href="https://aistudio.google.com">https://aistudio.google.com</a></li>
-<li>Faça login com sua conta Google</li>
-<li>No menu lateral, clique em <b>"Get API Key"</b></li>
-</ol>
-
-
-<div id="org54821db" class="figure">
-<p><img src="./img/s04-aistudio-apikey-page.png" alt="s04-aistudio-apikey-page.png" />
+<p>
+Depois disso, o Ollama fica servindo na porta <b>11434</b>. Qualquer programa pode mandar requisições HTTP pra <code>http://localhost:11434</code> e conversar com o modelo.
 </p>
-<p><span class="figure-number">Figura 2: </span>Página de gerenciamento de chaves de API</p>
-</div>
-
-<ol class="org-ol">
-<li>Clique em <b>"Criar chave de API"</b></li>
-</ol>
-
-
-<div id="org8c93c72" class="figure">
-<p><img src="./img/s04-aistudio-create-dialog.png" alt="s04-aistudio-create-dialog.png" />
-</p>
-<p><span class="figure-number">Figura 3: </span>Dialog para criar uma nova chave</p>
-</div>
-
-<ol class="org-ol">
-<li>Escolha um projeto do Google Cloud (ou crie um novo)</li>
-<li><b>Copie a chave e guarde bem!</b></li>
-</ol>
-
-
-<div id="orgd1da777" class="figure">
-<p><img src="./img/s04-apikey-created.png" alt="s04-apikey-created.png" />
-</p>
-<p><span class="figure-number">Figura 4: </span>Chave criada — copie e armazene em local seguro!</p>
-</div>
 
 <blockquote>
 <p>
-⚠️ API key é <b><b>SECRETA</b></b>. Nunca compartilhe, nunca publique no GitHub, nunca cole em chat público.
+No <b>Colab</b>, o notebook desta aula (<a href="https://colab.research.google.com/github/luksamuk/guilda-ia/blob/main/notebooks/aula04.ipynb">📓 abrir o Colab</a>) faz o setup por você: T4 GPU, instalação e download já estão nas células. A primeira inferência demora ~2-3 min (warm up — o modelo carrega na GPU) e depois as respostas ficam rápidas.
 </p>
 </blockquote>
 </div>
 </div>
-<div id="outline-container-org4655016" class="outline-3">
-<h3 id="org4655016">Google Colab</h3>
-<div class="outline-text-3" id="text-org4655016">
+<div id="outline-container-org3fef669" class="outline-2">
+<h2 id="org3fef669">A API nativa do Ollama: <code>/api/chat</code></h2>
+<div class="outline-text-2" id="text-org3fef669">
 <p>
-O Colab é um ambiente Python gratuito no navegador que vamos usar durante a aula.
-</p>
-
-<ul class="org-ul">
-<li>Acesse: <a href="https://colab.research.google.com">https://colab.research.google.com</a></li>
-<li>Crie um novo notebook (<code>Arquivo → Novo notebook</code>)</li>
-<li>Para usar GPU: <code>Runtime → Change runtime type → T4 GPU</code> (necessário para Ollama)</li>
-<li>Para guardar a API key com segurança: use o <b>Secrets</b> do Colab (<code>🔑 ícone na barra lateral</code>)</li>
-</ul>
-
-<blockquote>
-<p>
-<b>Onde guardar a API key no Colab:</b> No painel lateral, clique no ícone 🔑 (Secrets). Adicione uma chave chamada <code>GEMINI_API_KEY</code> com o valor da sua API key. Nunca escreva a chave diretamente no código!
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-orga2fdb6f" class="outline-3">
-<h3 id="orga2fdb6f">Instalando dependências</h3>
-<div class="outline-text-3" id="text-orga2fdb6f">
-<p>
-No Colab ou local, você vai precisar de:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Cloud (Gemini) &#8212; SDK oficial do Google
-</span>pip install google<span class="org-operator">-</span>genai
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Local (Ollama) &#8212; apenas requests, que j&#225; vem com Python
-</span>pip install requests
-</pre>
-</div>
-
-<blockquote>
-<p>
-<b>No Colab:</b> Use <code>!pip install</code> (com exclamação) no início da célula. Locally, use o terminal normalmente.
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-org7e69bcb" class="outline-3">
-<h3 id="org7e69bcb">Outras opções (referência)</h3>
-<div class="outline-text-3" id="text-org7e69bcb">
-<p>
-Além de Gemini e Ollama, existem outros provedores que usam o mesmo padrão HTTP:
-</p>
-
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">Provedor</th>
-<th scope="col" class="org-left">Gratuito?</th>
-<th scope="col" class="org-left">API key</th>
-<th scope="col" class="org-left">Observação</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">HuggingFace</td>
-<td class="org-left">Rate limit</td>
-<td class="org-left">Sim (HF Token)</td>
-<td class="org-left">Vários modelos, bom para experimentar</td>
-</tr>
-
-<tr>
-<td class="org-left">OpenRouter</td>
-<td class="org-left">Crédito inicial</td>
-<td class="org-left">Sim</td>
-<td class="org-left">Agregador de modelos, tem modelos <code>:free</code></td>
-</tr>
-
-<tr>
-<td class="org-left">Nous Portal</td>
-<td class="org-left">Rate limit</td>
-<td class="org-left">Sim</td>
-<td class="org-left">Acesso a modelos da Nous Research</td>
-</tr>
-
-<tr>
-<td class="org-left">OpenCode Go</td>
-<td class="org-left">—</td>
-<td class="org-left">Sim</td>
-<td class="org-left">CLI/SDK para múltiplos provedores</td>
-</tr>
-
-<tr>
-<td class="org-left">OpenAI</td>
-<td class="org-left">❌ Pago</td>
-<td class="org-left">Sim</td>
-<td class="org-left">Referência de mercado, custo por uso</td>
-</tr>
-
-<tr>
-<td class="org-left">LM Studio</td>
-<td class="org-left">Ilimitado</td>
-<td class="org-left">Não (local)</td>
-<td class="org-left">Interface gráfica, mesma API do Ollama</td>
-</tr>
-</tbody>
-</table>
-
-<blockquote>
-<p>
-Esses provedores são <b>opções extras para quem quiser explorar depois</b>. Na aula, vamos focar em <b><b>Gemini</b></b> (cloud) e <b><b>Ollama</b></b> (local).
-</p>
-</blockquote>
-</div>
-</div>
-</div>
-<div id="outline-container-org948baf2" class="outline-2">
-<h2 id="org948baf2">Opção 1: Google Gemini (Cloud)</h2>
-<div class="outline-text-2" id="text-org948baf2">
-</div>
-<div id="outline-container-orgc6dc0c7" class="outline-3">
-<h3 id="orgc6dc0c7">Por que Gemini?</h3>
-<div class="outline-text-3" id="text-orgc6dc0c7">
-<ul class="org-ul">
-<li><b><b>1 milhão de tokens/dia gratuito</b></b></li>
-<li>Funciona direto no Google Colab, sem GPU</li>
-<li>Modelos rápidos e capazes</li>
-<li>API key gratuita</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-org9f20a45" class="outline-3">
-<h3 id="org9f20a45">Modelos disponíveis</h3>
-<div class="outline-text-3" id="text-org9f20a45">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">Modelo</th>
-<th scope="col" class="org-left">Contexto</th>
-<th scope="col" class="org-left">Uso</th>
-<th scope="col" class="org-left">Gratuito?</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">gemini-2.5-flash-preview</td>
-<td class="org-left">1M tokens</td>
-<td class="org-left">Rápido, custo-benefício</td>
-<td class="org-left">Sim (limitado)</td>
-</tr>
-
-<tr>
-<td class="org-left">gemini-2.0-flash</td>
-<td class="org-left">1M tokens</td>
-<td class="org-left">Equilibrado, recomendado</td>
-<td class="org-left">Sim (limitado)</td>
-</tr>
-
-<tr>
-<td class="org-left">gemini-2.0-flash-lite</td>
-<td class="org-left">1M tokens</td>
-<td class="org-left">Mais rápido, menor</td>
-<td class="org-left">Sim (limitado)</td>
-</tr>
-
-<tr>
-<td class="org-left">gemini-1.5-pro</td>
-<td class="org-left">2M tokens</td>
-<td class="org-left">Complexo, contexto longo</td>
-<td class="org-left">Sim (limitado)</td>
-</tr>
-
-<tr>
-<td class="org-left">gemini-1.5-flash</td>
-<td class="org-left">1M tokens</td>
-<td class="org-left">Rápido, multimodal</td>
-<td class="org-left">Sim (limitado)</td>
-</tr>
-</tbody>
-</table>
-
-<blockquote>
-<p>
-<b>Limite gratuito:</b> ~1 milhão de tokens/dia para muitos modelos. Verifique em ai.google.dev/pricing
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-orgae67e0f" class="outline-3">
-<h3 id="orgae67e0f">Como escolher o modelo</h3>
-<div class="outline-text-3" id="text-orgae67e0f">
-<ul class="org-ul">
-<li><b>gemini-2.0-flash:</b> Recomendado para maioria dos casos</li>
-<li><b>gemini-2.5-flash-preview:</b> Mais recente, mais inteligente</li>
-<li><b>gemini-1.5-pro:</b> Para contexto muito longo (documentos grandes)</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-orge12e71f" class="outline-3">
-<h3 id="orge12e71f">Configuração no Colab</h3>
-<div class="outline-text-3" id="text-orge12e71f">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Instalar SDK
-</span>!pip install google<span class="org-operator">-</span>genai
-
-<span class="org-keyword">from</span> google <span class="org-keyword">import</span> genai
-<span class="org-keyword">from</span> google.genai <span class="org-keyword">import</span> types
-<span class="org-keyword">import</span> os
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Configurar API key (novo SDK: usar Client)
-</span><span class="org-keyword">from</span> google.colab <span class="org-keyword">import</span> userdata
-<span class="org-variable-name">client</span> <span class="org-operator">=</span> genai.Client(api_key<span class="org-operator">=</span>userdata.get(<span class="org-string">'GEMINI_API_KEY'</span>))
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-orgcac434c" class="outline-3">
-<h3 id="orgcac434c">Chamada básica</h3>
-<div class="outline-text-3" id="text-orgcac434c">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Mensagem simples (novo SDK)
-</span><span class="org-variable-name">response</span> <span class="org-operator">=</span> client.models.generate_content(
-    model<span class="org-operator">=</span><span class="org-string">"gemini-2.0-flash"</span>,
-    contents<span class="org-operator">=</span><span class="org-string">"Ol&#225;! Qual &#233; a capital do Brasil?"</span>
-)
-<span class="org-builtin">print</span>(response.text)
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Com hist&#243;rico de conversa (chat)
-</span><span class="org-variable-name">chat</span> <span class="org-operator">=</span> client.chats.create(model<span class="org-operator">=</span><span class="org-string">"gemini-2.0-flash"</span>)
-<span class="org-variable-name">response1</span> <span class="org-operator">=</span> chat.send_message(<span class="org-string">"Ol&#225;!"</span>)
-<span class="org-builtin">print</span>(response1.text)
-
-<span class="org-variable-name">response2</span> <span class="org-operator">=</span> chat.send_message(<span class="org-string">"Qual &#233; a capital do Brasil?"</span>)
-<span class="org-builtin">print</span>(response2.text)
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-org7528a9f" class="outline-3">
-<h3 id="org7528a9f">Estrutura da mensagem completa</h3>
-<div class="outline-text-3" id="text-org7528a9f">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Com instru&#231;&#245;es de sistema (novo SDK)
-</span><span class="org-variable-name">response</span> <span class="org-operator">=</span> client.models.generate_content(
-    model<span class="org-operator">=</span><span class="org-string">"gemini-2.0-flash"</span>,
-    contents<span class="org-operator">=</span><span class="org-string">"O que &#233; uma lista?"</span>,
-    config<span class="org-operator">=</span>types.GenerateContentConfig(
-        system_instruction<span class="org-operator">=</span><span class="org-string">"Voc&#234; &#233; um tutor de Python. Responda de forma did&#225;tica."</span>
-    )
-)
-<span class="org-builtin">print</span>(response.text)
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-orgded560f" class="outline-3">
-<h3 id="orgded560f">Parâmetros importantes</h3>
-<div class="outline-text-3" id="text-orgded560f">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Novo SDK: usar types.GenerateContentConfig
-</span><span class="org-variable-name">response</span> <span class="org-operator">=</span> client.models.generate_content(
-    model<span class="org-operator">=</span><span class="org-string">"gemini-2.0-flash"</span>,
-    contents<span class="org-operator">=</span><span class="org-string">"Conte uma piada"</span>,
-    config<span class="org-operator">=</span>types.GenerateContentConfig(
-        temperature<span class="org-operator">=</span>0.7,        <span class="org-comment-delimiter"># </span><span class="org-comment">0.0 (determin&#237;stico) a 2.0 (criativo)
-</span>        max_output_tokens<span class="org-operator">=</span>100,  <span class="org-comment-delimiter"># </span><span class="org-comment">Limite de tokens na resposta
-</span>        top_p<span class="org-operator">=</span>0.95,             <span class="org-comment-delimiter"># </span><span class="org-comment">Nucleus sampling
-</span>        top_k<span class="org-operator">=</span>40                <span class="org-comment-delimiter"># </span><span class="org-comment">Top-k sampling
-</span>    )
-)
-<span class="org-builtin">print</span>(response.text)
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-orge1f652e" class="outline-3">
-<h3 id="orge1f652e">Tratamento de erros</h3>
-<div class="outline-text-3" id="text-orge1f652e">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-keyword">from</span> google.api_core.exceptions <span class="org-keyword">import</span> NotFound, PermissionDenied, ResourceExhausted
-
-<span class="org-keyword">try</span>:
-    <span class="org-variable-name">response</span> <span class="org-operator">=</span> client.models.generate_content(
-        model<span class="org-operator">=</span><span class="org-string">"gemini-2.0-flash"</span>,
-        contents<span class="org-operator">=</span><span class="org-string">"Ol&#225;!"</span>
-    )
-    <span class="org-builtin">print</span>(response.text)
-<span class="org-keyword">except</span> PermissionDenied:
-    <span class="org-builtin">print</span>(<span class="org-string">"&#10060; API key inv&#225;lida ou sem permiss&#227;o"</span>)
-<span class="org-keyword">except</span> ResourceExhausted:
-    <span class="org-builtin">print</span>(<span class="org-string">"&#9888;&#65039; Limite de tokens excedido. Aguarde."</span>)
-<span class="org-keyword">except</span> NotFound:
-    <span class="org-builtin">print</span>(<span class="org-string">"&#10060; Modelo n&#227;o encontrado"</span>)
-<span class="org-keyword">except</span> <span class="org-type">Exception</span> <span class="org-keyword">as</span> e:
-    <span class="org-builtin">print</span>(f<span class="org-string">"Erro: </span>{e}<span class="org-string">"</span>)
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-orgc351d00" class="outline-3">
-<h3 id="orgc351d00">Exemplo completo no Colab</h3>
-<div class="outline-text-3" id="text-orgc351d00">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">Instalar SDK
-</span>!pip install google<span class="org-operator">-</span>genai
-
-<span class="org-keyword">from</span> google <span class="org-keyword">import</span> genai
-<span class="org-keyword">from</span> google.genai <span class="org-keyword">import</span> types
-<span class="org-keyword">from</span> google.colab <span class="org-keyword">import</span> userdata
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Configurar (novo SDK)
-</span><span class="org-variable-name">client</span> <span class="org-operator">=</span> genai.Client(api_key<span class="org-operator">=</span>userdata.get(<span class="org-string">'GEMINI_API_KEY'</span>))
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Criar chat
-</span><span class="org-variable-name">chat</span> <span class="org-operator">=</span> client.chats.create(model<span class="org-operator">=</span><span class="org-string">"gemini-2.0-flash"</span>)
-
-<span class="org-keyword">while</span> <span class="org-constant">True</span>:
-    <span class="org-variable-name">pergunta</span> <span class="org-operator">=</span> <span class="org-builtin">input</span>(<span class="org-string">"Voc&#234;: "</span>)
-    <span class="org-keyword">if</span> pergunta.lower() <span class="org-keyword">in</span> [<span class="org-string">'sair'</span>, <span class="org-string">'exit'</span>, <span class="org-string">'quit'</span>]:
-        <span class="org-keyword">break</span>
-
-    <span class="org-variable-name">resposta</span> <span class="org-operator">=</span> chat.send_message(pergunta)
-    <span class="org-builtin">print</span>(f<span class="org-string">"IA: </span>{resposta.text}<span class="org-constant">\n</span><span class="org-string">"</span>)
-</pre>
-</div>
-</div>
-</div>
-</div>
-<div id="outline-container-org89595c5" class="outline-2">
-<h2 id="org89595c5">Opção 2: Ollama no Google Colab (Local)</h2>
-<div class="outline-text-2" id="text-org89595c5">
-</div>
-<div id="outline-container-org29fc0b7" class="outline-3">
-<h3 id="org29fc0b7">Por que Ollama?</h3>
-<div class="outline-text-3" id="text-org29fc0b7">
-<ul class="org-ul">
-<li><b><b>Gratuito e ilimitado</b></b> — sem API key, sem limite de tokens</li>
-<li><b><b>Privacidade</b></b> — dados não saem da máquina</li>
-<li><b><b>API REST HTTP</b></b> — usa <code>requests.post()</code>, o mesmo padrão que qualquer API</li>
-<li><b><b>OpenAI-compatible</b></b> — <code>/v1/chat/completions</code> funciona como a API da OpenAI</li>
-</ul>
-
-<blockquote>
-<p>
-<b>Ponto pedagógico:</b> Tanto Gemini quanto Ollama usam o mesmo padrão HTTP (request/response). A URL muda, o JSON muda um pouco, mas o conceito é universal. Entender HTTP = entender todas as APIs de LLM.
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-org37f8e99" class="outline-3">
-<h3 id="org37f8e99">O que é Ollama?</h3>
-<div class="outline-text-3" id="text-org37f8e99">
-<p>
-Ollama é um servidor que roda modelos de linguagem localmente. Na prática:
-</p>
-
-<ol class="org-ol">
-<li>Você instala o Ollama</li>
-<li>Baixa um modelo (<code>ollama pull gemma4:e2b</code>)</li>
-<li>O Ollama fica servindo na porta 11434</li>
-<li>Qualquer programa pode fazer <code>requests.post()</code> para conversar com o modelo</li>
-</ol>
-</div>
-</div>
-<div id="outline-container-orgb45fa7d" class="outline-3">
-<h3 id="orgb45fa7d">Setup no Google Colab</h3>
-<div class="outline-text-3" id="text-orgb45fa7d">
-<p>
-Essas 3 células preparam o ambiente. Execute na ordem:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">C&#233;lula 1: Verificar GPU
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">V&#225; em Runtime &#8594; Change runtime type &#8594; T4 GPU
-</span>!nvidia<span class="org-operator">-</span>smi
-</pre>
-</div>
-
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">C&#233;lula 2: Instalar Ollama + depend&#234;ncias
-</span>!apt<span class="org-operator">-</span>get install <span class="org-operator">-</span>y zstd pciutils lshw <span class="org-operator">&gt;</span> <span class="org-operator">/</span>dev<span class="org-operator">/</span>null 2<span class="org-operator">&gt;&amp;</span>1
-!curl <span class="org-operator">-</span>fsSL https:<span class="org-operator">//</span>ollama.com<span class="org-operator">/</span>install.sh <span class="org-operator">|</span> sh
-
-<span class="org-keyword">import</span> os
-os.<span class="org-variable-name">environ</span>[<span class="org-string">"LD_LIBRARY_PATH"</span>] <span class="org-operator">=</span> <span class="org-string">"/usr/lib64-nvidia:"</span> <span class="org-operator">+</span> os.environ.get(<span class="org-string">"LD_LIBRARY_PATH"</span>, <span class="org-string">""</span>)
-
-<span class="org-builtin">print</span>(<span class="org-string">"&#9989; Ollama instalado!"</span>)
-</pre>
-</div>
-
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">C&#233;lula 3: Iniciar servidor + baixar modelo
-</span><span class="org-keyword">import</span> subprocess, time, requests
-
-subprocess.run([<span class="org-string">"pkill"</span>, <span class="org-string">"-f"</span>, <span class="org-string">"ollama"</span>], capture_output<span class="org-operator">=</span><span class="org-constant">True</span>)
-time.sleep(1)
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Manter modelo carregado indefinidamente (sem isso, descarrega ap&#243;s 5 min)
-</span>os.<span class="org-variable-name">environ</span>[<span class="org-string">"OLLAMA_KEEP_ALIVE"</span>] <span class="org-operator">=</span> <span class="org-string">"-1"</span>
-
-subprocess.Popen(
-    [<span class="org-string">"ollama"</span>, <span class="org-string">"serve"</span>],
-    stdout<span class="org-operator">=</span>subprocess.DEVNULL, stderr<span class="org-operator">=</span>subprocess.DEVNULL,
-    env<span class="org-operator">=</span>{<span class="org-operator">**</span>os.environ}
-)
-
-<span class="org-builtin">print</span>(<span class="org-string">"&#9203; Aguardando Ollama iniciar..."</span>)
-<span class="org-keyword">for</span> i <span class="org-keyword">in</span> <span class="org-builtin">range</span>(30):
-    <span class="org-keyword">try</span>:
-        <span class="org-variable-name">r</span> <span class="org-operator">=</span> requests.get(<span class="org-string">"http://localhost:11434/api/tags"</span>, timeout<span class="org-operator">=</span>2)
-        <span class="org-keyword">if</span> r.status_code <span class="org-operator">==</span> 200:
-            <span class="org-builtin">print</span>(<span class="org-string">"&#9989; Ollama rodando!"</span>)
-            <span class="org-keyword">break</span>
-    <span class="org-keyword">except</span>:
-        time.sleep(1)
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Baixar modelo (~7.2 GB para gemma4:e2b, ~2.7 GB para qwen3.5:4b)
-</span>!ollama pull gemma4:e2b
-</pre>
-</div>
-
-<blockquote>
-<p>
-⚠️ <b>Warm up:</b> A primeira inferência demora ~2-3 minutos (o modelo carrega na GPU). Depois disso, as respostas são rápidas (~70 tokens/s). Configuramos <code>OLLAMA_KEEP_ALIVE</code>-1= para o modelo ficar na VRAM e não precisar recarregar.
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-orgdefe91c" class="outline-3">
-<h3 id="orgdefe91c">Modelos recomendados (benchmarks na T4)</h3>
-<div class="outline-text-3" id="text-orgdefe91c">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">Modelo</th>
-<th scope="col" class="org-left">Download</th>
-<th scope="col" class="org-left">VRAM</th>
-<th scope="col" class="org-left">Warm up</th>
-<th scope="col" class="org-left">Velocidade</th>
-<th scope="col" class="org-left">Qualidade</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">qwen3.5:4b</td>
-<td class="org-left">~2.7 GB</td>
-<td class="org-left">~3 GB</td>
-<td class="org-left">141s</td>
-<td class="org-left">~80 tok/s</td>
-<td class="org-left">Boa</td>
-</tr>
-
-<tr>
-<td class="org-left">gemma4:e2b</td>
-<td class="org-left">~7.2 GB</td>
-<td class="org-left">~5-6 GB</td>
-<td class="org-left">161s</td>
-<td class="org-left">~70 tok/s</td>
-<td class="org-left">Boa (estável)</td>
-</tr>
-
-<tr>
-<td class="org-left">qwen3.5:9b</td>
-<td class="org-left">~5.8 GB</td>
-<td class="org-left">~7.7 GB</td>
-<td class="org-left">153s</td>
-<td class="org-left">~25 tok/s</td>
-<td class="org-left">Boa (maior)</td>
-</tr>
-
-<tr>
-<td class="org-left">gemma4:e4b</td>
-<td class="org-left">~14 GB</td>
-<td class="org-left">~9.4 GB</td>
-<td class="org-left">199s</td>
-<td class="org-left">~18 tok/s</td>
-<td class="org-left">Alta (lento)</td>
-</tr>
-</tbody>
-</table>
-
-<blockquote>
-<p>
-<b>Nota sobre modelos:</b> O <code>qwen3.5:4b</code> é o mais rápido e leve — ideal para aula. O <code>gemma4:e2b</code> é mais estável nas respostas. Modelos maiores (9B, E4B) cabem na T4 mas são significativamente mais lentos. Os tempos de warm up são reais, medidos em POC no Colab T4.
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-orgf3c791b" class="outline-3">
-<h3 id="orgf3c791b">Chamada básica com <code>requests.post()</code></h3>
-<div class="outline-text-3" id="text-orgf3c791b">
-<p>
-Aqui está o <b><b>coração da aula</b></b>: usamos <code>requests</code> puro, sem SDK.
+Aqui está o <b>coração da aula</b>: <code>requests</code> puro, sem SDK nenhum.
 </p>
 
 <div class="org-src-container">
 <pre class="src src-python"><span class="org-keyword">import</span> requests
-<span class="org-keyword">import</span> json
 
 <span class="org-variable-name">OLLAMA_URL</span> <span class="org-operator">=</span> <span class="org-string">"http://localhost:11434/api/chat"</span>
-<span class="org-variable-name">MODEL</span> <span class="org-operator">=</span> <span class="org-string">"gemma4:e2b"</span>
+<span class="org-variable-name">MODEL</span> <span class="org-operator">=</span> <span class="org-string">"gemma4:e2b-it-qat"</span>
 
-<span class="org-keyword">def</span> <span class="org-function-name">chat</span>(messages, model<span class="org-operator">=</span><span class="org-constant">None</span>, stream<span class="org-operator">=</span><span class="org-constant">False</span>):
-    <span class="org-doc">"""Envia mensagens pro Ollama e retorna a resposta.
-
-    Args:
-        messages: lista [{"role": "...", "content": "..."}]
-        model: nome do modelo (padr&#227;o: gemma4:e2b)
-        stream: se True, retorna response object para iterar
-
-    Returns:
-        dict com a resposta (ou response se stream=True)
-    """</span>
-    <span class="org-keyword">if</span> model <span class="org-keyword">is</span> <span class="org-constant">None</span>:
-        <span class="org-variable-name">model</span> <span class="org-operator">=</span> MODEL
-    <span class="org-variable-name">payload</span> <span class="org-operator">=</span> {<span class="org-string">"model"</span>: model, <span class="org-string">"messages"</span>: messages, <span class="org-string">"stream"</span>: stream, <span class="org-string">"keep_alive"</span>: <span class="org-operator">-</span>1}
+<span class="org-keyword">def</span> <span class="org-function-name">chat</span>(messages, stream<span class="org-operator">=</span><span class="org-constant">False</span>):
+    <span class="org-doc">"""Envia mensagens pro Ollama e retorna a resposta."""</span>
+    <span class="org-variable-name">payload</span> <span class="org-operator">=</span> {
+        <span class="org-string">"model"</span>: MODEL,
+        <span class="org-string">"messages"</span>: messages,
+        <span class="org-string">"stream"</span>: stream,
+        <span class="org-string">"keep_alive"</span>: <span class="org-operator">-</span>1,   <span class="org-comment-delimiter"># </span><span class="org-comment">mant&#233;m o modelo carregado
+</span>    }
     <span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(OLLAMA_URL, json<span class="org-operator">=</span>payload, timeout<span class="org-operator">=</span>300)
     <span class="org-keyword">if</span> response.status_code <span class="org-operator">!=</span> 200:
         <span class="org-keyword">raise</span> <span class="org-type">Exception</span>(f<span class="org-string">"Erro </span>{response.status_code}<span class="org-string">: </span>{response.text}<span class="org-string">"</span>)
-    <span class="org-keyword">return</span> response <span class="org-keyword">if</span> stream <span class="org-keyword">else</span> response.json()
+    <span class="org-keyword">return</span> response
 
 <span class="org-comment-delimiter"># </span><span class="org-comment">Teste
-</span><span class="org-variable-name">resultado</span> <span class="org-operator">=</span> chat([
+</span><span class="org-variable-name">r</span> <span class="org-operator">=</span> chat([
     {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s."</span>},
     {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Qual &#233; a capital de Minas Gerais?"</span>}
 ])
-<span class="org-builtin">print</span>(f<span class="org-string">"&#129302; </span>{resultado['message']['content']}<span class="org-string">"</span>)
-<span class="org-builtin">print</span>(f<span class="org-string">"&#128202; Tokens: prompt=</span>{resultado.get('prompt_eval_count', '?')}<span class="org-string">, "</span>
-      f<span class="org-string">"completion=</span>{resultado.get('eval_count', '?')}<span class="org-string">"</span>)
+<span class="org-variable-name">resultado</span> <span class="org-operator">=</span> r.json()
+<span class="org-builtin">print</span>(resultado[<span class="org-string">"message"</span>][<span class="org-string">"content"</span>])
 </pre>
 </div>
 
-<blockquote>
 <p>
-<b>Compare com o Gemini:</b> A estrutura é quase idêntica — mandamos mensagens (system + user), recebemos uma resposta. A diferença é a URL e o formato do JSON. O conceito HTTP é o mesmo.
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-orgca939d2" class="outline-3">
-<h3 id="orgca939d2">Chat com memória (multi-turno)</h3>
-<div class="outline-text-3" id="text-orgca939d2">
-<p>
-Cada chamada envia o histórico completo. O modelo mantém o contexto.
+A resposta chega em JSON — o campo <code>message.content</code> traz o texto do modelo:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-python"><span class="org-variable-name">historico</span> <span class="org-operator">=</span> [
-    {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s. Seja conciso."</span>}
-]
-
-historico.append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Meu nome &#233; Lucas e eu ense IA."</span>})
-<span class="org-variable-name">r1</span> <span class="org-operator">=</span> chat(historico)
-historico.append({<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: r1[<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]})
-<span class="org-builtin">print</span>(f<span class="org-string">"&#129302;: </span>{r1['message']['content']}<span class="org-string">"</span>)
-
-historico.append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Qual &#233; o meu nome?"</span>})
-<span class="org-variable-name">r2</span> <span class="org-operator">=</span> chat(historico)
-historico.append({<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: r2[<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]})
-<span class="org-builtin">print</span>(f<span class="org-string">"&#129302;: </span>{r2['message']['content']}<span class="org-string">"</span>)
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-org497de5c" class="outline-3">
-<h3 id="org497de5c">Modo Thinking (raciocínio interno)</h3>
-<div class="outline-text-3" id="text-org497de5c">
-<p>
-O Gemma 4 suporta thinking mode — o modelo raciocina antes de responder.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-variable-name">resultado</span> <span class="org-operator">=</span> chat([
-    {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s."</span>},
-    {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Quantos n&#250;meros primos existem entre 1 e 20? /think"</span>}
-])
-
-<span class="org-variable-name">msg</span> <span class="org-operator">=</span> resultado[<span class="org-string">"message"</span>]
-<span class="org-variable-name">thinking</span> <span class="org-operator">=</span> msg.get(<span class="org-string">"thinking"</span>, <span class="org-string">"(sem thinking)"</span>)
-<span class="org-variable-name">content</span> <span class="org-operator">=</span> msg.get(<span class="org-string">"content"</span>, <span class="org-string">""</span>)
-<span class="org-builtin">print</span>(f<span class="org-string">"&#128173; Thinking:</span><span class="org-constant">\n</span>{thinking[:500]}<span class="org-string">..."</span>)
-<span class="org-builtin">print</span>(f<span class="org-string">"</span><span class="org-constant">\n</span><span class="org-string">&#129302; Resposta: </span>{content}<span class="org-string">"</span>)
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-org961b122" class="outline-3">
-<h3 id="org961b122">Streaming (resposta em tempo real)</h3>
-<div class="outline-text-3" id="text-org961b122">
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-builtin">print</span>(<span class="org-string">"&#129302; "</span>, end<span class="org-operator">=</span><span class="org-string">""</span>)
-<span class="org-variable-name">response</span> <span class="org-operator">=</span> chat(
-    [
-        {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s."</span>},
-        {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Explique o que &#233; uma API em 3 frases."</span>}
-    ],
-    stream<span class="org-operator">=</span><span class="org-constant">True</span>
-)
-<span class="org-keyword">for</span> line <span class="org-keyword">in</span> response.iter_lines():
-    <span class="org-keyword">if</span> line:
-        <span class="org-variable-name">chunk</span> <span class="org-operator">=</span> json.loads(line)
-        <span class="org-keyword">if</span> <span class="org-string">"message"</span> <span class="org-keyword">in</span> chunk <span class="org-keyword">and</span> <span class="org-string">"content"</span> <span class="org-keyword">in</span> chunk[<span class="org-string">"message"</span>]:
-            <span class="org-builtin">print</span>(chunk[<span class="org-string">"message"</span>][<span class="org-string">"content"</span>], end<span class="org-operator">=</span><span class="org-string">""</span>, flush<span class="org-operator">=</span><span class="org-constant">True</span>)
-<span class="org-builtin">print</span>()
-</pre>
-</div>
-</div>
-</div>
-</div>
-<div id="outline-container-org7783ad2" class="outline-2">
-<h2 id="org7783ad2">API Compatível com OpenAI</h2>
-<div class="outline-text-2" id="text-org7783ad2">
-<p>
-O Ollama também tem um endpoint compatível com a OpenAI em <code>/v1/chat/completions</code>.
-</p>
-
-<p>
-Isso significa que <b><b>qualquer código que usa a OpenAI SDK pode apontar pro Ollama local</b></b> trocando só a <code>base_url</code>.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-variable-name">OPENAI_URL</span> <span class="org-operator">=</span> <span class="org-string">"http://localhost:11434/v1/chat/completions"</span>
-
-<span class="org-variable-name">payload</span> <span class="org-operator">=</span> {
-    <span class="org-string">"model"</span>: <span class="org-string">"gemma4:e2b"</span>,
-    <span class="org-string">"messages"</span>: [
-        {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s."</span>},
-        {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"O que &#233; Python em uma frase?"</span>}
-    ],
-    <span class="org-string">"temperature"</span>: 0.7,
-    <span class="org-string">"max_tokens"</span>: 64,
-    <span class="org-string">"keep_alive"</span>: <span class="org-operator">-</span>1
+<pre class="src src-python">{
+  <span class="org-string">"model"</span>: <span class="org-string">"gemma4:e2b-it-qat"</span>,
+  <span class="org-string">"message"</span>: {
+    <span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>,
+    <span class="org-string">"content"</span>: <span class="org-string">"A capital de Minas Gerais &#233; Belo Horizonte."</span>
+  },
+  <span class="org-string">"eval_count"</span>: 14
 }
-
-<span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(OPENAI_URL, json<span class="org-operator">=</span>payload, timeout<span class="org-operator">=</span>300)
-<span class="org-variable-name">data</span> <span class="org-operator">=</span> response.json()
-<span class="org-builtin">print</span>(f<span class="org-string">"&#129302; </span>{data['choices'][0]['message']['content']}<span class="org-string">"</span>)
-<span class="org-builtin">print</span>(f<span class="org-string">"&#128202; Model: </span>{data['model']}<span class="org-string">, Usage: </span>{data['usage']}<span class="org-string">"</span>)
 </pre>
 </div>
 
-<blockquote>
 <p>
-<b>Ponto-chave:</b> O formato é <b><b>idêntico</b></b> ao da OpenAI. A única diferença é a URL (<code>localhost</code> em vez de <code>api.openai.com</code>) e o modelo (<code>gemma4:e2b</code> em vez de <code>gpt-4o</code>). Isso é poderoso: o mesmo código funciona com qualquer provedor.
+Repare como <b>a semana passada já preparou tudo</b>: o payload é uma lista de dicts, e a resposta também é um dict. Python puro contra um modelo rodando na sua máquina.
 </p>
-</blockquote>
 </div>
 </div>
-<div id="outline-container-orga29de7f" class="outline-2">
-<h2 id="orga29de7f">Nota: LM Studio</h2>
-<div class="outline-text-2" id="text-orga29de7f">
+<div id="outline-container-orgb1f7559" class="outline-2">
+<h2 id="orgb1f7559">Parâmetros de configuração</h2>
+<div class="outline-text-2" id="text-orgb1f7559">
 <p>
-Se você prefere uma interface gráfica, o <b><b>LM Studio</b></b> é uma alternativa ao Ollama:
-</p>
-
-<ul class="org-ul">
-<li>Disponível em: <a href="https://lmstudio.ai">https://lmstudio.ai</a></li>
-<li>Interface gráfica para baixar e rodar modelos</li>
-<li>Expõe a <b><b>mesma API OpenAI-compatible</b></b> em <code>localhost:1234</code></li>
-<li>Não precisa de terminal — tudo é clique e arraste</li>
-</ul>
-
-<p>
-Para usar com <code>requests</code>, basta trocar a URL:
+O modelo obedece a instruções, mas o <b>estilo</b> da resposta você controla com parâmetros:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">LM Studio em vez de Ollama &#8212; s&#243; muda a URL!
-</span><span class="org-variable-name">LMSTUDIO_URL</span> <span class="org-operator">=</span> <span class="org-string">"http://localhost:1234/v1/chat/completions"</span>
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">O resto &#233; id&#234;ntico
-</span><span class="org-variable-name">payload</span> <span class="org-operator">=</span> {
-    <span class="org-string">"model"</span>: <span class="org-string">"model-name-here"</span>,  <span class="org-comment-delimiter"># </span><span class="org-comment">nome do modelo carregado no LM Studio
-</span>    <span class="org-string">"messages"</span>: [{<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Ol&#225;!"</span>}],
-    <span class="org-string">"temperature"</span>: 0.7
-}
-<span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(LMSTUDIO_URL, json<span class="org-operator">=</span>payload, timeout<span class="org-operator">=</span>120)
+<pre class="src src-python"><span class="org-variable-name">payload</span>[<span class="org-string">"options"</span>] <span class="org-operator">=</span> {
+    <span class="org-string">"temperature"</span>: 0.7,     <span class="org-comment-delimiter"># </span><span class="org-comment">0.0 determin&#237;stico &#8594; 1.0 criativo
+</span>    <span class="org-string">"num_ctx"</span>: 8192,        <span class="org-comment-delimiter"># </span><span class="org-comment">janela de contexto (tokens)
+</span>}
 </pre>
 </div>
 
-<blockquote>
-<p>
-<b>Dica:</b> No LM Studio, vá em <b>Local Server → Start Server</b> antes de rodar o código. Escolha o modelo desejado na interface. A API key pode ser qualquer string (ex: <code>"not-needed"</code>).
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-org3cc02f8" class="outline-2">
-<h2 id="org3cc02f8">Comparação: Cloud vs Local</h2>
-<div class="outline-text-2" id="text-org3cc02f8">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">Aspecto</th>
-<th scope="col" class="org-left">Gemini (Cloud)</th>
-<th scope="col" class="org-left">Ollama (Local)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">Setup</td>
-<td class="org-left">API key (2 min)</td>
-<td class="org-left">Install + download (~5-7 min)</td>
-</tr>
-
-<tr>
-<td class="org-left">Warm up</td>
-<td class="org-left">Instantâneo</td>
-<td class="org-left">141-199s (primeira req, depende do modelo)</td>
-</tr>
-
-<tr>
-<td class="org-left">Velocidade</td>
-<td class="org-left">~100+ tok/s</td>
-<td class="org-left">18-80 tok/s (depende do modelo)</td>
-</tr>
-
-<tr>
-<td class="org-left">Custos</td>
-<td class="org-left">Grátis com limites</td>
-<td class="org-left">100% grátis</td>
-</tr>
-
-<tr>
-<td class="org-left">Privacidade</td>
-<td class="org-left">Dados vão pro Google</td>
-<td class="org-left">Fica na máquina</td>
-</tr>
-
-<tr>
-<td class="org-left">Qualidade</td>
-<td class="org-left">Muito alta</td>
-<td class="org-left">Boa a alta</td>
-</tr>
-
-<tr>
-<td class="org-left">Internet</td>
-<td class="org-left">Necessária</td>
-<td class="org-left">Não (após setup)</td>
-</tr>
-
-<tr>
-<td class="org-left">API key</td>
-<td class="org-left">Sim</td>
-<td class="org-left">Não</td>
-</tr>
-</tbody>
-</table>
-
-<blockquote>
-<p>
-<b>Recomendação:</b> Use Gemini para desenvolvimento (rápido, sem setup) e Ollama para demonstrar privacidade e independência de cloud. O padrão HTTP é o mesmo nos dois.
-</p>
-</blockquote>
-</div>
-</div>
-<div id="outline-container-org9309774" class="outline-2">
-<h2 id="org9309774">Tratamento de Erros</h2>
-<div class="outline-text-2" id="text-org9309774">
-<p>
-Erros são iguais com qualquer API — o padrão é <code>try/except</code> com <code>requests</code>.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-python"><span class="org-keyword">import</span> requests
-
-<span class="org-keyword">def</span> <span class="org-function-name">chamar_api</span>(url, payload, timeout<span class="org-operator">=</span>30, tentativas<span class="org-operator">=</span>3):
-    <span class="org-doc">"""Faz request com retry autom&#225;tico."""</span>
-    <span class="org-keyword">for</span> tentativa <span class="org-keyword">in</span> <span class="org-builtin">range</span>(tentativas):
-        <span class="org-keyword">try</span>:
-            <span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(url, json<span class="org-operator">=</span>payload, timeout<span class="org-operator">=</span>timeout)
-            response.raise_for_status()  <span class="org-comment-delimiter"># </span><span class="org-comment">Levanta exce&#231;&#227;o para erros HTTP
-</span>            <span class="org-keyword">return</span> response.json()
-        <span class="org-keyword">except</span> requests.exceptions.<span class="org-type">ConnectionError</span>:
-            <span class="org-builtin">print</span>(f<span class="org-string">"&#9888;&#65039; Sem conex&#227;o. Tentativa </span>{tentativa <span class="org-operator">+</span> 1}<span class="org-string">/</span>{tentativas}<span class="org-string">..."</span>)
-            time.sleep(2)
-        <span class="org-keyword">except</span> requests.exceptions.Timeout:
-            <span class="org-builtin">print</span>(f<span class="org-string">"&#9888;&#65039; Timeout. Tentativa </span>{tentativa <span class="org-operator">+</span> 1}<span class="org-string">/</span>{tentativas}<span class="org-string">..."</span>)
-        <span class="org-keyword">except</span> requests.exceptions.HTTPError <span class="org-keyword">as</span> e:
-            <span class="org-keyword">if</span> e.response.status_code <span class="org-operator">==</span> 401:
-                <span class="org-keyword">raise</span> <span class="org-type">Exception</span>(<span class="org-string">"&#10060; API key inv&#225;lida"</span>)
-            <span class="org-keyword">elif</span> e.response.status_code <span class="org-operator">==</span> 429:
-                <span class="org-builtin">print</span>(f<span class="org-string">"&#9888;&#65039; Rate limit. Aguardando..."</span>)
-                time.sleep(5)
-            <span class="org-keyword">else</span>:
-                <span class="org-keyword">raise</span> <span class="org-type">Exception</span>(f<span class="org-string">"&#10060; Erro HTTP </span>{e.response.status_code}<span class="org-string">: </span>{e.response.text}<span class="org-string">"</span>)
-    <span class="org-keyword">raise</span> <span class="org-type">Exception</span>(<span class="org-string">"&#10060; N&#250;mero m&#225;ximo de tentativas excedido"</span>)
-</pre>
-</div>
-</div>
-<div id="outline-container-orga4b98ea" class="outline-3">
-<h3 id="orga4b98ea">Códigos de erro comuns</h3>
-<div class="outline-text-3" id="text-orga4b98ea">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -1223,56 +450,7 @@ Erros são iguais com qualquer API — o padrão é <code>try/except</code> com 
 </colgroup>
 <thead>
 <tr>
-<th scope="col" class="org-right">Código</th>
-<th scope="col" class="org-left">Significado</th>
-<th scope="col" class="org-left">O que fazer</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-right">401</td>
-<td class="org-left">Não autorizado</td>
-<td class="org-left">Verificar API key</td>
-</tr>
-
-<tr>
-<td class="org-right">429</td>
-<td class="org-left">Rate limit</td>
-<td class="org-left">Aguardar e tentar novamente</td>
-</tr>
-
-<tr>
-<td class="org-right">500</td>
-<td class="org-left">Erro do servidor</td>
-<td class="org-left">Tentar novamente mais tarde</td>
-</tr>
-
-<tr>
-<td class="org-right">503</td>
-<td class="org-left">Serviço indisponível</td>
-<td class="org-left">Servidor sobrecarregado</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="outline-container-orgff6ec80" class="outline-2">
-<h2 id="orgff6ec80">Parâmetros de Geração</h2>
-<div class="outline-text-2" id="text-orgff6ec80">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-right" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-right">Valor</th>
+<th scope="col" class="org-right">Faixa</th>
 <th scope="col" class="org-left">Comportamento</th>
 <th scope="col" class="org-left">Uso</th>
 </tr>
@@ -1295,151 +473,407 @@ Erros são iguais com qualquer API — o padrão é <code>try/except</code> com 
 <td class="org-left">Criativo</td>
 <td class="org-left">Escrita criativa, brainstorming</td>
 </tr>
-
-<tr>
-<td class="org-right">1.0+</td>
-<td class="org-left">Muito criativo</td>
-<td class="org-left">Arte, experimentação</td>
-</tr>
 </tbody>
 </table>
 </div>
 </div>
-<div id="outline-container-org63512b4" class="outline-2">
-<h2 id="org63512b4">Exercícios Práticos</h2>
-<div class="outline-text-2" id="text-org63512b4">
-</div>
-<div id="outline-container-org97c78b9" class="outline-3">
-<h3 id="org97c78b9">Exercício 1: Duas APIs, um padrão</h3>
-<div class="outline-text-3" id="text-org97c78b9">
+<div id="outline-container-orgbf7f7ca" class="outline-2">
+<h2 id="orgbf7f7ca">Chat com memória (multi-turno)</h2>
+<div class="outline-text-2" id="text-orgbf7f7ca">
 <p>
-Crie uma função <code>perguntar()</code> que funciona com <b><b>qualquer API</b></b> — só mudando a URL:
+Cada chamada envia o <b>histórico completo</b>. O modelo não "lembra" — ele recebe toda a conversa de novo:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-python"><span class="org-keyword">def</span> <span class="org-function-name">perguntar</span>(mensagem, url, model, api_key<span class="org-operator">=</span><span class="org-constant">None</span>, system<span class="org-operator">=</span><span class="org-string">"Voc&#234; &#233; um assistente &#250;til."</span>):
-    <span class="org-doc">"""Faz uma pergunta a qualquer API de LLM usando requests.post().
+<pre class="src src-python"><span class="org-variable-name">historico</span> <span class="org-operator">=</span> [
+    {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s. Seja conciso."</span>}
+]
 
-    Args:
-        mensagem: pergunta do usu&#225;rio
-        url: URL da API (Gemini ou Ollama)
-        model: nome do modelo
-        api_key: API key (None para Ollama)
-        system: instru&#231;&#227;o de sistema
-    """</span>
+historico.append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Meu nome &#233; Lucas e eu amo IA."</span>})
+<span class="org-variable-name">r1</span> <span class="org-operator">=</span> chat(historico)
+historico.append({<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: r1.json()[<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]})
+<span class="org-builtin">print</span>(f<span class="org-string">"&#129302;: </span>{r1.json()['message']['content']}<span class="org-string">"</span>)
+
+historico.append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Qual &#233; o meu nome?"</span>})
+<span class="org-variable-name">r2</span> <span class="org-operator">=</span> chat(historico)
+historico.append({<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: r2.json()[<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]})
+<span class="org-builtin">print</span>(f<span class="org-string">"&#129302;: </span>{r2.json()['message']['content']}<span class="org-string">"</span>)   <span class="org-comment-delimiter"># </span><span class="org-comment">Deve lembrar do nome!</span>
+</pre>
+</div>
+
+<blockquote>
+<p>
+É como repetir toda a conversa toda vez que você fala. O "contexto" do modelo é essa lista — e é ela que vamos manipular nas próximas aulas pra construir agentes.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-orgcac1c40" class="outline-2">
+<h2 id="orgcac1c40">Streaming (resposta em tempo real)</h2>
+<div class="outline-text-2" id="text-orgcac1c40">
+<p>
+Com <code>stream=True</code>, o servidor manda pedaços da resposta conforme gera — a mesma experiência do chat "digitando":
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-variable-name">response</span> <span class="org-operator">=</span> chat([
+    {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Explique o que &#233; uma API em 3 frases."</span>}
+], stream<span class="org-operator">=</span><span class="org-constant">True</span>)
+
+<span class="org-keyword">for</span> line <span class="org-keyword">in</span> response.iter_lines():
+    <span class="org-keyword">if</span> line:
+        <span class="org-variable-name">chunk</span> <span class="org-operator">=</span> json.loads(line)
+        <span class="org-keyword">if</span> <span class="org-string">"message"</span> <span class="org-keyword">in</span> chunk <span class="org-keyword">and</span> <span class="org-string">"content"</span> <span class="org-keyword">in</span> chunk[<span class="org-string">"message"</span>]:
+            <span class="org-builtin">print</span>(chunk[<span class="org-string">"message"</span>][<span class="org-string">"content"</span>], end<span class="org-operator">=</span><span class="org-string">""</span>, flush<span class="org-operator">=</span><span class="org-constant">True</span>)
+<span class="org-builtin">print</span>()
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org253fc6a" class="outline-2">
+<h2 id="org253fc6a">O padrão universal: <code>/v1/chat/completions</code></h2>
+<div class="outline-text-2" id="text-org253fc6a">
+<p>
+O Ollama também expõe um endpoint <b>OpenAI-compatible</b>: <code>/v1/chat/completions</code>. O formato nasceu na API da OpenAI e virou padrão de mercado — praticamente todo servidor de LLM fala esse dialeto.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-variable-name">OPENAI_URL</span> <span class="org-operator">=</span> <span class="org-string">"http://localhost:11434/v1/chat/completions"</span>
+
+<span class="org-variable-name">payload</span> <span class="org-operator">=</span> {
+    <span class="org-string">"model"</span>: <span class="org-string">"gemma4:e2b-it-qat"</span>,
+    <span class="org-string">"messages"</span>: [
+        {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s."</span>},
+        {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: <span class="org-string">"O que &#233; Python em uma frase?"</span>}
+    ],
+    <span class="org-string">"temperature"</span>: 0.7,
+    <span class="org-string">"max_tokens"</span>: 64
+}
+
+<span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(OPENAI_URL, json<span class="org-operator">=</span>payload, timeout<span class="org-operator">=</span>300)
+<span class="org-variable-name">data</span> <span class="org-operator">=</span> response.json()
+<span class="org-builtin">print</span>(data[<span class="org-string">"choices"</span>][0][<span class="org-string">"message"</span>][<span class="org-string">"content"</span>])
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>Ponto-chave:</b> o formato é idêntico ao da OpenAI. A única diferença aqui é a URL (<code>localhost</code> em vez de <code>api.openai.com</code>). Isso é poderoso: <b>o mesmo código funciona com qualquer servidor</b> que fale esse dialeto.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-org81aae84" class="outline-2">
+<h2 id="org81aae84">Outros servidores: a família llama.cpp</h2>
+<div class="outline-text-2" id="text-org81aae84">
+<p>
+Todo modelo de linguagem (mesmo os do Ollama) roda, lá no fundo, no <b>llama.cpp</b> — o motor de inferência open source que virou a infraestrutura do ecossistema local. O <code>ollama</code> é uma camada amigável em cima dele.
+</p>
+
+<p>
+Quando você quer controle fino, pode subir o <code>llama-server</code> <b>direto</b> — apontando pra um arquivo GGUF no disco. Este exemplo roda o LFM2.5-2.6B (um modelo agêntico da Liquid AI, treinado pra usar ferramentas), com contexto de 8K tokens:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">llama-server <span class="org-sh-escaped-newline">\</span>
+  --port 8081 <span class="org-sh-escaped-newline">\</span>
+  --model ~/.llama-models/lfm2.5-2.6b/LFM2.5-2.6B-QAD-Q4_0.gguf <span class="org-sh-escaped-newline">\</span>
+  --fit on --fit-target 512 <span class="org-sh-escaped-newline">\</span>
+  --ctx-size 8192 <span class="org-sh-escaped-newline">\</span>
+  --jinja <span class="org-sh-escaped-newline">\</span>
+  --temp 0.1 --top-p 0.9 --top-k 50 --min-p 0.0 <span class="org-sh-escaped-newline">\</span>
+  --repeat-penalty 1.1 <span class="org-sh-escaped-newline">\</span>
+  --cache-type-k q4_0 --cache-type-v q4_0 <span class="org-sh-escaped-newline">\</span>
+  --flash-attn auto
+</pre>
+</div>
+
+<p>
+O que cada flag faz:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Flag</th>
+<th scope="col" class="org-left">Papel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>--model</code></td>
+<td class="org-left">O GGUF do disco (LFM2.5 quantizado Q4<sub>0</sub>)</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>--fit on</code> / <code>--fit-target</code></td>
+<td class="org-left">Encaixa o modelo na VRAM disponível (deixa 512 MB de folga)</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>--ctx-size</code></td>
+<td class="org-left">Janela de contexto: 8192 tokens</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>--jinja</code></td>
+<td class="org-left">Usa o chat template embutido no GGUF</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>--temp</code>, <code>--top-p</code>, <code>--top-k</code>, <code>--min-p</code>, <code>--repeat-penalty</code></td>
+<td class="org-left">Amostragem (recomendação da Liquid AI: temp bem baixa, 0.1)</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>--cache-type-k/v</code></td>
+<td class="org-left">KV cache quantizado — economiza VRAM</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>--flash-attn</code></td>
+<td class="org-left">Flash Attention — contexto grande com menos memória</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+O servidor sobe em <code>http://localhost:8081</code> — e aí é só apontar o mesmo código de antes:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">O MESMO payload, trocando URL e modelo. S&#243; isso.
+</span><span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(
+    <span class="org-string">"http://localhost:8081/v1/chat/completions"</span>,
+    json<span class="org-operator">=</span>payload,   <span class="org-comment-delimiter"># </span><span class="org-comment">model: "lfm2.5-2.6b" (o nome &#233; livre!)
+</span>    timeout<span class="org-operator">=</span>120
+)
+<span class="org-builtin">print</span>(response.json()[<span class="org-string">"choices"</span>][0][<span class="org-string">"message"</span>][<span class="org-string">"content"</span>])
+</pre>
+</div>
+
+<blockquote>
+<p>
+⚠️ <b>max<sub>tokens</sub> folgado:</b> esse modelo <b>raciocina antes de responder</b> — o rascunho de pensamento entra no campo <code>reasoning_content</code> e consome o orçamento de tokens. Com <code>max_tokens</code> curto, <code>content</code> chega <b>vazio</b> (~200+ tokens dá folga pra uma resposta tranquila). Comportamento do modelo, não do servidor — o Ollama não separa os campos, o llama-server sim.
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+Um código, dois servidores na mesma máquina. Ollama e llama-server falam o mesmo dialeto — e ferramentas como o <b>llama-swap</b> (na porta 12434) colocam um gerenciador na frente de vários servidores pra trocar de modelo a quente.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-orgf1c74c5" class="outline-2">
+<h2 id="orgf1c74c5">Tratamento de Erros</h2>
+<div class="outline-text-2" id="text-orgf1c74c5">
+<p>
+Erros são iguais com qualquer API — o padrão é <code>try/except</code> com retry e backoff:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">import</span> time
+
+<span class="org-keyword">def</span> <span class="org-function-name">chamar_api</span>(url, payload, timeout<span class="org-operator">=</span>30, tentativas<span class="org-operator">=</span>3):
+    <span class="org-doc">"""Faz request com retry autom&#225;tico."""</span>
+    <span class="org-keyword">for</span> tentativa <span class="org-keyword">in</span> <span class="org-builtin">range</span>(tentativas):
+        <span class="org-keyword">try</span>:
+            <span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(url, json<span class="org-operator">=</span>payload, timeout<span class="org-operator">=</span>timeout)
+            response.raise_for_status()  <span class="org-comment-delimiter"># </span><span class="org-comment">levanta exce&#231;&#227;o para erros HTTP
+</span>            <span class="org-keyword">return</span> response.json()
+        <span class="org-keyword">except</span> requests.exceptions.<span class="org-type">ConnectionError</span>:
+            <span class="org-builtin">print</span>(f<span class="org-string">"&#9888;&#65039; Servidor fora do ar. Tentativa </span>{tentativa <span class="org-operator">+</span> 1}<span class="org-string">/</span>{tentativas}<span class="org-string">..."</span>)
+            time.sleep(2)
+        <span class="org-keyword">except</span> requests.exceptions.Timeout:
+            <span class="org-builtin">print</span>(f<span class="org-string">"&#9888;&#65039; Timeout. Tentativa </span>{tentativa <span class="org-operator">+</span> 1}<span class="org-string">/</span>{tentativas}<span class="org-string">..."</span>)
+            time.sleep(2)
+        <span class="org-keyword">except</span> requests.exceptions.HTTPError <span class="org-keyword">as</span> e:
+            <span class="org-keyword">if</span> e.response.status_code <span class="org-operator">==</span> 429:
+                <span class="org-builtin">print</span>(<span class="org-string">"&#9888;&#65039; Rate limit. Aguardando..."</span>)
+                time.sleep(5)
+            <span class="org-keyword">else</span>:
+                <span class="org-keyword">raise</span> <span class="org-type">Exception</span>(f<span class="org-string">"&#10060; HTTP </span>{e.response.status_code}<span class="org-string">: </span>{e.response.text}<span class="org-string">"</span>)
+    <span class="org-keyword">raise</span> <span class="org-type">Exception</span>(<span class="org-string">"&#10060; N&#250;mero m&#225;ximo de tentativas excedido"</span>)
+</pre>
+</div>
+
+<p>
+Códigos de erro comuns:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Código</th>
+<th scope="col" class="org-left">Significado</th>
+<th scope="col" class="org-left">O que fazer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">ConnectionError</td>
+<td class="org-left">Servidor não existe</td>
+<td class="org-left">Conferir se <code>ollama serve~/~llama-server</code> está rodando</td>
+</tr>
+
+<tr>
+<td class="org-right">404</td>
+<td class="org-left">Modelo não encontrado</td>
+<td class="org-left">Conferir o nome listado em <code>/api/tags</code></td>
+</tr>
+
+<tr>
+<td class="org-right">401</td>
+<td class="org-left">Não autorizado</td>
+<td class="org-left">Servidor exigindo auth (raríssimo em local)</td>
+</tr>
+
+<tr>
+<td class="org-right">429</td>
+<td class="org-left">Rate limit</td>
+<td class="org-left">Aguardar e tentar novamente</td>
+</tr>
+
+<tr>
+<td class="org-right">500</td>
+<td class="org-left">Erro no servidor</td>
+<td class="org-left">Conferir payload; tentar de novo</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>
+No mundo local, o erro mais comum não é 401 nem 429 — é <b>ConnectionError</b>: você esqueceu de subir o servidor antes de fazer a requisição.
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-org466f481" class="outline-2">
+<h2 id="org466f481">Exercícios Práticos</h2>
+<div class="outline-text-2" id="text-org466f481">
+</div>
+<div id="outline-container-orgcaca4d6" class="outline-3">
+<h3 id="orgcaca4d6">Exercício 1: Uma função, qualquer servidor</h3>
+<div class="outline-text-3" id="text-orgcaca4d6">
+<p>
+Crie uma função <code>perguntar()</code> que conversa com <b>qualquer</b> servidor OpenAI-compatible — só mudando a URL:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">def</span> <span class="org-function-name">perguntar</span>(mensagem, url, model, system<span class="org-operator">=</span><span class="org-string">"Voc&#234; &#233; um assistente &#250;til."</span>):
+    <span class="org-doc">"""Faz uma pergunta a qualquer API de LLM, via requests.post()."""</span>
     <span class="org-comment-delimiter"># </span><span class="org-comment">Implemente aqui
 </span>    <span class="org-keyword">pass</span>
 </pre>
 </div>
 
-<div class="DETAILS" id="orga78e704">
+<div class="details" id="orgee839ab">
 <p>
 📝 Gabarito
 </p>
 
 <div class="org-src-container">
-<pre class="src src-python"><span class="org-keyword">def</span> <span class="org-function-name">perguntar</span>(mensagem, url, model, api_key<span class="org-operator">=</span><span class="org-constant">None</span>, system<span class="org-operator">=</span><span class="org-string">"Voc&#234; &#233; um assistente &#250;til."</span>):
-    <span class="org-doc">"""Faz uma pergunta a qualquer API de LLM usando requests.post()."""</span>
-    <span class="org-variable-name">headers</span> <span class="org-operator">=</span> {<span class="org-string">"Content-Type"</span>: <span class="org-string">"application/json"</span>}
-    <span class="org-keyword">if</span> api_key:
-        <span class="org-variable-name">headers</span>[<span class="org-string">"Authorization"</span>] <span class="org-operator">=</span> f<span class="org-string">"Bearer </span>{api_key}<span class="org-string">"</span>
-
+<pre class="src src-python"><span class="org-keyword">def</span> <span class="org-function-name">perguntar</span>(mensagem, url, model,
+              system<span class="org-operator">=</span><span class="org-string">"Voc&#234; &#233; um assistente &#250;til."</span>,
+              temperature<span class="org-operator">=</span>0.7):
     <span class="org-variable-name">payload</span> <span class="org-operator">=</span> {
         <span class="org-string">"model"</span>: model,
         <span class="org-string">"messages"</span>: [
             {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: system},
             {<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: mensagem}
         ],
-        <span class="org-string">"temperature"</span>: 0.7,
-        <span class="org-string">"keep_alive"</span>: <span class="org-operator">-</span>1  <span class="org-comment-delimiter"># </span><span class="org-comment">Ollama: manter modelo carregado
-</span>    }
-
-    <span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(url, json<span class="org-operator">=</span>payload, headers<span class="org-operator">=</span>headers, timeout<span class="org-operator">=</span>120)
+        <span class="org-string">"temperature"</span>: temperature
+    }
+    <span class="org-variable-name">response</span> <span class="org-operator">=</span> requests.post(url, json<span class="org-operator">=</span>payload, timeout<span class="org-operator">=</span>120)
     response.raise_for_status()
     <span class="org-variable-name">data</span> <span class="org-operator">=</span> response.json()
+    <span class="org-keyword">return</span> data[<span class="org-string">"choices"</span>][0][<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]
 
-    <span class="org-comment-delimiter"># </span><span class="org-comment">Formato OpenAI/Ollama
-</span>    <span class="org-keyword">if</span> <span class="org-string">"choices"</span> <span class="org-keyword">in</span> data:
-        <span class="org-keyword">return</span> data[<span class="org-string">"choices"</span>][0][<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]
-    <span class="org-comment-delimiter"># </span><span class="org-comment">Formato Ollama nativo
-</span>    <span class="org-keyword">elif</span> <span class="org-string">"message"</span> <span class="org-keyword">in</span> data:
-        <span class="org-keyword">return</span> data[<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]
-    <span class="org-keyword">else</span>:
-        <span class="org-keyword">return</span> <span class="org-builtin">str</span>(data)
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Uso com Ollama (local)
-</span><span class="org-variable-name">resposta</span> <span class="org-operator">=</span> perguntar(
+<span class="org-comment-delimiter"># </span><span class="org-comment">Ollama local
+</span><span class="org-builtin">print</span>(perguntar(
     <span class="org-string">"Qual &#233; a capital de Minas Gerais?"</span>,
     url<span class="org-operator">=</span><span class="org-string">"http://localhost:11434/v1/chat/completions"</span>,
-    model<span class="org-operator">=</span><span class="org-string">"gemma4:e2b"</span>
-)
-<span class="org-builtin">print</span>(f<span class="org-string">"Ollama: </span>{resposta}<span class="org-string">"</span>)
-
-<span class="org-comment-delimiter"># </span><span class="org-comment">Uso com Gemini (cloud) &#8212; via OpenAI-compatible endpoint
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">Nota: Gemini n&#227;o tem endpoint OpenAI-compatible direto,
-</span><span class="org-comment-delimiter"># </span><span class="org-comment">mas o padr&#227;o &#233; o mesmo!</span>
+    model<span class="org-operator">=</span><span class="org-string">"gemma4:e2b-it-qat"</span>
+))
 </pre>
 </div>
 
 </div>
 </div>
 </div>
-<div id="outline-container-org0c3cab8" class="outline-3">
-<h3 id="org0c3cab8">Exercício 2: Chat com memória</h3>
-<div class="outline-text-3" id="text-org0c3cab8">
+<div id="outline-container-orgd221531" class="outline-3">
+<h3 id="orgd221531">Exercício 2: Chat com memória</h3>
+<div class="outline-text-3" id="text-orgd221531">
 <p>
-Implemente um chat com histórico usando dicionários (sem classes!):
+Implemente um chat com histórico usando dicionários (sem classes):
 </p>
 
 <div class="org-src-container">
-<pre class="src src-python"><span class="org-variable-name">historico</span> <span class="org-operator">=</span> {<span class="org-string">"mensagens"</span>: [{<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s."</span>}]}
+<pre class="src src-python"><span class="org-variable-name">historico</span> <span class="org-operator">=</span> {<span class="org-string">"mensagens"</span>: [
+    {<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s."</span>}
+]}
 
 <span class="org-keyword">def</span> <span class="org-function-name">conversar</span>(mensagem):
-    <span class="org-doc">"""Adiciona mensagem ao hist&#243;rico, chama a API, retorna resposta."""</span>
+    <span class="org-doc">"""Adiciona a mensagem ao hist&#243;rico, chama a API, retorna a resposta."""</span>
     <span class="org-comment-delimiter"># </span><span class="org-comment">Implemente
 </span>    <span class="org-keyword">pass</span>
 
 <span class="org-keyword">def</span> <span class="org-function-name">ver_historico</span>():
-    <span class="org-doc">"""Retorna hist&#243;rico sem o system prompt."""</span>
+    <span class="org-doc">"""Retorna o hist&#243;rico sem o system prompt."""</span>
     <span class="org-comment-delimiter"># </span><span class="org-comment">Implemente
 </span>    <span class="org-keyword">pass</span>
 
 <span class="org-keyword">def</span> <span class="org-function-name">limpar_historico</span>():
-    <span class="org-doc">"""Limpa hist&#243;rico mantendo system prompt."""</span>
+    <span class="org-doc">"""Limpa o hist&#243;rico mantendo o system prompt."""</span>
     <span class="org-comment-delimiter"># </span><span class="org-comment">Implemente
 </span>    <span class="org-keyword">pass</span>
 </pre>
 </div>
 
-<div class="DETAILS" id="org2701a9f">
+<div class="details" id="org59cb6ed">
 <p>
 📝 Gabarito
 </p>
 
 <div class="org-src-container">
-<pre class="src src-python"><span class="org-variable-name">historico</span> <span class="org-operator">=</span> {<span class="org-string">"mensagens"</span>: [{<span class="org-string">"role"</span>: <span class="org-string">"system"</span>, <span class="org-string">"content"</span>: <span class="org-string">"Voc&#234; &#233; um assistente &#250;til. Responda em portugu&#234;s."</span>}]}
-
-<span class="org-keyword">def</span> <span class="org-function-name">conversar</span>(mensagem):
-    <span class="org-doc">"""Adiciona mensagem ao hist&#243;rico, chama a API, retorna resposta."""</span>
+<pre class="src src-python"><span class="org-keyword">def</span> <span class="org-function-name">conversar</span>(mensagem):
     historico[<span class="org-string">"mensagens"</span>].append({<span class="org-string">"role"</span>: <span class="org-string">"user"</span>, <span class="org-string">"content"</span>: mensagem})
-
-    <span class="org-variable-name">resultado</span> <span class="org-operator">=</span> chat(historico)
-    <span class="org-variable-name">resposta</span> <span class="org-operator">=</span> resultado[<span class="org-string">"message"</span>][<span class="org-string">"content"</span>]
-
+    <span class="org-variable-name">resposta</span> <span class="org-operator">=</span> perguntar(
+        mensagem,
+        url<span class="org-operator">=</span><span class="org-string">"http://localhost:11434/v1/chat/completions"</span>,
+        model<span class="org-operator">=</span><span class="org-string">"gemma4:e2b-it-qat"</span>,
+        system<span class="org-operator">=</span>historico[<span class="org-string">"mensagens"</span>][0][<span class="org-string">"content"</span>]
+    )
     historico[<span class="org-string">"mensagens"</span>].append({<span class="org-string">"role"</span>: <span class="org-string">"assistant"</span>, <span class="org-string">"content"</span>: resposta})
     <span class="org-keyword">return</span> resposta
 
 <span class="org-keyword">def</span> <span class="org-function-name">ver_historico</span>():
-    <span class="org-doc">"""Retorna hist&#243;rico sem o system prompt."""</span>
     <span class="org-keyword">return</span> historico[<span class="org-string">"mensagens"</span>][1:]
 
 <span class="org-keyword">def</span> <span class="org-function-name">limpar_historico</span>():
-    <span class="org-doc">"""Limpa hist&#243;rico mantendo system prompt."""</span>
     <span class="org-variable-name">sistema</span> <span class="org-operator">=</span> historico[<span class="org-string">"mensagens"</span>][0]
     <span class="org-variable-name">historico</span>[<span class="org-string">"mensagens"</span>] <span class="org-operator">=</span> [sistema]
 
 <span class="org-comment-delimiter"># </span><span class="org-comment">Uso
-</span><span class="org-builtin">print</span>(conversar(<span class="org-string">"Meu nome &#233; Lucas e eu ensino IA."</span>))
+</span><span class="org-builtin">print</span>(conversar(<span class="org-string">"Meu nome &#233; Lucas e eu amo IA."</span>))
 <span class="org-builtin">print</span>(conversar(<span class="org-string">"Qual &#233; o meu nome?"</span>))  <span class="org-comment-delimiter"># </span><span class="org-comment">Deve lembrar!
 </span><span class="org-builtin">print</span>(ver_historico())
 </pre>
@@ -1448,43 +882,90 @@ Implemente um chat com histórico usando dicionários (sem classes!):
 </div>
 </div>
 </div>
-<div id="outline-container-org1250d78" class="outline-3">
-<h3 id="org1250d78">Exercício 3: Trocar de provedor</h3>
-<div class="outline-text-3" id="text-org1250d78">
+<div id="outline-container-orgc8dd14e" class="outline-3">
+<h3 id="orgc8dd14e">Exercício 3: Dois servidores, mesma requisição</h3>
+<div class="outline-text-3" id="text-orgc8dd14e">
 <p>
-Modifique o Exercício 1 para aceitar tanto Ollama quanto Gemini. Dica: use um parâmetro <code>provedor</code> com valores <code>"ollama"</code> ou <code>"gemini"</code>.
+Rode a mesma <code>perguntar()</code> do Exercício 1 contra <b>dois servidores</b>: o Ollama (<code>localhost:11434</code>) e um <code>llama-server</code> subido com o comando da apostila (<code>localhost:8081</code>, com o LFM2.5). O que muda de uma chamada pra outra?
 </p>
-</div>
-</div>
-<div id="outline-container-orgf071c4c" class="outline-3">
-<h3 id="orgf071c4c">Exercício 4: Tratamento de erros</h3>
-<div class="outline-text-3" id="text-orgf071c4c">
+
+<div class="details" id="orgcfabc19">
 <p>
-Adicione <code>try/except</code> ao Exercício 2 para tratar:
+📝 Gabarito
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-comment-delimiter"># </span><span class="org-comment">S&#243; a URL e o nome do modelo mudam. O payload &#233; ID&#202;NTICO:
+</span><span class="org-keyword">for</span> url, model <span class="org-keyword">in</span> [
+    (<span class="org-string">"http://localhost:11434/v1/chat/completions"</span>, <span class="org-string">"gemma4:e2b-it-qat"</span>),
+    (<span class="org-string">"http://localhost:8081/v1/chat/completions"</span>,  <span class="org-string">"lfm2.5-2.6b"</span>),
+]:
+    <span class="org-variable-name">resposta</span> <span class="org-operator">=</span> perguntar(
+        <span class="org-string">"O que &#233; uma API em uma frase?"</span>,
+        url<span class="org-operator">=</span>url,
+        model<span class="org-operator">=</span>model
+    )
+    <span class="org-builtin">print</span>(f<span class="org-string">"</span>{model}<span class="org-string">: </span>{resposta}<span class="org-constant">\n</span><span class="org-string">"</span>)
+</pre>
+</div>
+
+<p>
+Compare as duas respostas: modelos diferentes, padrão HTTP idêntico.
+</p>
+
+</div>
+</div>
+</div>
+<div id="outline-container-org067abc6" class="outline-3">
+<h3 id="org067abc6">Exercício 4: Tratamento de erros</h3>
+<div class="outline-text-3" id="text-org067abc6">
+<p>
+Envolva a <code>conversar()</code> do Exercício 2 com a <code>chamar_api()</code> da seção anterior, para tratar:
 </p>
 <ul class="org-ul">
-<li>API key inválida (401)</li>
-<li>Rate limit (429)</li>
-<li>Servidor offline (ConnectionError)</li>
+<li>Servidor offline (<code>ConnectionError</code>)</li>
+<li>Timeout (<code>Timeout</code>)</li>
+<li>Erro HTTP genérico (<code>raise_for_status</code>)</li>
 </ul>
 </div>
 </div>
 </div>
-<div id="outline-container-orgfbc6d6b" class="outline-2">
-<h2 id="orgfbc6d6b">Para ir mais longe</h2>
-<div class="outline-text-2" id="text-orgfbc6d6b">
+<div id="outline-container-orgf50d0ce" class="outline-2">
+<h2 id="orgf50d0ce">Para ir mais longe</h2>
+<div class="outline-text-2" id="text-orgf50d0ce">
 <ul class="org-ul">
-<li><b><b>HuggingFace:</b></b> Gratuito com rate limit, vários modelos. Acesso: <a href="https://huggingface.co">https://huggingface.co</a></li>
-<li><b><b>OpenRouter:</b></b> Agregador de modelos, crédito inicial gratuito. Acesso: <a href="https://openrouter.ai">https://openrouter.ai</a></li>
-<li><b><b>OpenAI:</b></b> Pago, mas referência de mercado. Documentação: <a href="https://platform.openai.com/docs">https://platform.openai.com/docs</a></li>
-<li><b><b>LangChain:</b></b> Framework que abstrai diferenças entre provedores — veremos na Semana 06!</li>
+<li><b>LangChain:</b> framework que abstrai as diferenças entre servidores — veremos na Semana 06!</li>
+<li><b>llama.cpp (github.com/ggml-org/llama.cpp):</b> o motor que roda tudo — a documentação das flags é riquíssima.</li>
+<li><b>llama.app (<a href="https://llama.app">https://llama.app</a>):</b> o instalador oficial do llama.cpp desktop, pela própria equipe ggml — Mac e Windows, sem configuração; roda modelos e fala o mesmo dialeto <code>/v1</code>.</li>
+<li><b>Liquid AI LFM2.5:</b> o modelo agêntico de 2.6B da demo — família completa em huggingface.co/LiquidAI.</li>
+<li><b>Biblioteca do Ollama:</b> <code>ollama.com/library</code> — centenas de modelos, um <code>pull</code> de distância.</li>
 </ul>
 
 <blockquote>
 <p>
-<b>Dica:</b> Comece com Gemini (gratuito e sem setup) ou Ollama no Colab (gratuito e sem API key). Depois explore outros provedores na Semana 06 quando falarmos de LangChain.
+<b>Dica:</b> comece com o Ollama (setup em um comando). Explore outros servidores e modelos quando o básico estiver confortável — o dialeto HTTP é sempre o mesmo.
 </p>
 </blockquote>
+</div>
+</div>
+<div id="outline-container-orge601422" class="outline-2">
+<h2 id="orge601422">Para lembrar</h2>
+<div class="outline-text-2" id="text-orge601422">
+<blockquote>
+<p>
+"Python é a ferramenta.
+O LLM é o cérebro.
+A API é a ponte entre eles."
+</p>
+</blockquote>
+
+<ul class="org-ul">
+<li><b>O padrão universal:</b> JSON via HTTP — request e response</li>
+<li><b>Ollama</b> → <code>localhost:11434</code> (nativo e <code>/v1</code> OpenAI-compatible)</li>
+<li><b>llama-server</b> → <code>localhost:8081</code> — mesmo payload, só muda a URL</li>
+<li><b>Chat com memória</b> → a lista de dicts É o contexto</li>
+<li><b>Próxima aula (16/10)</b> → a estrutura de um agente de verdade!</li>
+</ul>
 </div>
 </div>
 </div>
