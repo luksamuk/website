@@ -263,17 +263,17 @@ Semana 8 - Guilda de IA: RAG, BM25, embeddings, similaridade por cosseno, busca 
 <div id="nav-wrapper"><nav id="site-nav"><a href="/"><i class="fa-solid fa-house"></i> Home</a> <a href="/pages/about.html"><i class="fa-solid fa-user"></i> About</a> <a href="/pages/games.html"><i class="fa-solid fa-gamepad"></i> Games</a> <a href="/pages/portfolio.html"><i class="fa-solid fa-briefcase"></i> Portfolio</a> <a href="/pages/learn.html"><i class="fa-solid fa-book-open"></i> Learn</a> <a href="/pages/talks-index.html"><i class="fa-solid fa-chalkboard-user"></i> Talks</a> <a href="/pages/blog.html"><i class="fa-solid fa-rss"></i> Blog</a> <button id="theme-selector" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></nav><h1 class="site-title"><a href="/">The Alchemist's Hideout</a></h1></div><h1 class="title">Embeddings, Similaridade e RAG - Texto como números, busca e geração</h1>
 </div>
 <div id="content" class="content">
-<div id="outline-container-orge446597" class="outline-2">
-<h2 id="orge446597">Semana 8 - Embeddings, Similaridade e RAG</h2>
-<div class="outline-text-2" id="text-orge446597">
+<div id="outline-container-orgfe7d227" class="outline-2">
+<h2 id="orgfe7d227">Semana 8 - Embeddings, Similaridade e RAG</h2>
+<div class="outline-text-2" id="text-orgfe7d227">
 <p>
 Esta semana juntamos dois temas que são duas faces da mesma moeda: como fazer um agente "ler" documentos (RAG) e como representar texto como números (embeddings). Começamos pelo problema, passamos pela busca lexical (BM25), pela busca semântica (embeddings), pela busca híbrida, e terminamos com engenharia real.
 </p>
 </div>
 </div>
-<div id="outline-container-orgda0fe54" class="outline-2">
-<h2 id="orgda0fe54">O problema: LLMs não sabem tudo</h2>
-<div class="outline-text-2" id="text-orgda0fe54">
+<div id="outline-container-org947e493" class="outline-2">
+<h2 id="org947e493">O problema: LLMs não sabem tudo</h2>
+<div class="outline-text-2" id="text-org947e493">
 <p>
 LLMs não conhecem seus documentos pessoais, PDFs da empresa, notas privadas, nem informações recentes (pós-treinamento).
 </p>
@@ -283,9 +283,9 @@ Precisamos de uma forma de <b>buscar</b> informações relevantes e entregá-las
 </p>
 </div>
 </div>
-<div id="outline-container-orgdd79880" class="outline-2">
-<h2 id="orgdd79880">RAG: o agente que lê documentos</h2>
-<div class="outline-text-2" id="text-orgdd79880">
+<div id="outline-container-org21c68d5" class="outline-2">
+<h2 id="org21c68d5">RAG: o agente que lê documentos</h2>
+<div class="outline-text-2" id="text-org21c68d5">
 <p>
 RAG (<b>Retrieval Augmented Generation</b>) resolve isso: buscar informações relevantes antes de gerar a resposta.
 </p>
@@ -296,18 +296,18 @@ RAG (<b>Retrieval Augmented Generation</b>) resolve isso: buscar informações r
 </p>
 </blockquote>
 </div>
-<div id="outline-container-orgae5ab86" class="outline-3">
-<h3 id="orgae5ab86">Analogia</h3>
-<div class="outline-text-3" id="text-orgae5ab86">
+<div id="outline-container-org0473c43" class="outline-3">
+<h3 id="org0473c43">Analogia</h3>
+<div class="outline-text-3" id="text-org0473c43">
 <ul class="org-ul">
 <li><b>Sem RAG:</b> aluno fazendo prova de <b>memória</b></li>
 <li><b>Com RAG:</b> aluno fazendo prova com <b>livro aberto</b></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgdc92766" class="outline-3">
-<h3 id="orgdc92766">Fluxo RAG</h3>
-<div class="outline-text-3" id="text-orgdc92766">
+<div id="outline-container-org7079590" class="outline-3">
+<h3 id="org7079590">Fluxo RAG</h3>
+<div class="outline-text-3" id="text-org7079590">
 <ol class="org-ol">
 <li><b>Chunking</b> → divide documentos em pedaços menores</li>
 <li><b>Embeddings</b> → transforma cada pedaço em vetor</li>
@@ -318,7 +318,7 @@ RAG (<b>Retrieval Augmented Generation</b>) resolve isso: buscar informações r
 
 <div class="org-center">
 
-<div id="org69f8734" class="figure">
+<div id="org957fa6c" class="figure">
 <p><img src="img/fluxo-rag.svg" alt="fluxo-rag.svg" class="org-svg" />
 </p>
 </div>
@@ -330,9 +330,9 @@ O <b>retrieval</b> é o coração do RAG. E a busca tem duas abordagens que se c
 </div>
 </div>
 </div>
-<div id="outline-container-org12b9589" class="outline-2">
-<h2 id="org12b9589">Busca Lexical: BM25</h2>
-<div class="outline-text-2" id="text-org12b9589">
+<div id="outline-container-orgc7133db" class="outline-2">
+<h2 id="orgc7133db">Busca Lexical: BM25</h2>
+<div class="outline-text-2" id="text-orgc7133db">
 <p>
 "Como o Google buscava antes de IA."
 </p>
@@ -341,9 +341,9 @@ O <b>retrieval</b> é o coração do RAG. E a busca tem duas abordagens que se c
 BM25 (<code>Best Matching 25</code>) é o algoritmo de busca lexical mais usado. Está no Elasticsearch, no Lucene, no Sphinx — e é mais inteligente do que parece.
 </p>
 </div>
-<div id="outline-container-orgba453f4" class="outline-3">
-<h3 id="orgba453f4">A fórmula</h3>
-<div class="outline-text-3" id="text-orgba453f4">
+<div id="outline-container-org4a28072" class="outline-3">
+<h3 id="org4a28072">A fórmula</h3>
+<div class="outline-text-3" id="text-org4a28072">
 <p>
 \[\text{score}(q, D) = \sum_{i} \text{IDF}(q_i) \cdot \frac{f(q_i, D) \cdot (k_1 + 1)}{f(q_i, D) + k_1 \cdot \left(1 - b + b \cdot \frac{\text{fieldLen}}{\text{avgFieldLen}}\right)}\]
 </p>
@@ -353,9 +353,9 @@ Parece assustador, mas cada parte é bom senso. Vamos decompor:
 </p>
 </div>
 </div>
-<div id="outline-container-orgf27a059" class="outline-3">
-<h3 id="orgf27a059">IDF — Inverse Document Frequency</h3>
-<div class="outline-text-3" id="text-orgf27a059">
+<div id="outline-container-orgf090fc9" class="outline-3">
+<h3 id="orgf090fc9">IDF — Inverse Document Frequency</h3>
+<div class="outline-text-3" id="text-orgf090fc9">
 <p>
 \[\text{IDF}(q_i) = \log\left(1 + \frac{\text{docCount} - \text{docFreq} + 0.5}{\text{docFreq} + 0.5}\right)\]
 </p>
@@ -376,17 +376,17 @@ Termos raros são mais informativos.
 </blockquote>
 </div>
 </div>
-<div id="outline-container-org8ec9433" class="outline-3">
-<h3 id="org8ec9433">f(q<sub>i</sub>, D) — Frequência do termo no documento</h3>
-<div class="outline-text-3" id="text-org8ec9433">
+<div id="outline-container-org3b042ce" class="outline-3">
+<h3 id="org3b042ce">f(q<sub>i</sub>, D) — Frequência do termo no documento</h3>
+<div class="outline-text-3" id="text-org3b042ce">
 <p>
 Quantas vezes o termo de busca aparece no documento. Mais aparições = provavelmente mais relevante. Um documento que menciona "gato" 3 vezes provavelmente tem mais a ver com gatos que um que menciona uma vez.
 </p>
 </div>
 </div>
-<div id="outline-container-org4232121" class="outline-3">
-<h3 id="org4232121">k₁ — Saturação da frequência</h3>
-<div class="outline-text-3" id="text-org4232121">
+<div id="outline-container-org63016f7" class="outline-3">
+<h3 id="org63016f7">k₁ — Saturação da frequência</h3>
+<div class="outline-text-3" id="text-org63016f7">
 <p>
 Controla como a frequência do termo <b>satura</b>. A 1ª menção vale muito, a 2ª vale um pouco menos, a 10ª vale quase nada extra.
 </p>
@@ -409,9 +409,9 @@ Documentos longos e diversos (livros) pedem <code>k₁</code> maior. Documentos 
 </p>
 </div>
 </div>
-<div id="outline-container-org19e4d0a" class="outline-3">
-<h3 id="org19e4d0a">b — Normalização por tamanho do documento</h3>
-<div class="outline-text-3" id="text-org19e4d0a">
+<div id="outline-container-org90f8fa7" class="outline-3">
+<h3 id="org90f8fa7">b — Normalização por tamanho do documento</h3>
+<div class="outline-text-3" id="text-org90f8fa7">
 <p>
 Controla quanto o <b>tamanho</b> do documento afeta o score.
 </p>
@@ -429,9 +429,9 @@ Um tweet que menciona "gato" uma vez é mais relevante que um livro de 300 pági
 </blockquote>
 </div>
 </div>
-<div id="outline-container-orgea32476" class="outline-3">
-<h3 id="orgea32476">fieldLen / avgFieldLen — Tamanho relativo</h3>
-<div class="outline-text-3" id="text-orgea32476">
+<div id="outline-container-orgd25b86b" class="outline-3">
+<h3 id="orgd25b86b">fieldLen / avgFieldLen — Tamanho relativo</h3>
+<div class="outline-text-3" id="text-orgd25b86b">
 <p>
 Tamanho do documento dividido pela média de tamanho dos documentos. Se um documento é maior que a média, o score diminui; se é menor, aumenta.
 </p>
@@ -441,9 +441,9 @@ Isso é o "bom senso codificado em matemática."
 </p>
 </div>
 </div>
-<div id="outline-container-org441e7d4" class="outline-3">
-<h3 id="org441e7d4">Resumo do BM25</h3>
-<div class="outline-text-3" id="text-org441e7d4">
+<div id="outline-container-org4f9dcd6" class="outline-3">
+<h3 id="org4f9dcd6">Resumo do BM25</h3>
+<div class="outline-text-3" id="text-org4f9dcd6">
 <ul class="org-ul">
 <li><b>IDF</b>: termos raros valem mais</li>
 <li><b>f(q,D)</b>: mais aparições = mais relevante</li>
@@ -457,9 +457,9 @@ BM25 é bom pra: nomes, termos técnicos, códigos, IDs. Mas não entende sinôn
 </p>
 </div>
 </div>
-<div id="outline-container-org41bde6e" class="outline-3">
-<h3 id="org41bde6e">Referências</h3>
-<div class="outline-text-3" id="text-org41bde6e">
+<div id="outline-container-org619ee00" class="outline-3">
+<h3 id="org619ee00">Referências</h3>
+<div class="outline-text-3" id="text-org619ee00">
 <ul class="org-ul">
 <li><a href="https://www.elastic.co/blog/practical-bm25-part-1-how-shards-affect-relevance-scoring-in-elasticsearch">Practical BM25 — Parte 1: How Shards Affect Relevance Scoring (Elastic Blog)</a></li>
 <li><a href="https://www.elastic.co/pt/blog/practical-bm25-part-2-the-bm25-algorithm-and-its-variables">Practical BM25 — Parte 2: The BM25 Algorithm and its Variables (Elastic Blog, em português)</a></li>
@@ -468,9 +468,9 @@ BM25 é bom pra: nomes, termos técnicos, códigos, IDs. Mas não entende sinôn
 </div>
 </div>
 </div>
-<div id="outline-container-org959115b" class="outline-2">
-<h2 id="org959115b">Busca Semântica: Embeddings</h2>
-<div class="outline-text-2" id="text-org959115b">
+<div id="outline-container-org1409858" class="outline-2">
+<h2 id="org1409858">Busca Semântica: Embeddings</h2>
+<div class="outline-text-2" id="text-org1409858">
 <p>
 E se a pessoa busca por "animal que faz miau" mas o documento diz "gato"? BM25 não acha. Mas embeddings sim.
 </p>
@@ -479,11 +479,11 @@ E se a pessoa busca por "animal que faz miau" mas o documento diz "gato"? BM25 n
 Cada texto vira um <b>vetor</b> — uma lista de números que captura o <b>significado</b> do texto. Textos com significado parecido ficam próximos no "espaço vetorial".
 </p>
 </div>
-<div id="outline-container-org0dabbd4" class="outline-3">
-<h3 id="org0dabbd4">Exemplo visual</h3>
-<div class="outline-text-3" id="text-org0dabbd4">
+<div id="outline-container-orgc1e20c5" class="outline-3">
+<h3 id="orgc1e20c5">Exemplo visual</h3>
+<div class="outline-text-3" id="text-orgc1e20c5">
 
-<div id="orgaa0fb2e" class="figure">
+<div id="orga03dd3c" class="figure">
 <p><img src="img/embeddings_3d.png" alt="Visualização 3D de embeddings" style="width: 100%; max-width: 500px;" />
 </p>
 </div>
@@ -502,9 +502,9 @@ Quanto menor o ângulo entre os vetores, mais parecidos são os significados.
 </p>
 </div>
 </div>
-<div id="outline-container-org782b7b6" class="outline-3">
-<h3 id="org782b7b6">Espaço vetorial</h3>
-<div class="outline-text-3" id="text-org782b7b6">
+<div id="outline-container-org9e3b496" class="outline-3">
+<h3 id="org9e3b496">Espaço vetorial</h3>
+<div class="outline-text-3" id="text-org9e3b496">
 <ul class="org-ul">
 <li>Textos com significado parecido = setas na <b>mesma direção</b></li>
 <li>Textos com significado diferente = setas em <b>direções diferentes</b></li>
@@ -512,9 +512,9 @@ Quanto menor o ângulo entre os vetores, mais parecidos são os significados.
 </ul>
 </div>
 </div>
-<div id="outline-container-org7f99d0c" class="outline-3">
-<h3 id="org7f99d0c">Similaridade por Cosseno</h3>
-<div class="outline-text-3" id="text-org7f99d0c">
+<div id="outline-container-org2546c04" class="outline-3">
+<h3 id="org2546c04">Similaridade por Cosseno</h3>
+<div class="outline-text-3" id="text-org2546c04">
 <p>
 <b>Conexão com Geometria Analítica!</b>
 </p>
@@ -530,9 +530,9 @@ Quanto menor o ângulo entre os vetores, mais parecidos são os significados.
 </ul>
 </div>
 </div>
-<div id="outline-container-orgdf68227" class="outline-3">
-<h3 id="orgdf68227">Matryoshka Embeddings</h3>
-<div class="outline-text-3" id="text-orgdf68227">
+<div id="outline-container-orgef3bd81" class="outline-3">
+<h3 id="orgef3bd81">Matryoshka Embeddings</h3>
+<div class="outline-text-3" id="text-orgef3bd81">
 <p>
 Embeddings que podem ser <b>truncados</b>.
 </p>
@@ -547,9 +547,9 @@ Embeddings que podem ser <b>truncados</b>.
 </p>
 </div>
 </div>
-<div id="outline-container-org4422051" class="outline-3">
-<h3 id="org4422051">Como escolher um modelo de embedding?</h3>
-<div class="outline-text-3" id="text-org4422051">
+<div id="outline-container-orgb9471ad" class="outline-3">
+<h3 id="orgb9471ad">Como escolher um modelo de embedding?</h3>
+<div class="outline-text-3" id="text-orgb9471ad">
 <p>
 <b>Critérios práticos:</b>
 </p>
@@ -579,9 +579,9 @@ O melhor modelo é o que <b>funciona pra o seu caso</b>. Teste antes de otimizar
 </div>
 </div>
 </div>
-<div id="outline-container-orgc23d472" class="outline-2">
-<h2 id="orgc23d472">Busca Híbrida: o melhor dos dois mundos</h2>
-<div class="outline-text-2" id="text-orgc23d472">
+<div id="outline-container-org7419e86" class="outline-2">
+<h2 id="org7419e86">Busca Híbrida: o melhor dos dois mundos</h2>
+<div class="outline-text-2" id="text-org7419e86">
 <ul class="org-ul">
 <li><b>BM25</b> acha termos exatos (nomes, códigos, IDs)</li>
 <li><b>Embeddings</b> acham significados (paráfrases, sinônimos, conceitos)</li>
@@ -610,9 +610,9 @@ Cada método vê um lado. Juntos, veem mais.
 </blockquote>
 </div>
 </div>
-<div id="outline-container-orgb2bc24d" class="outline-2">
-<h2 id="orgb2bc24d">Demo prática: FAISS</h2>
-<div class="outline-text-2" id="text-orgb2bc24d">
+<div id="outline-container-orgb855449" class="outline-2">
+<h2 id="orgb855449">Demo prática: FAISS</h2>
+<div class="outline-text-2" id="text-orgb855449">
 <p>
 Vamos ver isso funcionando de verdade no Colab!
 </p>
@@ -636,9 +636,9 @@ O notebook carrega ~20 fatos sobre filosofia e computação, gera embeddings, in
 <a href="https://colab.research.google.com/github/luksamuk/guilda-ia/blob/main/notebooks/aula08_embeddings_rag_colab.ipynb">📓 Abrir no Colab</a>
 </p>
 </div>
-<div id="outline-container-orgd70417f" class="outline-3">
-<h3 id="orgd70417f">Sobre o FAISS</h3>
-<div class="outline-text-3" id="text-orgd70417f">
+<div id="outline-container-orgafb4bab" class="outline-3">
+<h3 id="orgafb4bab">Sobre o FAISS</h3>
+<div class="outline-text-3" id="text-orgafb4bab">
 <p>
 FAISS (Facebook AI Similarity Search) é uma biblioteca da Meta para busca de similaridade em vetores densos. É rápida, simples, e funciona bem em memória.
 </p>
@@ -664,9 +664,9 @@ FAISS não é um banco de dados de verdade — não persiste, não tem metadata,
 </div>
 </div>
 </div>
-<div id="outline-container-org270ad32" class="outline-2">
-<h2 id="org270ad32">Engenharia na prática: Sprachspiel</h2>
-<div class="outline-text-2" id="text-org270ad32">
+<div id="outline-container-org6e6b643" class="outline-2">
+<h2 id="org6e6b643">Engenharia na prática: Sprachspiel</h2>
+<div class="outline-text-2" id="text-org6e6b643">
 <p>
 Como essas ideias aparecem num projeto real?
 </p>
@@ -675,9 +675,9 @@ Como essas ideias aparecem num projeto real?
 <b>Sprachspiel</b> — harness de interação cognitiva com LLMs.
 </p>
 </div>
-<div id="outline-container-org97e9d46" class="outline-3">
-<h3 id="org97e9d46">Memória persistente</h3>
-<div class="outline-text-3" id="text-org97e9d46">
+<div id="outline-container-org183061c" class="outline-3">
+<h3 id="org183061c">Memória persistente</h3>
+<div class="outline-text-3" id="text-org183061c">
 <ul class="org-ul">
 <li>Fatos, notas, documentos com <b>busca semântica</b></li>
 <li><b>Decay Ebbinghaus:</b> memórias "esquecem" com o tempo
@@ -688,9 +688,9 @@ Como essas ideias aparecem num projeto real?
 </ul>
 </div>
 </div>
-<div id="outline-container-org7e9eb28" class="outline-3">
-<h3 id="org7e9eb28">SOUL.md — personalidade do agente</h3>
-<div class="outline-text-3" id="text-org7e9eb28">
+<div id="outline-container-orgdb20944" class="outline-3">
+<h3 id="orgdb20944">SOUL.md — personalidade do agente</h3>
+<div class="outline-text-3" id="text-orgdb20944">
 <ul class="org-ul">
 <li>Arquivo que define <b>quem o agente é</b></li>
 <li>Tom de voz, valores, estilo de resposta</li>
@@ -698,9 +698,9 @@ Como essas ideias aparecem num projeto real?
 </ul>
 </div>
 </div>
-<div id="outline-container-org0d912bb" class="outline-3">
-<h3 id="org0d912bb">Busca híbrida real</h3>
-<div class="outline-text-3" id="text-org0d912bb">
+<div id="outline-container-orgec81dd2" class="outline-3">
+<h3 id="orgec81dd2">Busca híbrida real</h3>
+<div class="outline-text-3" id="text-orgec81dd2">
 <ul class="org-ul">
 <li>BM25 (lexical) + vetores (semântica) + RRF (fusão)</li>
 <li>O agente não escolhe uma — usa as <b>duas juntas</b></li>
@@ -714,13 +714,13 @@ Como essas ideias aparecem num projeto real?
 </div>
 </div>
 </div>
-<div id="outline-container-org3bb00c7" class="outline-2">
-<h2 id="org3bb00c7">🔥 Pontos Extras (para reflexão)</h2>
-<div class="outline-text-2" id="text-org3bb00c7">
+<div id="outline-container-org1a78a7c" class="outline-2">
+<h2 id="org1a78a7c">🔥 Pontos Extras (para reflexão)</h2>
+<div class="outline-text-2" id="text-org1a78a7c">
 </div>
-<div id="outline-container-org97e068e" class="outline-3">
-<h3 id="org97e068e">1. Similaridade não é 1.0 nem aleatória — é interpretável</h3>
-<div class="outline-text-3" id="text-org97e068e">
+<div id="outline-container-org936fc54" class="outline-3">
+<h3 id="org936fc54">1. Similaridade não é 1.0 nem aleatória — é interpretável</h3>
+<div class="outline-text-3" id="text-org936fc54">
 <p>
 No Teste 2 do notebook, a busca por Church-Turing retornou similarity = 0.82, enquanto a busca por Spinoza retornou 0.64. O que isso significa?
 </p>
@@ -739,9 +739,9 @@ Embeddings não são busca exata nem adivinhação — a similaridade por cossen
 </p>
 </div>
 </div>
-<div id="outline-container-org8291fe3" class="outline-3">
-<h3 id="org8291fe3">2. O agente busca em inglês e responde em português</h3>
-<div class="outline-text-3" id="text-org8291fe3">
+<div id="outline-container-org732747c" class="outline-3">
+<h3 id="org732747c">2. O agente busca em inglês e responde em português</h3>
+<div class="outline-text-3" id="text-org732747c">
 <p>
 Os fatos estão em inglês, mas o system prompt obriga o agente a responder em português. O agente:
 </p>
@@ -761,9 +761,9 @@ Isso mostra que embeddings são <b>cross-linguais</b> — o significado transcen
 </p>
 </div>
 </div>
-<div id="outline-container-org1ff7c05" class="outline-3">
-<h3 id="org1ff7c05">3. O system prompt força a busca — sem ele, o LLM responde de memória</h3>
-<div class="outline-text-3" id="text-org1ff7c05">
+<div id="outline-container-org553fdcd" class="outline-3">
+<h3 id="org553fdcd">3. O system prompt força a busca — sem ele, o LLM responde de memória</h3>
+<div class="outline-text-3" id="text-org553fdcd">
 <p>
 No notebook, o system prompt diz explicitamente: <b>"NEVER answer from your own knowledge"</b> e <b>"ALWAYS use search<sub>facts</sub> before answering"</b>. Sem isso, o Gemma 4 pode simplesmente responder direto, sem buscar nada.
 </p>
@@ -777,9 +777,9 @@ Isso é o coração do RAG: o LLM tem conhecimento nos pesos, mas <b>não confia
 </p>
 </div>
 </div>
-<div id="outline-container-org33c72bc" class="outline-3">
-<h3 id="org33c72bc">4. O agente faz múltiplas buscas e combina resultados</h3>
-<div class="outline-text-3" id="text-org33c72bc">
+<div id="outline-container-org334508f" class="outline-3">
+<h3 id="org334508f">4. O agente faz múltiplas buscas e combina resultados</h3>
+<div class="outline-text-3" id="text-org334508f">
 <p>
 No Teste 2, o agente chamou a ferramenta <b>duas vezes</b> — uma para Church-Turing, outra para Spinoza — e depois <b>sintetizou</b> uma análise comparativa. Isso é o ciclo Thought → Action → Observation repetido, automaticamente, pelo <code>create_agent</code>.
 </p>
@@ -793,9 +793,9 @@ O agente não recebeu instrução de "busque duas vezes". Ele decidiu sozinho, c
 </p>
 </div>
 </div>
-<div id="outline-container-org8e8f7bd" class="outline-3">
-<h3 id="org8e8f7bd">5. RCEF-TC no system prompt: quando cortar E e F</h3>
-<div class="outline-text-3" id="text-org8e8f7bd">
+<div id="outline-container-org442db24" class="outline-3">
+<h3 id="org442db24">5. RCEF-TC no system prompt: quando cortar E e F</h3>
+<div class="outline-text-3" id="text-org442db24">
 <p>
 O system prompt do agente usa R (Role) e C (Context), mas corta E (Examples) e F (Format). Por quê? Porque o Gemma 4 E2B é um modelo <b>pequeno</b> — um system prompt muito longo reduz a qualidade das respostas. Num modelo maior (30B+), valeria a pena adicionar exemplos de buscas boas vs ruins e definir o formato de saída.
 </p>
@@ -810,9 +810,9 @@ Isso é engenharia de prompt aplicada: o framework RCEF-TC é um guia, não uma 
 </div>
 </div>
 </div>
-<div id="outline-container-orgfaa5ed6" class="outline-2">
-<h2 id="orgfaa5ed6">Resumo</h2>
-<div class="outline-text-2" id="text-orgfaa5ed6">
+<div id="outline-container-orgf618dce" class="outline-2">
+<h2 id="orgf618dce">Resumo</h2>
+<div class="outline-text-2" id="text-orgf618dce">
 <ol class="org-ol">
 <li><b>RAG</b> = buscar antes de responder (chunking → embeddings → retrieval → generation)</li>
 <li><b>BM25</b> = busca lexical (IDF, frequência, saturação k₁, normalização b, tamanho relativo)</li>
@@ -824,9 +824,9 @@ Isso é engenharia de prompt aplicada: o framework RCEF-TC é um guia, não uma 
 </ol>
 </div>
 </div>
-<div id="outline-container-org9570ad2" class="outline-2">
-<h2 id="org9570ad2">Próxima semana</h2>
-<div class="outline-text-2" id="text-org9570ad2">
+<div id="outline-container-org688bff6" class="outline-2">
+<h2 id="org688bff6">Próxima semana</h2>
+<div class="outline-text-2" id="text-org688bff6">
 <p>
 <b><b>Semana 9 - Apresentação final:</b></b> hora de mostrar os projetos!</p>
 </div>
