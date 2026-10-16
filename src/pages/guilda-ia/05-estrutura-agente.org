@@ -1,10 +1,10 @@
 #+TITLE: Estrutura de Agente: Onde Tudo Começa
-# Semana 5 - 29/05/2026
-#+DESCRIPTION: Semana 5 - Guilda de IA: Estrutura de um agente de IA
+# Semana 6 - 16/10/2026
+#+DESCRIPTION: Semana 6 - Guilda de IA 2026.2: estrutura de um agente - harness na mão, memória, LangChain
 #+SETUPFILE: ./setupfile.org
 #+LANGUAGE: pt_BR
 #+STARTUP: inlineimages showall latexpreview
-#+DATE: 29/05/2026
+#+DATE: 16/10/2026
 
 * Continuação: De APIs para Agentes
 
@@ -14,7 +14,7 @@ Mas um *agente* é mais que isso. Um agente:
 
 - *Lembra* da conversa (memória)
 - *Tem personalidade* (instruções de sistema)
-- *Pode usar ferramentas* (extensões — veremos na S06)
+- *Pode usar ferramentas* (extensões — veremos na próxima aula!)
 
 Nesta aula, vamos construir um agente do zero: primeiro "na mão" com =requests=, depois com LangChain.
 
@@ -72,7 +72,7 @@ Answer: O resultado é 231058.
 - *Comporabilidade:* ações podem ser encadeadas
 
 #+begin_quote
-Nesta aula, vamos implementar a *estrutura* do agente (memória + instruções). Na S06, vamos adicionar *ferramentas* — e então o ciclo ReAct vai ficar completo.
+Nesta aula, vamos implementar a *estrutura* do agente (memória + instruções). Na próxima aula, vamos adicionar *ferramentas* — e então o ciclo ReAct vai ficar completo.
 #+end_quote
 
 ** Para saber mais
@@ -80,7 +80,6 @@ Nesta aula, vamos implementar a *estrutura* do agente (memória + instruções).
 - Yao, S. et al. (2022). "ReAct: Synergizing Reasoning and Acting in Language Models". [[https://arxiv.org/abs/2210.03629][arXiv:2210.03629]]
 - Liu, N.F. et al. (2023). "Lost in the Middle: How Language Models Use Long Contexts". [[https://arxiv.org/abs/2307.03172][arXiv:2307.03172]]
 - Weng, L. (2023). "LLM Powered Autonomous Agents". [[https://lilianweng.github.io/posts/2023-06-23-agent/][lilianweng.github.io]]
-- Wang et al. (2023). "Plan-and-Solve Prompting". [[https://arxiv.org/abs/2305.16969][arXiv:2305.16969]]
 
 * Agente na Mão: Dicts e Funções
 
@@ -108,8 +107,9 @@ def conversar(agente, mensagem):
     # Monta a lista de mensagens
     messages = [{"role": "system", "content": agente["instrucoes"]}]
 
-    # Adiciona o histórico
-    for msg in agente["historico"]:
+    # Adiciona o histórico (limitado a max_historico)
+    limite = agente["max_historico"]
+    for msg in agente["historico"][-limite:]:
         messages.append(msg)
 
     # Adiciona a mensagem atual
@@ -119,7 +119,7 @@ def conversar(agente, mensagem):
     response = requests.post(
         "http://localhost:11434/v1/chat/completions",
         json={
-            "model": "gemma4:e2b",
+            "model": "gemma4:e2b-it-qat",
             "messages": messages,
             "stream": False
         }
@@ -151,38 +151,7 @@ Se a conversa crescer demais, o prompt fica gigante — e isso custa tokens e fi
 
 ** Solução: limitar o histórico
 
-#+BEGIN_SRC python
-def conversar(agente, mensagem):
-    # Monta a lista de mensagens
-    messages = [{"role": "system", "content": agente["instrucoes"]}]
-
-    # Pega só as últimas N mensagens do histórico
-    limite = agente["max_historico"]
-    historico_cortado = agente["historico"][-limite:]
-
-    for msg in historico_cortado:
-        messages.append(msg)
-
-    messages.append({"role": "user", "content": mensagem})
-
-    # Chama o Ollama via endpoint OpenAI-compatible
-    response = requests.post(
-        "http://localhost:11434/v1/chat/completions",
-        json={
-            "model": "gemma4:e2b",
-            "messages": messages,
-            "stream": False
-        }
-    )
-
-    resposta = response.json()["choices"][0]["message"]["content"]
-
-    # Salva no histórico
-    agente["historico"].append({"role": "user", "content": mensagem})
-    agente["historico"].append({"role": "assistant", "content": resposta})
-
-    return resposta
-#+END_SRC
+Já está na função acima: =[-limite:]= pega só as últimas N mensagens.
 
 Agora garantimos que o prompt nunca ultrapassa =max_historico= mensagens do passado.
 
@@ -201,7 +170,7 @@ Montar mensagens na mão funciona, mas é repetitivo. *LangChain* é uma bibliot
 | Montar lista de =messages= | =ChatPromptTemplate= organiza tudo |
 | Adicionar histórico manualmente | =InMemoryChatMessageHistory= (tipado, mesma lógica) |
 | Chamar API e parsear JSON | =ChatOpenAI= via endpoint OpenAI-compatible |
-| Limitar histórico | Configurável em =max_historico= |
+| Limitar histórico | Configurável |
 
 O padrão fundamental do LangChain moderno é o *pipe* (=|=):
 
@@ -221,16 +190,15 @@ mesmo modelo local, sem enviar nada pra nuvem.
 #+begin_quote
 *Por que =ChatOpenAI= e não =ChatOllama=?*
 O =ChatOllama= existe, mas o endpoint OpenAI-compatible é mais universal: funciona
-com Ollama, com qualquer servidor vLLM/TGI, e com APIs comerciais (Gemini,
-OpenAI). É o padrão da indústria — aprender assim te prepara pra trocar de
-provedor mudando uma linha.
+com Ollama, com qualquer servidor vLLM/TGI, e com APIs comerciais. É o padrão da
+indústria — aprender assim te prepara pra trocar de provedor mudando uma linha.
 #+end_quote
 
 #+BEGIN_SRC python
 from langchain_openai import ChatOpenAI
 
 llm = ChatOpenAI(
-    model="gemma4:e2b",
+    model="gemma4:e2b-it-qat",
     base_url="http://localhost:11434/v1",
     api_key="nao_precisa",  # Ollama local não usa chave
     temperature=0.7
@@ -306,7 +274,7 @@ print("👉 Na sessão nova o modelo não sabe nosso nome!")
 | Limitar histórico | =[-N:]= manual | Configurável |
 
 #+begin_quote
-LangChain não é mágica — por baixo, ela faz o que fazemos na mão. Mas abstrair isso facilita, surtout quando adicionamos *ferramentas* (na S06).
+LangChain não é mágica — por baixo, ela faz o que fazemos na mão. Mas abstrair isso facilita, principalmente quando adicionamos *ferramentas* (na próxima aula).
 #+end_quote
 
 * Diagrama do Ciclo
@@ -362,7 +330,7 @@ REGRAS:
 "Agente = LLM com memória e personalidade. O ReAct completa o ciclo: pensar e agir."
 #+end_quote
 
-Na S06, vamos dar *ferramentas* para o agente — e o ciclo ReAct (input → thought → action → observation → answer) vai ganhar vida.
+Na próxima aula, vamos dar *ferramentas* para o agente — e o ciclo ReAct (input → thought → action → observation → answer) vai ganhar vida.
 
 -----
 * Exercícios
@@ -371,8 +339,9 @@ Na S06, vamos dar *ferramentas* para o agente — e o ciclo ReAct (input → tho
 
 Crie um agente com uma personalidade específica (professor de Python, assistente de receitas, guia de viagem):
 
+#+begin_details Gabarito
 #+BEGIN_SRC python
-agente = criar_agente("""Você é um professor de Python paciente e didático.
+instrucoes = """Você é um professor de Python paciente e didático.
 
 SOBRE VOCÊ:
 - Ensina Python para iniciantes
@@ -383,20 +352,39 @@ SOBRE VOCÊ:
 SEU PÚBLICO:
 - Pessoas começando a programar
 - Precisam de explicações passo a passo
-""")
+"""
+
+agente = criar_agente(instrucoes)
 
 print(conversar(agente, "O que é uma variável?"))
 print(conversar(agente, "Como declaro uma lista?"))
 #+END_SRC
+#+end_details
 
 ** Exercício 2: Memória com Limite
 
-Modifique =criar_agente= para aceitar um =max_historico= e teste o que acontece quando o histórico ultrapassa o limite. O agente "esquece" as mensagens mais antigas?
+Teste o que acontece quando o histórico ultrapassa =max_historico=. O agente "esquece" as mensagens mais antigas?
+
+#+begin_details Gabarito
+#+BEGIN_SRC python
+agente = criar_agente("Você é um assistente que responde em português.", max_historico=4)
+
+# Encha o histórico: com limite 4, o agente só lembra das 2 últimas trocas
+print(conversar(agente, "Sequência: 1"))
+print(conversar(agente, "Sequência: 2"))
+print(conversar(agente, "Sequência: 3"))
+print(conversar(agente, "Sequência: 4"))
+print(conversar(agente, "Quais sequências eu disse?"))  # lembra só das últimas!
+print(agente["historico"])  # o histórico completo continua lá — só o prompt é cortado
+#+END_SRC
+A parte =[-limite:]= corta o prompt, não o histórico em si.
+#+end_details
 
 ** Exercício 3: Dois Agentes, Duas Personalidades
 
 Crie dois agentes com personalidades diferentes e compare as respostas:
 
+#+begin_details Gabarito
 #+BEGIN_SRC python
 agente_formal = criar_agente("Você é um assistente formal e objetivo.")
 agente_criativo = criar_agente("Você é um assistente criativo e divertido.")
@@ -404,9 +392,11 @@ agente_criativo = criar_agente("Você é um assistente criativo e divertido.")
 pergunta = "Me conte uma piada sobre programação."
 
 print("FORMAL:", conversar(agente_formal, pergunta))
+print()
 print("CRIATIVO:", conversar(agente_criativo, pergunta))
 #+END_SRC
+#+end_details
 
 * Próxima Aula
 
-Semana 06: *Primeira Ferramenta* — vamos dar ao agente a capacidade de usar ferramentas externas (calculadora, busca, etc.). É aí que o ciclo ReAct se completa: /pensar, agir, observar, responder/.
+Semana 07 (23/10): *Primeira Ferramenta* — vamos dar ao agente a capacidade de usar ferramentas externas (calculadora, busca, etc.). É aí que o ciclo ReAct se completa: /pensar, agir, observar, responder/.
