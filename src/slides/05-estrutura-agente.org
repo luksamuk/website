@@ -78,18 +78,20 @@ conversar(agente, "Lembra de mim?")  # tem contexto
 
 Se a conversa crescer demais, o prompt fica gigante.
 
-*Solução:* limitar o histórico.
+*Solução:* esquecer de verdade — rotação.
 
 #+BEGIN_SRC python
-# Pegar só as últimas N mensagens
-for msg in agente["historico"][-agente["max_historico"]:]:
-    ...
+def rotacionar(agente):
+    # Esquece o mais antigo quando passa do limite
+    limite = agente["max_historico"]
+    if len(agente["historico"]) > limite:
+        agente["historico"][:] = agente["historico"][-limite:]
 #+END_SRC
 
 ** E compactação?
 
 #+ATTR_HTML: :style font-size:0.55em;
-- Truncar funciona, mas *joga fora informação*
+- Rotação apaga o mais antigo, mas *joga fora informação*
 - Na prática: *compactação* — LLM resume o histórico antes de enviar
 - Ajuda com *lost in the middle*: LLMs não recuperam bem info no meio do contexto ([[https://arxiv.org/abs/2307.03172][Liu et al., 2023]])
 - Compactação precisa de ferramentas — fica pra outro dia

@@ -98,6 +98,20 @@ def criar_agente(instrucoes, max_historico=20):
 
 Um dicionário simples. Sem classes, sem objetos — só funções e dicts.
 
+** Rotacionando o histórico (esquecer de verdade)
+
+Truncar no envio (=[-limite:]=) resolve o prompt, mas o histórico cresce infinito por baixo. A alternativa mais honesta: *esquecer de verdade* — apagar as mensagens mais antigas quando passar do limite. O system prompt nunca fica no histórico, então não corre risco.
+
+#+BEGIN_SRC python
+def rotacionar(agente):
+    # Esquece o mais antigo quando o historico passa do max
+    limite = agente["max_historico"]
+    if len(agente["historico"]) > limite:
+        agente["historico"][:] = agente["historico"][-limite:]
+#+END_SRC
+
+O =[:]= na atribuição (=agente["historico"][:] = ...=) é essencial: substitui o *conteúdo* da mesma lista, preservando referências externas ao objeto.
+
 ** Conversando com o agente
 
 #+BEGIN_SRC python
@@ -107,10 +121,7 @@ def conversar(agente, mensagem):
     # Monta a lista de mensagens
     messages = [{"role": "system", "content": agente["instrucoes"]}]
 
-    # Adiciona o histórico (limitado a max_historico)
-    limite = agente["max_historico"]
-    for msg in agente["historico"][-limite:]:
-        messages.append(msg)
+    # Adiciona o histórico (que já entra rotacionado)
 
     # Adiciona a mensagem atual
     messages.append({"role": "user", "content": mensagem})
@@ -130,6 +141,7 @@ def conversar(agente, mensagem):
     # Salva no histórico
     agente["historico"].append({"role": "user", "content": mensagem})
     agente["historico"].append({"role": "assistant", "content": resposta})
+    rotacionar(agente)
 
     return resposta
 #+END_SRC
@@ -339,7 +351,9 @@ Na próxima aula, vamos dar *ferramentas* para o agente — e o ciclo ReAct (inp
 
 Crie um agente com uma personalidade específica (professor de Python, assistente de receitas, guia de viagem):
 
-#+begin_details Gabarito
+#+begin_details
+📝 Gabarito
+
 #+BEGIN_SRC python
 instrucoes = """Você é um professor de Python paciente e didático.
 
@@ -361,30 +375,35 @@ print(conversar(agente, "Como declaro uma lista?"))
 #+END_SRC
 #+end_details
 
-** Exercício 2: Memória com Limite
+** Exercício 2: Memória com Rotação
 
-Teste o que acontece quando o histórico ultrapassa =max_historico=. O agente "esquece" as mensagens mais antigas?
+Diminua o =max_historico= (experimente 6) e encha o histórico. O agente "esquece" as mensagens antigas? E se você contar de novo o que ele "esqueceu"?
 
-#+begin_details Gabarito
+#+begin_details
+📝 Gabarito
+
 #+BEGIN_SRC python
-agente = criar_agente("Você é um assistente que responde em português.", max_historico=4)
+agente = criar_agente("Você é um assistente que responde em português.", max_historico=6)
 
-# Encha o histórico: com limite 4, o agente só lembra das 2 últimas trocas
-print(conversar(agente, "Sequência: 1"))
-print(conversar(agente, "Sequência: 2"))
-print(conversar(agente, "Sequência: 3"))
-print(conversar(agente, "Sequência: 4"))
-print(conversar(agente, "Quais sequências eu disse?"))  # lembra só das últimas!
-print(agente["historico"])  # o histórico completo continua lá — só o prompt é cortado
+print(conversar(agente, "Meu nome é Ana."))
+print(conversar(agente, "Meu número é 42."))
+print(conversar(agente, "Minha cor é azul."))
+print(len(agente["historico"]))  # 6: a rotação apagou as 2 primeiras mensagens
+print(agente["historico"][0])    # o "Meu nome é Ana" já não está aqui
+
+# Dica: às vezes o modelo ainda "lembra" — o nome pode ter sobrevivido
+# dentro de uma resposta que ficou no histórico. Compactação real resolve isso.
 #+END_SRC
-A parte =[-limite:]= corta o prompt, não o histórico em si.
+Observe a rotação: com =max_historico=6=, a partir da 4ª troca o histórico congela em 6 itens. Quem sai é sempre o mais antigo. (Alternativa sem rotação: truncar só no envio com =[-limite:]= — o histórico cresce infinito por baixo.)
 #+end_details
 
 ** Exercício 3: Dois Agentes, Duas Personalidades
 
 Crie dois agentes com personalidades diferentes e compare as respostas:
 
-#+begin_details Gabarito
+#+begin_details
+📝 Gabarito
+
 #+BEGIN_SRC python
 agente_formal = criar_agente("Você é um assistente formal e objetivo.")
 agente_criativo = criar_agente("Você é um assistente criativo e divertido.")
