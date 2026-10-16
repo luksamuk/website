@@ -24,7 +24,7 @@
         document.getElementsByTagName( 'head' )[0].appendChild( link );
     }
 </script>
-<script src="./slide_fixes.js"></script>
+<style>.reveal .slide-background { background-size: cover !important; background-position: center !important; }</style>
 </head>
 <body>
 <div class="reveal">
@@ -32,49 +32,26 @@
 <section id="sec-title-slide" data-background="./slide_05.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Estrutura de um Agente</h2><br/><p style="font-size:0.85em;opacity:0.8;">Construindo o primeiro agente</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 </section>
 <section>
-<section id="slide-org09590b2">
-<h2 id="org09590b2">📰 Fofocas da Semana</h2>
-<ul style="font-size:0.55em;">
-<li><b>llama.app</b> (29/05) — site oficial do llama.cpp! [llama.app](<a href="https://llama.app">https://llama.app</a>)</li>
-<li><b>GPT-5.5 Instant update</b> (28/05) — respostas mais naturais e concisas, canvas removido (writing/code blocks no chat agora)</li>
-<li><b>Step 3.7 Flash</b> (29/05) — 198B MoE, ~11B ativos, multimodal, #1 ClawEval, Apache 2.0 ⬆️</li>
-<li><b>Claude Opus 4.8</b> (28/05) — 4× menos falhas de código, Effort Control, Dynamic Workflows, mesmo preço do 4.7</li>
-<li><b>LFM 2.5 8B-A1B</b> (28/05) — MoE 1.5B ativos de 8.3B, 131K ctx, raciocínio explícito, tool use, roda em smartphone</li>
-<li><b>Bonsai Image 4B</b> (26/05) — Imagem 1-bit e ternária! 0.93GB, roda em iPhone, Apache 2.0 ↑</li>
-<li><b>Qwen 3.7 Max</b> (20/05) — 1M tokens, Intelligence Index 56.6, reasoning mode, API-only (open weights em breve!)</li>
-<li><b>MiniCPM5-1B</b> (19/05) — 1B SOTA local, 131K ctx, raciocínio thinking, agentic tool use</li>
+<section id="slide-org20c271a">
+<h2 id="org20c271a">Recap: Semana 05</h2>
+<ul>
+<li>Python + API de LLM</li>
+<li>HTTP request/response: JSON entra, JSON sai</li>
+<li>O padrão universal <code>/v1/chat/completions</code></li>
+<li>Chat com memória: o histórico vai inteiro a cada chamada</li>
 
 </ul>
-</section>
-<section id="slide-orgfce9daf">
-<h3 id="orgfce9daf">🎨 Bonsai Image 4B — Imagem em 1-bit</h3>
-<blockquote style="font-size:0.45em;text-align:left;">
+
+<blockquote >
 <p>
-Primeiro modelo de imagem que roda em iPhone. Pesos binários (1-bit) e ternários (1.6-bit).
-Compressão de 8.3× — de 15.97GB pra 3.42GB. Qualidade ternária retém 95% do FLUX.2 Klein 4B.
-Apache 2.0, open weights.
+"Python é a ferramenta. O LLM é o cérebro. A API é a ponte."
 </p>
 </blockquote>
 </section>
-<section id="slide-orgdc90ab0">
-<h3 id="orgdc90ab0"></h3>
-<p style="font-size:0.4em;text-align:center;margin:2px 0;">Imagens geradas com Bonsai Image 4B ternário (0.93GB)!</p>
-
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px;">
-<img src="/pages/guilda-ia/img/s05-bonsai/01_agente_robo.png" style="width:100%;height:26vh;object-fit:contain;" />
-<img src="/pages/guilda-ia/img/s05-bonsai/02_conversa_memoria.png" style="width:100%;height:26vh;object-fit:contain;" />
-<img src="/pages/guilda-ia/img/s05-bonsai/05_guilda_logo.png" style="width:100%;height:26vh;object-fit:contain;" />
-<img src="/pages/guilda-ia/img/s05-bonsai/07_programadora.png" style="width:100%;height:26vh;object-fit:contain;" />
-<img src="/pages/guilda-ia/img/s05-bonsai/03_python_codigo.png" style="width:100%;height:26vh;object-fit:contain;" />
-<img src="/pages/guilda-ia/img/s05-bonsai/04_ciclo_react.png" style="width:100%;height:26vh;object-fit:contain;" />
-<img src="/pages/guilda-ia/img/s05-bonsai/06_agente_ferramentas.png" style="width:100%;height:26vh;object-fit:contain;" />
-<img src="/pages/guilda-ia/img/s05-bonsai/08_sala_aula.png" style="width:100%;height:26vh;object-fit:contain;" />
-</div>
-</section>
 </section>
 <section>
-<section id="slide-org8041b4f">
-<h2 id="org8041b4f">O que é um agente?</h2>
+<section id="slide-org4acee40">
+<h2 id="org4acee40">O que é um agente?</h2>
 <p>
 Agente = LLM + <b>harness</b> (estrutura para conversar)
 </p>
@@ -86,14 +63,14 @@ O LLM puro só responde uma pergunta. Um agente:
 <ul>
 <li>Lembra da conversa (memória)</li>
 <li>Tem personalidade (instruções)</li>
-<li>Pode usar ferramentas (extensões — S06!)</li>
+<li>Pode usar ferramentas (extensões — próxima aula!)</li>
 
 </ul>
 </section>
 </section>
 <section>
-<section id="slide-orgf88ea5e">
-<h2 id="orgf88ea5e">4 Componentes do Agente</h2>
+<section id="slide-orgff47e8a">
+<h2 id="orgff47e8a">4 Componentes do Agente</h2>
 <ol>
 <li><b>System Prompt</b> — quem o agente é</li>
 <li><b>Memória (Histórico)</b> — o que já foi dito</li>
@@ -104,8 +81,8 @@ O LLM puro só responde uma pergunta. Um agente:
 </section>
 </section>
 <section>
-<section id="slide-orgc4fb209">
-<h2 id="orgc4fb209">Agente na Mão: Dicts e Funções</h2>
+<section id="slide-org1602c7c">
+<h2 id="org1602c7c">O harness na mão: Dicts e Funções</h2>
 <div class="org-src-container">
 
 <pre   ><code class="python" >def criar_agente(instrucoes, max_historico=20):
@@ -126,14 +103,14 @@ O LLM puro só responde uma pergunta. Um agente:
         messages.append(msg)
     messages.append({"role": "user",
                      "content": mensagem})
-    # ... chama LLM, salva no histórico, retorna resposta
+    # ... chama o LLM, salva no histórico, retorna resposta
 </code></pre>
 </div>
 </section>
 </section>
 <section>
-<section id="slide-org6435f35">
-<h2 id="org6435f35">Por que estado separado?</h2>
+<section id="slide-org33014a9">
+<h2 id="org33014a9">Por que estado separado?</h2>
 <p>
 Estado em dicionário = mais simples para iniciantes.
 </p>
@@ -145,35 +122,37 @@ Funções puras são mais fáceis de testar e entender.
 <div class="org-src-container">
 
 <pre   ><code class="python" >agente = criar_agente("Você é educado.")
-conversar(agente, "Oi!")          # histórico atualiza
+conversar(agente, "Oi!")             # histórico atualiza
 conversar(agente, "Lembra de mim?")  # tem contexto
 </code></pre>
 </div>
 </section>
 </section>
 <section>
-<section id="slide-orgc96a9c8">
-<h2 id="orgc96a9c8">O problema do histórico infinito</h2>
+<section id="slide-org4bd9012">
+<h2 id="org4bd9012">O problema do histórico infinito</h2>
 <p>
 Se a conversa crescer demais, o prompt fica gigante.
 </p>
 
 <p>
-<b>Solução:</b> limitar histórico.
+<b>Solução:</b> esquecer de verdade — rotação.
 </p>
 
 <div class="org-src-container">
 
-<pre   ><code class="python" ># Pegar só as últimas N mensagens
-for msg in agente["historico"][-agente["max_historico"]:]:
-    ...
+<pre   ><code class="python" >def rotacionar(agente):
+    # Esquece o mais antigo quando passa do limite
+    limite = agente["max_historico"]
+    if len(agente["historico"]) &gt; limite:
+        agente["historico"][:] = agente["historico"][-limite:]
 </code></pre>
 </div>
 </section>
-<section id="slide-org0f7b814">
-<h3 id="org0f7b814">E compactação?</h3>
+<section id="slide-org5ea0f48">
+<h3 id="org5ea0f48">E compactação?</h3>
 <ul style="font-size:0.55em;">
-<li>Truncar funciona, mas <b>joga fora informação</b></li>
+<li>Rotação apaga o mais antigo, mas <b>joga fora informação</b></li>
 <li>Na prática: <b>compactação</b> — LLM resume o histórico antes de enviar</li>
 <li>Ajuda com <b>lost in the middle</b>: LLMs não recuperam bem info no meio do contexto (<a href="https://arxiv.org/abs/2307.03172">Liu et al., 2023</a>)</li>
 <li>Compactação precisa de ferramentas — fica pra outro dia</li>
@@ -182,8 +161,8 @@ for msg in agente["historico"][-agente["max_historico"]:]:
 </section>
 </section>
 <section>
-<section id="slide-orgea937b0">
-<h2 id="orgea937b0">ReAct: Pensar e Agir</h2>
+<section id="slide-org3fd2335">
+<h2 id="org3fd2335">ReAct: Pensar e Agir</h2>
 <p style="font-size:0.55em;">
 Agentes reais <b>pensam e agem</b> em ciclos (<a href="https://arxiv.org/abs/2210.03629" style="font-size:0.55em;">Yao et al., 2022</a>)
 </p>
@@ -197,6 +176,7 @@ Agentes reais <b>pensam e agem</b> em ciclos (<a href="https://arxiv.org/abs/221
 <p style="font-size:0.55em;">
 Exemplo: "Quanto é 234 × 987 + 100?"
 </p>
+
 <ul>
 <li><b>Thought:</b> Preciso multiplicar</li>
 <li><b>Action:</b> calculadora[234 × 987]</li>
@@ -207,13 +187,13 @@ Exemplo: "Quanto é 234 × 987 + 100?"
 </ul>
 
 <p style="font-size:0.55em;">
-Hoje: memória + instruções. Na S06: ferramentas!
+Hoje: memória + instruções. Próxima aula: ferramentas!
 </p>
 </section>
 </section>
 <section>
-<section id="slide-org4fd1d68">
-<h2 id="org4fd1d68">Diagrama do Ciclo</h2>
+<section id="slide-orgc16a17c">
+<h2 id="orgc16a17c">Diagrama do Ciclo</h2>
 <div style="text-align:center;">
 <img src="/pages/guilda-ia/img/s05-ciclo-agente.png" style="max-width:70%;max-height:55vh;" />
 </div>
@@ -229,8 +209,8 @@ Hoje: memória + instruções. Na S06: ferramentas!
 </section>
 </section>
 <section>
-<section id="slide-org2d100a2">
-<h2 id="org2d100a2">De Requests para LangChain</h2>
+<section id="slide-orga29cd9d">
+<h2 id="orga29cd9d">De Requests para LangChain</h2>
 <p>
 Montar mensagens na mão funciona, mas é repetitivo.
 </p>
@@ -266,8 +246,8 @@ Montar mensagens na mão funciona, mas é repetitivo.
 </tr>
 
 <tr>
-<td class="org-left"><code>[-N:]</code> manual</td>
-<td class="org-left">Configurável</td>
+<td class="org-left">Rotação do histórico</td>
+<td class="org-left">Manual aqui também</td>
 </tr>
 </tbody>
 </table>
@@ -281,8 +261,8 @@ resultado = cadeia.invoke({"pergunta": "Oi!"})
 </section>
 </section>
 <section>
-<section id="slide-org0aa8568">
-<h2 id="org0aa8568">Para lembrar</h2>
+<section id="slide-org4f92c47">
+<h2 id="org4f92c47">Para lembrar</h2>
 <blockquote >
 <p>
 "Agente é LLM com memória e personalidade. ReAct completa o ciclo: pensar e agir."
@@ -291,11 +271,11 @@ resultado = cadeia.invoke({"pergunta": "Oi!"})
 </section>
 </section>
 <section>
-<section id="slide-org2b2fecc" data-background="./slide_05.gif">
-<h2 id="org2b2fecc">🔴 Demo: Agente no Colab</h2>
+<section id="slide-org2e4fb12" data-background="./slide_05.gif">
+<h2 id="org2e4fb12">🔴 Demo: Agente no Colab</h2>
 <ol style="font-size:0.55em;">
-<li>Abrir <code>luksamuk.codes/pages/guilda-ia</code> → Semana 05</li>
-<li>Clicar em "Colab" → fazer uma cópia no Drive</li>
+<li>Abrir <code>luksamuk.codes/pages/guilda-ia</code> → Semana 06</li>
+<li>Clicar em 📓 <b>Colab</b> → fazer uma cópia no Drive</li>
 <li>Testar: criar agente, conversar, verificar memória</li>
 
 </ol>
@@ -307,6 +287,21 @@ resultado = cadeia.invoke({"pergunta": "Oi!"})
 
 </ul>
 </blockquote>
+</section>
+</section>
+<section>
+<section id="slide-org7530eca">
+<h2 id="org7530eca">Para a próxima aula</h2>
+<ul>
+<li>Ter o Ollama instalado (local) — ou usar o Colab</li>
+<li><b>Próxima aula:</b> Primeira ferramenta! O agente ganha mão.</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org604ef8f" data-background="./slide_05.gif">
+<h2 id="org604ef8f">Perguntas?</h2>
 </section>
 </section>
 </div>
