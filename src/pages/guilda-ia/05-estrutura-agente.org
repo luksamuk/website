@@ -182,7 +182,7 @@ Montar mensagens na mão funciona, mas é repetitivo. *LangChain* é uma bibliot
 | Montar lista de =messages= | =ChatPromptTemplate= organiza tudo |
 | Adicionar histórico manualmente | =InMemoryChatMessageHistory= (tipado, mesma lógica) |
 | Chamar API e parsear JSON | =ChatOpenAI= via endpoint OpenAI-compatible |
-| Limitar histórico | Configurável |
+| Rotação do histórico | Manual aqui também |
 
 O padrão fundamental do LangChain moderno é o *pipe* (=|=):
 
@@ -283,7 +283,7 @@ print("👉 Na sessão nova o modelo não sabe nosso nome!")
 | System prompt | Montar dict manual | =ChatPromptTemplate= organiza tudo |
 | Memória | Gerenciar lista manual | =InMemoryChatMessageHistory= + =session.messages= |
 | Trocar modelo | Mudar URL e payload | Trocar =base_url= / =model= em =ChatOpenAI= |
-| Limitar histórico | =[-N:]= manual | Configurável |
+| Rotação do histórico | =rotacionar()= na mão | Também manual — sem mágica |
 
 #+begin_quote
 LangChain não é mágica — por baixo, ela faz o que fazemos na mão. Mas abstrair isso facilita, principalmente quando adicionamos *ferramentas* (na próxima aula).
