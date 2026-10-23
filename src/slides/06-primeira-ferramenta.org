@@ -10,47 +10,18 @@
 #+OPTIONS: toc:nil num:nil
 #+REVEAL_TITLE_SLIDE: <p style="font-size:0.7em;opacity:0.6;">%a</p><br/><h2>%t</h2><br/><p style="font-size:0.85em;opacity:0.8;">%s</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 #+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_06.gif
+#+HTML_HEAD_EXTRA: <style>.reveal .slide-background { background-size: cover !important; background-position: center !important; }</style>
 
-* 📰 Fofocas da Semana
+* Recap: Semana 06
 
-#+ATTR_HTML: :style font-size:0.55em;
-- *Qwen3.7-Plus* (01/06) — multimodal (texto+visão), irmão do Max (text-only), 1M ctx, API-only preview
-  - Max: reasoning puro, IA Index 56.6, #1 chinês
-  - Plus: enxerga imagens, screenshots, gráficos — Max não consegue
-- *Mellum2* (01/06) — JetBrains, 12B MoE (2.5B ativos, 64 experts/8 ativas), 131K ctx, Apache 2.0, foco em routing/RAG/sub-agentes 🔓
-- *NVIDIA RTX Spark* (01/06) — superchip consumer: Grace CPU 20-core + Blackwell GPU, 128GB unified, 1 PF FP4, outono 2026
-- *NVIDIA DGX Station* (01/06) — workstation enterprise: GB300 Blackwell Ultra, Grace 72-core, 748 GB, 20 PF FP4, ~US$97k, Q4 2026
+- Agente = LLM + *harness*: instruções, memória, input, output
+- O histórico vai *inteiro* a cada chamada
+- Histórico infinito não cabe: rotação
+- ReAct: *Thought → Action → Observation → Answer*
 
-#+REVEAL: split
-
-#+ATTR_HTML: :style font-size:0.55em;
-- *OpenClaw* (02/06) — projeto open-source de agentes chega no Windows; integra com MXC (Microsoft Execution Containers), sandbox OS-level, fluxos multi-step com isolamento 🦞
-  - *NVIDIA OpenShell* — runtime Apache 2.0 pra agentes autônomos, construído sobre MXC, inclui harnesses pra *Hermes Agent* 🛡️
-- *Hermes Agent* (02/06) — suporte nativo Windows (sem WSL!): CLI, gateway, cron, browser, MCP tudo nativo; novo *Hermes Desktop App* (macOS + Windows) com instalador GUI 🖥️
-- *Gemma 4 12B* (03/06) — encoder-free unificado, 11.95B dense, texto+imagem+áudio nativo, Apache 2.0, GGUF disponível 🔓
-  - *Gemma 4 QAT* (05/06) — quantização-aware training oficial: Q4_0 QAT com menos perda que PTQ, formato mobile com 2-bit seletivo, E2B text-only < 1 GB 🔓
-- *MAI-Thinking-1* — 35B MoE (~1T total), reasoning, 97% AIME 2025, 53% SWE-Bench Pro, 256K ctx, "not distilled"
-- *MAI-Code-1-Flash* — código, inferência eficiente, integrado ao GitHub Copilot
-- *MAI-Transcribe-1* / *MAI-Voice-1* / *MAI-Image-2* — STT, TTS, imagem (lançados em abril)
-  - API-only (Azure Foundry + GitHub Models + OpenRouter), sem open weights, preview privado
-
-#+REVEAL: split
-
-#+ATTR_HTML: :style font-size:0.55em;
-- *NVIDIA Nemotron 3 Ultra* (04/06) — 550B Hybrid Mamba-2/Transformer/LatMoE (55B ativos), #1 US open-weights (IA Index 48, atrás de Kimi K2.6 a 54), 1M ctx, 300+ tok/s, pesos BF16+NVFP4 🔓
-  - Anunciado 01/06 no Computex por Jensen, 5x mais rápido e 30% mais barato que concorrentes open frontier
-  - NVIDIA Open Model License (comercial OK, ≠ Apache 2.0)
-  - Datacenter only (mín. A100 cluster, ideal: GB300/Blackwell)
-  - *Nemotron 3.5 ASR* (04/06) — 0.6B ASR multilingual, 40 idiomas (pt-BR pronto), streaming sub-100ms, OpenMDW-1.1 🔓
-  - *Nemotron 3.5 Content Safety* (04/06) — 4B guardrail com reasoning, BYO policy, 22 categorias de harm, dual-mode (think/no-think), topic-following, NVIDIA Open Model License 🔓
-
-#+REVEAL: split
-
-#+ATTR_HTML: :style font-size:0.55em;
-- *Magenta RealTime 2* (04/06) — geração de música em tempo real, decoder-only LLM, 2 sizes (230M small / 2.4B base), controle por texto+áudio+MIDI, SpectroStream codec 48kHz stereo, Apache 2.0 código + CC-BY 4.0 pesos 🔓
-  - Streaming real-time exige Apple Silicon; GPU NVIDIA = offline only via JAX
-  - Modelo small (230M) roda em Air M1; base (2.4B) exige Pro Max
-- *LFM2.5-VL-Extract* (04/06) — Liquid AI, VLM de extração estruturada: passa imagem + lista de campos, retorna JSON (não texto livre). 450 M e 1.6B, open-weight, GGUF disponível 🔓 (Demo! ↗)
+#+begin_quote
+"Semana passada ele aprendeu a lembrar. Hoje aprende a agir."
+#+end_quote
 
 * O problema do LLM puro
 
@@ -130,7 +101,7 @@ O modelo decide baseado na descrição.
 #+ATTR_REVEAL: :frag (appear)
 - =@tool= gera o schema JSON automaticamente
 - Pydantic valida e converte os tipos
-- ="234" → 234.0= (conversão automática)
+- ~"234" → 234.0~ (conversão automática)
 - =ValidationError= se o LLM manda lixo
 
 #+REVEAL: split
@@ -145,6 +116,19 @@ Com =@tool=:
 #+BEGIN_SRC python
 resultado = calculate.invoke(args)  # Pydantic!
 #+END_SRC
+
+* O ciclo da ferramenta
+
+#+HTML: <div style="text-align:center;">
+#+HTML: <img src="/pages/guilda-ia/img/ciclo-ferramenta-v2.svg" style="max-width:70%;max-height:58vh;" />
+#+HTML: </div>
+
+#+ATTR_HTML: :style font-size:0.55em;
+1. Você descreve as ferramentas pro LLM (nome, descrição, parâmetros)
+2. O LLM lê a pergunta e *decide* se alguma serve
+3. Ele devolve os *argumentos* — não a resposta
+4. Python executa a função de verdade
+5. O resultado volta pro LLM, que formula a resposta final
 
 * O ciclo manual: =bind_tools=
 
@@ -173,7 +157,7 @@ pprint(resposta.tool_calls)
 Passo 2 — você executa:
 #+BEGIN_SRC python
 tc = resposta.tool_calls[0]
-resultado = calculate.invoke(tc['args'])
+resultado = FERRAMENTAS[tc['name']].invoke(tc['args'])
 print(resultado)  # 230958.0
 #+END_SRC
 
@@ -201,6 +185,29 @@ O ciclo manual *é* ReAct em ação:
 
 ([[https://arxiv.org/abs/2210.03629][Yao et al., 2022]])
 
+* E quando precisa de duas?
+
+"Quanto é 10 mais 100 vezes 3?" não é uma conta só:
+
+#+BEGIN_SRC text
+10 + (100 * 3)   →   duas operações
+#+END_SRC
+
+O modelo pede *a primeira*, recebe o resultado, e aí pede *a segunda*.
+
+#+REVEAL: split
+
+O ciclo *repete* até ele ter tudo que precisa:
+
+#+BEGIN_SRC python
+while resposta.tool_calls:
+    ...executa a ferramenta e devolve...
+    resposta = llm_com_ferramentas.invoke(historico)
+#+END_SRC
+
+#+ATTR_HTML: :style font-size:0.6em;
+Sem esse laço, a resposta final chega *vazia* — ele ainda está pedindo ferramenta.
+
 * O ciclo automático: =create_agent=
 
 O ciclo manual é bom pra entender. Na prática:
@@ -217,24 +224,6 @@ print(resultado["messages"][-1].content)
 
 Uma linha. Decide, executa, responde — tudo automático.
 
-* Um gostinho de async
-
-#+BEGIN_SRC python
-import asyncio
-
-async def conversar():
-    future = agente.ainvoke(
-        {"messages": "Quanto é 234 vezes 987?"})
-    print("Processando...")  # roda imediatamente
-    resultado = await future  # agora espera
-    print(resultado["messages"][-1].content)
-
-asyncio.run(conversar())
-#+END_SRC
-
-⚠️ Em notebooks Jupyter/Colab, =asyncio.run()= falha.
-Solução: =nest_asyncio.apply()= antes de rodar.
-
 * Para lembrar
 :PROPERTIES:
 :REVEAL_BACKGROUND: ./slide_06.gif
@@ -244,10 +233,17 @@ Solução: =nest_asyncio.apply()= antes de rodar.
 "Ferramenta transforma conversa em ação."
 #+end_quote
 
-#+ATTR_REVEAL: :frag (appear)
-LLM puro: só fala
-Agente com ferramenta: fala E faz
+LLM puro: só fala. Agente com ferramenta: fala *e faz*.
 
-#+ATTR_REVEAL: :frag (appear)
-- Manual (=bind_tools=): entender o que acontece
-- Automático (=create_agent=): produzir
+- *Manual* (=bind_tools=): entender o que acontece por baixo
+- *Automático* (=create_agent=): produzir
+
+* Para a próxima aula
+
+- Ter um modelo local rodando (Ollama ou llama-swap)
+- *Próxima aula:* Ferramentas múltiplas! O agente escolhe entre várias e encadeia mais de uma na mesma pergunta.
+
+* Perguntas?
+:PROPERTIES:
+:REVEAL_BACKGROUND: ./slide_06.gif
+:END:

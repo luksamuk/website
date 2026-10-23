@@ -1,10 +1,16 @@
 #+TITLE: Primeira Ferramenta: O Agente Faz Algo
-# Semana 6 - 05/06/2026
-#+DESCRIPTION: Semana 6 - Guilda de IA: Criando a primeira ferramenta para o agente
+# Semana 7 - 23/10/2026
+#+DESCRIPTION: Semana 7 - Guilda de IA 2026.2: primeira ferramenta do agente - @tool, bind_tools, create_agent
 #+SETUPFILE: ./setupfile.org
 #+LANGUAGE: pt_BR
 #+STARTUP: inlineimages showall latexpreview
-#+DATE: 05/06/2026
+#+DATE: 23/10/2026
+
+* De agentes para ferramentas
+
+Na [[./05-estrutura-agente.org][semana passada]] construímos um agente: system prompt, histórico de conversa e um loop que lembra do que foi dito. Ele tem personalidade e memória — mas continua apenas *falando*.
+
+Hoje ele ganha *mãos*. Uma /ferramenta/ (tool) é uma função Python que o modelo pode /pedir/ pra executar. O agente decide *quando* chamar; o Python decide *como* executar. É aqui que o ciclo ReAct da semana passada se fecha de verdade: /Thought → Action → Observation → Answer/.
 
 * O problema do LLM puro
 
@@ -130,7 +136,7 @@ def get_time():
     
     Examples:
         >>> get_time()
-        "05/06/2026 19:30:00"
+        "23/10/2026 15:42:07"
     """
     from datetime import datetime
     return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
@@ -279,19 +285,19 @@ print(calculate.args_schema.schema())
 
 Obs.: para a ferramenta =get_time=, o schema é minimal — =properties= vazio e =required= vazio, pois não há argumentos.
 
-* Conectando ao LLM: Ollama + gemma4:e2b
+* Conectando ao LLM: Ollama + gemma4:e2b-it-qat
 
-O setup completo do Ollama no Colab está no *notebook da Semana 4* — incluindo instalação e =ollama pull=. Aqui focamos em como conectar as ferramentas ao LLM.
+O setup completo do Ollama no Colab está no *notebook da Semana 5* — incluindo instalação e =ollama pull=. Aqui focamos em como conectar as ferramentas ao LLM.
 
 ** Conexão via ChatOpenAI
 
-O modelo =gemma4:e2b= expõe endpoint OpenAI-compatible (=/v1/chat/completions=), então usamos =ChatOpenAI= do =langchain-openai=:
+O modelo =gemma4:e2b-it-qat= expõe endpoint OpenAI-compatible (=/v1/chat/completions=), então usamos =ChatOpenAI= do =langchain-openai=:
 
 #+BEGIN_SRC python
 from langchain_openai import ChatOpenAI
 
 llm = ChatOpenAI(
-    model="gemma4:e2b",
+    model="gemma4:e2b-it-qat",
     base_url="http://localhost:11434/v1",
     api_key="ollama",  # Ollama não precisa de key real
     temperature=0,
@@ -341,7 +347,7 @@ def get_word_length(word: str) -> int:
     return len(word)
 
 llm = ChatOpenAI(
-    model="gemma4:e2b",
+    model="gemma4:e2b-it-qat",
     base_url="http://localhost:11434/v1",
     api_key="ollama",
     temperature=0,
@@ -349,6 +355,13 @@ llm = ChatOpenAI(
 
 # Bind: registra as ferramentas no LLM
 llm_com_ferramentas = llm.bind_tools([calculate, get_time, get_word_length])
+
+# Um registro por nome: o LLM devolve o nome, a gente acha a função
+FERRAMENTAS = {
+    calculate.name: calculate,
+    get_time.name: get_time,
+    get_word_length.name: get_word_length,
+}
 #+END_SRC
 
 ** Passo 1: O LLM decide, mas não executa
@@ -370,16 +383,13 @@ Repare: =resposta.content= é *string vazia*. O LLM não calculou — só disse 
 # Extrair a primeira tool_call
 tc = resposta.tool_calls[0]
 
-# Executar a ferramenta
-if tc['name'] == 'calculate':
-    resultado = calculate.invoke(tc['args'])
-elif tc['name'] == 'get_time':
-    resultado = get_time.invoke(tc['args'])
-elif tc['name'] == 'get_word_length':
-    resultado = get_word_length.invoke(tc['args'])
+# O LLM devolve o NOME da ferramenta; o registro acha a função
+resultado = FERRAMENTAS[tc['name']].invoke(tc['args'])
 
 print(resultado)  # 230958.0
 #+END_SRC
+
+Esse registro por nome é o que escala: amanhã você adiciona uma ferramenta nova ao dicionário e não precisa mexer no código do ciclo.
 
 ** Passo 3: Resultado volta pro LLM
 
@@ -406,6 +416,40 @@ print(resposta_final.content)
 3. /invoke de novo/ com =ToolMessage= → LLM formula a resposta final
 
 É ReAct em ação: *Thought* (LLM raciocina) → *Action* (chama ferramenta) → *Observation* (vê o resultado) → *Answer* (responde) ([[https://arxiv.org/abs/2210.03629][Yao et al., 2022]]).
+
+** E quando a resposta precisa de duas ferramentas?
+
+"Quanto é 10 mais 100 vezes 3?" não é uma conta só: é ~10 + (100 * 3)~. O modelo pede a multiplicação, recebe o resultado, e *então* pede a soma — dois passos.
+
+Se você faz um ciclo só, a resposta final volta *vazia*: ele ainda está pedindo ferramenta. O ciclo tem que *repetir* até não sobrar nenhuma ~tool_calls~:
+
+#+BEGIN_SRC python
+from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
+
+historico = [
+    SystemMessage(content="Você é um assistente que responde em português."),
+    HumanMessage(content="Quanto é 10 mais 100 vezes 3?"),
+]
+
+resposta = llm_com_ferramentas.invoke(historico)
+
+for _ in range(5):
+    historico.append(resposta)
+
+    if not resposta.tool_calls:
+        print(resposta.content)
+        break
+
+    for tc in resposta.tool_calls:
+        resultado = FERRAMENTAS[tc['name']].invoke(tc['args'])
+        historico.append(ToolMessage(content=str(resultado), tool_call_id=tc['id']))
+
+    resposta = llm_com_ferramentas.invoke(historico)
+#+END_SRC
+
+O ~for _ in range(5)~ é um *freio*: um agente com raciocínio ruim pode entrar em loop pedindo ferramenta pra sempre. Um limite de passos evita que a aula trave.
+
+Repare também que o histórico vai *acumulando* tudo: mensagem do usuário, o pedido de ferramenta do modelo, o resultado, e a resposta final. É o mesmo mecanismo de memória da semana passada — só que agora os passos intermediários do ReAct também ficam guardados.
 
 * O ciclo automático: create_agent
 
@@ -544,7 +588,7 @@ def get_word_length(word: str) -> int:
     return len(word)
 
 llm = ChatOpenAI(
-    model="gemma4:e2b",
+    model="gemma4:e2b-it-qat",
     base_url="http://localhost:11434/v1",
     api_key="ollama",
     temperature=0,
@@ -619,3 +663,7 @@ print(convert_temperature.invoke({"value": 100, "from_unit": "celsius", "to_unit
 #+END_SRC
 
 #+END_DETAILS
+
+* Próxima Aula
+
+Semana 08 (30/10): *Ferramentas Múltiplas* — hoje o agente aprendeu a chamar uma ferramenta. Na próxima ele ganha várias, e precisa *escolher* qual usar (e encadear mais de uma na mesma pergunta). É onde o tool calling começa a ficar interessante de verdade.
