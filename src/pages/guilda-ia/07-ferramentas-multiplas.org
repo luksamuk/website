@@ -1,10 +1,16 @@
 #+TITLE: Múltiplas Ferramentas e MCP: O Agente Se Expande
-# Semana 7 - 12/06/2026
-#+DESCRIPTION: Semana 7 - Guilda de IA: Múltiplas ferramentas, debug, descrições, MCP e async
+# Semana 8 - 30/10/2026
+#+DESCRIPTION: Semana 8 - Guilda de IA 2026.2: encadeamento de ferramentas, debug de descrições, MCP (stdio e HTTP) e múltiplos servidores
 #+SETUPFILE: ./setupfile.org
 #+LANGUAGE: pt_BR
 #+STARTUP: inlineimages showall latexpreview
-#+DATE: 12/06/2026
+#+DATE: 30/10/2026
+
+* De uma ferramenta para várias
+
+Na [[./06-primeira-ferramenta.org][semana passada]] o agente ganhou a primeira ferramenta: =@tool= com Pydantic validando os argumentos, descrição clara decidindo o resto, e o ciclo ReAct girando na mão (=bind_tools=) e no automático (=create_agent=). E prometemos: o =ainvoke= assíncrono ia aparecer — hoje ele aparece.
+
+Hoje o repertório expande em três direções: o agente passa a *escolher* entre várias ferramentas, *encadear* duas ou mais na mesma pergunta, e consumir ferramentas que *outra pessoa* escreveu — via MCP.
 
 * Chamadas encadeadas
 
@@ -140,7 +146,7 @@ Isso é *bom* — o agente recebe o erro e pode corrigir. Mas se acontece muito,
 
 Até agora, você escreveu as ferramentas. Mas e se *outra pessoa* escreveu a ferramenta e você só quer usar?
 
-O **MCP** (Model Context Protocol) é um protocolo padrão para ferramentas. Pense nele como o HTTP das ferramentas de IA — assim como HTTP padronizou a web, MCP padroniza como ferramentas se conectam a agentes.
+O *MCP* (Model Context Protocol) é um protocolo padrão para ferramentas. Pense nele como o HTTP das ferramentas de IA — assim como HTTP padronizou a web, MCP padroniza como ferramentas se conectam a agentes.
 
 ** Conceito
 
@@ -149,7 +155,7 @@ O **MCP** (Model Context Protocol) é um protocolo padrão para ferramentas. Pen
 - Um *cliente MCP* consome essas ferramentas
 - Protocolo padrão — qualquer LLM pode se conectar a qualquer servidor MCP
 
-Na S06, você escreveu as ferramentas com =@tool=. Na S07, você *consome* ferramentas que alguém escreveu, via MCP.
+Na semana passada (S07), você escreveu as ferramentas com =@tool=. Hoje (S08), você *consome* ferramentas que alguém escreveu, via MCP.
 
 ** Servidor MCP com FastMCP
 
@@ -184,6 +190,7 @@ O servidor usa ~transport="stdio"~ — roda no mesmo processo, sem servidor exte
 Instale: =pip install langchain-mcp-adapters=
 
 #+BEGIN_SRC python
+import subprocess
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from langchain_mcp_adapters.tools import load_mcp_tools
@@ -194,7 +201,8 @@ server_params = StdioServerParameters(
     args=["math_server.py"],
 )
 
-async with stdio_client(server_params) as (read, write):
+async with stdio_client(
+    server_params, errlog=subprocess.DEVNULL) as (read, write):
     async with ClientSession(read, write) as session:
         await session.initialize()
         tools = await load_mcp_tools(session)
@@ -206,11 +214,13 @@ async with stdio_client(server_params) as (read, write):
         print(resultado["messages"][-1].content)
 #+END_SRC
 
+O =errlog=subprocess.DEVNULL= silencia o stderr do subprocesso. No Jupyter/Colab é *necessário* — o kernel substitui o stderr padrão e o MCP quebra com =UnsupportedOperation: fileno=. Localmente funciona com ou sem.
+
 O que aconteceu:
 1. =stdio_client= iniciou o servidor =math_server.py= em background
 2. =ClientSession= fez o handshake MCP
 3. =load_mcp_tools= converteu as ferramentas MCP em =@tool= do LangChain
-4. =create_agent= usou as ferramentas normalmente — igual à S06
+4. =create_agent= usou as ferramentas normalmente — igual à semana passada
 
 ** Servidor MCP remoto (HTTP)
 
@@ -222,7 +232,7 @@ Para rodar o mesmo servidor como HTTP:
 # math_server_http.py — Mesmo servidor, mas acessível via HTTP
 from mcp.server.fastmcp import FastMCP
 
-mcp = FastMCP("Math")
+mcp = FastMCP("Math", port=8000)
 
 @mcp.tool()
 def add(a: int, b: int) -> int:
@@ -234,11 +244,11 @@ def multiply(a: int, b: int) -> int:
     """Multiply two numbers together."""
     return a * b
 
-# Roda em http://localhost:8000 (ou qualquer host remoto)
+# A porta fica no FastMCP (não no run) — sobe em http://localhost:8000/mcp
 mcp.run(transport="streamable-http")
 #+END_SRC
 
-O código do servidor é idêntico — só muda a última linha. O servidor fica disponível em =http://localhost:8000/mcp= e pode ser acessado de qualquer máquina com conectividade.
+O código do servidor é quase idêntico: a porta fica explícita no =FastMCP= e o transporte muda na hora de subir. O servidor fica disponível em =http://localhost:8000/mcp= e pode ser acessado de qualquer máquina com conectividade.
 
 ** Cliente remoto (HTTP)
 
@@ -263,38 +273,74 @@ async with streamablehttp_client(
 
 A API do agente é idêntica. A única diferença é *como* o cliente se conecta ao servidor: =stdio= spawn um processo local, =streamable-http= conecta a uma URL. Servidores MCP públicos (Slack, GitHub, Notion) funcionam assim — rodam remotamente e você só precisa da URL.
 
-** S06 vs S07 — resumo
+** Cliente com auth (headers)
+
+Servidores que exigem token pedem o header =Authorization= no cliente. Caso real: o SearXNG rodando no Raspberry Pi da rede local — o token vai no =headers= e o resto do cliente não muda:
+
+#+BEGIN_SRC python
+import os
+from mcp import ClientSession
+from mcp.client.streamable_http import streamablehttp_client
+
+async with streamablehttp_client(
+    "http://192.168.3.8:8899/mcp",   # SearXNG no Raspberry Pi
+    headers={"Authorization": f"Bearer {os.environ['SEARXNG_MCP_TOKEN']}"},
+) as (read, write):
+    async with ClientSession(read, write) as session:
+        await session.initialize()
+        # dali em diante: igual ao cliente sem auth
+#+END_SRC
+
+=ClientSession=, =load_mcp_tools= e o agente continuam exatamente iguais — só a conexão carrega o token, lido de =$SEARXNG_MCP_TOKEN= (=export SEARXNG_MCP_TOKEN=...= antes de rodar).
+
+** S07 vs S08 — resumo
 
 | Semana | Ferramentas | Origem | Código |
 |--------|-------------|--------|--------|
-| S06 | =@tool= — você escreve | Seu código Python =@tool= + =bind_tools= + =create_agent= |
-| S07 | MCP — alguém escreveu | Servidor externo =load_mcp_tools= + =create_agent= |
+| S07 | =@tool= — você escreve | Seu código Python =@tool= + =bind_tools= + =create_agent= |
+| S08 | MCP — alguém escreveu | Servidor externo =load_mcp_tools= + =create_agent= |
 
 O agente não sabe a diferença. Pra ele, ferramenta é ferramenta.
 
 * Múltiplos servidores MCP
 
-Você pode conectar vários servidores MCP ao mesmo agente:
+Você pode conectar vários servidores MCP ao mesmo agente, com =AsyncExitStack=:
 
 #+BEGIN_SRC python
-from langchain_mcp_adapters.client import MultiServerMCPClient
+import subprocess
+from contextlib import AsyncExitStack
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+from langchain_mcp_adapters.tools import load_mcp_tools
+from langchain.agents import create_agent
 
-client = MultiServerMCPClient({
-    "math": {
-        "command": "python",
-        "args": ["math_server.py"],
-        "transport": "stdio",
-    },
-    "weather": {
-        "url": "http://localhost:8000/mcp",
-        "transport": "http",
-    }
-})
+SERVIDORES = [
+    StdioServerParameters(command="python", args=["math_server.py"]),
+    StdioServerParameters(command="python", args=["string_server.py"]),
+]
 
-tools = await client.get_tools()
-agente = create_agent(llm, tools)
-# Agora o agente tem ferramentas de math E weather
+async with AsyncExitStack() as stack:
+    tools = []
+    for params in SERVIDORES:
+        read, write = await stack.enter_async_context(
+            stdio_client(params, errlog=subprocess.DEVNULL))
+        session = await stack.enter_async_context(ClientSession(read, write))
+        await session.initialize()
+        tools.extend(await load_mcp_tools(session))
+
+    agente = create_agent(llm, tools)
+
+    resultado = await agente.ainvoke(
+        {"messages": "Quanto é 10 + 5? E inverta a palavra 'Guilda'."}
+    )
+    print(resultado["messages"][-1].content)
 #+END_SRC
+
+(=string_server.py= é um segundo servidor — ferramentas de string, escritas com =FastMCP= do mesmo jeito.)
+
+Cada entrada em =SERVIDORES= é um servidor a mais — sem aninhamento novo. E o =AsyncExitStack= encerra todos os subprocessos ao sair.
+
+Existem outras formas (ex.: =MultiServerMCPClient=, da mesma lib), mas ela não aceita =errlog= — e sem isso o cliente quebra no Jupyter/Colab. O =AsyncExitStack= cobre os dois cenários.
 
 Isso é poderoso: você monta um agente combinando ferramentas de *fontes diferentes* sem escrever código de integração.
 
@@ -442,9 +488,10 @@ if __name__ == "__main__":
     mcp.run(transport="stdio")
 #+END_SRC
 
-Cliente (Colab):
+Cliente:
 
 #+BEGIN_SRC python
+import subprocess
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from langchain_mcp_adapters.tools import load_mcp_tools
@@ -452,9 +499,9 @@ from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 
 llm = ChatOpenAI(
-    model="lfm2.5:8b",
+    model="gemma4:e2b-it-qat",
     base_url="http://localhost:11434/v1",
-    api_key="nao_precisa",
+    api_key="ollama",
     temperature=0,
 )
 
@@ -463,7 +510,8 @@ server_params = StdioServerParameters(
     args=["reverse_server.py"],
 )
 
-async with stdio_client(server_params) as (read, write):
+async with stdio_client(
+    server_params, errlog=subprocess.DEVNULL) as (read, write):
     async with ClientSession(read, write) as session:
         await session.initialize()
         tools = await load_mcp_tools(session)
@@ -485,9 +533,21 @@ Combine duas ferramentas =@tool= (que você escreveu) com ferramentas MCP de um 
 📝 Gabarito
 
 #+BEGIN_SRC python
+import subprocess
+from contextlib import AsyncExitStack
 from langchain_core.tools import tool
 from langchain.agents import create_agent
-from langchain_mcp_adapters.client import MultiServerMCPClient
+from langchain_openai import ChatOpenAI
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+from langchain_mcp_adapters.tools import load_mcp_tools
+
+llm = ChatOpenAI(
+    model="gemma4:e2b-it-qat",
+    base_url="http://localhost:11434/v1",
+    api_key="ollama",
+    temperature=0,
+)
 
 # Suas ferramentas @tool
 @tool
@@ -502,25 +562,32 @@ def calculate(a: float, b: float, operation: str) -> float:
            'multiply': a*b, 'divide': a/b}
     return ops[operation]
 
-# Ferramentas MCP
-client = MultiServerMCPClient({
-    "math": {
-        "command": "python",
-        "args": ["math_server.py"],
-        "transport": "stdio",
-    },
-})
+# Ferramentas MCP (servidor do início da apostila)
+SERVIDORES = [
+    StdioServerParameters(command="python", args=["math_server.py"]),
+]
 
-mcp_tools = await client.get_tools()
+async with AsyncExitStack() as stack:
+    mcp_tools = []
+    for params in SERVIDORES:
+        read, write = await stack.enter_async_context(
+            stdio_client(params, errlog=subprocess.DEVNULL))
+        session = await stack.enter_async_context(ClientSession(read, write))
+        await session.initialize()
+        mcp_tools.extend(await load_mcp_tools(session))
 
-# Combina tudo
-all_tools = [calculate] + mcp_tools
-agente = create_agent(llm, all_tools)
+    # Combina tudo
+    all_tools = [calculate] + mcp_tools
+    agente = create_agent(llm, all_tools)
 
-resultado = await agente.ainvoke(
-    {"messages": "Quanto é 10 + 5 multiplicado por 3?"}
-)
-print(resultado["messages"][-1].content)
+    resultado = await agente.ainvoke(
+        {"messages": "Quanto é 10 + 5 multiplicado por 3?"}
+    )
+    print(resultado["messages"][-1].content)
 #+END_SRC
 
 #+END_DETAILS
+
+* Próxima Aula
+
+Semana 09 (06/11): *Embeddings, Similaridade e RAG* — hoje o agente ganhou ferramentas de todo tipo, inclusive escritas por outra pessoa, via MCP. Na próxima ele aprende a *buscar* informação relevante em documentos: embeddings, similaridade e o RAG de verdade.

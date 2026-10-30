@@ -10,65 +10,26 @@
 #+OPTIONS: toc:nil num:nil
 #+REVEAL_TITLE_SLIDE: <p style="font-size:0.7em;opacity:0.6;">%a</p><br/><h2>%t</h2><br/><p style="font-size:0.85em;opacity:0.8;">%s</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 #+REVEAL_TITLE_SLIDE_BACKGROUND: ./slide_07.gif
+#+HTML_HEAD_EXTRA: <style>.reveal .slide-background { background-size: cover !important; background-position: center !important; }</style>
 
-* 📰 Fofocas da Semana
-
-#+ATTR_HTML: :style font-size:0.55em;
-- *Claude Fable 5 / Mythos 5* (09/06) — Anthropic lança primeiro Mythos-class público. Fable 5 = Mythos 5 com guardrails → fallback Opus 4.8. Preço: 2x Opus ($10/$50 por M). *Backlash violento:* silenciosamente degradava respostas de pesquisadores de IA (distillation) sem avisar. Anthropic recuou (11/06): "We made the wrong tradeoff", agora fallback é visível. Mas visível = mais falsos positivos. Comunidade de ciberseg critica. Retenção de 30 dias obrigatória 🔒⚠️
-- *Gemma 4 12B* (03/06) — Primeiro modelo encoder-free que processa texto, imagem, áudio e vídeo num único backbone, roda em 16GB de RAM, Apache 2.0 🔓
-- *GPT-4.5 sunset* (06/06) — OpenAI anunciou aposentadoria do GPT-4.5 do ChatGPT em 27/06
-
-#+REVEAL: split
+* Recap: Semana 07
 
 #+ATTR_HTML: :style font-size:0.55em;
-- *Nex-N2-mini* (07/06) — Post-train do Qwen3.5-35B-A3B (MoE 256e/8a, 3B ativos) pela Nex-AGI, foco agentic coding/tool calling. Benches questionáveis (Apex 9.4 = chute aleatório), GGUFs ainda inexistentes, arquitetura =qwen35moe= já suportada no ik-llama 🔓⚠️
-- *Quasar-Preview* (07/06) — SILX AI lança 18B MoE (2B ativos) com arquitetura frankenstein: Quasar+Raven+GLA+Engram+Loop Transformer. Promessa de 5M ctx (treinado com <1B tokens nisso). GPQA 25.6% = chute. MIT, mas roda só em PyTorch F32, zero suporte GGUF/llama.cpp. Feito pra Bittensor SN24 🔓🔬
-- *llama.cpp multimodal total* (08/06) — Mergeou suporte a vídeo nativo via ffmpeg + mtmd, TTS integrado com WavTokenizer, 6 preprocessadores de áudio (Whisper, Conformer, Granite Speech, Gemma4 Audio/Unified, Qwen3-ASR), e pipeline de speech-to-speech direto no =llama-server= 🔓
-- *Xiaomi MiMo V2.5 Pro UltraSpeed* (08/06) — 1T MoE com DFlash (block-masked speculative decoding), 1000+ tok/s em nó padrão de 8 GPUs. FP4 seletivo nos Experts, FP8 no resto. Parceria com TileRT (runtime otimizado). Pesos FP4-DFlash abertos no HuggingFace (MIT) 🔓
-  - Não usa hardware dedicado (Cerebras/Groq) — roda em GPUs comerciais. Mas: API em teste limitado até 23/06, 3x o preço da versão padrão. Relevância local: modelos 1T fora do alcance de GPUs consumer
+- Ferramenta = função Python que o agente pode *chamar*
+- =@tool= + Pydantic: schema e validação automáticos
+- Descrição clara decide *SE* o modelo usa — e como
+- Ciclo manual (=bind_tools=) e automático (=create_agent=)
+- ReAct completo: *Thought → Action → Observation*
 
-#+REVEAL: split
-
-#+ATTR_HTML: :style font-size:0.55em;
-- *Apple AFM 3* (08/06, WWDC) — Terceira geração de foundation models da Apple: AFM 3 Core (3B dense, on-device), AFM 3 Core Advanced (20B com Instruction-Following Pruning, 1-4B ativos por request, pesos em flash/NAND com swap pra DRAM), AFM 3 Cloud (server), ADM 3 Cloud (imagem), AFM 3 Cloud Pro (agentes, NVIDIA+Google Cloud). Arquitetura IFP carrega experts sob demanda do flash, não DRAM inteira 🔒
-- *North Mini Code* (09/06) — Cohere lança MoE 30B (3B ativos) focado em agentic coding, Apache 2.0, 256K contexto. Suporte =cohere2_moe= mergeado no ik_llama.cpp (PR #1945, 10/06) 🔓
-- *Gemini 3.5 Live Translate* (09/06) — Modelo de áudio dedicado a tradução simultânea speech-to-speech em 70+ idiomas, preserva entonação e prosódia. Disponível via Gemini Live API (public preview) e Google Translate (Android/iOS). Parceiros como Grab e CJ ENM já integram. Áudio watermarkado com SynthID 🛡️
-- *DiffusionGemma* (10/06) — Google lança modelo de difusão textual: MoE 26B (3.8B ativos), gera 256 tokens em paralelo ao invés de sequencial. Até 700 tok/s na RTX 5090, 1000+ tok/s na H100. Bidirectional attention permite autocorreção. 18GB VRAM com quantização 🔓🔬
-  - Shiftou o bottleneck: de memória → compute. Offload pra CPU/RAM = perde o ganho (10-40x mais lento que AR). Futuro: modelos densos menores seriam mais viáveis pra GPUs fracas
-
-#+REVEAL: split
-
-#+ATTR_HTML: :style font-size:0.55em;
-- *PP-OCRv6* (11/06) — Baidu/PaddlePaddle lança OCR dedicado em 3 tiers: tiny 1.5M, small 7.7M, medium 34.5M. 48+ idiomas num modelo único (chinês, japonês, latim). Suporta manuscrito, impresso, industrial, tela e cartão. Medium (34.5M) supera Qwen3-VL-235B e GPT-5.5 em precisão de OCR. Edge-friendly, Apache 2.0, pip install paddleocr 🔓🔬
-- *Kimi K2.7 Code* (12/06) — Moonshot AI lança modelo agentic de código open-weight: MoE 1T (32B ativos, 384 experts/8 por token), 256K contexto, MoonViT 400M (imagem+vídeo). +21.8% no Kimi Code Bench v2, +31.5% no MLS Bench Lite vs K2.6. 30% menos thinking tokens. Empatou com GPT-5.5 no MLS Bench Lite (35.1 vs 35.5). Modified MIT, deploy em vLLM/SGLang/KTransformers 🔓
-  - Arquitetura = K2.6 (MLA+MoE). Preserve thinking obrigatório — acumula raciocínio entre turns, bom pra agentes de código
-- *MiniMax M3 open-weight* (12/06) — Pesos liberados no HuggingFace! MoE ~428B (23B ativos), contexto 1M via MSA (MiniMax Sparse Attention), multimodal nativo (texto+imagem+vídeo). 59.0% SWE-bench Pro (bate GPT-5.5 58.6%). MSA = 15.6× mais rápido no decode e 9.7× no prefill vs M2 em 1M contexto, sem compressão de KV. Suporte: vLLM, SGLang, Ollama, KTransformers 🔓
-  - Licença =minimax-community=. 1T params MoE = fora do alcance de GPUs consumer, mas 23B ativos e MSA são relevantes pra arquitetura
-
-** Experimentos com modelos de difusão local
-
-#+ATTR_HTML: :style font-size:0.55em;
-- Rodando modelos de geração de imagem *localmente* na RTX 3050 6GB via [[https://github.com/luksamuk/diffuse][diffuse]]
-- Text-to-image e image editing — sem API, sem nuvem
-
-** Ideogram 4 (Q4_0) — Text-to-Image
-
-#+ATTR_HTML: :height 500px
-[[./07-ideogram4.jpg]]
-
-** HiDream-O1 SDNQ — Text-to-Image
-
-#+ATTR_HTML: :height 500px
-[[./07-hidream-t2i.jpg]]
-
-** HiDream-O1 SDNQ — Image Editing
-
-#+ATTR_HTML: :height 500px
-[[./07-hidream-edit.jpg]]
+#+begin_quote
+"Semana passada ele aprendeu a agir. Hoje aprende a encadear."
+#+end_quote
 
 * Chamadas encadeadas
 
-Na S06, o agente usou *uma* ferramenta por vez.
+[[https://colab.research.google.com/github/luksamuk/guilda-ia/blob/main/notebooks/aula07_ferramentas_multiplas_colab.ipynb][📓 Colab]]
+
+Na S07, o agente usou *uma* ferramenta por vez.
 
 Mas e quando precisa de *duas ou mais*?
 
@@ -80,6 +41,8 @@ Action: calculate(234, 987, "multiply") → 230958
 Action: calculate(230958, 100, "add") → 231058
 Answer: "O resultado é 231.058."
 #+END_SRC
+
+#+REVEAL: split
 
 O =create_agent= repete Thought→Action→Observation *automaticamente*.
 
@@ -109,6 +72,8 @@ def search_wiki(query: str) -> str:
 def search_web(query: str) -> str:
     """Search for information."""
 #+END_SRC
+
+#+REVEAL: split
 
 =Search for information= × 2 → modelo não sabe qual usar.
 
@@ -183,8 +148,8 @@ Até agora, você *escreveu* as ferramentas com =@tool=.
 
 E se *outra pessoa* escreveu?
 
-**MCP** — Model Context Protocol
-#+ATTR_HTML: :style font-size:0.8em;
+*MCP* — Model Context Protocol
+#+ATTR_HTML: :style font-size:0.55em;
 - Protocolo padrão para ferramentas de IA (como HTTP para a web)
 - Um *servidor MCP* expõe ferramentas
 - Um *cliente MCP* consome essas ferramentas
@@ -218,6 +183,7 @@ Quase idêntico ao =@tool=, mas =@mcp.tool()= e =FastMCP=.
 ** Cliente: consumindo MCP no LangChain
 
 #+BEGIN_SRC python
+import subprocess
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from langchain_mcp_adapters.tools import load_mcp_tools
@@ -226,7 +192,8 @@ from langchain.agents import create_agent
 server_params = StdioServerParameters(
     command="python", args=["math_server.py"])
 
-async with stdio_client(server_params) as (read, write):
+async with stdio_client(
+    server_params, errlog=subprocess.DEVNULL) as (read, write):
     async with ClientSession(read, write) as session:
         await session.initialize()
         tools = await load_mcp_tools(session)
@@ -237,11 +204,14 @@ async with stdio_client(server_params) as (read, write):
 
 Ferramentas MCP viram =@tool= do LangChain — o agente não sabe a diferença.
 
+#+ATTR_HTML: :style font-size:0.55em;
+O =errlog=subprocess.DEVNULL= evita o bug do =fileno()= no Jupyter/Colab.
+
 ** Servidor MCP remoto (HTTP)
 
 #+BEGIN_SRC python
 # Mesmo math_server.py, mas rodando como servidor HTTP
-mcp = FastMCP("Math")
+mcp = FastMCP("Math", port=8000)
 
 @mcp.tool()
 def add(a: int, b: int) -> int:
@@ -253,7 +223,7 @@ def multiply(a: int, b: int) -> int:
     """Multiply two numbers together."""
     return a * b
 
-# Roda em http://localhost:8000 (ou qualquer host remoto)
+# A porta fica no FastMCP (não no run) — sobe em http://localhost:8000/mcp
 mcp.run(transport="streamable-http")
 #+END_SRC
 
@@ -276,9 +246,30 @@ async with streamablehttp_client(
         # API idêntica — só muda como conecta
 #+END_SRC
 
-** S06 vs S07
+** Cliente com auth (headers)
 
-| | S06 | S07 |
+Servidor que exige token — caso real: SearXNG no Raspberry Pi.
+
+#+BEGIN_SRC python
+import os
+from mcp import ClientSession
+from mcp.client.streamable_http import streamablehttp_client
+
+async with streamablehttp_client(
+    "http://192.168.3.8:8899/mcp",   # SearXNG no Raspberry Pi
+    headers={"Authorization": f"Bearer {os.environ['SEARXNG_MCP_TOKEN']}"},
+) as (read, write):
+    async with ClientSession(read, write) as session:
+        await session.initialize()
+        # dali em diante: igual ao cliente sem auth
+#+END_SRC
+
+#+ATTR_HTML: :style font-size:0.55em;
+O token vem de =$SEARXNG_MCP_TOKEN= (=export SEARXNG_MCP_TOKEN=...= antes de rodar); o auth mora no =headers=, =ClientSession=, =load_mcp_tools= e o agente não mudam.
+
+** S07 vs S08
+
+| | S07 | S08 |
 |---|---|---|
 | *Ferramentas* | =@tool= — você escreve | MCP — alguém escreveu |
 | *Código* | =bind_tools= + =create_agent= | =load_mcp_tools= + =create_agent= |
@@ -288,28 +279,42 @@ Pra o agente, ferramenta é ferramenta. Não importa de onde veio.
 
 * Múltiplos servidores MCP
 
+Vários servidores ao mesmo tempo, com =AsyncExitStack=:
+
 #+BEGIN_SRC python
-from langchain_mcp_adapters.client import MultiServerMCPClient
+import subprocess
+from contextlib import AsyncExitStack
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+from langchain_mcp_adapters.tools import load_mcp_tools
 
-client = MultiServerMCPClient({
-    "math": {
-        "command": "python",
-        "args": ["math_server.py"],
-        "transport": "stdio",
-    },
-    "weather": {
-        "url": "http://localhost:8000/mcp",
-        "transport": "http",
-    }
-})
+SERVIDORES = [
+    StdioServerParameters(command="python", args=["math_server.py"]),
+    StdioServerParameters(command="python", args=["string_server.py"]),
+]
+#+END_SRC
 
-tools = await client.get_tools()
-agente = create_agent(llm, tools)
-# Agente tem ferramentas de math E weather
+#+REVEAL: split
+
+#+BEGIN_SRC python
+async with AsyncExitStack() as stack:
+    tools = []
+    for params in SERVIDORES:
+        read, write = await stack.enter_async_context(
+            stdio_client(params, errlog=subprocess.DEVNULL))
+        session = await stack.enter_async_context(
+            ClientSession(read, write))
+        await session.initialize()
+        tools.extend(await load_mcp_tools(session))
+
+    agente = create_agent(llm, tools)
+
+# Ferramentas de math E strings, num agente só
 #+END_SRC
 
 #+ATTR_HTML: :style font-size:0.55em;
 Monte um agente combinando ferramentas de *fontes diferentes* — sem código de integração.
+(=MultiServerMCPClient= existe, mas não aceita =errlog= — quebra no Colab.)
 
 * Para lembrar
 :PROPERTIES:
@@ -327,4 +332,9 @@ MCP transforma integração em padrão."
 - =create_agent= encadeia ferramentas automaticamente
 - MCP = HTTP das ferramentas de IA
 - MCP suporta stdio (local) e HTTP (remoto)
-- Na S08: RAG — buscar informações relevantes em documentos
+- Na S09: Embeddings e RAG — buscar informações relevantes em documentos
+
+* Perguntas?
+:PROPERTIES:
+:REVEAL_BACKGROUND: ./slide_07.gif
+:END:
