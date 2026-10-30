@@ -32,8 +32,8 @@
 <section id="sec-title-slide" data-background="./slide_06.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Primeira Ferramenta</h2><br/><p style="font-size:0.85em;opacity:0.8;">Dando poderes ao agente</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 </section>
 <section>
-<section id="slide-org01ab4c8">
-<h2 id="org01ab4c8">Recap: Semana 06</h2>
+<section id="slide-org481aad7">
+<h2 id="org481aad7">Recap: Semana 06</h2>
 <ul>
 <li>Agente = LLM + <b>harness</b>: instruções, memória, input, output</li>
 <li>O histórico vai <b>inteiro</b> a cada chamada</li>
@@ -50,8 +50,8 @@
 </section>
 </section>
 <section>
-<section id="slide-org7e9fe5a">
-<h2 id="org7e9fe5a">O problema do LLM puro</h2>
+<section id="slide-orgbf53f42">
+<h2 id="orgbf53f42">O problema do LLM puro</h2>
 <p>
 LLMs são modelos de linguagem. Eles <b>preveem</b> texto, não calculam.
 </p>
@@ -69,8 +69,8 @@ Pode acertar, pode errar.
 </section>
 </section>
 <section>
-<section id="slide-org317928e">
-<h2 id="org317928e">A solução: ferramentas</h2>
+<section id="slide-orge1bc565">
+<h2 id="orge1bc565">A solução: ferramentas</h2>
 <p>
 Ferramenta = função Python que o agente pode chamar.
 </p>
@@ -79,8 +79,8 @@ Ferramenta = função Python que o agente pode chamar.
 <a href="https://colab.research.google.com/github/luksamuk/guilda-ia/blob/main/notebooks/aula06_primeira_ferramenta_colab.ipynb">📓 Colab</a>
 </p>
 </section>
-<section id="slide-org43c085f">
-<h3 id="org43c085f">Como funciona:</h3>
+<section id="slide-org118173a">
+<h3 id="org118173a">Como funciona:</h3>
 <ol>
 <li>O LLM recebe a descrição das ferramentas disponíveis</li>
 <li>Analisa a pergunta</li>
@@ -93,8 +93,8 @@ Ferramenta = função Python que o agente pode chamar.
 </section>
 </section>
 <section>
-<section id="slide-org53cba0d">
-<h2 id="org53cba0d">Exemplo: calculadora</h2>
+<section id="slide-orgaada506">
+<h2 id="orgaada506">Exemplo: calculadora</h2>
 <div class="org-src-container">
 
 <pre   ><code class="python" >@tool
@@ -116,8 +116,8 @@ Parâmetros nomeados: seguro e simples. Sem <code>eval</code>, sem parsing.
 </section>
 </section>
 <section>
-<section id="slide-org5bac5e8">
-<h2 id="org5bac5e8">Exemplo: tamanho de palavra</h2>
+<section id="slide-org1c14968">
+<h2 id="org1c14968">Exemplo: tamanho de palavra</h2>
 <div class="org-src-container">
 
 <pre   ><code class="python" >@tool
@@ -132,8 +132,8 @@ def get_word_length(word: str) -&gt; int:
 </section>
 </section>
 <section>
-<section id="slide-org2879067">
-<h2 id="org2879067">O segredo: descrição clara</h2>
+<section id="slide-org76b1171">
+<h2 id="org76b1171">O segredo: descrição clara</h2>
 <p>
 O modelo decide baseado na descrição.
 </p>
@@ -152,7 +152,7 @@ O modelo decide baseado na descrição.
 </p>
 
 </section>
-<section id="slide-org2879067-split">
+<section id="slide-org76b1171-split">
 <p>
 <b>Descrição boa:</b>
 </p>
@@ -168,8 +168,8 @@ O modelo decide baseado na descrição.
 </section>
 </section>
 <section>
-<section id="slide-org1ac55e2">
-<h2 id="org1ac55e2">@tool: Pydantic resolve o parsing</h2>
+<section id="slide-org60d06a0">
+<h2 id="org60d06a0">@tool: Pydantic resolve o parsing</h2>
 <ul>
 <li class="fragment appear"><code>@tool</code> gera o schema JSON automaticamente</li>
 <li class="fragment appear">Pydantic valida e converte os tipos</li>
@@ -179,7 +179,7 @@ O modelo decide baseado na descrição.
 </ul>
 
 </section>
-<section id="slide-org1ac55e2-split">
+<section id="slide-org60d06a0-split">
 
 <p>
 Sem <code>@tool</code>:
@@ -202,8 +202,8 @@ Com <code>@tool</code>:
 </section>
 </section>
 <section>
-<section id="slide-org98d1e10">
-<h2 id="org98d1e10">O ciclo da ferramenta</h2>
+<section id="slide-org46b410c">
+<h2 id="org46b410c">O ciclo da ferramenta</h2>
 <div style="text-align:center;">
 <img src="/pages/guilda-ia/img/ciclo-ferramenta-v2.svg" style="max-width:70%;max-height:58vh;" />
 </div>
@@ -219,8 +219,8 @@ Com <code>@tool</code>:
 </section>
 </section>
 <section>
-<section id="slide-org130989c">
-<h2 id="org130989c">O ciclo manual: <code>bind_tools</code></h2>
+<section id="slide-orgcc80ab3">
+<h2 id="orgcc80ab3">O ciclo manual: <code>bind_tools</code></h2>
 <ol style="font-size:0.6em;">
 <li><code>invoke</code> → LLM <b>decide</b> (retorna <code>tool_calls</code>, não executa)</li>
 <li>Você executa a ferramenta com os argumentos</li>
@@ -229,7 +229,7 @@ Com <code>@tool</code>:
 </ol>
 
 </section>
-<section id="slide-org130989c-split">
+<section id="slide-orgcc80ab3-split">
 
 <p>
 Passo 1 — o LLM decide:
@@ -251,7 +251,7 @@ pprint(resposta.tool_calls)
 </p>
 
 </section>
-<section id="slide-org130989c-split">
+<section id="slide-orgcc80ab3-split">
 
 <p>
 Passo 2 — você executa:
@@ -282,8 +282,8 @@ resposta_final = llm_com_ferramentas.invoke(mensagens)
 </section>
 </section>
 <section>
-<section id="slide-org2e940bd">
-<h2 id="org2e940bd">ReAct se completa</h2>
+<section id="slide-org3665ac5">
+<h2 id="org3665ac5">ReAct se completa</h2>
 <p>
 O ciclo manual <b>é</b> ReAct em ação:
 </p>
@@ -302,8 +302,8 @@ O ciclo manual <b>é</b> ReAct em ação:
 </section>
 </section>
 <section>
-<section id="slide-org6a25c7d">
-<h2 id="org6a25c7d">E quando precisa de duas?</h2>
+<section id="slide-org42686e2">
+<h2 id="org42686e2">E quando precisa de duas?</h2>
 <p>
 "Quanto é 10 mais 100 vezes 3?" não é uma conta só:
 </p>
@@ -319,7 +319,7 @@ O modelo pede <b>a primeira</b>, recebe o resultado, e aí pede <b>a segunda</b>
 </p>
 
 </section>
-<section id="slide-org6a25c7d-split">
+<section id="slide-org42686e2-split">
 
 <p>
 O ciclo <b>repete</b> até ele ter tudo que precisa:
@@ -339,8 +339,8 @@ Sem esse laço, a resposta final chega <b>vazia</b> — ele ainda está pedindo 
 </section>
 </section>
 <section>
-<section id="slide-org1ada40e">
-<h2 id="org1ada40e">O ciclo automático: <code>create_agent</code></h2>
+<section id="slide-orgdf20d8a">
+<h2 id="orgdf20d8a">O ciclo automático: <code>create_agent</code></h2>
 <p>
 O ciclo manual é bom pra entender. Na prática:
 </p>
@@ -363,8 +363,8 @@ Uma linha. Decide, executa, responde — tudo automático.
 </section>
 </section>
 <section>
-<section id="slide-orgb1e0718" data-background="./slide_06.gif">
-<h2 id="orgb1e0718">Para lembrar</h2>
+<section id="slide-org6fae864" data-background="./slide_06.gif">
+<h2 id="org6fae864">Para lembrar</h2>
 <blockquote >
 <p>
 "Ferramenta transforma conversa em ação."
@@ -383,8 +383,8 @@ LLM puro: só fala. Agente com ferramenta: fala <b>e faz</b>.
 </section>
 </section>
 <section>
-<section id="slide-org2e3dada">
-<h2 id="org2e3dada">Para a próxima aula</h2>
+<section id="slide-orgc80e319">
+<h2 id="orgc80e319">Para a próxima aula</h2>
 <ul>
 <li>Ter um modelo local rodando (Ollama ou llama-swap)</li>
 <li><b>Próxima aula:</b> Ferramentas múltiplas! O agente escolhe entre várias e encadeia mais de uma na mesma pergunta.</li>
@@ -393,8 +393,8 @@ LLM puro: só fala. Agente com ferramenta: fala <b>e faz</b>.
 </section>
 </section>
 <section>
-<section id="slide-org189049d" data-background="./slide_06.gif">
-<h2 id="org189049d">Perguntas?</h2>
+<section id="slide-orgdfb127a" data-background="./slide_06.gif">
+<h2 id="orgdfb127a">Perguntas?</h2>
 </section>
 </section>
 </div>
