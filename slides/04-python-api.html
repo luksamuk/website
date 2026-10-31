@@ -32,8 +32,8 @@
 <section id="sec-title-slide" data-background="./slide_04.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Python + API de LLM</h2><br/><p style="font-size:0.85em;opacity:0.8;">Conectando com modelos locais</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 </section>
 <section>
-<section id="slide-org0f14d37">
-<h2 id="org0f14d37">Recap: Semana 04</h2>
+<section id="slide-orgb798a5f">
+<h2 id="orgb798a5f">Recap: Semana 04</h2>
 <ul>
 <li class="fragment appear">Variáveis, listas, dicionários, funções</li>
 <li class="fragment appear">Loops, condicionais, strings e JSON</li>
@@ -49,8 +49,8 @@
 </section>
 </section>
 <section>
-<section id="slide-org4a81c59">
-<h2 id="org4a81c59">O que é uma API de LLM?</h2>
+<section id="slide-orgef7bfa1">
+<h2 id="orgef7bfa1">O que é uma API de LLM?</h2>
 <ul>
 <li class="fragment appear">API = garçom entre seu código e o modelo</li>
 <li class="fragment appear">Você manda JSON, recebe JSON</li>
@@ -66,8 +66,8 @@ Entender HTTP = entender todas as APIs de LLM.
 </section>
 </section>
 <section>
-<section id="slide-org4acd760">
-<h2 id="org4acd760">O setup: Ollama</h2>
+<section id="slide-org5a71788">
+<h2 id="org5a71788">O setup: Ollama</h2>
 <div class="org-src-container">
 
 <pre   ><code class="bash" >curl -fsSL https://ollama.com/install.sh | sh
@@ -90,8 +90,8 @@ No Colab o notebook já faz o setup pra você.
 </section>
 </section>
 <section>
-<section id="slide-org570f3c2">
-<h2 id="org570f3c2">🔴 Demo 1: Colab — Ollama + gemma4</h2>
+<section id="slide-org2288c3f">
+<h2 id="org2288c3f">🔴 Demo 1: Colab — Ollama + gemma4</h2>
 <ol>
 <li>Abrir <code>luksamuk.codes/pages/guilda-ia</code> → Semana 05</li>
 <li>Clicar em 📓 <b>Colab</b></li>
@@ -107,8 +107,8 @@ Warm up de ~2-3 min na primeira vez. Depois: respostas rápidas.
 </section>
 </section>
 <section>
-<section id="slide-orge0ba6ec">
-<h2 id="orge0ba6ec">Chat com memória</h2>
+<section id="slide-orgefe307e">
+<h2 id="orgefe307e">Chat com memória</h2>
 <ul>
 <li class="fragment appear">Cada chamada manda o <b>histórico completo</b></li>
 <li class="fragment appear">O modelo não "lembra" — <b>recebe tudo de novo</b></li>
@@ -124,8 +124,8 @@ Warm up de ~2-3 min na primeira vez. Depois: respostas rápidas.
 </section>
 </section>
 <section>
-<section id="slide-org968f9e8">
-<h2 id="org968f9e8">Direto no motor: llama-server</h2>
+<section id="slide-org54634b5">
+<h2 id="org54634b5">Direto no motor: llama-server</h2>
 <div class="org-src-container">
 
 <pre   ><code class="bash" >llama-server \
@@ -141,8 +141,8 @@ Warm up de ~2-3 min na primeira vez. Depois: respostas rápidas.
 </code></pre>
 </div>
 </section>
-<section id="slide-orge1ddfc8">
-<h3 id="orge1ddfc8">Variante com reasoning</h3>
+<section id="slide-orgeb257b6">
+<h3 id="orgeb257b6">Variante com reasoning</h3>
 <div class="org-src-container">
 
 <pre   ><code class="bash" >llama-server \
@@ -159,8 +159,8 @@ Warm up de ~2-3 min na primeira vez. Depois: respostas rápidas.
 </section>
 </section>
 <section>
-<section id="slide-org0311dc1">
-<h2 id="org0311dc1">O padrão universal: <code>/v1/chat/completions</code></h2>
+<section id="slide-orgf6dcb11">
+<h2 id="orgf6dcb11">O padrão universal: <code>/v1/chat/completions</code></h2>
 <div class="org-src-container">
 
 <pre   ><code class="python" >import requests
@@ -186,8 +186,8 @@ print(json.dumps(response_dict, indent=2, sort_keys=True))
 </section>
 </section>
 <section>
-<section id="slide-org086f85e">
-<h2 id="org086f85e">Um código, N servidores</h2>
+<section id="slide-org6780893">
+<h2 id="org6780893">Um código, N servidores</h2>
 <div class="org-src-container">
 
 <pre   ><code class="python" >requests.post(url, json=payload)
@@ -207,8 +207,8 @@ Ferramentas como o llama-swap trocam de modelo a quente.
 </section>
 </section>
 <section>
-<section id="slide-org3104626">
-<h2 id="org3104626">Tratamento de Erros</h2>
+<section id="slide-org692f209">
+<h2 id="org692f209">Tratamento de Erros</h2>
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides" style="font-size:0.7em;">
 
 
@@ -261,8 +261,8 @@ Erro clássico: esquecer de subir o servidor antes da requisição.
 </section>
 </section>
 <section>
-<section id="slide-orgd107d28">
-<h2 id="orgd107d28">Exercícios</h2>
+<section id="slide-orgdf8ab30">
+<h2 id="orgdf8ab30">Exercícios</h2>
 <ol>
 <li>Função <code>perguntar()</code> universal (só muda a URL)</li>
 <li>Chat com memória (dicts, sem classes)</li>
@@ -279,8 +279,8 @@ Todos os exercícios estão na apostila com gabarito.
 </section>
 </section>
 <section>
-<section id="slide-orgdb7fd55">
-<h2 id="orgdb7fd55">Para a próxima aula</h2>
+<section id="slide-orgc152f78">
+<h2 id="orgc152f78">Para a próxima aula</h2>
 <ul>
 <li class="fragment appear">Ter o Ollama instalado (local) — ou usar o Colab</li>
 <li class="fragment appear"><b>Nenhuma API key necessária</b> — o modelo é seu</li>
@@ -290,8 +290,8 @@ Todos os exercícios estão na apostila com gabarito.
 </section>
 </section>
 <section>
-<section id="slide-org454ee7e" data-background="./slide_04.gif">
-<h2 id="org454ee7e">Perguntas?</h2>
+<section id="slide-org89f66fb" data-background="./slide_04.gif">
+<h2 id="org89f66fb">Perguntas?</h2>
 </section>
 </section>
 </div>

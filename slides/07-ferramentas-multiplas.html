@@ -32,8 +32,8 @@
 <section id="sec-title-slide" data-background="./slide_07.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Múltiplas Ferramentas e MCP</h2><br/><p style="font-size:0.85em;opacity:0.8;">O agente se expande</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 </section>
 <section>
-<section id="slide-org009ff7f">
-<h2 id="org009ff7f">Recap: Semana 07</h2>
+<section id="slide-org096a5dd">
+<h2 id="org096a5dd">Recap: Semana 07</h2>
 <ul style="font-size:0.55em;">
 <li>Ferramenta = função Python que o agente pode <b>chamar</b></li>
 <li><code>@tool</code> + Pydantic: schema e validação automáticos</li>
@@ -51,8 +51,8 @@
 </section>
 </section>
 <section>
-<section id="slide-org547bcb9">
-<h2 id="org547bcb9">Chamadas encadeadas</h2>
+<section id="slide-org03800d5">
+<h2 id="org03800d5">Chamadas encadeadas</h2>
 <p>
 <a href="https://colab.research.google.com/github/luksamuk/guilda-ia/blob/main/notebooks/aula07_ferramentas_multiplas_colab.ipynb">📓 Colab</a>
 </p>
@@ -77,7 +77,7 @@ Answer: "O resultado é 231.058."
 </div>
 
 </section>
-<section id="slide-org547bcb9-split">
+<section id="slide-org03800d5-split">
 
 <p>
 O <code>create_agent</code> repete Thought→Action→Observation <b>automaticamente</b>.
@@ -101,8 +101,8 @@ Uma chamada. Múltiplas ferramentas encadeadas. Automático.
 </section>
 </section>
 <section>
-<section id="slide-orgce05ba9">
-<h2 id="orgce05ba9">O problema das descrições vagas</h2>
+<section id="slide-org7bc3348">
+<h2 id="org7bc3348">O problema das descrições vagas</h2>
 <p>
 Se duas ferramentas parecem fazer a mesma coisa:
 </p>
@@ -121,7 +121,7 @@ def search_web(query: str) -&gt; str:
 </div>
 
 </section>
-<section id="slide-orgce05ba9-split">
+<section id="slide-org7bc3348-split">
 
 <p>
 <code>Search for information</code> × 2 → modelo não sabe qual usar.
@@ -148,8 +148,8 @@ def search_web(query: str) -&gt; str:
 </section>
 </section>
 <section>
-<section id="slide-org2f9e52b">
-<h2 id="org2f9e52b">Debug de ferramentas</h2>
+<section id="slide-org8450d30">
+<h2 id="org8450d30">Debug de ferramentas</h2>
 <p class="fragment (appear)">
 O LLM nem sempre acerta. Problemas comuns:
 </p>
@@ -161,8 +161,8 @@ O LLM nem sempre acerta. Problemas comuns:
 
 </ol>
 </section>
-<section id="slide-orgef5feff">
-<h3 id="orgef5feff">Problema: LLM chama ferramenta errada</h3>
+<section id="slide-orge495912">
+<h3 id="orge495912">Problema: LLM chama ferramenta errada</h3>
 <p>
 Pergunta: "Que horas são?"
 LLM chama: <code>calculate</code> em vez de <code>get_time</code>
@@ -184,8 +184,8 @@ def get_time() -&gt; str:
 </code></pre>
 </div>
 </section>
-<section id="slide-org202bbfd">
-<h3 id="org202bbfd">Problema: argumentos errados</h3>
+<section id="slide-org7179b4f">
+<h3 id="org7179b4f">Problema: argumentos errados</h3>
 <p>
 LLM manda <code>operation</code>"234 vezes 987"= em vez de <code>"multiply"</code>
 </p>
@@ -205,16 +205,16 @@ def calculate(a: float, b: float, operation: str) -&gt; float:
 </code></pre>
 </div>
 </section>
-<section id="slide-org9a9c34d">
-<h3 id="org9a9c34d">Problema: ValidationError</h3>
+<section id="slide-orgc45126c">
+<h3 id="orgc45126c">Problema: ValidationError</h3>
 <p>
 Pydantic rejeita argumentos com tipo errado (ex.: passar texto onde espera número). O agente recebe o erro e pode <b>corrigir automaticamente</b>. Mas se acontece com frequência, a descrição da ferramenta precisa melhorar.
 </p>
 </section>
 </section>
 <section>
-<section id="slide-org1bd1708">
-<h2 id="org1bd1708">Ferramentas externas via MCP</h2>
+<section id="slide-org4c1de12">
+<h2 id="org4c1de12">Ferramentas externas via MCP</h2>
 <p>
 Até agora, você <b>escreveu</b> as ferramentas com <code>@tool</code>.
 </p>
@@ -238,8 +238,8 @@ E se <b>outra pessoa</b> escreveu?
 <a href="https://modelcontextprotocol.io/">modelcontextprotocol.io</a>
 </p>
 </section>
-<section id="slide-org60401fb">
-<h3 id="org60401fb">Servidor MCP (<code>math_server.py</code>)</h3>
+<section id="slide-orga6defcf">
+<h3 id="orga6defcf">Servidor MCP (<code>math_server.py</code>)</h3>
 <div class="org-src-container">
 
 <pre   ><code class="python" >from mcp.server.fastmcp import FastMCP
@@ -265,8 +265,8 @@ if __name__ == "__main__":
 Quase idêntico ao <code>@tool</code>, mas <code>@mcp.tool()</code> e <code>FastMCP</code>.
 </p>
 </section>
-<section id="slide-orgca38bbb">
-<h3 id="orgca38bbb">Cliente: consumindo MCP no LangChain</h3>
+<section id="slide-org87b3c8e">
+<h3 id="org87b3c8e">Cliente: consumindo MCP no LangChain</h3>
 <div class="org-src-container">
 
 <pre   ><code class="python" >import subprocess
@@ -297,8 +297,8 @@ Ferramentas MCP viram <code>@tool</code> do LangChain — o agente não sabe a d
 O <code>errlog=subprocess.DEVNULL</code> evita o bug do <code>fileno()</code> no Jupyter/Colab.
 </p>
 </section>
-<section id="slide-org234aab5">
-<h3 id="org234aab5">Servidor MCP remoto (HTTP)</h3>
+<section id="slide-orgf95c6ba">
+<h3 id="orgf95c6ba">Servidor MCP remoto (HTTP)</h3>
 <div class="org-src-container">
 
 <pre   ><code class="python" ># Mesmo math_server.py, mas rodando como servidor HTTP
@@ -319,8 +319,8 @@ mcp.run(transport="streamable-http")
 </code></pre>
 </div>
 </section>
-<section id="slide-org01f8a6e">
-<h3 id="org01f8a6e">Cliente remoto (HTTP)</h3>
+<section id="slide-orgdd19c83">
+<h3 id="orgdd19c83">Cliente remoto (HTTP)</h3>
 <div class="org-src-container">
 
 <pre   ><code class="python" >from mcp import ClientSession
@@ -340,8 +340,8 @@ async with streamablehttp_client(
 </code></pre>
 </div>
 </section>
-<section id="slide-orge151720">
-<h3 id="orge151720">Cliente com auth (headers)</h3>
+<section id="slide-orgf7eded3">
+<h3 id="orgf7eded3">Cliente com auth (headers)</h3>
 <p>
 Servidor que exige token — caso real: SearXNG no Raspberry Pi.
 </p>
@@ -366,8 +366,8 @@ async with streamablehttp_client(
 O token vem de <code>$SEARXNG_MCP_TOKEN</code> (<code>export SEARXNG_MCP_TOKEN</code>&#x2026;= antes de rodar); o auth mora no <code>headers</code>, <code>ClientSession</code>, <code>load_mcp_tools</code> e o agente não mudam.
 </p>
 </section>
-<section id="slide-org24b1090">
-<h3 id="org24b1090">S07 vs S08</h3>
+<section id="slide-org3ad8053">
+<h3 id="org3ad8053">S07 vs S08</h3>
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -412,8 +412,8 @@ Pra o agente, ferramenta é ferramenta. Não importa de onde veio.
 </section>
 </section>
 <section>
-<section id="slide-orga29ca6c">
-<h2 id="orga29ca6c">Múltiplos servidores MCP</h2>
+<section id="slide-org006cf6a">
+<h2 id="org006cf6a">Múltiplos servidores MCP</h2>
 <p>
 Vários servidores ao mesmo tempo, com <code>AsyncExitStack</code>:
 </p>
@@ -434,7 +434,7 @@ SERVIDORES = [
 </div>
 
 </section>
-<section id="slide-orga29ca6c-split">
+<section id="slide-org006cf6a-split">
 
 <div class="org-src-container">
 
@@ -461,8 +461,8 @@ Monte um agente combinando ferramentas de <b>fontes diferentes</b> — sem códi
 </section>
 </section>
 <section>
-<section id="slide-org15ef7a2" data-background="./slide_07.gif">
-<h2 id="org15ef7a2">Para lembrar</h2>
+<section id="slide-orgf5b8ce9" data-background="./slide_07.gif">
+<h2 id="orgf5b8ce9">Para lembrar</h2>
 <blockquote >
 <p>
 "Ferramentas transformam conversa em ação.
@@ -482,8 +482,8 @@ MCP transforma integração em padrão."
 </section>
 </section>
 <section>
-<section id="slide-org28854da" data-background="./slide_07.gif">
-<h2 id="org28854da">Perguntas?</h2>
+<section id="slide-org361b3a9" data-background="./slide_07.gif">
+<h2 id="org361b3a9">Perguntas?</h2>
 </section>
 </section>
 </div>
