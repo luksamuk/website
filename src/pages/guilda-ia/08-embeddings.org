@@ -1,14 +1,16 @@
 #+TITLE: Embeddings, Similaridade e RAG - Texto como números, busca e geração
-# Semana 8 - 26/06/2026
+# Semana 9 - 13/11/2026
 #+SETUPFILE: ./setupfile.org
-#+DESCRIPTION: Semana 8 - Guilda de IA: RAG, BM25, embeddings, similaridade por cosseno, busca híbrida, FAISS e engenharia de memória
+#+DESCRIPTION: Semana 9 - Guilda de IA 2026.2: RAG, BM25, embeddings, similaridade por cosseno, busca híbrida, FAISS e engenharia de memória
 #+LANGUAGE: pt_BR
 #+STARTUP: inlineimages showall latexpreview
-#+DATE: 26/06/2026
+#+DATE: 13/11/2026
 
-* Semana 8 - Embeddings, Similaridade e RAG
+* O agente que lê documentos
 
-Esta semana juntamos dois temas que são duas faces da mesma moeda: como fazer um agente "ler" documentos (RAG) e como representar texto como números (embeddings). Começamos pelo problema, passamos pela busca lexical (BM25), pela busca semântica (embeddings), pela busca híbrida, e terminamos com engenharia real.
+Na [[./07-ferramentas-multiplas.org][semana passada]] o agente aprendeu a encadear chamadas e a consumir ferramentas escritas por outras pessoas, via MCP. O repertório de *ações* está completo — mas ele ainda não conhece seus documentos, e responde só com o que memorizou no treinamento.
+
+Hoje o agente ganha *memória de leitura*: RAG — buscar informação relevante *antes* de responder. No caminho, as duas faces da busca (lexical com BM25, semântica com embeddings), a busca híbrida que junta as duas, uma demo real com FAISS, e engenharia de verdade no fim.
 
 * O problema: LLMs não sabem tudo
 
@@ -175,6 +177,7 @@ Embeddings que podem ser *truncados*.
 - =all-MiniLM-L6-v2= — 384 dim, leve, multilingue
 - =bge-m3= — 1024 dim, multilingue, open-weight
 - =nomic-embed-text= — 768 dim, longo contexto, open-weight, Matryoshka
+- =embeddinggemma-2= — 768 dim, multimodal (texto, imagem, áudio, vídeo), 100+ línguas (Google)
 - =gte-Qwen2= — variedade de tamanhos, Matryoshka
 
 #+begin_quote
@@ -198,11 +201,23 @@ Cada método ordena os documentos. O RRF combina as posições — documentos qu
 Cada método vê um lado. Juntos, veem mais.
 #+end_quote
 
+** E ainda existe um degrau a mais: reranking
+
+Existe também o *reranking*: um degrau opcional depois do RRF. Os métodos da primeira rodada (BM25, embeddings, RRF) são *rápidos* — por isso podem considerar milhares de documentos. Mas rápido raramente significa bem calibrado. O reranking faz o caminho contrário: pega só os ~20 candidatos de cima da primeira busca e passa cada um por um modelo *mais pesado*, que decide com mais cuidado quais merecem entrar no contexto do LLM.
+
+O tipo mais comum é o *cross-encoder*: em vez de pontuar cada texto separado (como os modelos de embedding fazem), ele lê *pergunta e documento juntos* e devolve uma relevância direta — por isso é mais preciso, e também mais lento.
+
+Bom saber que dá para fazer isso tudo local: rerankers open-source como =bge-reranker= (BAAI) e o =Qwen3-Reranker= rodam na sua máquina e se integram com os mesmos vector stores da demo. É engenharia de qualidade: o funil rápido corta o espaço, o especialista decide o corte final. Só vale a pena quando a qualidade da busca importa mais que a latência — em um chat com uma base pequena, o RRF sozinho já resolve bem.
+
+#+begin_quote
+Primeiro o funil rápido. Depois, quem decide é o especialista.
+#+end_quote
+
 * Demo prática: FAISS
 
 Vamos ver isso funcionando de verdade no Colab!
 
-- Modelo: =nomic-embed-text-v2-moe= (256 dim, Matryoshka)
+- Modelo no Colab: =embeddinggemma-2= — Google, 740M, multimodal (768 dim, MRL 256)
 - Vector store: *FAISS* (Facebook AI Similarity Search)
 - Agente: =gemma4:e2b-it-qat= com ferramenta de busca
 
@@ -219,15 +234,21 @@ FAISS (Facebook AI Similarity Search) é uma biblioteca da Meta para busca de si
 
 #+begin_src python
 import faiss
-from sentence_transformers import SentenceTransformer
+import requests
+import numpy as np
 
-model = SentenceTransformer('nomic-ai/nomic-embed-text-v2-moe')
-vetores = model.encode(documentos, truncate_dim=256)  # 256 dim (Matryoshka!)
+def embedding(texto):
+    resp = requests.post("http://localhost:11434/api/embeddings",
+                         json={"model": "embeddinggemma-2", "prompt": texto})
+    emb = np.array(resp.json()["embedding"][:256], dtype=np.float32)
+    return emb / np.linalg.norm(emb)  # truncar (MRL!) e normalizar
+
+vetores = np.array([embedding(d) for d in documentos])
 
 index = faiss.IndexFlatL2(256)  # cria índice
 index.add(vetores)              # adiciona vetores
 
-query = model.encode(["animal que faz miau"], truncate_dim=256)
+query = embedding("animal que faz miau").reshape(1, -1)
 distancias, indices = index.search(query, k=3)  # busca os 3 mais próximos
 #+end_src
 
@@ -320,6 +341,6 @@ Isso é engenharia de prompt aplicada: o framework RCEF-TC é um guia, não uma 
 6. *FAISS* = vector store rápido e simples para demo
 7. *Sprachspiel* = tudo isso junto num projeto real
 
-* Próxima semana
+* Próxima Aula
 
-**Semana 9 - Apresentação final:** hora de mostrar os projetos!
+Semana 10 (27/11): *Fine-Tuning* — hoje o agente aprendeu a buscar informação fora dele. Na próxima, quem muda é o próprio modelo: como adaptar um modelo aberto ao seu caso específico.
