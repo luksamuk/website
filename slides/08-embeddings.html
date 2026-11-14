@@ -33,8 +33,8 @@
 <section id="sec-title-slide" data-background="./slide_08.gif"><p style="font-size:0.7em;opacity:0.6;">Lucas S. Vieira</p><br/><h2>Embeddings, Similaridade e RAG</h2><br/><p style="font-size:0.85em;opacity:0.8;">Texto como números, busca e geração</p><br/><p style="font-size:0.9em;color:#FFB033;">Guilda de IA</p>
 </section>
 <section>
-<section id="slide-orgd19921e">
-<h2 id="orgd19921e">Recap: Semana 08</h2>
+<section id="slide-orgbda6666">
+<h2 id="orgbda6666">Recap: Semana 08</h2>
 <ul style="font-size:0.55em;">
 <li><code>create_agent</code> encadeia chamadas automaticamente</li>
 <li>Descrição específica = agente sabe <b>qual</b> ferramenta usar</li>
@@ -51,8 +51,8 @@
 </section>
 </section>
 <section>
-<section id="slide-org936ca3f">
-<h2 id="org936ca3f">🔴 O problema: LLMs não sabem tudo</h2>
+<section id="slide-org49ce96a">
+<h2 id="org49ce96a">🔴 O problema: LLMs não sabem tudo</h2>
 <p class="fragment (appear)">
 LLMs não conhecem:
 </p>
@@ -71,8 +71,8 @@ E agora?
 </section>
 </section>
 <section>
-<section id="slide-org1536e5d">
-<h2 id="org1536e5d">🔴 A solução: RAG</h2>
+<section id="slide-orgdf41da4">
+<h2 id="orgdf41da4">🔴 A solução: RAG</h2>
 <p class="fragment (appear)">
 RAG = <b>Retrieval Augmented Generation</b>
 </p>
@@ -87,16 +87,16 @@ RAG = <b>Retrieval Augmented Generation</b>
 </p>
 </blockquote>
 </section>
-<section id="slide-org30ff5ed">
-<h3 id="org30ff5ed">Analogia</h3>
+<section id="slide-org526b624">
+<h3 id="org526b624">Analogia</h3>
 <ul>
 <li class="fragment appear"><b>Sem RAG:</b> aluno fazendo prova de <b>memória</b></li>
 <li class="fragment appear"><b>Com RAG:</b> aluno fazendo prova com <b>livro aberto</b></li>
 
 </ul>
 </section>
-<section id="slide-org1574051">
-<h3 id="org1574051">Fluxo RAG</h3>
+<section id="slide-org5e77c95">
+<h3 id="org5e77c95">Fluxo RAG</h3>
 <ol style="font-size:0.65em;">
 <li class="fragment appear"><b>Chunking</b> → divide documentos em pedaços</li>
 <li class="fragment appear"><b>Embeddings</b> → transforma texto em vetores</li>
@@ -106,8 +106,8 @@ RAG = <b>Retrieval Augmented Generation</b>
 
 </ol>
 </section>
-<section id="slide-orgacf9526">
-<h3 id="orgacf9526">Mas como funciona a "busca"?</h3>
+<section id="slide-orgd02cdc6">
+<h3 id="orgd02cdc6">Mas como funciona a "busca"?</h3>
 <p class="fragment (appear)">
 O <b>retrieval</b> é o coração do RAG.
 </p>
@@ -128,8 +128,8 @@ Vamos ver cada uma separadamente, e depois juntar.
 </section>
 </section>
 <section>
-<section id="slide-org4c33074">
-<h2 id="org4c33074">🟡 Busca Lexical: BM25</h2>
+<section id="slide-org3c1aa0f">
+<h2 id="org3c1aa0f">🟡 Busca Lexical: BM25</h2>
 <p class="fragment (appear)">
 "Como o Google buscava <b>antes</b> de IA."
 </p>
@@ -146,8 +146,8 @@ Está no Elasticsearch, no Lucene, no Sphinx&#x2026;
 E é mais inteligente do que parece.
 </p>
 </section>
-<section id="slide-org723f423">
-<h3 id="org723f423">A fórmula (não se assuste!)</h3>
+<section id="slide-orge00c36b">
+<h3 id="orge00c36b">A fórmula (não se assuste!)</h3>
 <div style="text-align:center; margin:1em 0; font-size:0.4em; white-space:nowrap; overflow:hidden;">
 <code>score(q,D) = &Sigma;<sub>i</sub> <span style="color:#7EE787"><b>IDF</b>(q<sub>i</sub>)</span> &middot; <span style="color:#58A6FF">f(q<sub>i</sub>,D)</span> &middot; (k<sub>1</sub>+1) / [ <span style="color:#58A6FF">f(q<sub>i</sub>,D)</span> + <span style="color:#F0883E"><b>k<sub>1</sub></b></span> &middot; (1 &minus; <span style="color:#BB86FC"><b>b</b></span> + <span style="color:#BB86FC">b</span> &middot; <span style="color:#FF6B6B"><b>fieldLen</b> / <b>avgFieldLen</b></span> ) ]</code>
 </div>
@@ -182,8 +182,8 @@ BM25 é bom senso codificado em matemática. Bom pra: nomes, termos técnicos, c
 </section>
 </section>
 <section>
-<section id="slide-orgc6d208a">
-<h2 id="orgc6d208a">🟢 Busca Semântica: Embeddings</h2>
+<section id="slide-orgdb77110">
+<h2 id="orgdb77110">🟢 Busca Semântica: Embeddings</h2>
 <p class="fragment (appear)">
 E se a pessoa busca por "animal que faz miau" mas o documento diz "gato"?
 </p>
@@ -196,8 +196,8 @@ BM25 não acha. Mas <b>embeddings</b> sim.
 Cada texto vira um <b>vetor</b> — uma lista de números que captura <b>significado</b>.
 </p>
 </section>
-<section id="slide-org5fc194e">
-<h3 id="org5fc194e">Exemplo visual</h3>
+<section id="slide-orgb0fb692">
+<h3 id="orgb0fb692">Exemplo visual</h3>
 <div style="display:flex; gap:2em; align-items:center; justify-content:center;">
 <div style="flex:1;">
 
@@ -243,8 +243,8 @@ Cada texto vira um <b>vetor</b> — uma lista de números que captura <b>signifi
 "gato" e "cachorro" são mais próximos! "carro" está longe.
 </p>
 </section>
-<section id="slide-orgeb9b56b">
-<h3 id="orgeb9b56b">Espaço vetorial</h3>
+<section id="slide-org4acb7ea">
+<h3 id="org4acb7ea">Espaço vetorial</h3>
 <ul>
 <li class="fragment appear">Textos com significado parecido = setas na <b>mesma direção</b></li>
 <li class="fragment appear">Textos com significado diferente = setas em <b>direções diferentes</b></li>
@@ -257,8 +257,8 @@ Cada texto vira um <b>vetor</b> — uma lista de números que captura <b>signifi
 </p>
 </blockquote>
 </section>
-<section id="slide-orgcf589c9">
-<h3 id="orgcf589c9">Similaridade por Cosseno</h3>
+<section id="slide-org5a9ebc1">
+<h3 id="org5a9ebc1">Similaridade por Cosseno</h3>
 <p>
 <b>Conexão com Geometria Analítica!</b>
 </p>
@@ -276,8 +276,8 @@ Cada texto vira um <b>vetor</b> — uma lista de números que captura <b>signifi
 </section>
 </section>
 <section>
-<section id="slide-orgb15661e">
-<h2 id="orgb15661e">🟣 Busca Híbrida: o melhor dos dois mundos</h2>
+<section id="slide-orgec17fed">
+<h2 id="orgec17fed">🟣 Busca Híbrida: o melhor dos dois mundos</h2>
 <ul>
 <li class="fragment appear"><b>BM25</b> acha termos exatos (nomes, códigos, IDs)</li>
 <li class="fragment appear"><b>Embeddings</b> acham significados (paráfrases, conceitos)</li>
@@ -289,7 +289,7 @@ Cada texto vira um <b>vetor</b> — uma lista de números que captura <b>signifi
 </p>
 
 </section>
-<section id="slide-orgb15661e-split">
+<section id="slide-orgec17fed-split">
 
 <p style="font-size:0.6em;">
 <b>RRF (Reciprocal Rank Fusion)</b> — junta os rankings das duas buscas.
@@ -309,8 +309,8 @@ Cada método vê um lado. Juntos, veem mais.
 </p>
 </blockquote>
 </section>
-<section id="slide-orgd25d51d">
-<h3 id="orgd25d51d">E ainda existe um degrau a mais: reranking</h3>
+<section id="slide-orgca9e14d">
+<h3 id="orgca9e14d">E ainda existe um degrau a mais: reranking</h3>
 <ul style="font-size:0.6em;">
 <li>RRF junta rankings <b>baratos</b>; reranking <b>reordena</b> os melhores com um modelo mais pesado</li>
 <li>Cross-encoder: lê pergunta e documento <b>juntos</b> (embeddings pontuam cada um separado)</li>
@@ -327,8 +327,8 @@ Primeiro o funil rápido. Depois, quem decide é o especialista.
 </section>
 </section>
 <section>
-<section id="slide-org3801872">
-<h2 id="org3801872">📓 Demo prática: FAISS</h2>
+<section id="slide-org059693b">
+<h2 id="org059693b">📓 Demo prática: FAISS</h2>
 <p style="font-size:0.55em;">
 Vamos ver isso funcionando <b>de verdade</b> no Colab!
 </p>
@@ -346,8 +346,8 @@ Vamos ver isso funcionando <b>de verdade</b> no Colab!
 </section>
 </section>
 <section>
-<section id="slide-orgc352d4d" data-background="./slide_08.gif">
-<h2 id="orgc352d4d">Para lembrar</h2>
+<section id="slide-orgd73671c" data-background="./slide_08.gif">
+<h2 id="orgd73671c">Para lembrar</h2>
 <ol style="font-size:0.55em;">
 <li><b>RAG</b> = buscar antes de responder</li>
 <li><b>BM25</b> = busca lexical (IDF, frequência, saturação, tamanho)</li>
@@ -366,8 +366,8 @@ Vamos ver isso funcionando <b>de verdade</b> no Colab!
 </section>
 </section>
 <section>
-<section id="slide-orgc732990" data-background="./slide_08.gif">
-<h2 id="orgc732990">Perguntas?</h2>
+<section id="slide-orge9c66bb" data-background="./slide_08.gif">
+<h2 id="orge9c66bb">Perguntas?</h2>
 </section>
 </section>
 </div>
